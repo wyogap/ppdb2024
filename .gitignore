@@ -1,3 +1,4 @@
 /app/cache/smarty_templates_cache
 /vendor
 /app/cache
+/app/app/cache/smarty_templates_cache
