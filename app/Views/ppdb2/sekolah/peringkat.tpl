@@ -183,6 +183,7 @@
                 </table>
             <!-- </div> -->
         </div>
+        {$idx = $idx+1}
         {/foreach}
     </div>
 </div>

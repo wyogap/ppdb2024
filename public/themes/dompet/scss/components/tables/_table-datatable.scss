@@ -1,3 +1,4 @@
+
 //demo styles
 table#example{
     padding: 0rem 0 2rem 0;
@@ -18,6 +19,8 @@ table.dataTable{
 .dataTables_wrapper .dataTables_paginate{
     padding-top: 0.75em;
     padding-bottom: 0.75em;
+    font-weight: 400;
+    color: black
 }
 
 
@@ -52,9 +55,12 @@ table.dataTable thead th{
 
 table.dataTable tbody td{
     padding: 20px 15px;
-	font-size:16px;
-	font-weight: 600;
-	border-bottom:0;
+	// font-size:16px;
+	// font-weight: 600;
+    font-size: 14px;
+    font-weight: 400;
+    color: black;
+    border-bottom: 0;
 	@include respond('phone') {
 		padding: 8px 5px;
 	}
@@ -75,31 +81,31 @@ table.dataTable tfoot th{
         color: $white;
     }
 }
-/* .dataTables_wrapper .dataTables_paginate .paginate_button{
-	border-radius: 12px;
-    padding: 12px 20px;
-	background:$primary-light;
-	color:$primary;
-	&:focus,
-	&:active,
-	&:hover{
-		color: $white !important;
-		background: $primary;
-		border: 0 !important;
-		box-shadow: none;
-	}
-	&.current{
-		color: $white !important;
-		background: $primary;
-		border: 0 !important;
-	}
-	&.current:hover,
-	&.previous:hover,
-	&.next:hover{
-		background: $primary;
-		color: $white !important;
-	}
-} */
+// .dataTables_wrapper .dataTables_paginate .paginate_button{
+// 	border-radius: 12px;
+//     padding: 12px 20px;
+// 	background:$primary-light;
+// 	color:$primary;
+// 	&:focus,
+// 	&:active,
+// 	&:hover{
+// 		color: $white !important;
+// 		background: $primary;
+// 		border: 0 !important;
+// 		box-shadow: none;
+// 	}
+// 	&.current{
+// 		color: $white !important;
+// 		background: $primary;
+// 		border: 0 !important;
+// 	}
+// 	&.current:hover,
+// 	&.previous:hover,
+// 	&.next:hover{
+// 		background: $primary;
+// 		color: $white !important;
+// 	}
+// }
 
 
 .dataTables_wrapper .dataTables_paginate{

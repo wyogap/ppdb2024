@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Sekolah;
+namespace App\Controllers\Ppdb\Dapodik;
 
 use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mdropdown;
@@ -8,10 +8,6 @@ use App\Models\Ppdb\Sekolah\Mprofilsekolah;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
-
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class Penerimaan extends PpdbController {
 
@@ -28,9 +24,8 @@ class Penerimaan extends PpdbController {
         //load model
         $this->Msekolah = new Mprofilsekolah();
         
-        if($this->session->get('is_logged_in')==FALSE || $this->session->get('peran_id')!=ROLEID_DAPODIK) {
-			redirect(site_url() .'auth');
-		}
+        //role-based permission
+        //static::$ROLE_ID = ROLEID_DAPODIK;
     }
     
     // public function __construct()
@@ -54,9 +49,17 @@ class Penerimaan extends PpdbController {
 		$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
 		$data['page_title'] = "Penerimaan " .$nama_sekolah;
 
-		$data['page'] = "ppdb-sd";
+        //content template
+        $data['content_template'] = 'penerimaan.tpl';
 
-		view('dapodik/penerimaan/index',$data);
+        //Debug
+        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
+        $data['username'] = "wyogap@gmail.com";
+        $data['notif_ganti_password'] = 1;
+        //END DEBUG
+
+		$data['page_title'] = 'Penerimaan';
+        $this->smarty->render('ppdb2/dapodik/ppdbdapodik.tpl', $data);
 
 	}
 

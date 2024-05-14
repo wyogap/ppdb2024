@@ -14,6 +14,7 @@
 
         $('#tnegeri').dataTable({
             "responsive": true,
+            "processing": true,
             "pageLength": 50,
             "lengthMenu": [
                 [50, 100, 200, -1],
@@ -24,10 +25,17 @@
             "dom": 'Bfrtpil',
             select: true,
             buttons: [
-                'copyHtml5',
-                'excelHtml5',
-                'pdfHtml5',
-                'print',
+				{
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
             ],
             "language": {
                 "sProcessing": "Sedang proses...",

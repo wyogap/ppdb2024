@@ -2,7 +2,7 @@
 <script>
         $.extend( $.fn.dataTable.defaults, { responsive: true } );
 
-        $('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+        $('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
             $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
         } );
 
@@ -17,10 +17,17 @@
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                    {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",
@@ -39,7 +46,7 @@
                         "sLast":     "Akhir"
                     }
                 },
-                "ajax": "{$base_url}sekolah/verifikasi/belumdiverifikasi?sekolah_id={$sekolah_id}",
+                "ajax": "{$base_url}ppdb/sekolah/verifikasi/belumdiverifikasi?sekolah_id={$sekolah_id}",
                 "columns": [
                     {
                         data: null,
@@ -76,7 +83,7 @@
                                 return data;
                             }
 
-                            return '<a href="{$base_url}Chome/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ '</a>';
+                            return '<a href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ '</a>';
                         }
                     },
                     {
@@ -115,16 +122,24 @@
 
             dt_sedang = $('#tabelsedang').DataTable({
                 "responsive": true,
+                "processing": true,
                 "pageLength": 50,
                 "lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
                 "paging": true,
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                    {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",
@@ -143,7 +158,7 @@
                         "sLast":     "Akhir"
                     }
                 },	
-                "ajax": "{$base_url}sekolah/verifikasi/belumlengkap?sekolah_id={$sekolah_id}",
+                "ajax": "{$base_url}ppdb/sekolah/verifikasi/belumlengkap?sekolah_id={$sekolah_id}",
                 "columns": [
                     {
                         data: null,
@@ -219,16 +234,24 @@
 
             dt_sudah = $('#tabelsudah').DataTable({
                 "responsive": true,
+                "processing": true,
                 "pageLength": 50,
                 "lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
                 "paging": true,
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",
@@ -247,7 +270,7 @@
                         "sLast":     "Akhir"
                     }
                 },
-                "ajax": "{$base_url}sekolah/verifikasi/sudahlengkap?sekolah_id={$sekolah_id}",
+                "ajax": "{$base_url}ppdb/sekolah/verifikasi/sudahlengkap?sekolah_id={$sekolah_id}",
                 "columns": [
                     {
                         data: null,
@@ -323,16 +346,24 @@
 
             dt_berkas = $('#tabelberkas').DataTable({
                 "responsive": true,
+                "processing": true,
                 "pageLength": 50,
                 "lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
                 "paging": true,
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",
@@ -351,7 +382,7 @@
                         "sLast":     "Akhir"
                     }
                 },		
-                "ajax": "{$base_url}sekolah/verifikasi/berkasdisekolah?sekolah_id={$sekolah_id}",
+                "ajax": "{$base_url}ppdb/sekolah/verifikasi/berkasdisekolah?sekolah_id={$sekolah_id}",
                 "columns": [
                     {
                         data: null,

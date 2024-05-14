@@ -190,42 +190,17 @@
         <div class="dlabnav">
             <div class="dlabnav-scroll" style="text-align: center;">
 				<ul class="metismenu" id="menu">
-                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Beranda">
-                        <a id="menu-kelengkapan" class="ai-icon" href="{$site_url}ppdb/sekolah/beranda" aria-expanded="false" >
-							<i class="flaticon-025-dashboard"></i>
-							<span class="nav-text">Beranda</span>
-						</a>
-                    </li>
-                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Peringkat">
-                        <a id="menu-pendaftaran" class="ai-icon" href="{$site_url}ppdb/sekolah/peringkat" aria-expanded="false" >
+                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Daftar Siswa">
+                        <a id="menu-pendaftaran" class="ai-icon" href="{$site_url}ppdb/dapodik/daftarsiswa" aria-expanded="false" >
 						<i class="flaticon-043-menu"></i>
-						<span class="nav-text">Peringkat</span>
+						<span class="nav-text">Daftar Siswa</span>
 						</a>
                     </li>
-                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Verifikasi">
-                        <a id="menu-hasil" class="ai-icon nav-link" href="{$site_url}ppdb/sekolah/verifikasi" aria-expanded="false" >
+                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Penerimaan">
+                        <a id="menu-hasil" class="ai-icon nav-link" href="{$site_url}ppdb/dapodik/penerimaan" aria-expanded="false" >
 							<i class="flaticon-012-checkmark"></i>
-							<span class="nav-text">Verifikasi</span>
+							<span class="nav-text">Penerimaan</span>
 						</a>
-                    </li>
-                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Daftar Ulang">
-                        <a id="menu-daftarulang" class="ai-icon" href="{$site_url}ppdb/sekolah/daftarulang" aria-expanded="false" >
-							<i class="flaticon-086-star"></i>
-							<span class="nav-text">Daftar Ulang</span>
-						</a>
-                    </li>
-                    <li data-bs-toggle="tooltip" data-bs-placement="right" title="Pengelolaan">
-                        <a id="menu-daftarulang" class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false" >
-							<i class="flaticon-013-checkmark"></i>
-							<span class="nav-text">Pengelolaan</span>
-						</a>
-                        <ul aria-expanded="false">
-                            <li><a href="{$site_url}ppdb/sekolah/ubahprofil">Ubah Profil Sekolah</a></li>
-                            <li><a href="{$site_url}ppdb/sekolah/pengajuanakun">Pengajuan Akun</a></li>
-                            <li><a href="{$site_url}ppdb/sekolah/pencarian">Pencarian Siswa</a></li>
-                            <li><a href="{$site_url}ppdb/sekolah/kandidatswasta">Kandidat Siswa</a></li>
-                            <li><a href="{$site_url}ppdb/sekolah/berkasdisekolah">Berkas Di Sekolah</a></li>
-                        </ul>
                     </li>
                 </ul>
 				<div class="copyright">
@@ -379,8 +354,8 @@
     <script src="{$base_url}/themes/dompet/vendor/global/global.min.js"></script>
 	<script src="{$base_url}/themes/dompet/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
 
-    <!-- <link rel="stylesheet" href="{$base_url}assets/adminlte/plugins/select2/select2.min.css">
-    <script src="{$base_url}assets/adminlte/plugins/select2/select2.full.min.js"></script> -->
+    <link rel="stylesheet" href="{$base_url}assets/adminlte/plugins/select2/select2.min.css">
+    <script src="{$base_url}assets/adminlte/plugins/select2/select2.full.min.js"></script>
 
     <!-- Datatable -->
     <!-- <script src="{$base_url}/themes/dompet/vendor/datatables/js/jquery.dataTables.min.js"></script> -->
@@ -396,10 +371,10 @@
     <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.html5.min.js"></script>
     <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.print.min.js"></script>
     
-    <!-- <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css">
-    <script src="{$base_url}assets/datatables/Editor-1.9.2/js/dataTables.editor.min.js"></script> -->
+    <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css">
+    <script src="{$base_url}assets/datatables/Editor-1.9.2/js/dataTables.editor.min.js"></script>
 
-    <script src="{$base_url}/themes/dompet/js/plugins-init/datatables.init.js"></script>
+    <!-- <script src="{$base_url}/themes/dompet/js/plugins-init/datatables.init.js"></script> -->
 
     <!-- mustache templating -->
     <script src="{$base_url}assets/mustache/mustache.min.js"></script>
@@ -411,162 +386,6 @@
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
     <script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>
 	
-    <!-- <script>
-        "use strict"
-
-        var dezSettingsOptions = {};
-
-        function getUrlParams(dParam) 
-        {
-            var dPageURL = window.location.search.substring(1),
-                dURLVariables = dPageURL.split('&'),
-                dParameterName,
-                i;
-
-            for (i = 0; i < dURLVariables.length; i++) {
-                dParameterName = dURLVariables[i].split('=');
-
-                if (dParameterName[0] === dParam) {
-                    return dParameterName[1] === undefined ? true : decodeURIComponent(dParameterName[1]);
-                }
-            }
-        }
-
-        (function($) {           
-            "use strict"
-            
-            dezSettingsOptions = {
-                    typography: $("body").attr('data-typography'),
-                    version: $("body").attr('data-theme-version'),
-                    layout: $("body").attr('data-layout'),
-                    primary: $("body").attr('data-primary'),
-                    //headerBg: $("body").attr('data-headerbg'),
-                    navheaderBg: $("body").attr('data-nav-headerbg'),
-                    sidebarBg: $("body").attr('data-sibebarbg'),
-                    sidebarStyle: $("body").attr('data-sidebar-style'),
-                    sidebarPosition: $("body").attr('data-sidebar-position'),
-                    headerPosition: $("body").attr('data-header-position'),
-                    containerLayout: $("body").attr('data-container'),
-                    direction: $("body").attr('direction'),
-                }; 
-            //new dezSettings(dezSettingsOptions); 
-
-            jQuery(window).on('resize',function(){
-                // /*Check container layout on resize */
-                // //alert(dezSettingsOptions.primary);
-                dezSettingsOptions.containerLayout = $('#container_layout').val();
-                // /*Check container layout on resize END */
-                //alert(dezSettingsOptions.containerLayout);
-                new dezSettings(dezSettingsOptions); 
-            });
-            
-        })(jQuery);
-    </script> -->
-
-    <script>
-        function throttle(func, wait, options) {
-            var timeout, context, args, result;
-            var previous = 0;
-            if (!options) options = {};
-
-            var later = function() {
-                previous = options.leading === false ? 0 : now();
-                timeout = null;
-                result = func.apply(context, args);
-                if (!timeout) context = args = null;
-            };
-
-            var throttled = function() {
-                var _now = now();
-                if (!previous && options.leading === false) previous = _now;
-                var remaining = wait - (_now - previous);
-                context = this;
-                args = arguments;
-                if (remaining <= 0 || remaining > wait) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                previous = _now;
-                result = func.apply(context, args);
-                if (!timeout) context = args = null;
-                } else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
-                }
-                return result;
-            };
-
-            throttled.cancel = function() {
-                clearTimeout(timeout);
-                previous = 0;
-                timeout = context = args = null;
-            };
-
-            return throttled;
-        }
-
-        function restArguments(func, startIndex) {
-            startIndex = startIndex == null ? func.length - 1 : +startIndex;
-
-            return function() {
-                var length = Math.max(arguments.length - startIndex, 0),
-                    rest = Array(length),
-                    index = 0;
-                for (; index < length; index++) {
-                    rest[index] = arguments[index + startIndex];
-                }
-                switch (startIndex) {
-                    case 0: return func.call(this, rest);
-                    case 1: return func.call(this, arguments[0], rest);
-                    case 2: return func.call(this, arguments[0], arguments[1], rest);
-                }
-                var args = Array(startIndex + 1);
-                    for (index = 0; index < startIndex; index++) {
-                    args[index] = arguments[index];
-                }
-                args[startIndex] = rest;
-                return func.apply(this, args);
-            };
-        };
-
-        function now() {
-            return new Date().getTime();
-        };
-
-        function debounce(func, wait, immediate) {
-            var timeout, previous, args, result, context;
-
-            var later = function() {
-                var passed = now() - previous;
-                if (wait > passed) {
-                    // new call while the existing call is executing -> schedule for latter
-                    timeout = setTimeout(later, wait - passed);
-                } else {
-                    timeout = null;
-                    if (!immediate) result = func.apply(context, args);
-                    if (!timeout) args = context = null;
-                }
-            };
-
-            var debounced = restArguments(function(_args) {
-                context = this;
-                args = _args;
-                previous = now();
-                if (!timeout) {
-                    timeout = setTimeout(later, wait);
-                    if (immediate) result = func.apply(context, args);
-                }
-                return result;
-            });
-
-            debounced.cancel = function() {
-                clearTimeout(timeout);
-                timeout = args = context = null;
-            };
-
-            return debounced;
-        }        
-    </script>
 
     {if $content_template|default: FALSE} 
         {include file="./_$content_template"}

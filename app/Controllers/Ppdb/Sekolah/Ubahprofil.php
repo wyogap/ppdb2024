@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Sekolah;
+namespace App\Controllers\Ppdb\Sekolah;
 
 use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mdropdown;

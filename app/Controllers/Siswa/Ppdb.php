@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controllers\Ppdb;
+namespace App\Controllers\Siswa;
 
-use App\Controllers\Ppdb\PpdbController;
+use App\Core\PpdbController;
 use App\Libraries\QRCodeLibrary;
 use App\Libraries\Uploader;
 use App\Models\Ppdb\Siswa\Mprofilsiswa;
@@ -12,7 +12,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Dompdf\Dompdf;
 use Psr\Log\LoggerInterface;
 
-class Siswa extends PpdbController {
+class Ppdb extends PpdbController {
 
     protected $Msiswa;
 
@@ -26,6 +26,11 @@ class Siswa extends PpdbController {
 
         //load model
         $this->Msiswa = new Mprofilsiswa();
+       
+        //TODO: disable first for testing
+        // if($this->session->get('is_logged_in')==FALSE || $this->session->get('peran_id')!=ROLEID_SISWA) {
+		// 	redirect(site_url() .'auth');
+		// }
     }
 
     function index() {

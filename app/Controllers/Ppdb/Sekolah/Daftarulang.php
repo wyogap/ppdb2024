@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Sekolah;
+namespace App\Controllers\Ppdb\Sekolah;
 
 use App\Controllers\Ppdb\PpdbController;
 use App\Libraries\QRCodeLibrary;
@@ -50,7 +50,15 @@ class Daftarulang extends PpdbController {
                 return "";
             }
     
-			$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
+			$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
+            $pendaftarditerima = array();
+            foreach($data['daftarpenerapan'] as $row) {
+                $penerapan_id = $row['penerapan_id'];
+                $daftarpendaftar = $this->Msekolah->tcg_pendaftarditerima($sekolah_id, $penerapan_id)->getResultArray();
+                $pendaftarditerima[$penerapan_id] = $daftarpendaftar;
+            }
+            $data["pendaftarditerima"] = $pendaftarditerima;
+
 			$data['waktudaftarulang'] = $this->Msetting->tcg_cek_waktudaftarulang();
 			$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 			// $data['daftarputaran'] = $this->Msetting->tcg_putaran();
@@ -75,7 +83,7 @@ class Daftarulang extends PpdbController {
         //END DEBUG
 
         //content template
-        $data['content_template'] = 'beranda.tpl';
+        $data['content_template'] = 'daftarulang.tpl';
 
         $data['page_title'] = 'Daftar Ulang';
         $this->smarty->render('ppdb2/sekolah/ppdbsekolah.tpl', $data);

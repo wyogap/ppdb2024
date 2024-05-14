@@ -57,6 +57,7 @@ abstract class CrudController extends BaseController {
         $helpers[] = 'functions';
 
         //is-json
+        //TODO: implement properly
         $uri = $this->request->getUri();
 
         $segments = $uri->getSegments();

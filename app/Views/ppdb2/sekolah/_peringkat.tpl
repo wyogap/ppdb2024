@@ -14,16 +14,24 @@
             {foreach $daftarpenerapan as $row}
             $('#t{$row.penerapan_id}').dataTable({
                 "responsive": true,
+                "processing": true,
                 "pageLength": 50,
                 "lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
                 "paging": true,
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",
@@ -59,10 +67,17 @@
                 "pagingType": "numbers",
                 "dom": 'Bfrtpil',
                 "buttons": [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'pdfHtml5',
-                    'print'
+                    {
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 ],
                 "language": {
                     "sProcessing":   "Sedang proses...",

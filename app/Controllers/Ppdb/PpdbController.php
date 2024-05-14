@@ -10,6 +10,9 @@ use Psr\Log\LoggerInterface;
 
 class PpdbController extends BaseController {
 
+	protected static $AUTHENTICATED = true;
+	protected static $ROLE_ID = 0;
+
     protected $Msetting;
 
     protected $nama_wilayah = "";
@@ -34,6 +37,8 @@ class PpdbController extends BaseController {
     protected $waktu_verifikasi = 0;
     protected $waktu_daftarulang = 0;
 
+    protected $is_json = false;
+
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
@@ -44,7 +49,31 @@ class PpdbController extends BaseController {
         //load model
         $this->Msetting = new Msetting();
 
-		$nama_wilayah = "";
+
+        //is-json
+        //TODO: implement properly
+        $uri = $this->request->getUri();
+
+        $segments = $uri->getSegments();
+        $json_segment = (array_search('json', $segments) != FALSE);
+        $json_param = !empty($this->request->getGetPost("json"));
+
+        $this->is_json = ($json_segment || $json_param);
+
+        //logged-in user
+        $loggedin = $this->session->get('is_logged_in');
+        if ($loggedin) {
+            $this->peran_id = $this->session->get('peran_id');
+            $this->pengguna_id = $this->session->get("pengguna_id");
+            $this->nama_pengguna = $this->session->get("nama_pengguna");
+            $this->is_siswa = ($this->peran_id == ROLEID_SISWA);
+            $this->is_sekolah = ($this->peran_id == ROLEID_SEKOLAH);
+            $this->is_dinas = ($this->peran_id == ROLEID_DINAS);
+            $this->is_dapodik = ($this->peran_id == ROLEID_DAPODIK);
+        }
+
+        //common vars
+        $nama_wilayah = "";
 		$kode_wilayah = "";
 
 		//get from GET or POST
@@ -146,57 +175,90 @@ class PpdbController extends BaseController {
         $this->putaran = $putaran;
         $this->nama_putaran = $nama_putaran;
 
-        //smarty: vars
-        $this->smarty->assign('kode_wilayah', $this->kode_wilayah);
-        $this->smarty->assign('nama_wilayah', $this->nama_wilayah);
-        $this->smarty->assign('tahun_ajaran_id', $this->tahun_ajaran_id);
-        $this->smarty->assign('nama_tahun_ajaran', $this->nama_tahun_ajaran);
-        $this->smarty->assign('putaran', $this->putaran);
-        $this->smarty->assign('nama_putaran', $this->nama_putaran);
+        if (!$this->is_json) {
+            //smarty: vars
+            $this->smarty->assign('kode_wilayah', $this->kode_wilayah);
+            $this->smarty->assign('nama_wilayah', $this->nama_wilayah);
+            $this->smarty->assign('tahun_ajaran_id', $this->tahun_ajaran_id);
+            $this->smarty->assign('nama_tahun_ajaran', $this->nama_tahun_ajaran);
+            $this->smarty->assign('putaran', $this->putaran);
+            $this->smarty->assign('nama_putaran', $this->nama_putaran);
 
-        //smarty: general setting
-        $arr = $this->setting->list_group('ppdb');
-        foreach($arr as $val) {
-            $this->smarty->assign($val['name'], $val['value']);
+            //smarty: general setting
+            $arr = $this->setting->list_group('ppdb');
+            foreach($arr as $val) {
+                $this->smarty->assign($val['name'], $val['value']);
+            }
+
+            //smarty: logged-in user
+            if ($loggedin) {
+                $this->smarty->assign('peran_id', $this->peran_id);
+                $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
+                $this->smarty->assign('is_siswa', $this->is_siswa);    
+                $this->smarty->assign('is_sekolah', $this->is_sekolah);    
+                $this->smarty->assign('is_dapodik', $this->is_dapodik);    
+                $this->smarty->assign('is_dinas', $this->is_dinas);    
+            }
+            $this->smarty->assign('pengguna_id', $this->pengguna_id);
+
+            //smarty: flashdata
+            $this->error_message = $this->session->getFlashdata('error');
+            $this->success_message = $this->session->getFlashdata('success');
+            $this->info_message = $this->session->getFlashdata('info');
+
+            $this->smarty->assign('error_message', $this->error_message);
+            $this->smarty->assign('success_message', $this->success_message);
+            $this->smarty->assign('info_message', $this->info_message);
+
         }
 
-        //logged-in user
-        $loggedin = $this->session->get('is_logged_in');
-        if ($loggedin) {
-            $this->peran_id = $this->session->get('peran_id');
-            $this->pengguna_id = $this->session->get("pengguna_id");
-            $this->nama_pengguna = $this->session->get("nama_pengguna");
-            $this->is_siswa = ($this->peran_id == ROLEID_SISWA);
-            $this->is_sekolah = ($this->peran_id == ROLEID_SEKOLAH);
-            $this->is_dinas = ($this->peran_id == ROLEID_DINAS);
-            $this->is_dapodik = ($this->peran_id == ROLEID_DAPODIK);
+        // $this->waktu_verifikasi = $this->Msetting->tcg_cek_waktuverifikasi();
+        // $this->waktu_daftarulang = $this->Msetting->tcg_cek_waktudaftarulang();
 
-            $this->smarty->assign('peran_id', $this->peran_id);
-            $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
-            $this->smarty->assign('is_siswa', $this->is_siswa);    
-            $this->smarty->assign('is_sekolah', $this->is_sekolah);    
-            $this->smarty->assign('is_dapodik', $this->is_dapodik);    
-            $this->smarty->assign('is_dinas', $this->is_dinas);    
-        }
-        $this->smarty->assign('pengguna_id', $this->pengguna_id);
-
-        //flashdata
-        $this->error_message = $this->session->getFlashdata('error');
-        $this->success_message = $this->session->getFlashdata('success');
-        $this->info_message = $this->session->getFlashdata('info');
-
-        $this->smarty->assign('error_message', $this->error_message);
-        $this->smarty->assign('success_message', $this->success_message);
-        $this->smarty->assign('info_message', $this->info_message);
-
-        $this->waktu_verifikasi = $this->Msetting->tcg_cek_waktuverifikasi();
-        $this->waktu_daftarulang = $this->Msetting->tcg_cek_waktudaftarulang();
-
-        $this->smarty->assign('waktu_verifikasi', $this->waktu_verifikasi);
-        $this->smarty->assign('waktu_daftarulang', $this->waktu_daftarulang);
+        // $this->smarty->assign('waktu_verifikasi', $this->waktu_verifikasi);
+        // $this->smarty->assign('waktu_daftarulang', $this->waktu_daftarulang);
 	}
 
-	function index()
+	public function _remap($method, $param = null)
+	{
+        //must be authenticated? 
+		$isLoggedIn = !empty($this->session->get('user_id'));
+		if (static::$AUTHENTICATED && !$isLoggedIn) {
+			if ($this->is_json) {
+				//$this->json_not_login();
+                echo "not-login";
+                return;
+			} else {
+				return redirect()->to(site_url() .'auth');
+			}
+		}
+
+        //must be role_id?
+        $role_id = $this->session->get("role_id");
+		if (!empty(static::$ROLE_ID) && static::$ROLE_ID != $role_id) {
+			if ($this->is_json) {
+				//$this->json_not_login();
+                echo "not-authorized";
+                return;
+			} else {
+                return view('ppdb/home/notauthorized');		//not-authorized
+                return;
+            }
+		}
+
+		if (empty($method)) {
+			return $this->index();
+		}
+
+		if (method_exists($this, $method))
+		{
+			return call_user_func_array(array($this, $method), array());
+		}
+ 
+        return $this->index();
+	}
+
+	protected function index()
 	{
 		return view('ppdb/home/notauthorized');
 	}
