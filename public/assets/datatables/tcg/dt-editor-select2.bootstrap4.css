@@ -1,0 +1,90 @@
+.tcg-select2-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Dirty hack for long option text */
+.tcg-select2-select,
+.DTE_Field_Type_tcg_select2 .select2 {
+	flex-grow: 1;
+	max-width: 100%;
+}
+
+.tcg-select2-info-inline > .tcg-select2-info {
+  margin-left: 8px;
+  width: 50% !important;
+}
+
+.tcg-select2-info-newline > .tcg-select2-info {
+  margin-left: 0px;
+  margin-top: 12px;
+  width: 100% !important;
+}
+
+/** READ-ONLY **/
+.tcg-select2-select[readonly] option, 
+.tcg-select2-select[readonly] optgroup {
+	display: none;
+}
+
+.tcg-select2-select[readonly] {
+	background-color: rgb(232, 233, 235) !important;
+}
+
+.tcg-select2-select[readonly].select2-hidden-accessible+ .select2-container {
+	pointer-events: none;
+	touch-action: none;
+}
+
+.tcg-select2-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection {
+	background: #eee;
+	box-shadow: none;
+}
+
+.tcg-select2-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection__arrow,
+.tcg-select2-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection__clear
+{
+	display: none;
+}
+/** END-READ-ONLY **/
+
+/** OPTION DROPDOWN **/
+.DTE.DTE_Select2 .select-option-level-1 {
+	padding-left: 0px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-2 {
+	padding-left: 12px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-3 {
+	padding-left: 24px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-4 {
+	padding-left: 36px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-5 {
+	padding-left: 48px !important;
+}
+
+.DTE.DTE_Select2 .select-option-group {
+	font-weight: bold !important;
+	color: black;
+}
+/** END OPTION-DROPDOWN **/
+
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    margin-right: 16px;
+}
+
+  @media screen and (min-width: 768px) {
+    div.DTE_Body div.DTE_Body_Content div.DTE_Select2 {
+      padding: 5px 10% !important;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+  }

@@ -1,0 +1,113 @@
+/* Full length input field */
+div.DTE_Field_Type_tcg_cascade label[data-dte-e='label'] {
+    max-width: 100% !important;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 100%;
+	margin-top: -0.25rem;
+}
+
+div.DTE_Field_Type_tcg_cascade div[data-dte-e='input'] {
+	max-width: 100% !important;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 100%;
+}
+
+div.DTE_Field_Type_tcg_cascade.form-group {
+	margin-bottom: 0.5rem!important;
+}
+
+div.DTE_Field_Type_tcg_cascade .col-form-control {
+	margin-bottom: .5rem!important;
+}
+
+/* Dirty hack for long option text */
+.tcg-cascade-select,
+.DTE_Field_Type_tcg_cascade .select2 {
+	flex-grow: 1;
+	max-width: 100%;
+}
+
+/** READ-ONLY **/
+.tcg-cascade-select[readonly] option, 
+.tcg-cascade-select[readonly] optgroup {
+	display: none;
+}
+
+.tcg-cascade-select[readonly] {
+	background-color: rgb(232, 233, 235) !important;
+}
+
+.tcg-cascade-select[readonly].select2-hidden-accessible+ .select2-container {
+	pointer-events: none;
+	touch-action: none;
+}
+
+.tcg-cascade-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection {
+	background: #eee;
+	box-shadow: none;
+}
+
+.tcg-cascade-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection__arrow,
+.tcg-cascade-select[readonly].select2-hidden-accessible+ .select2-container .select2-selection__clear
+{
+	display: none;
+}
+/** END-READ-ONLY **/
+
+/* Dirty hack for long option text */
+/* .DTE .select2 {
+	flex-grow: 1;
+	max-width: 100%;
+} */
+
+/** OPTION DROPDOWN **/
+.DTE.DTE_Select2 .select-option-level-1 {
+	padding-left: 0px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-2 {
+	padding-left: 12px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-3 {
+	padding-left: 24px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-4 {
+	padding-left: 36px !important;
+}
+
+.DTE.DTE_Select2 .select-option-level-5 {
+	padding-left: 48px !important;
+}
+
+.DTE.DTE_Select2 .select-option-group {
+	font-weight: bold !important;
+	color: black;
+}
+
+@media screen and (min-width: 768px) {
+	div.DTE_Body div.DTE_Body_Content div.DTE_Field {
+		padding: 5px 10% !important;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.tcg-select2-info-inline > .tcg-select2-info {
+		margin-left: 0px;
+		margin-top: 12px;
+		width: 100% !important;
+	}
+}
+
+@media screen and (max-width: 640px) {
+	div.DTE_Field_Type_tcg_table .DTE_Label {
+		width: 100% !important;
+	}
+
+	div.DTE_Field_Type_tcg_table div.DTE_Field_Input {
+		width: 100% !important;
+	}
+}
