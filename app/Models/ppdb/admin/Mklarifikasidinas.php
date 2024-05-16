@@ -38,16 +38,16 @@ Class Mklarifikasidinas
 							a.pengguna_dinas,
 							a.catatan_dinas,
 							a.tanggal_verifikasi as tanggal_klarifikasi,
-							a.create_date as tanggal_eskalasi,
+							a.created_on as tanggal_eskalasi,
 							x1.nama as nama_pengguna_sekolah,
 							x2.nama as nama_pengguna_dinas,
 							x3.nama as sekolah_tujuan
 										");
-		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.soft_delete=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
+		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.is_deleted=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
 		$builder->join('dbo_users x1','x1.pengguna_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
 		$builder->join('dbo_users x2','x2.pengguna_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.expired_date is null','LEFT OUTER');
-		$builder->where("a.soft_delete", 0);
+		$builder->where("a.is_deleted", 0);
 		$builder->where("a.tahun_ajaran_id", $tahun_ajaran_id);
 		if (!empty($tipe_data)) {
 			$builder->where("a.tipe_data", $tipe_data);
@@ -79,7 +79,7 @@ Class Mklarifikasidinas
 			a.pengguna_dinas,
 			a.catatan_dinas,
 			a.tanggal_verifikasi as tanggal_klarifikasi,
-			a.create_date as tanggal_eskalasi,
+			a.created_on as tanggal_eskalasi,
 			c.npsn,
 			c.nama as sekolah,
 			d.kode_wilayah_desa as kode_desa, coalesce(d.nama_desa,b.desa_kelurahan) AS desa_kelurahan,
@@ -93,13 +93,13 @@ Class Mklarifikasidinas
 			x2.nama as nama_pengguna_dinas,
 			x3.nama as sekolah_tujuan
 						");
-		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.soft_delete=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
+		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.is_deleted=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
 		$builder->join('ref_sekolah c','c.sekolah_id = b.sekolah_id AND c.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_wilayah d','d.kode_wilayah = b.kode_wilayah AND d.expired_date IS NULL','LEFT OUTER');
 		$builder->join('dbo_users x1','x1.pengguna_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
 		$builder->join('dbo_users x2','x2.pengguna_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.expired_date is null','LEFT OUTER');
-		$builder->where("a.soft_delete", 0);
+		$builder->where("a.is_deleted", 0);
 		$builder->where("a.verifikasi_id", $klarifikasi_id);
 
 		return $builder->get();
@@ -115,7 +115,7 @@ Class Mklarifikasidinas
 		
 		$filter = array(
 			'verifikasi_id' 	=> $klarifikasi_id,
-			'soft_delete'		=> 0
+			'is_deleted'		=> 0
 		);
 
 		$valuepair = array(
@@ -123,7 +123,7 @@ Class Mklarifikasidinas
 			'catatan_dinas'		=> $catatan,
 			'pengguna_dinas'	=> $pengguna_id,
 			'tanggal_verifikasi'	=> date("Y/m/d H:i:s"),
-			'last_update'		=> date("Y/m/d H:i:s")
+			'updated_on'		=> date("Y/m/d H:i:s")
 		);
 
 		$builder = $this->db->table('tcg_verifikasi_dinas');
@@ -141,12 +141,12 @@ Class Mklarifikasidinas
 				$filter = array(
 					'peserta_didik_id' 	=> $peserta_didik_id,
 					'tahun_ajaran_id'	=> $tahun_ajaran_id,
-					'soft_delete'		=> 0
+					'is_deleted'		=> 0
 				);
 
 				$valuepair = array(
 					'verifikasi_'.$tipe_data		=> 2,
-					'last_update'					=> date("Y/m/d H:i:s")
+					'updated_on'					=> date("Y/m/d H:i:s")
 				);
 
                 $builder = $this->db->table('tcg_peserta_didik');
@@ -202,12 +202,12 @@ Class Mklarifikasidinas
 		
 		$filter = array(
 			'verifikasi_id' 	=> $verifikasi_id,
-			'soft_delete'		=> 0
+			'is_deleted'		=> 0
 		);
 
 		$valuepair = array(
-			'soft_delete'		=> 1,
-			'last_update'	=> date("Y/m/d H:i:s")
+			'is_deleted'		=> 1,
+			'updated_on'	=> date("Y/m/d H:i:s")
 		);
 
         $builder = $this->db->table('tcg_verifikasi_dinas');

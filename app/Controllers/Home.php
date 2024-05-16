@@ -48,7 +48,7 @@ class Home extends PpdbController
         $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
 		$data['petunjuk_pelaksanaan'] = $this->Msetting->tcg_petunjuk_pelaksanaan()->getResult();
 
-        $this->smarty->render("ppdb2/home/home.tpl", $data);
+        $this->smarty->render("ppdb/home/home.tpl", $data);
 	}
 	
 	function carisiswa()
@@ -131,7 +131,7 @@ class Home extends PpdbController
 
 		$data['page'] = 'detailpendaftaran';
         $data['page_title'] = 'Detail Pendaftaran';
-		$this->smarty->render('ppdb2/home/detailpendaftaran.tpl',$data);
+		$this->smarty->render('ppdb/home/detailpendaftaran.tpl',$data);
 	}
 
 	function peringkat() {
@@ -198,7 +198,7 @@ class Home extends PpdbController
 
 		$data['page'] = "peringkat";
         $data["page_title"] = "Peringkat Pendaftaran";
-		$this->smarty->render('ppdb2/home/peringkat.tpl',$data);
+		$this->smarty->render('ppdb/home/peringkat.tpl',$data);
 	}
 
 	function peringkatfinal() {
@@ -257,7 +257,7 @@ class Home extends PpdbController
 
 		$data['page'] = "peringkat";
         $data["page_title"] = "Peringkat Pendaftaran (Final)";
-		$this->smarty->render('ppdb2/home/peringkat.tpl',$data);
+		$this->smarty->render('ppdb/home/peringkat.tpl',$data);
 	}    
 
 	function rapormutu() {
@@ -270,7 +270,7 @@ class Home extends PpdbController
 
 		$data['page'] = "rapormutu";
 		$data['page_title'] = "Rapor Mutu";
-		$this->smarty->render('ppdb2/home/rapormutu.tpl',$data);
+		$this->smarty->render('ppdb/home/rapormutu.tpl',$data);
 
 	}
 
@@ -341,7 +341,7 @@ class Home extends PpdbController
             $data['captcha_sitekey'] = $sitekey;
         }
 
-		$this->smarty->render('ppdb2/home/login.tpl',$data);
+		$this->smarty->render('ppdb/home/login.tpl',$data);
 	}
 
 	function dologin() {
@@ -530,7 +530,7 @@ class Home extends PpdbController
         $data['use_leaflet'] = 1;
 
         $data["page_title"] = "Registrasi";
-		$this->smarty->render('ppdb2/home/registrasi.tpl',$data);
+		$this->smarty->render('ppdb/home/registrasi.tpl',$data);
     }
 
 	function doregistrasi() {   
@@ -622,7 +622,7 @@ class Home extends PpdbController
         $data['use_leaflet'] = 1;
 
         $data["page_title"] = "Registrasi";
-		$this->smarty->render('ppdb2/home/registrasi.tpl',$data);
+		$this->smarty->render('ppdb/home/registrasi.tpl',$data);
 	}
 
 	function dropdownsekolah()
@@ -631,7 +631,7 @@ class Home extends PpdbController
         $bentuk = $_POST["bentuk"] ?? null; 
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
 		$data['sekolah'] = $mdropdown->tcg_sekolah($kode_wilayah, $bentuk);
-		return view('ppdb2/home/_dropdownsekolah',$data);
+		return view('ppdb/home/_dropdownsekolah',$data);
 	}
 
 	function dropdownkecamatan()
@@ -639,7 +639,7 @@ class Home extends PpdbController
         $kode_wilayah = $_POST["kode_wilayah"] ?? null; 
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
 		$data['kecamatan'] = $mdropdown->tcg_kecamatan($kode_wilayah);
-		return view('ppdb2/home/_dropdownkecamatan',$data);
+		return view('ppdb/home/_dropdownkecamatan',$data);
 	}
 
 	function dropdowndesa()
@@ -647,7 +647,7 @@ class Home extends PpdbController
         $kode_wilayah = $_POST["kode_wilayah"] ?? null; 
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
 		$data['desa'] = $mdropdown->tcg_desa($kode_wilayah);
-		return view('ppdb2/home/_dropdowndesa',$data);
+		return view('ppdb/home/_dropdowndesa',$data);
 	}
 
 	function dropdownpadukuhan()
@@ -655,7 +655,7 @@ class Home extends PpdbController
         $kode_wilayah = $_POST["kode_wilayah"] ?? null; 
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
 		$data['padukuhan'] = $mdropdown->tcg_padukuhan($kode_wilayah);
-		return view('ppdb2/home/_dropdownpadukuhan',$data);
+		return view('ppdb/home/_dropdownpadukuhan',$data);
 	}
 
 	// function tanggalRA()
@@ -677,6 +677,6 @@ class Home extends PpdbController
 
 		$data['page'] = "rekapitulasi";
         $data['page_title'] = "Rekapitulasi";
-		$this->smarty->render('ppdb2/home/rekapitulasi.tpl',$data);
+		$this->smarty->render('ppdb/home/rekapitulasi.tpl',$data);
 	}
 }

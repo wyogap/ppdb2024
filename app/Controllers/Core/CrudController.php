@@ -187,8 +187,11 @@ abstract class CrudController extends BaseController {
 				unset($params[0]);
                 
 				$subtable_id = array_shift($params);
-                $parent_id = array_shift($params);
-				$this->table_subtable($page, $subtable_id, $parent_id);
+                //$parent_id = array_shift($params);
+                $parent_key = array();
+                $parent_key[] = $this->request->getGet("key");
+                $parent_key[] = $this->request->getGet("key2");
+				$this->table_subtable($page, $subtable_id, $parent_key);
 				return;
 			}	
 		}
@@ -349,7 +352,7 @@ abstract class CrudController extends BaseController {
 		//get subtables if necessary
 		//IMPORTANT: since Mpage instance is shared, the following function will modify the tablename inside Mpages
 		$subtables = $this->Mpages->subtables($page['id'], true);
-
+        
 		foreach($subtables as $key => $val) {
 			$subtables[$key]['crud']['ajax'] = $base_ajax_url .'/subtable/'. $val['subtable_id'];
 			//override paging size if necessary
@@ -806,9 +809,9 @@ abstract class CrudController extends BaseController {
 		}
 
 		//query string
-		$search = $_POST["fkey_column"] ?? '';
+		$search = $_POST["search"] ?? '';
         if (empty($search)) {
-            $search = $_GET["fkey_column"] ?? '';
+            $search = $_GET["search"] ?? '';
         }
 		$search = trim($search);
 
@@ -1125,7 +1128,7 @@ abstract class CrudController extends BaseController {
 		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
 	}
 
-	protected function table_subtable($page, $subtable_id, $parent_id) {
+	protected function table_subtable($page, $subtable_id, $parent_key) {
 		if (empty($page['crud_table_id'])) {
 			$this->json_invalid_page();
 		}
@@ -1171,7 +1174,10 @@ abstract class CrudController extends BaseController {
 			}
 			
             //filter by parent key
-			$filters[ $subtable['subtable_fkey_column'] ] = $parent_id;
+			$filters[ $subtable['subtable_fkey_column'] ] = $parent_key[0];
+            if (!empty($parent_key[1])){
+                $filters[ $subtable['subtable_fkey_column2'] ] = $parent_key[1];
+            }
 			
 			$json['data'] = $model->list($filters);
 
@@ -1195,8 +1201,11 @@ abstract class CrudController extends BaseController {
 			$data['data'] = array();
 			foreach ($values as $key => $valuepair) {
 				//enforce the parent key
-				$valuepair[ $subtable['subtable_fkey_column'] ] = $parent_id;
-
+				$valuepair[ $subtable['subtable_fkey_column'] ] = $parent_key[0];
+                if (!empty($parent_key[1])){
+                    $valuepair[ $subtable['subtable_fkey_column2'] ] = $parent_key[1];
+                }
+    
 				$key = $model->update($key, $valuepair, $filters);
 				if (!$key)	continue;		//TODO: catch error message
 
@@ -1225,7 +1234,10 @@ abstract class CrudController extends BaseController {
             }
 
             //can only delete children
-            $filters[ $subtable['subtable_fkey_column'] ] = $parent_id;
+            $filters[ $subtable['subtable_fkey_column'] ] = $parent_key[0];
+            if (!empty($parent_key[1])){
+                $filters[ $subtable['subtable_fkey_column2'] ] = $parent_key[1];
+            }
 
             $error_msg = "";
 			foreach ($values as $key => $valuepair) {
@@ -1254,7 +1266,10 @@ abstract class CrudController extends BaseController {
             }
 
             //enforce parent key
-			$values[0][ $subtable['subtable_fkey_column'] ] = $parent_id;
+			$values[0][ $subtable['subtable_fkey_column'] ] = $parent_key[0];
+            if (!empty($parent_key[1])){
+                $filters[ $subtable['subtable_fkey_column2'] ] = $parent_key[1];
+            }
 			
 			$key = $model->add($values[0], $filters);
             if ($key == 0) {
@@ -1310,9 +1325,15 @@ abstract class CrudController extends BaseController {
 
             $fkey_column = $_POST["fkey_column"] ?? null;
             $fkey_value = $_POST["fkey_value"] ?? null; 
+            $fkey_column2 = $_POST["fkey_column2"] ?? null;
+            $fkey_value2 = $_POST["fkey_value2"] ?? null; 
+
             $filters = array();
             if (!empty($fkey_column)) {
                 $filters[$fkey_column] = $fkey_value;
+            }
+            if (!empty($fkey_column2)) {
+                $filters[$fkey_column2] = $fkey_value2;
             }
             
 			$status = $model->import($_FILES['upload'], $filters);

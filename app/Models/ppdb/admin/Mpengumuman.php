@@ -15,7 +15,7 @@ Class Mpengumuman
 			$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');	
 		}
 
-		$sql = "select * from tcg_pengumuman where tahun_ajaran_id='$tahun_ajaran_id' and soft_delete=0";
+		$sql = "select * from tcg_pengumuman where tahun_ajaran_id='$tahun_ajaran_id' and is_deleted=0";
 
 		return $this->db->query($sql);
 	}
@@ -25,7 +25,7 @@ Class Mpengumuman
 
 		$query = "select a.tipe, a.css, a.text, a.bisa_ditutup 
 				  from tcg_pengumuman a
-				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.soft_delete=0
+				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0
 						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
 						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)
 				  order by a.tanggal_mulai asc";
@@ -35,21 +35,21 @@ Class Mpengumuman
 
 
 	function tcg_detil_pengumuman($key) {
-		$sql = "select * from tcg_pengumuman where pengumuman_id=$key and soft_delete=0";
+		$sql = "select * from tcg_pengumuman where pengumuman_id=$key and is_deleted=0";
 
 		return $this->db->query($sql);
 	}
 
 	function tcg_ubah_pengumuman($key, $valuepair) {
-		$valuepair['last_update'] =date("Y/m/d H:i:s");
+		$valuepair['updated_on'] =date("Y/m/d H:i:s");
 
 		$builder = $this->db->table('tcg_pengumuman');
-		$builder->where(array('pengumuman_id'=>$key,'soft_delete'=>0));
+		$builder->where(array('pengumuman_id'=>$key,'is_deleted'=>0));
 		return $builder->update($valuepair);	
 	}
 
 	function tcg_hapus_pengumuman($key) {
-		$sql = "update tcg_pengumuman set soft_delete=1 where pengumuman_id=$key";
+		$sql = "update tcg_pengumuman set is_deleted=1 where pengumuman_id=$key";
 
 		return $this->db->query($sql);
 	}

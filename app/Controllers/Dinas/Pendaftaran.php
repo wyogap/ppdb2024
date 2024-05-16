@@ -67,20 +67,20 @@ class Pendaftaran extends MY_Controller {
 	
 			$sekolah_tujuan_id= $_GET["data"] ?? null; (("sekolah_tujuan_id");
 			$penerapan_id= $_GET["data"] ?? null; (("penerapan_id");
-			$soft_delete= $_GET["data"] ?? null; (("soft_delete");
+			$is_deleted= $_GET["data"] ?? null; (("is_deleted");
 	
-			if (empty($nama) && empty($nisn) && empty($nik) && empty($sekolah_id) && empty($jenis_kelamin) && empty($kode_desa) && empty($kode_kecamatan) && empty($sekolah_tujuan_id) && empty($penerapan_id) && empty($soft_delete)) {
+			if (empty($nama) && empty($nisn) && empty($nik) && empty($sekolah_id) && empty($jenis_kelamin) && empty($kode_desa) && empty($kode_kecamatan) && empty($sekolah_tujuan_id) && empty($penerapan_id) && empty($is_deleted)) {
 				//no search
 				$data['data'] = array();
 				echo json_encode($data);
 			}
 			else {
-				if (empty($soft_delete)) {
-					$soft_delete=0;
+				if (empty($is_deleted)) {
+					$is_deleted=0;
 				}
 
 				//search
-				$daftar = $this->Mdinas->tcg_cari_pendaftaran($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $sekolah_tujuan_id, $penerapan_id, $soft_delete);
+				$daftar = $this->Mdinas->tcg_cari_pendaftaran($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $sekolah_tujuan_id, $penerapan_id, $is_deleted);
 				$sekolah = $this->Mdropdown->tcg_select_sd_mi($this->session->get("kode_wilayah_aktif"));
 				$sekolah_tujuan= $this->Mdropdown->tcg_select_smp_ppdb($this->session->get("kode_wilayah_aktif"));;
 				$penerapan = $this->Mdropdown->tcg_penerapan();

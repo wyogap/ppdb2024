@@ -508,7 +508,7 @@ class Ppdb extends PpdbController {
         //end debugging
 
         $data['page_title'] = 'Profil Siswa';
-        $this->smarty->render('ppdb2/siswa/ppdbsiswa.tpl', $data);
+        $this->smarty->render('ppdb/siswa/ppdbsiswa.tpl', $data);
     }
 
     // function json() {

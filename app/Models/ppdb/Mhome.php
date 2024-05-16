@@ -20,8 +20,8 @@ Class Mhome
 		$query = "select a.peserta_didik_id,a.nama,a.jenis_kelamin,b.nama AS sekolah
 				  from dbo_peserta_didik a
 				  join ref_sekolah b on a.sekolah_id = b.sekolah_id
-				  join tcg_pendaftaran c on a.peserta_didik_id = c.peserta_didik_id and c.soft_delete=0
-				  where a.soft_delete=0 and (a.nama like ?)
+				  join tcg_pendaftaran c on a.peserta_didik_id = c.peserta_didik_id and c.is_deleted=0
+				  where a.is_deleted=0 and (a.nama like ?)
 				  group by a.peserta_didik_id,a.nama,a.jenis_kelamin,b.nama";
 
 		return $this->db->query($query, array("%$nama%"));
@@ -122,7 +122,7 @@ Class Mhome
 	// 	$builder->select('a.penerapan_id,c.nama AS jalur,d.kuota');
 	// 	$builder = $this->db->table('ref_penerapan a');
 	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
-	// 	$builder->join('dbo_penerapan_sekolah d','a.penerapan_id = d.penerapan_id AND d.soft_delete = 0');
+	// 	$builder->join('dbo_penerapan_sekolah d','a.penerapan_id = d.penerapan_id AND d.is_deleted = 0');
 	// 	$builder->where(array('a.aktif'=>1,'a.expired_date'=>NULL,'d.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
 	// 	$builder->order_by('c.nama DESC');
 	// 	return $builder->get();
@@ -142,16 +142,16 @@ Class Mhome
 		
 		$query = "SELECT 
 		'$day0' as hari_ini,
-		SUM(CASE WHEN create_date BETWEEN '$day0' AND '$nextday' THEN 1 ELSE 0 END) AS day_0,
-		SUM(CASE WHEN create_date BETWEEN '$day1' AND '$day0' THEN 1 ELSE 0 END) AS day_1,
-		SUM(CASE WHEN create_date BETWEEN '$day2' AND '$day1' THEN 1 ELSE 0 END) AS day_2,
-		SUM(CASE WHEN create_date BETWEEN '$day3' AND '$day2' THEN 1 ELSE 0 END) AS day_3,
-		SUM(CASE WHEN create_date BETWEEN '$day4' AND '$day3' THEN 1 ELSE 0 END) AS day_4,
-		SUM(CASE WHEN create_date BETWEEN '$day5' AND '$day4' THEN 1 ELSE 0 END) AS day_5, 
-		SUM(CASE WHEN create_date BETWEEN '$day6' AND '$day5' THEN 1 ELSE 0 END) AS day_6, 
-		SUM(CASE WHEN create_date BETWEEN '$day7' AND '$day6' THEN 1 ELSE 0 END) AS day_7 
+		SUM(CASE WHEN created_on BETWEEN '$day0' AND '$nextday' THEN 1 ELSE 0 END) AS day_0,
+		SUM(CASE WHEN created_on BETWEEN '$day1' AND '$day0' THEN 1 ELSE 0 END) AS day_1,
+		SUM(CASE WHEN created_on BETWEEN '$day2' AND '$day1' THEN 1 ELSE 0 END) AS day_2,
+		SUM(CASE WHEN created_on BETWEEN '$day3' AND '$day2' THEN 1 ELSE 0 END) AS day_3,
+		SUM(CASE WHEN created_on BETWEEN '$day4' AND '$day3' THEN 1 ELSE 0 END) AS day_4,
+		SUM(CASE WHEN created_on BETWEEN '$day5' AND '$day4' THEN 1 ELSE 0 END) AS day_5, 
+		SUM(CASE WHEN created_on BETWEEN '$day6' AND '$day5' THEN 1 ELSE 0 END) AS day_6, 
+		SUM(CASE WHEN created_on BETWEEN '$day7' AND '$day6' THEN 1 ELSE 0 END) AS day_7 
 		FROM tcg_pendaftaran
-		where soft_delete=0 and cabut_berkas=0";
+		where is_deleted=0 and cabut_berkas=0";
 
 		return $this->db->query($query);
 	}    
@@ -171,8 +171,8 @@ Class Mhome
 	function tcg_cek_registrasi($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.soft_delete = 0');
-		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.soft_delete'=>0));
+		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
 		foreach($builder->get()->getResult() as $row):
@@ -185,8 +185,8 @@ Class Mhome
 	function tcg_cek_nisn($nisn){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.soft_delete = 0');
-		$builder->where(array('a.nisn'=>$nisn,'a.soft_delete'=>0));
+		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
 		foreach($builder->get()->getResult() as $row):
@@ -199,8 +199,8 @@ Class Mhome
 	function tcg_cek_nik($nik){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.soft_delete = 0');
-		$builder->where(array('a.nik'=>$nik,'a.soft_delete'=>0));
+		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->where(array('a.nik'=>$nik,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
 		foreach($builder->get()->getResult() as $row):
@@ -248,7 +248,7 @@ Class Mhome
                             b.bentuk,CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah,c.tanggal_lahir,c.asal_data,c.nisn,c.kebutuhan_khusus,c.tutup_akses');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 		$builder->join('dbo_peserta_didik c','a.pengguna_id = c.peserta_didik_id','LEFT OUTER');
-		$builder->where(array('a.soft_delete'=>0));
+		$builder->where(array('a.is_deleted'=>0));
 		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
 		return $builder->get();
@@ -259,7 +259,7 @@ Class Mhome
 		$builder->select('count(*) as jumlah');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 		$builder->join('dbo_peserta_didik c','a.pengguna_id = c.peserta_didik_id','LEFT OUTER');
-		$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.soft_delete'=>0));
+		$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
 		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
 		$login=0;
@@ -278,7 +278,7 @@ Class Mhome
 		// TODO: buka akses kalau nggak ikut ppdb tahap 2
 		$builder = $this->db->table('dbo_kuota_sekolah a');
 		$builder->select('a.ikut_ppdb');
-		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.soft_delete'=>0));
+		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 
 		$ikut_ppdb=0;
 		foreach($builder->get()->getResult() as $row):
@@ -295,11 +295,11 @@ Class Mhome
 		$data = array(
 			'password' => md5($password),
 			'ganti_password' => 1,
-			'last_update' => date("Y/m/d")
+			'updated_on' => date("Y/m/d")
 		);
 
 		$builder = $this->db->table('dbo_pengguna');
-        $builder->where(array('pengguna_id' => $pengguna_id, 'soft_delete' => 0));
+        $builder->where(array('pengguna_id' => $pengguna_id, 'is_deleted' => 0));
 		$retval = $builder($data);
 
 		if ($retval > 0) {
@@ -315,11 +315,11 @@ Class Mhome
 		$data = array(
 			'password' => md5($password),
 			'ganti_password' => 0,
-			'last_update' => date("Y/m/d")
+			'updated_on' => date("Y/m/d")
 		);
         
 		$builder = $this->db->table('dbo_pengguna');
-		$builder->where(array('pengguna_id' => $pengguna_id, 'soft_delete' => 0));
+		$builder->where(array('pengguna_id' => $pengguna_id, 'is_deleted' => 0));
 		$retval = $builder->update($data);
 
 		if ($retval > 0) {
@@ -341,7 +341,7 @@ Class Mhome
 		$uuid = $this->uuid();
 
         //get data wilayah
-        $sql = "select * from ref_wilayah where kode_wilayah=? and soft_delete=0";
+        $sql = "select * from ref_wilayah where kode_wilayah=? and is_deleted=0";
         $wilayah = $this->db->query($sql, array($kode_wilayah))->getRowArray();
         if ($wilayah == null)   return '';
 

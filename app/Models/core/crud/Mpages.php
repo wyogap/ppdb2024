@@ -14,8 +14,8 @@ class Mpages extends Mcrud_ext
 
     protected static $SOFT_DELETE = true;
     
-    function list($filter = null, $limit = null, $offset = null, $orderby = null) {
-        $arr = parent::list($filter, $limit, $offset, $orderby);
+    function list($filter = null, $limit = null, $offset = null, $orderby = null, $deleted = false) {
+        $arr = parent::list($filter, $limit, $offset, $orderby, $deleted);
         if ($arr == null)   return $arr;
 
         foreach($arr as $key => $row) {

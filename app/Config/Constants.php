@@ -157,6 +157,13 @@ defined('TAHAPANID_SUSULAN')                OR define('TAHAPANID_SUSULAN', '7');
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
 
+defined('COL_SOFT_DELETE')                  OR define('COL_SOFT_DELETE', 'is_deleted');
+defined('COL_CREATED_ON')                   OR define('COL_CREATED_ON', 'created_on');
+defined('COL_CREATED_BY')                   OR define('COL_CREATED_BY', 'created_by');
+defined('COL_UPDATED_ON')                   OR define('COL_UPDATED_ON', 'updated_on');
+defined('COL_UPDATED_BY')                   OR define('COL_UPDATED_BY', 'updated_by');
+defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired_date');
+
 // defined('CONFIG_KODE_WILAYAH')              OR define('CONFIG_KODE_WILAYAH', '030500');
 // defined('CONFIG_NAMA_WILAYAH')              OR define('CONFIG_NAMA_WILAYAH', 'Kabupaten Kebumen');
 // defined('CONFIG_ALAMAT_DINAS')              OR define('CONFIG_ALAMAT_DINAS', 'Jalan Veteran No.2 Kebumen, Jawa Tengah');

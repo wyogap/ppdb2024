@@ -7,6 +7,10 @@
 {assign var=fkey value=0}
 {/if}
 
+{if empty($fkey2)}
+{assign var=fkey2 value=0}
+{/if}
+
 {if !isset($form_mode)}{$form_mode=''}{/if}
 
 <script type="text/javascript" defer> 
@@ -72,6 +76,20 @@ $(document).ready(function() {
                     
                     {if $col.edit_type == 'js'}
                     type: 'hidden',
+                    {else if $col.edit_type == 'tcg_date'}
+                    type: "datetime",
+                    def:       function () { return new Date(); },
+                    format:    'YYYY-MM-DD',
+                    opts: {
+                        minutesIncrement: 5
+                    },
+                    {else if $col.edit_type == 'tcg_datetime'}
+                    type: "datetime",
+                    def:       function () { return new Date(); },
+                    format:    'YYYY-MM-DD HH:mm:00',
+                    opts: {
+                        minutesIncrement: 5
+                    },
                     {else if $col.edit_type == 'tcg_currency'}
                     type: 'tcg_mask',
                     mask: "#{$currency_thousand_separator}##0",
@@ -83,27 +101,8 @@ $(document).ready(function() {
                     type: '{$col.edit_type}',
                     {/if}
 
-                    {if isset($col.edit_options)}
-                    options: [
-                        {foreach from=$col.edit_options key=k item=v}
-                        {if is_array($v)}
-                            { label: "{htmlspecialchars($v.label)}", value: "{htmlspecialchars($v.value)}" },
-                        {else}
-                            { label: "{htmlspecialchars($v)}", value: "{htmlspecialchars($k)}" },
-                            {/if}
-                        {/foreach}
-                    ],
-                    {/if}
-
                     {if !empty($col.edit_attr)}
                     attr: {$col.edit_attr|@json_encode nofilter},
-                    {/if}
-
-                    {if !empty($col.options_data_url) && $col.edit_type=='tcg_select2'}
-                    {* If no parameters in ajax url, just pass it as-is *}
-                    {if $col.options_data_url_params|@count==0}
-                    ajax: "{$site_url}{$col.options_data_url}",
-                    {/if}
                     {/if}
 
                     {if !empty($col.edit_info)}
@@ -112,7 +111,7 @@ $(document).ready(function() {
 
                     {if $col.edit_readonly || $col.edit_type=='tcg_readonly' || (!empty($col.edit_attr) && !empty($col.edit_attr.readonly))}
                     readonly: 1,
-                    {else if $fsubtable == 1 && $col.edit_field[0] == $fkey}
+                    {else if $fsubtable == 1 && ($col.edit_field[0] == $fkey || $col.edit_field[0] == $fkey2)}
                     readonly: 1,
                     {/if}
 
@@ -120,14 +119,36 @@ $(document).ready(function() {
                     def:  "{$col.edit_def_value}",
                     {/if}
 
-                    {if $col.edit_type=='tcg_upload'}
-                    ajax: "{$tbl.ajax}",
+                    {if $col.edit_type=='tcg_select2'}
+                        {if isset($col.edit_options)}
+                        options: [
+                            {foreach from=$col.edit_options key=k item=v}
+                            {if is_array($v)}
+                                { label: "{htmlspecialchars($v.label)}", value: "{htmlspecialchars($v.value)}" },
+                            {else}
+                                { label: "{htmlspecialchars($v)}", value: "{htmlspecialchars($k)}" },
+                                {/if}
+                            {/foreach}
+                        ],
+                        {/if}
+
+                        {if !empty($col.options_data_url)}
+                            {* If no parameters in ajax url, just pass it as-is *}
+                            {if $col.options_data_url_params|@count==0}
+                            ajax: "{$site_url}{$col.options_data_url}",
+                            {else}
+                            //TODO: pass params to ajax
+                            ajax: "{$site_url}{$col.options_data_url}",
+                            {/if}
+                        {/if}
+
+                        {* If using select2, always apply editorId. Otherwise if more than 2 editors have the same name, only 1 will succeed. *}
+                        //TODO: fix it in tcg_select2
+                        editorId: "{$tbl.table_id}",
                     {/if}
 
-                    {* If using select2, always apply editorId. Otherwise if more than 2 editors have the same name, only 1 will succeed. *}
-                    {if $col.edit_type=='tcg_select2'}
-                    //TODO: fix it in tcg_select2
-                    editorId: "{$tbl.table_id}",
+                    {if $col.edit_type=='tcg_upload'}
+                    ajax: "{$tbl.ajax}",
                     {/if}
 
                     {if $col.edit_type=='upload' || $col.edit_type=='image'}
@@ -166,7 +187,7 @@ $(document).ready(function() {
                     {/if}
 
                     {if $col.edit_type=='tcg_table'}
-                    {if !empty($col.subtable_orde)}
+                    {if !empty($col.subtable_order)}
                     subtableOrder: {$col.subtable_order},
                     {/if}
                     columns: [
@@ -330,6 +351,8 @@ $(document).ready(function() {
                 {* custom field *}
                 {if $fsubtable == 1 && $col.edit_field[0] == $fkey}
                 editor_{$tbl.table_id}.field("{$col.edit_field[0]}").set(fkey_value_{$tbl.table_id});
+                {else if $fsubtable == 1 && $col.edit_field[0] == $fkey2}
+                editor_{$tbl.table_id}.field("{$col.edit_field[0]}").set(fkey_value_{$tbl.table_id}_2);
                 {else if $col.edit_type == 'js' }
                 editor_{$tbl.table_id}.field("{$col.edit_field[0]}").set(v_{$col.name});
                 {/if}
@@ -477,6 +500,14 @@ $(document).ready(function() {
                 {if $fsubtable == 1}
                 if (fkey_value_{$tbl.table_id} == null || fkey_value_{$tbl.table_id} == "" || fkey_value_{$tbl.table_id} == 0) {
                     field = this.field('{$fkey}');
+                    hasError = true;
+                    field.error('{__("Referensi harus diisi")}');
+                }
+                {/if}
+
+                {if $fsubtable == 1 && !empty($fkey2)}
+                if (fkey_value_{$tbl.table_id}_2 == null || fkey_value_{$tbl.table_id}_2 == "" || fkey_value_{$tbl.table_id}_2 == 0) {
+                    field = this.field('{$fkey2}');
                     hasError = true;
                     field.error('{__("Referensi harus diisi")}');
                 }
@@ -923,7 +954,7 @@ $(document).ready(function() {
             {if !isset($x.type)}{$x.type='tcg_text'}{/if}     
             {    
                 {* Hide reference column when displaying as subtable *}
-                {if (!empty($fkey) && $fkey == $x.name) || $x.visible != 1}
+                {if (!empty($fkey) && $fkey == $x.name) || (!empty($fkey2) && $fkey2 == $x.name) || $x.visible != 1}
                     visible: false,
                 {/if}
                 {* Hide virtual column *}
@@ -1466,8 +1497,8 @@ $(document).ready(function() {
                     let col = '';
                     let colno = {count($tbl.columns)};
 
-                    sheet.write(2, colno, 'Hello');
-                    alert(fkey_value_tdata_115 + " >> {$fkey}" );
+                    // sheet.write(2, colno, 'Hello');
+                    // alert(fkey_value_tdata_115 + " >> {$fkey}" );
 
                     //lazy way of formatting. set all cell to text
                     $('row c', sheet).attr( 's', '50' );

@@ -45,7 +45,7 @@ class Admin extends CrudController {
 		$page_data['use_select2'] = 1;
 		
 		// $this->smarty->render_theme('sistem/home.tpl', $page_data);
-		$this->smarty->render_theme('/disbekal/inventory/pencarian.tpl', $page_data);
+		$this->smarty->render_theme('/welcome_message.tpl', $page_data);
 	}
 
 	public function api() {

@@ -166,7 +166,7 @@ class Mtablemeta
         'column_name' => "",
         'reference_table_name' => '',
         'reference_alias' => '',
-        'reference_key_column' => "",
+        'reference_fkey_column' => "",
         'reference_lookup_column' => "",
         'reference_soft_delete' => false,
         'reference_where_clause' => "",

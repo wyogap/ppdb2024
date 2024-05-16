@@ -326,7 +326,7 @@ class Mtable
 
     public function generate_columns($table_id_or_name) {
         $sql = "
-        insert into dbo_crud_columns (name, table_id, order_no, label, is_deleted, data_priority, column_type, edit_type, filter_type)
+        insert into dbo_crud_columns (name, table_id, order_no, label, is_deleted, data_priority, column_type, edit_type)
         select 
             b.column_name as `name`, 
             a.id as table_id, 
@@ -337,8 +337,7 @@ class Mtable
             then 1 else 0 end as is_deleted,
             case when b.column_name = a.key_column then 1 else 100 end as data_priority,
             'tcg_text' as column_type, 
-            'tcg_text' as edit_type, 
-            'tcg_text' as filter_type
+            'tcg_text' as edit_type
         from dbo_crud_tables a
         join INFORMATION_SCHEMA.COLUMNS b on b.table_name=a.table_name and b.table_schema=DATABASE() 
         left join dbo_crud_columns x on x.table_id=a.id and x.name=b.column_name
@@ -460,8 +459,10 @@ class Mtable
                 `foreign_key`,
                 `reference_table_name`,
                 `reference_alias`,
-                `reference_key_column`,
+                `reference_fkey_column`,
                 `reference_lookup_column`,
+                `reference_key2_column`,
+                `reference_fkey2_column`,
                 `reference_soft_delete`,
                 `reference_where_clause`,
                 `allow_insert`,
@@ -511,6 +512,8 @@ class Mtable
                 `reference_alias`,
                 `reference_key_column`,
                 `reference_lookup_column`,
+                `reference_key2_column`,
+                `reference_fkey2_column`,
                 `reference_soft_delete`,
                 `reference_where_clause`,
                 `allow_insert`,

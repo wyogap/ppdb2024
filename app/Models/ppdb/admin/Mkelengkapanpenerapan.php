@@ -35,7 +35,7 @@ Class Mkelengkapanpenerapan
 		$filter['kelengkapan_penerapan_id'] = $kelengkapan_id;
 
 		//inject updated 
-        $valuepair['last_update'] = date('Y/m/d H:i:s');
+        $valuepair['updated_on'] = date('Y/m/d H:i:s');
 
         $builder = $this->db->table('ref_kelengkapan_penerapan');
         $builder->where($filter);
@@ -55,7 +55,7 @@ Class Mkelengkapanpenerapan
 	function add($tahun_ajaran_id, $valuepair) {
 		//inject updated 
         $valuepair['tahun_ajaran_id'] = $tahun_ajaran_id;
-        $valuepair['create_date'] = date('Y/m/d H:i:s');
+        $valuepair['created_on'] = date('Y/m/d H:i:s');
 
         $builder = $this->db->table('ref_kelengkapan_penerapan');
 		if ($builder->insert($valuepair)) {

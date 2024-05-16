@@ -193,7 +193,7 @@ Class Mdropdown
 
 		$sql = "select a.sekolah_id, a.nama, a.npsn 
 				from ref_sekolah  a
-				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.soft_delete=0
+				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.is_deleted=0
 				where a.expired_date is null and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
 				group by a.sekolah_id, a.nama
 				order by a.kode_wilayah, a.nama";
@@ -271,7 +271,7 @@ Class Mdropdown
 			(
 				select a.sekolah_id as value, concat('(',a.npsn,') ', a.nama) as label 
 				from ref_sekolah  a
-				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.soft_delete=0
+				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.is_deleted=0
 				where a.expired_date is null and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
 				group by a.sekolah_id, a.nama
 				order by a.kode_wilayah, a.nama

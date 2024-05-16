@@ -70,7 +70,7 @@ class Ubahprofil extends PpdbController {
         $data['content_template'] = 'beranda.tpl';
 
         $data['page_title'] = 'Daftar Ulang';
-        $this->smarty->render('ppdb2/sekolah/ppdbsekolah.tpl', $data);
+        $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}
 
 	function simpan()

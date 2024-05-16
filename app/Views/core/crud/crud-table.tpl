@@ -7,7 +7,9 @@
 {assign var=fkey value=0}
 {/if}
 
-
+{if empty($fkey2)}
+{assign var=fkey2 value=0}
+{/if}
 
 <div class="table-responsive-sm">
     <table id="{$tbl.table_id}" class="table table-striped dt-responsive nowrap" width="100%">
@@ -29,6 +31,9 @@
                     {/if}
                     {* Hide reference column when displaying as subtable *}
                     {if (!empty($fkey) && $fkey == $col.name) || $col.visible != 1}
+                        {$col.data_priority = -1}
+                    {/if}
+                    {if (!empty($fkey2) && $fkey2 == $col.name) || $col.visible != 1}
                         {$col.data_priority = -1}
                     {/if}
                     <th {if !empty($col.column_filter)}tcg-column-filter=1{/if} class="{if $col.data_priority < 0}none {else if $col.css}{$col.css} {/if}text-center" data-priority="{$col.data_priority}" style="word-break: normal!important;">
@@ -59,6 +64,9 @@
                     {/if}
                     {* Hide reference column when displaying as subtable *}
                     {if (!empty($fkey) && $fkey == $col.name) || $col.visible != 1}
+                        {$col.data_priority = -1}
+                    {/if}
+                    {if (!empty($fkey2) && $fkey2 == $col.name) || $col.visible != 1}
                         {$col.data_priority = -1}
                     {/if}
                     <th class="{$col.css} {if $col.name == $tbl.lookup_column}text-left{/if}" style="word-break: normal!important;">

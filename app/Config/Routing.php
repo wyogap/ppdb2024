@@ -126,7 +126,6 @@ class Routing extends BaseRouting
      * @var array<string, string>
      */
     public array $moduleRoutes = [
-        'auth'  => 'App\Controllers'
     ];
 
     /**

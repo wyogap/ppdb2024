@@ -10,7 +10,9 @@ use App\Models\Core\BaseController;
  */
 interface ICrudModel
 {
-    function list($filter = null, $limit = null, $offset = null, $orderby = null);
+    function search($query, $filter = null, $limit = null, $offset = 0, $orderby = null, $search_columns = null);
+
+    function list($filter = null, $limit = null, $offset = null, $orderby = null, $deleted = false);
 
     function detail($id, $filter = null);
 

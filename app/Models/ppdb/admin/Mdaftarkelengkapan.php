@@ -43,7 +43,7 @@ Class Mdaftarkelengkapan
 		}
 		
 		//inject updated 
-        $valuepair['last_update'] = date('Y/m/d H:i:s');
+        $valuepair['updated_on'] = date('Y/m/d H:i:s');
 
         $builder = $this->db->table('ref_daftar_kelengkapan');
         $builder->where($filter);
@@ -62,7 +62,7 @@ Class Mdaftarkelengkapan
 
 	function add($valuepair) {
 		//inject updated 
-        $valuepair['create_date'] = date('Y/m/d H:i:s');
+        $valuepair['created_on'] = date('Y/m/d H:i:s');
 
         $builder = $this->db->table('ref_daftar_kelengkapan');
 		if ($builder->insert($valuepair)) {

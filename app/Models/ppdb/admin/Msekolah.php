@@ -14,7 +14,7 @@ Class Msekolah
 
 		$query = "select a.* from ref_sekolah a";
 				
-		$where = "a.soft_delete=0 and a.nama like '%" . $nama . "%'";
+		$where = "a.is_deleted=0 and a.nama like '%" . $nama . "%'";
 		if (!empty($npsn))
 			$where .= " AND a.npsn='$npsn'";
 		if (!empty($bentuk_pendidikan))
@@ -29,7 +29,7 @@ Class Msekolah
 
 	function tcg_detil_sekolah($key) {
 		$query = "select a.* from ref_sekolah a
-		WHERE a.sekolah_id = '$key' and a.soft_delete=0
+		WHERE a.sekolah_id = '$key' and a.is_deleted=0
 		";
 
 		return $this->db->query($query);

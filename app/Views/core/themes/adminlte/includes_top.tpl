@@ -117,7 +117,7 @@
 <!-- jquery js. must be loaded first before other js -->
 <script src="{$base_url}assets/jquery-3.4.1/jquery.min.js"></script>
 
-<!-- using jquery-3.6.0 screw up bubble editor layout! -->
+<!-- IMPORTANT: using jquery-3.6.0 screw up bubble editor layout! -->
 <!-- <script src="{$base_url}assets/jquery/jquery-3.6.0.min.js"></script> -->
 
 <!-- App css -->

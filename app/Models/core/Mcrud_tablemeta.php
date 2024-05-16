@@ -289,6 +289,9 @@ class Mcrud_tablemeta implements ICrudModel
             return true;
         }
         
+        //var_dump($arr);
+        //d($arr['name']); d($arr['initial_load']); 
+
         $this->initialized = false;
         
         //level1 filter
@@ -558,7 +561,7 @@ class Mcrud_tablemeta implements ICrudModel
 
                 //allow filter only if it is enabled in table level
                 $col['allow_filter'] = false;
-                if ($this->table_metas['filter'])   $col['allow_filter'] = ($row['allow_filter'] == 1);
+                if ($this->table_metas['filter'])   $col['allow_filter'] = true;
 
                 //allow search only if it is enabled in table level
                 $col['allow_search'] = false;
@@ -660,32 +663,41 @@ class Mcrud_tablemeta implements ICrudModel
                 //     //link as foreign key
                 //     $col['foreign_key'] = true;
                 //     $row['reference_table_name'] = "dbo_uploads";
-                //     $row['reference_key_column'] = "id";
+                //     $row['reference_fkey_column'] = "id";
                 //     $row['reference_lookup_column'] = "filename";
                 //     $row['reference_soft_delete'] = 1;
                 // }
 
                 //search column
                 if ($this->table_metas['search'] && $col['allow_search']) {
-                    $this->search_columns[] = $this->table_name. "." .$col['name'];
+                    $this->search_columns[] = $col['column_name'];
                 }
 
                 if ($col['foreign_key']) {
                     $ref = Mtablemeta::$TABLE_JOIN;
                     $ref['name'] = $col['name'];
                     $ref['column_name'] = $col['column_name'];
-                    $ref['reference_table_name'] = $row['reference_table_name'];
-                    $ref['reference_key_column'] = $row['reference_key_column'];
-                    $ref['reference_lookup_column'] = $row['reference_lookup_column'];
-                    if (empty($ref['reference_lookup_column'])) {
-                        $ref['reference_lookup_column'] = $ref['reference_key_column'];
-                    }
-                    $ref['reference_soft_delete'] = ($row['reference_soft_delete'] == 1);
 
+                    //reference to table
+                    $ref['reference_table_name'] = $row['reference_table_name'];
+                    $ref['reference_soft_delete'] = ($row['reference_soft_delete'] == 1);
                     $ref['reference_where_clause'] = $row['reference_where_clause'];
                     if (!empty($ref['reference_where_clause'])) {
                         $ref['reference_where_clause'] = $this->replace_parameters($ref['reference_where_clause']);
                     }
+
+                    //reference to subquery
+                    $ref['reference_custom_query'] = $row['reference_custom_query'];
+
+                    //lookup key
+                    $ref['reference_fkey_column'] = $row['reference_fkey_column'];
+                    $ref['reference_lookup_column'] = $row['reference_lookup_column'];
+                    if (empty($ref['reference_lookup_column'])) {
+                        $ref['reference_lookup_column'] = $ref['reference_fkey_column'];
+                    }
+                    //secondary lookup key
+                    $ref['reference_key2_column'] = $row['reference_key2_column'];
+                    $ref['reference_fkey2_column'] = $row['reference_key2_column'];
             
                     //use alias in case multiple reference of the same table (ie. lookup table)
                     $ref['reference_alias'] = $row['reference_alias'];
@@ -694,7 +706,7 @@ class Mcrud_tablemeta implements ICrudModel
                     }
 
                     if ($col['type'] == 'tcg_multi_select') {
-                        $subquery = "select group_concat(" .$ref['reference_lookup_column']. " separator ', ') from " .$ref['reference_table_name']. " where find_in_set(" .$ref['reference_key_column']. ", " .$ref['column_name']. ") > 0";
+                        $subquery = "select group_concat(" .$ref['reference_lookup_column']. " separator ', ') from " .$ref['reference_table_name']. " where find_in_set(" .$ref['reference_fkey_column']. ", " .$ref['column_name']. ") > 0";
 
                         if ($ref['reference_soft_delete']) {
                             $subquery .= " AND is_deleted=0";
@@ -717,15 +729,24 @@ class Mcrud_tablemeta implements ICrudModel
                         $this->select_columns[] = $ref['reference_alias'].".".$ref['reference_lookup_column']." as ".$ref['name']."_label";
                     }
 
-                    //get lookup if not specified manually
-                    if (empty($col['options']) && empty($col['options_data_url']) && ($row['edit_type'] == 'tcg_select2' || $row['filter_type'] == 'tcg_select2')) {
-                        $col['options'] = $this->get_lookup_options($ref['reference_table_name'], $ref['reference_key_column'], $ref['reference_lookup_column']
-                                                                    , $ref['reference_soft_delete'], $ref['reference_where_clause'], $ref['reference_alias']);
+                    // IMPORTANT: only retrieve pre-loaded options when edit/add is allowed
+                    //get lookup if not specified manually (only if edit/add is allowed)
+                    if (($this->table_actions['add'] || $this->table_actions['edit']) && ($col['allow_insert'] || $col['allow_edit']) &&
+                            empty($col['options']) && empty($col['options_data_url']) && 
+                            ($row['edit_type'] == 'tcg_select2')) {
+                        if (!empty($ref['reference_custom_query'])) {
+                            $col['options'] = $this->get_lookup_options_from_query($ref['reference_custom_query']);
+                        }
+                        else {
+                            $col['options'] = $this->get_lookup_options($ref['reference_table_name'], $ref['reference_fkey_column'], $ref['reference_lookup_column']
+                                                                        , $ref['reference_key2_column']
+                                                                        , $ref['reference_soft_delete'], $ref['reference_where_clause'], $ref['reference_alias']);
+                        }
                     }
 
                     //search column -> search lookup
                     //var_dump($col['allow_search']);
-                    if (!empty($col['allow_search']) && $row['edit_type'] == 'tcg_select2') {
+                    if (!empty($col['allow_search'])) {
                         $this->search_columns[] = $ref['reference_alias'].".".$ref['reference_lookup_column'];
                     }
                 }
@@ -804,6 +825,8 @@ class Mcrud_tablemeta implements ICrudModel
                         $editor['subtable_name'] = $this->get_subtable_name($row['subtable_id']);
                         $editor['subtable_key_column'] = $row['subtable_key_column'];
                         $editor['subtable_fkey_column'] = $row['subtable_fkey_column'];
+                        $editor['subtable_key_column2'] = $row['subtable_key_column2'];
+                        $editor['subtable_fkey_column2'] = $row['subtable_fkey_column2'];
                         $editor['subtable_order'] = $row['subtable_order'];
                         // if (!empty($editor['subtable_order'])) {
                         //     $editor['edit_attr']['rowOrder'] = json_decode($editor['subtable_order'], true);
@@ -1117,118 +1140,120 @@ class Mcrud_tablemeta implements ICrudModel
         $this->filter_metas = array();
         $this->filter_columns = array();
 
-        do {
-            $builder = $this->db->table('dbo_crud_filters a');
-            $builder->select('a.*, b.name as column_name');
-            $builder->orderBy('a.order_no asc');
-            $builder->join("dbo_crud_columns b","b.id=a.column_id and b.is_deleted=0","LEFT OUTER");
-            $builder->where(array('a.table_id'=>$this->table_id, 'a.is_deleted'=>0));
-            $arr = $builder->get()->getResultArray();
-            if ($arr == null) {
-                break;
-            }
+        if ($this->table_metas['filter']) {
+            do {
+                $builder = $this->db->table('dbo_crud_filters a');
+                $builder->select('a.*, b.name as column_name');
+                $builder->orderBy('a.order_no asc');
+                $builder->join("dbo_crud_columns b","b.id=a.column_id and b.is_deleted=0","LEFT OUTER");
+                $builder->where(array('a.table_id'=>$this->table_id, 'a.is_deleted'=>0));
+                $arr = $builder->get()->getResultArray();
+                if ($arr == null) {
+                    break;
+                }
+        
+                foreach($arr as $row) {
+                    $name = trim($row['name']);
+
+                    //if already exist, ignore. prevent duplicate
+                    if (false !== array_search($name, $this->filter_columns)) {
+                        continue;
+                    }
     
-            foreach($arr as $row) {
-                $name = trim($row['name']);
+                    $filter = Mtablemeta::$FILTER;
+                    $filter['name'] = $name;
+                    $filter['label'] = __($row['label']);
+                    $filter['type'] = trim($row['type']);
+                    $filter['css'] = trim($row['css']);
+                    $filter['onchange_js'] = trim($row['onchange_js']);
+                    $filter['invalid_value'] = ($row['invalid_value'] == 1);
 
-                //if already exist, ignore. prevent duplicate
-                if (false !== array_search($name, $this->filter_columns)) {
-                    continue;
-                 }
-  
-                $filter = Mtablemeta::$FILTER;
-                $filter['name'] = $name;
-                $filter['label'] = __($row['label']);
-                $filter['type'] = trim($row['type']);
-                $filter['css'] = trim($row['css']);
-                $filter['onchange_js'] = trim($row['onchange_js']);
-                $filter['invalid_value'] = ($row['invalid_value'] == 1);
+                    $filter['controller_id'] = $row['controller_id'];
+                    $filter['controller_params'] = trim($row['controller_params']);
+                    $filter['options_data_url'] = trim($row['options_data_url']);
 
-                $filter['controller_id'] = $row['controller_id'];
-                $filter['controller_params'] = trim($row['controller_params']);
-                $filter['options_data_url'] = trim($row['options_data_url']);
+                    $filter['column_id'] = $row['column_id'];
+                    $filter['column_name'] = $row['column_name'];
 
-                $filter['column_id'] = $row['column_id'];
-                $filter['column_name'] = $row['column_name'];
+                    $filter['attr_array'] = "";
+                    if (!empty($row['attr_array'])) {
+                        $filter['attr'] = json_decode($row['attr_array']);
+                    } 
 
-                $filter['attr_array'] = "";
-                if (!empty($row['attr_array'])) {
-                    $filter['attr'] = json_decode($row['attr_array']);
-                } 
+                    $filter['options_array'] = "";
+                    if (!empty($row['options_array'])) {
+                        $filter['options'] = json_decode($row['options_array']);
+                    } 
 
-                $filter['options_array'] = "";
-                if (!empty($row['options_array'])) {
-                    $filter['options'] = json_decode($row['options_array']);
-                } 
+                    //search in select columns
+                    $col = null;
+                    $col_idx = array_search(strtoupper($filter['column_name']), $this->columns);
+                    if (false !== $col_idx) {
+                        $col = $this->column_metas[$col_idx];
+                        if (!empty($col['options'])) {
+                            $filter['options'] = $col['options'];
+                        }
+                    };
 
-                //search in select columns
-                $col = null;
-                $col_idx = array_search(strtoupper($filter['column_name']), $this->columns);
-                if (false !== $col_idx) {
-                    $col = $this->column_metas[$col_idx];
-                    if (!empty($col['options'])) {
-                        $filter['options'] = $col['options'];
+                    //force select2
+                    if (!empty($filter['options']) && empty($filter['type'])) {
+                        $filter['type'] = 'tcg_select2';
                     }
-                };
+                    if (empty($filter['type']) && $col != null) {
+                        $filter['type'] = $col['type'];
+                    }
 
-                //force select2
-                if (!empty($filter['options']) && empty($filter['type'])) {
-                    $filter['type'] = 'tcg_select2';
-                }
-                if (empty($filter['type']) && $col != null) {
-                    $filter['type'] = $col['type'];
-                }
-
-                if (!empty($filter['controller_id'])) {
-                    $controller = $this->get_controller_meta($filter['controller_id']);
-                    if ($controller != null) {
-                        $filter['options_table_name'] = $controller['name'];
-                        $filter['options_key_column'] = $controller['key_column'];
-                        $filter['options_label_column'] = $controller['lookup_column'];
-                        $filter['soft_delete'] = ($controller['soft_delete'] == 1);
-                        if (empty($filter['options_data_url'])) {
-                            $filter['options_data_url']= 'crud/'. $controller['controller_name'] .'/lookup';
-                            if (!empty($filter['controller_params'])) {
-                                $filter['options_data_url'] .= "?" .$filter['controller_params'];
+                    if (!empty($filter['controller_id'])) {
+                        $controller = $this->get_controller_meta($filter['controller_id']);
+                        if ($controller != null) {
+                            $filter['options_table_name'] = $controller['name'];
+                            $filter['options_key_column'] = $controller['key_column'];
+                            $filter['options_label_column'] = $controller['lookup_column'];
+                            $filter['soft_delete'] = ($controller['soft_delete'] == 1);
+                            if (empty($filter['options_data_url'])) {
+                                $filter['options_data_url']= 'crud/'. $controller['controller_name'] .'/lookup';
+                                if (!empty($filter['controller_params'])) {
+                                    $filter['options_data_url'] .= "?" .$filter['controller_params'];
+                                }
                             }
                         }
                     }
-                }
 
-                //parse the parameter
-                $filter['options_data_url_params'] = array();
-                $filter['cascading_filters'] = array();
-                if (!empty($row['options_data_url'])) {
-                    $url = $row['options_data_url'];
-                    $matches = null;
+                    //parse the parameter
+                    $filter['options_data_url_params'] = array();
+                    $filter['cascading_filters'] = array();
+                    if (!empty($row['options_data_url'])) {
+                        $url = $row['options_data_url'];
+                        $matches = null;
 
-                    preg_match_all('{{{[\w]*}}}', $url, $matches);
-                    if ($matches != null && count($matches) > 0) {
+                        preg_match_all('{{{[\w]*}}}', $url, $matches);
+                        if ($matches != null && count($matches) > 0) {
 
-                        foreach($matches[0] as $m) {
-                            $colname = substr($m, 2, strlen($m)-4);
-                            if ($colname == $level1_column) {
-                                $url = str_replace($m, $level1_value, $url);
-                            }
-                            //add cascading filter
-                            else if(substr($colname, 0, 2) == 'f_') {
-                                //dont reference itself
-                                if ($colname == 'f_'.$filter['name'])   continue;
-                                $filter['cascading_filters'][] = $colname;
-                            }
-                            //other params
-                            else {
-                                $filter['options_data_url_params'][] = $colname;
+                            foreach($matches[0] as $m) {
+                                $colname = substr($m, 2, strlen($m)-4);
+                                if ($colname == $level1_column) {
+                                    $url = str_replace($m, $level1_value, $url);
+                                }
+                                //add cascading filter
+                                else if(substr($colname, 0, 2) == 'f_') {
+                                    //dont reference itself
+                                    if ($colname == 'f_'.$filter['name'])   continue;
+                                    $filter['cascading_filters'][] = $colname;
+                                }
+                                //other params
+                                else {
+                                    $filter['options_data_url_params'][] = $colname;
+                                }
                             }
                         }
                     }
-                }
-                 
-                $this->filter_metas[] = $filter;
-                $this->filter_columns[] = $name;
-            }                    
-        } 
-        while (false);
+                    
+                    $this->filter_metas[] = $filter;
+                    $this->filter_columns[] = $name;
+                }                    
+            } 
+            while (false);
+        }
 
         //var_dump($this->filter_metas); exit;
 
@@ -1374,9 +1399,6 @@ class Mcrud_tablemeta implements ICrudModel
             $this->table_metas['filter'] = false;
         }
 
-        // if no filter -> always autoload
-        if (!$this->table_metas['filter'])  $this->table_metas['initial_load'] = true;
-
         // list of filters
         $this->table_metas['filter_columns'] = $this->filter_metas;
 
@@ -1386,6 +1408,11 @@ class Mcrud_tablemeta implements ICrudModel
         if (count($this->search_columns) == 0) {
             $this->table_metas['search'] = false;
         }
+
+        //var_dump($this->table_metas['name']); var_dump($this->search_columns);
+
+        // if no filter -> always autoload
+        if (!$this->table_metas['filter'] && !$this->table_metas['search'])  $this->table_metas['initial_load'] = true;
 
         //column groupings
         $this->table_metas['column_groupings'] = $this->column_groupings;
@@ -1418,7 +1445,7 @@ class Mcrud_tablemeta implements ICrudModel
 
         $this->initialized = true;
 
-        //var_dump($this->select_columns);
+        //var_dump($this->table_metas['name']); var_dump($this->table_metas['initial_load']); 
 
         //initialized the distinct filter options
         //must be performed after initialization is completed
@@ -1544,9 +1571,12 @@ class Mcrud_tablemeta implements ICrudModel
         return $builder->get()->getResultArray();
     }
 
-    function search($query, $filter = null, $limit = null, $offset = null, $orderby = null) {
+    function search($query, $filter = null, $limit = null, $offset = 0, $orderby = null, $search_columns = null) {
         $this->reset_error();
-        
+
+        //hack
+        if($offset == null) $offset = 0;
+
         if (!$this->initialized)   return null;
 
         if (empty($limit) && $this->table_metas['search_max_result'] > 0) {
@@ -1559,12 +1589,23 @@ class Mcrud_tablemeta implements ICrudModel
         $builder = $this->db->table($table_name);
 
         //group search filter
-        if ($query != "" && $query != null && count($this->search_columns)>0) {
-            $builder->groupStart();
-            foreach($this->search_columns as $key => $val) {
-                $builder->orLike($val, $query);
+        if (!empty($query)) {
+            if (!empty($search_columns) && is_array($search_columns)) {
+                //use specified list of columns
+                $builder->groupStart();
+                foreach($search_columns as $key => $val) {
+                    $builder->orLike($val, $query);
+                }
+                $builder->groupEnd();
             }
-            $builder->groupEnd();
+            else if (count($this->search_columns)>0) {
+                //use predefined list of columns
+                $builder->groupStart();
+                foreach($this->search_columns as $key => $val) {
+                    $builder->orLike($val, $query);
+                }
+                $builder->groupEnd();
+            }
         }
 
         //add filter
@@ -1610,17 +1651,36 @@ class Mcrud_tablemeta implements ICrudModel
 
         //join table
         foreach($this->join_tables as $row) {
-            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_key_column'];
-            if ($row['reference_soft_delete']) {
-                $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+            //join query
+            if (empty($row['reference_custom_query'])) {
+                //refer to table directly
+                $join_query = $row['reference_table_name'] .' as '. $row['reference_alias'];
+            } 
+            else {
+                //refer to custom subquery
+                $join_query = "(" .$row['reference_custom_query']. ") as ". $row['reference_alias'];
             }
-            if (!empty($row['reference_where_clause'])) {
-                $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
-
-                $where_clause .= " AND " .$str;
+            //conditional join
+            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_fkey_column'];
+            //secondary lookup key
+            if (!empty($row['reference_fkey2_column'])) {
+                $where_clause .= " AND $table_name." .$row['reference_key2_column']."=".$row['reference_alias'].".".$row['reference_fkey2_column'];
             }
+            //soft delete and additional where clause only applicable when we are referring to table directly
+            if (empty($row['reference_custom_query'])) {
+                //soft delete in lookup table
+                if ($row['reference_soft_delete']) {
+                    $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+                }
+                //additional where clause
+                if (!empty($row['reference_where_clause'])) {
+                    $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
 
-            $builder->join($row['reference_table_name'] .' as '. $row['reference_alias'], $where_clause, 'LEFT OUTER');
+                    $where_clause .= " AND " .$str;
+                }
+            }
+            //join
+            $builder->join($join_query, $where_clause, 'LEFT OUTER');
         }
 
         //order by
@@ -1634,6 +1694,9 @@ class Mcrud_tablemeta implements ICrudModel
                 $builder->orderBy($orderby);
             }
         }
+
+        // $str = $builder->getCompiledSelect();
+        // echo($str); exit;
 
         $arr = $builder->get($limit, $offset)->getResultArray();
         if ($arr == null)       return $arr;
@@ -1652,14 +1715,16 @@ class Mcrud_tablemeta implements ICrudModel
         return $arr;
     }
 
-    function list($filter = null, $limit = null, $offset = null, $orderby = null) {
+    function list($filter = null, $limit = null, $offset = 0, $orderby = null, $deleted=false) {
         $this->reset_error();
+
+        //hack
+        if($offset == null) $offset = 0;
         
         if (!$this->initialized)   return null;
 
         if ($filter == null) $filter = array();
 
-        $offset = 0;
         if (empty($limit) && $this->table_metas['search_max_result'] > 0) {
             $limit = $this->table_metas['search_max_result'];
         }
@@ -1699,7 +1764,9 @@ class Mcrud_tablemeta implements ICrudModel
             }
         }
 
-        if ($this->table_metas['soft_delete'])   $builder->where($table_name. '.is_deleted', 0);
+        //cek if we want to show deleted items
+        if ($this->table_metas['soft_delete'] && !$deleted)   $builder->where($table_name. '.is_deleted', 0);
+
         if (!empty($this->table_metas['where_clause']))  { 
             $builder->groupStart();
             $builder->where($this->table_metas['where_clause']);
@@ -1713,17 +1780,36 @@ class Mcrud_tablemeta implements ICrudModel
 
         //join table
         foreach($this->join_tables as $row) {
-            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_key_column'];
-            if ($row['reference_soft_delete']) {
-                $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+            //join query
+            if (empty($row['reference_custom_query'])) {
+                //refer to table directly
+                $join_query = $row['reference_table_name'] .' as '. $row['reference_alias'];
+            } 
+            else {
+                //refer to custom subquery
+                $join_query = "(" .$row['reference_custom_query']. ") as ". $row['reference_alias'];
             }
-            if (!empty($row['reference_where_clause'])) {
-                $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
-
-                $where_clause .= " AND " .$str;
+            //conditional join
+            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_fkey_column'];
+            //secondary lookup key
+            if (!empty($row['reference_fkey2_column'])) {
+                $where_clause .= " AND $table_name." .$row['reference_key2_column']."=".$row['reference_alias'].".".$row['reference_fkey2_column'];
             }
+            //soft delete and additional where clause only applicable when we are referring to table directly
+            if (empty($row['reference_custom_query'])) {
+                //soft delete in lookup table
+                if ($row['reference_soft_delete']) {
+                    $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+                }
+                //additional where clause
+                if (!empty($row['reference_where_clause'])) {
+                    $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
 
-            $builder->join($row['reference_table_name'] .' as '. $row['reference_alias'], $where_clause, 'LEFT OUTER');
+                    $where_clause .= " AND " .$str;
+                }
+            }
+            //join
+            $builder->join($join_query, $where_clause, 'LEFT OUTER');
         }
 
         //TODO: join to dbo_uploads using FIND_IN_SET() for upload type
@@ -1739,6 +1825,9 @@ class Mcrud_tablemeta implements ICrudModel
                 $builder->orderBy($orderby);
             }
         }
+
+        // $str = $builder->getCompiledSelect();
+        // echo($str); exit;
 
         $arr = $builder->get($limit, $offset)->getResultArray();
         if ($arr == null)       return $arr;
@@ -1792,16 +1881,36 @@ class Mcrud_tablemeta implements ICrudModel
 
         //join table
         foreach($this->join_tables as $row) {
-            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_key_column'];
-            if ($row['reference_soft_delete']) {
-                $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+            //join query
+            if (empty($row['reference_custom_query'])) {
+                //refer to table directly
+                $join_query = $row['reference_table_name'] .' as '. $row['reference_alias'];
+            } 
+            else {
+                //refer to custom subquery
+                $join_query = "(" .$row['reference_custom_query']. ") as ". $row['reference_alias'];
             }
-            if (!empty($row['reference_where_clause'])) {
-                $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
+            //conditional join
+            $where_clause = $row['column_name']."=".$row['reference_alias'].".".$row['reference_fkey_column'];
+            //secondary lookup key
+            if (!empty($row['reference_fkey2_column'])) {
+                $where_clause .= " AND $table_name." .$row['reference_key2_column']."=".$row['reference_alias'].".".$row['reference_fkey2_column'];
+            }
+            //soft delete and additional where clause only applicable when we are referring to table directly
+            if (empty($row['reference_custom_query'])) {
+                //soft delete in lookup table
+                if ($row['reference_soft_delete']) {
+                    $where_clause .= " AND " .$row['reference_alias']. ".is_deleted=0";
+                }
+                //additional where clause
+                if (!empty($row['reference_where_clause'])) {
+                    $str = str_replace($row['reference_table_name'] .'.', $row['reference_alias'] .'.', $row['reference_where_clause']);
 
-                $where_clause .= " AND " .$str;
+                    $where_clause .= " AND " .$str;
+                }
             }
-            $builder->join($row['reference_table_name'] .' as '. $row['reference_alias'], $where_clause, 'LEFT OUTER');
+            //join
+            $builder->join($join_query, $where_clause, 'LEFT OUTER');
         }
         
         $arr = $builder->get()->getRowArray();       
@@ -2592,7 +2701,7 @@ class Mcrud_tablemeta implements ICrudModel
         //match foreign key
         foreach($join_tables as $idx => $tbl) {
             //use left join here so that those that cannot find the reference will be set to null
-            $sql = "update " .$temp_table_name. " a left join " .$tbl['reference_table_name']. " b on lower(b." .$tbl['reference_lookup_column']. ")=lower(a." .$tbl['name']. ") and b.is_deleted=0 set a." .$tbl['name']. "=b." .$tbl['reference_key_column'];
+            $sql = "update " .$temp_table_name. " a left join " .$tbl['reference_table_name']. " b on lower(b." .$tbl['reference_lookup_column']. ")=lower(a." .$tbl['name']. ") and b.is_deleted=0 set a." .$tbl['name']. "=b." .$tbl['reference_fkey_column'];
             $this->db->query($sql);
         }
 
@@ -2673,7 +2782,12 @@ class Mcrud_tablemeta implements ICrudModel
 		// return $ci->$name;
 	}
 
-    protected function get_lookup_options($table_name, $key_column, $lookup_column, $soft_delete = true, $where_clause = null, $alias_name = '') {
+    protected function get_lookup_options_from_query($query) {
+        $arr = $this->db->query($query)->getResultArray();
+        return $arr;
+    }
+
+    protected function get_lookup_options($table_name, $key_column, $lookup_column, $key2_column = null, $soft_delete = true, $where_clause = null, $alias_name = '') {
         if (!empty($alias_name)) {
             //legacy. some old configuration is wrong
             $where_clause = str_replace($table_name .".", $alias_name .".", $where_clause);
@@ -2687,8 +2801,23 @@ class Mcrud_tablemeta implements ICrudModel
         if (!empty($where_clause))  $builder->where($where_clause);
 
         $builder->select($lookup_column .' as label, '. $key_column .' as value');
+        if (!empty($key2_column)) {
+            $builder->select($key2_column);
+        }
 
-        return $builder->get()->getResultArray();
+        /**
+         * IMPORTANT: Limit the lookup options loaded to 1000 rows. If the lookups is more that 1000, consider using AJAX dynamic loading
+         */
+        $limit = 1000;  
+
+        $arr = $builder->get($limit)->getResultArray();
+        if ($arr == null)   return $arr;
+
+        if (count($arr) == 1000) {
+            $arr[] = array ("value"=>'-1', 'label'=>'Terlalu banyak pilihan...');
+        }
+
+        return $arr;
 	}
 
     protected function get_upload_list($values) {
@@ -2932,12 +3061,16 @@ class Mcrud_tablemeta implements ICrudModel
                 $ref['name'] = $col['name'];
                 $ref['column_name'] = $col['column_name'];
                 $ref['reference_table_name'] = $row['reference_table_name'];
-                $ref['reference_key_column'] = $row['reference_key_column'];
+                $ref['reference_fkey_column'] = $row['reference_fkey_column'];
                 $ref['reference_lookup_column'] = $row['reference_lookup_column'];
                 if (empty($ref['reference_lookup_column'])) {
-                    $ref['reference_lookup_column'] = $ref['reference_key_column'];
+                    $ref['reference_lookup_column'] = $ref['reference_fkey_column'];
                 }
+                $ref['reference_key2_column'] = $row['reference_key2_column'];
+                $ref['reference_fkey2_column'] = $row['reference_fkey2_column'];
                 $ref['reference_soft_delete'] = ($row['reference_soft_delete'] == 1);
+
+                $ref['reference_custom_query'] = $row['reference_custom_query'];
 
                 $ref['reference_where_clause'] = $row['reference_where_clause'];
                 if (!empty($ref['reference_where_clause'])) {
@@ -2945,8 +3078,17 @@ class Mcrud_tablemeta implements ICrudModel
                 }
 
                 //get lookup if not specified manually
-                if (empty($col['options']) && empty($col['options_data_url']) && ($row['edit_type'] == 'tcg_select2' || $row['filter_type'] == 'tcg_select2')) {
-                    $col['options'] = $this->get_lookup_options($ref['reference_table_name'], $ref['reference_key_column'], $ref['reference_lookup_column'], $ref['reference_soft_delete'], $ref['reference_where_clause']);
+                if (($col['allow_insert'] || $col['allow_edit']) &&
+                        empty($col['options']) && empty($col['options_data_url']) 
+                        && ($row['edit_type'] == 'tcg_select2')) {
+                    if (!empty($ref['reference_custom_query'])) {
+                        $col['options'] = $this->get_lookup_options_from_query($ref['reference_custom_query']);
+                    }
+                    else {
+                        $col['options'] = $this->get_lookup_options($ref['reference_table_name'], $ref['reference_fkey_column'], $ref['reference_lookup_column']
+                                                        , $ref['reference_key2_column']
+                                                        , $ref['reference_soft_delete'], $ref['reference_where_clause']);
+                    }
                 }
             }
 
@@ -3032,21 +3174,7 @@ class Mcrud_tablemeta implements ICrudModel
     function replace_parameters($str) {
         if(empty($str))     return $str;
 
-        if (count($this->level1_filter) > 0) {
-            $matches = null;
-            preg_match_all('{{{[\w]*}}}', $str, $matches);
-            if ($matches != null && count($matches) > 0) {
-                foreach($matches[0] as $m) {
-                    $colname = substr($m, 2, strlen($m)-4);
-                    $value = array_key_exists($colname, $this->level1_filter) ? $this->level1_filter[$colname] : null;
-                    if (!empty($value)) {
-                        $str = str_replace($m, $value, $str);
-                    }
-               }
-            }
-        }
-
-        return replace_userdata($str);
+        return replace_parameters($str, 'filter', $this->level1_filter);
     }
 }
 

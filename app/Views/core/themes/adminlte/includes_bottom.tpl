@@ -120,7 +120,7 @@
 <!-- <script src="{$base_url}assets/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js" defer charset="utf-8"></script> -->
 
 <!-- jquery plugins -->
-<script src="{$base_url}assets/jquery-jvectormap/jquery-jvectormap.min.js" defer></script>
+<!-- <script src="{$base_url}assets/jquery-jvectormap/jquery-jvectormap.min.js" defer></script> -->
 <!-- <script src="{$base_url}assets/backend/js/vendor/jquery-jvectormap-world-mill-en.js"></script> -->
 <script src="{$base_url}assets/bootstrap-tagsinput/bootstrap-tagsinput.min.js" defer charset="utf-8"></script>
 
@@ -142,6 +142,13 @@
 <script src="{$base_url}themes/{$theme}/app.js" defer></script>
 
 <!-- <script src="{$base_url}themes/{$theme}/js/custom.js" defer></script> -->
+
+<!-- some basic vars commonly used in scriptings !-->
+<script type="text/javascript">
+    var controller = "{$controller|default: ''}";
+    var page_role = "{$page_role|default: ''}";
+
+</script>
 
 <!-- Toastr and alert notifications scripts -->
 <script type="text/javascript">

@@ -698,25 +698,70 @@
 		}
 	}
 
-	if ( ! function_exists('replace_userdata'))
+	if ( ! function_exists('replace_parameters'))
 	{
-		function replace_userdata($str, $REGEX_USERDATA='/{{(\w+)}}/') {
-            $session = \Config\Services::session();
 
-			$matches = null;
-			while (preg_match($REGEX_USERDATA, $str, $matches)) {
-				//use userdata
-				$val = $session->get($matches[1]);
-				if (isset($val) && $val != null) {
-					$str = str_replace($matches[0], $val, $str);
-				}
-				else {
-					$str = str_replace($matches[0], "--" .$matches[1]. "--", $str);
-				}
-			}
+        /**
+         * Expected format for parameters: <clz>.<name>
+         * Possible parameter class:
+         * - session : get from user session
+         * - input: get from POST/GET data
+         * - setting: get from database (dbo_settings)
+         * - custom tags -> provided in $tags with values array in $filters
+         */
+        function replace_parameters($str, $tag = null, $tagvalues = null, $REGEX_USERDATA='/{{[\w\.]*}}/') {
+            if(empty($str))     return $str;
+    
+            $matches = null;
+            preg_match_all($REGEX_USERDATA, $str, $matches);
+            if ($matches != null && count($matches) > 0) {
+                foreach($matches[0] as $m) {
+                    $param = substr($m, 2, strlen($m)-4);
+                    $arr = explode('.', $param, 2);
+    
+                    $clz = $name = $value = "";
+                    if (count($arr)>0) {
+                        $clz = $arr[0];
+                        $name = $arr[1];
+                    }
+                    else {
+                        $clz = 'session';
+                        $name = $arr[1];
+                    }
+    
+                    //get the value
+                    $value = null;
+                    if ($clz == 'session') {
+                        $session = \Config\Services::session();
+                        $value = $session->get($name);
+                    }
+                    else if ($clz == 'input') {
+                        $request = \Config\Services::request();
+                        $value = $request->getPostGet($name);
+                        
+                    }
+                    else if ($clz == 'setting') {
+                        $setting = new \App\Libraries\Setting();
+                        $value = $setting->get($name);
+                        
+                    }
+                    else if (!empty($tagvalues) > 0 && $clz == $tag) {
+                        $value = array_key_exists($name, $tagvalues) ? $tagvalues[$name] : null;
+                    }
+                    
+                    //replace the value
+                    if (!empty($value)) {
+                        $str = str_replace($m, $value, $str);
+                    }
+                    else {
+                        $str = str_replace($m, "--" .$param. "--", $str);
+                    }
+                }
+            }
+    
+            return $str;
+        }
 
-			return $str;
-		}
 	}
 
 	if ( ! function_exists('json_not_login'))

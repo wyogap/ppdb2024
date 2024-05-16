@@ -378,7 +378,7 @@ class Mcrud implements ICrudModel
 
         $this->table_metas['where_clause'] = "";
         if (!empty($arr['where_clause'])) {
-            $this->table_metas['where_clause'] = replace_userdata($arr['where_clause']);
+            $this->table_metas['where_clause'] = $this->replace_parameters($arr['where_clause']);
         }
 
         $this->table_metas['orderby_clause'] = $arr['orderby_clause'];
@@ -444,44 +444,10 @@ class Mcrud implements ICrudModel
         }
     }
 
-    /**
-     * Whether the user can list down the table
-     */
-    public function can_view($user_id) {
-        //not implemented
-        return false;
-    }
+    function replace_parameters($str) {
+        if(empty($str))     return $str;
 
-    /**
-     * Whether the user can view the detail of particular entry
-     */
-    public function can_view_detail($user_id, $id) {
-        //not implemented
-        return false;
-    }
-
-    /**
-     * Whether the user can add new entry
-     */
-    public function can_add($user_id) {
-        //not implemented
-        return false;
-    }
-
-    /**
-     * Whether the user can edit a particular entry
-     */
-    public function can_edit($user_id, $id) {
-        //not implemented
-        return false;
-    }
-
-    /**
-     * Whether the user can delete a particular entry
-     */
-    public function can_delete($user_id, $id) {
-        //not implemented
-        return false;
+        return replace_parameters($str, 'filter', $this->level1_filter);
     }
     
 }

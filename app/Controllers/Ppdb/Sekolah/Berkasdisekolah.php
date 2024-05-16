@@ -65,7 +65,7 @@ class Berkasdisekolah extends PpdbController {
         $data['content_template'] = 'beranda.tpl';
 
         $data['page_title'] = 'Berkas Di Sekolah';
-        $this->smarty->render('ppdb2/sekolah/ppdbsekolah.tpl', $data);
+        $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}
 
 	function json() {

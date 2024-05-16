@@ -17,8 +17,8 @@ Class Mpesertadidik
 	// 	$builder->select('a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.kebutuhan_khusus,a.alamat,c.nama_desa AS desa_kelurahan,c.nama_kec AS kecamatan,c.nama_kab AS kabupaten,c.nama_prov AS provinsi,a.lintang,a.bujur,g.jenis_pilihan,c.kode_wilayah,c.kode_wilayah_kec AS kode_kecamatan,c.kode_wilayah_kab AS kode_kabupaten');
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
-	// 	$builder->join('tcg_pendaftaran g','a.peserta_didik_id = g.peserta_didik_id AND g.cabut_berkas = 1 AND g.pilihan != 0 AND g.soft_delete = 0');
-	// 	$builder->where(array('g.pendaftaran_id'=>$pendaftaran_id,'a.soft_delete'=>0));
+	// 	$builder->join('tcg_pendaftaran g','a.peserta_didik_id = g.peserta_didik_id AND g.cabut_berkas = 1 AND g.pilihan != 0 AND g.is_deleted = 0');
+	// 	$builder->where(array('g.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0));
 	// 	return $builder->get();
 	// }
 
@@ -34,7 +34,7 @@ Class Mpesertadidik
 	// 	$array = array('nama'=>$nama,'tempat_lahir'=>$tempat_lahir,'nama_ibu_kandung'=>$nama_ibu_kandung,FALSE);
 	// 	$builder->select('peserta_didik_id,nik,nisn,nomor_ujian,nama,jenis_kelamin,tempat_lahir,tanggal_lahir,nama_ibu_kandung,alamat');
 	// 	$builder = $this->db->table('tcg_peserta_didik');
-	// 	$builder->where(array('jenis_kelamin'=>$jenis_kelamin,'soft_delete'=>0));
+	// 	$builder->where(array('jenis_kelamin'=>$jenis_kelamin,'is_deleted'=>0));
 	// 	$builder->like($array);
 	// 	if($nisn!=""){
 	// 		$builder->where('nisn',$nisn);
@@ -59,10 +59,10 @@ Class Mpesertadidik
 				  from tcg_peserta_didik a
 				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
 				  join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
-				  join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.soft_delete=0
+				  join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.is_deleted=0
 				  ";
 
-		$where = "a.soft_delete=0 and a.nama like '%" . $nama . "%'";
+		$where = "a.is_deleted=0 and a.nama like '%" . $nama . "%'";
 		if (!empty($jenis_kelamin))
 			$where .= " AND a.jenis_kelamin='" . $jenis_kelamin . "'";
 		if (!empty($nisn))
@@ -100,7 +100,7 @@ Class Mpesertadidik
 				  from tcg_peserta_didik a
 				  join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
 				  join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
-				  where a.soft_delete=0 and a.peserta_didik_id='$key'";
+				  where a.is_deleted=0 and a.peserta_didik_id='$key'";
 
 		return $this->db->query($query);	
 	}

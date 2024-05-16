@@ -64,7 +64,7 @@ class Daftarsiswa extends PpdbController {
         $data['content_template'] = 'daftarsiswa.tpl';
 
 		$data['page_title'] = 'Daftar Siswa';
-        $this->smarty->render('ppdb2/dapodik/ppdbdapodik.tpl', $data);
+        $this->smarty->render('ppdb/dapodik/ppdbdapodik.tpl', $data);
 	}
 
 	function json() {

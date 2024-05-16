@@ -74,7 +74,7 @@ class Verifikasi extends PpdbController {
         $data['content_template'] = 'verifikasi.tpl';
 
         $data['page_title'] = 'Verifikasi';
-        $this->smarty->render('ppdb2/sekolah/ppdbsekolah.tpl', $data);
+        $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
     }
 
 	function json() {

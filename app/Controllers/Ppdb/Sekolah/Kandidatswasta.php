@@ -53,7 +53,7 @@ class Kandidatswasta extends PpdbController {
         $data['content_template'] = 'kandidatswasta.tpl';
 
         $data['page_title'] = 'Kandidat Siswa';
-        $this->smarty->render('ppdb2/sekolah/ppdbsekolah.tpl', $data);
+        $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 
 	}
 

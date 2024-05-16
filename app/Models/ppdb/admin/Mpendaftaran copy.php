@@ -58,14 +58,14 @@ Class Mpendaftaran
 				`c`.`ubah_sekolah` AS `frekuensi_ubah_sekolah`,
 				`a`.`status_penerimaan_final` AS `status_penerimaan_final`,
 				`a`.`peringkat_final` AS `peringkat_final`,
-				`a`.`create_date` AS `create_date`
+				`a`.`created_on` AS `created_on`
 			FROM
 				`tcg_pendaftaran` `a`
 				JOIN `ref_penerapan` `b` ON (`a`.`penerapan_id` = `b`.`penerapan_id`)
 					AND (`b`.`aktif` = 1)
 					AND (`b`.`expired_date` IS NULL)
 				JOIN `tcg_peserta_didik` `c` ON (`a`.`peserta_didik_id` = `c`.`peserta_didik_id`)
-					AND (`c`.`soft_delete` = 0)
+					AND (`c`.`is_deleted` = 0)
 				JOIN `ref_sekolah` `d` ON (`a`.`sekolah_id` = `d`.`sekolah_id`)
 				JOIN `ref_jalur` `f` ON (`b`.`jalur_id` = `f`.`jalur_id`)
 					AND (`f`.`expired_date` IS NULL)
@@ -73,7 +73,7 @@ Class Mpendaftaran
 				(`a`.`kelengkapan_berkas` = 1)
 				AND (`a`.`cabut_berkas` = 0)
 				AND (`a`.`jenis_pilihan` <> 0)
-				AND (`a`.`soft_delete` = 0)
+				AND (`a`.`is_deleted` = 0)
 				AND a.tahun_ajaran_id='$tahun_ajaran_id'";
 
 		return $this->db->query($sql);
@@ -88,11 +88,11 @@ Class Mpendaftaran
 		return 1;
 	}
 
-	function tcg_cari_pendaftaran($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $sekolah_tujuan_id, $penerapan_id, $soft_delete){
+	function tcg_cari_pendaftaran($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $sekolah_tujuan_id, $penerapan_id, $is_deleted){
 
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, c.nama as sekolah_asal, e.nama as sekolah_tujuan, f.nama as penerapan, z.*
 				  from tcg_pendaftaran z
-				  join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.soft_delete=0
+				  join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.is_deleted=0
 				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
 				  join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
 				  join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.is_deleted=0
@@ -118,10 +118,10 @@ Class Mpendaftaran
 		if (!empty($penerapan_id))
 			$where .= " AND z.penerapan_id='" . $penerapan_id . "'";
 
-		if (empty($soft_delete))
-			$where .= " AND z.soft_delete=0";
+		if (empty($is_deleted))
+			$where .= " AND z.is_deleted=0";
 		else 
-			$where .= " AND z.soft_delete='$soft_delete'";
+			$where .= " AND z.is_deleted='$is_deleted'";
 
 		$query .= " WHERE " . $where;
 
@@ -138,8 +138,8 @@ Class Mpendaftaran
 
     function tcg_hapus_pendaftaran($key) {
 		$valuepair = array(
-			'soft_delete' => 1,
-			'last_update' => date("Y/m/d H:i:s")
+			'is_deleted' => 1,
+			'updated_on' => date("Y/m/d H:i:s")
 		);
 
 		$builder = $this->db->table('tcg_pendaftaran');
@@ -153,7 +153,7 @@ Class Mpendaftaran
 
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, z.*
 					from tcg_pendaftaran z
-					join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.soft_delete=0
+					join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.is_deleted=0
 					left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
 					join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
 					join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.is_deleted=0

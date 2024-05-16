@@ -232,7 +232,7 @@ class Profil extends PpdbController {
                                     "file_path"=>base_url().$row->path, 
                                     "web_path"=>base_url().$row->web_path, 
                                     "thumbnail_path"=>base_url().$row->thumbnail_path, 
-                                    "create_date"=>$row->create_date);
+                                    "created_on"=>$row->created_on);
 
                                 $valuepair['surat_pernyataan_kebenaran_dokumen'] = $row->dokumen_id;
                             }
@@ -262,7 +262,7 @@ class Profil extends PpdbController {
                                     // if(!isset($data['dokumen'][8])) {
                                     //     $data['dokumen'][8] = array();
                                     // }
-                                    // $result['dokumen'][8][$row->dokumen_id] = array("dokumen_id"=>$row->dokumen_id, "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, "filename"=>$row->filename, "web_path"=>base_url().$row->web_path, "thumbnail_path"=>base_url().$row->thumbnail_path, "create_date"=>$row->create_date);
+                                    // $result['dokumen'][8][$row->dokumen_id] = array("dokumen_id"=>$row->dokumen_id, "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, "filename"=>$row->filename, "web_path"=>base_url().$row->web_path, "thumbnail_path"=>base_url().$row->thumbnail_path, "created_on"=>$row->created_on);
                                 }
                                 else {
                                     $result['dokumen'][$row->daftar_kelengkapan_id] = array(
@@ -274,7 +274,7 @@ class Profil extends PpdbController {
                                         "file_path"=>base_url().$row->path, 
                                         "web_path"=>base_url().$row->web_path, 
                                         "thumbnail_path"=>base_url().$row->thumbnail_path, 
-                                        "create_date"=>$row->create_date);
+                                        "created_on"=>$row->created_on);
                                 }   
                             }
                         }
@@ -592,7 +592,7 @@ class Profil extends PpdbController {
                     "file_path"=>base_url().$webpath_baru, 
                     "web_path"=>base_url().$webpath_baru, 
                     "thumbnail_path"=>base_url().$thumbpath_baru, 
-                    "create_date"=>$row->create_date);
+                    "created_on"=>$row->created_on);
 
                 // //remove old files
                 // if (!empty($webpath) && ile_exists(FCPATH. $webpath))

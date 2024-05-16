@@ -16,7 +16,7 @@
             <div class="row" style="flex-grow: 1;"><div class="col-12">
                 <div class="card widget-inline">
                     <div class="card-body">
-                    {include file='./crud-table.tpl' tbl=$subtbl.crud fsubtable='1' fkey=$subtbl.subtable_fkey_column flabel=$subtbl.label}
+                    {include file='./crud-table.tpl' tbl=$subtbl.crud fsubtable='1' fkey=$subtbl.subtable_fkey_column fkey2=$subtbl.subtable_fkey_column2 flabel=$subtbl.label}
                     </div>
                 </div>
             </div></div>

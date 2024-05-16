@@ -18,13 +18,13 @@ Class Mperubahandata
 		a.kode_wilayah as kode_wilayah_baru, a.kode_wilayah_lama,
 		a.lintang AS lintang_baru,a.lintang_lama,
 		a.bujur AS bujur_baru,a.bujur_lama,
-		a.create_date, a.keterangan_approval, f.nama as pengguna');
-		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.soft_delete = 0');
+		a.created_on, a.keterangan_approval, f.nama as pengguna');
+		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.id_level_wilayah = 4 AND c.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_wilayah d','b.kode_wilayah = d.kode_wilayah AND d.id_level_wilayah = 4 AND d.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('dbo_users f','a.pengguna_id = f.pengguna_id','LEFT OUTER');
-		$builder->where(array('a.approval'=>0,'a.soft_delete'=>0));
+		$builder->where(array('a.approval'=>0,'a.is_deleted'=>0));
 		return $builder->get();
 	}
 
@@ -37,13 +37,13 @@ c.nama AS desa_baru,d.nama AS desa_lama,
 a.kode_wilayah as kode_wilayah_baru, a.kode_wilayah_lama,
 a.lintang AS lintang_baru,a.lintang_lama,
 a.bujur AS bujur_baru,a.bujur_lama,
-a.create_date, a.keterangan_approval, f.nama as pengguna');
-		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.soft_delete = 0');
+a.created_on, a.keterangan_approval, f.nama as pengguna');
+		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.id_level_wilayah = 4 AND c.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_wilayah d','a.kode_wilayah_lama = d.kode_wilayah AND d.id_level_wilayah = 4 AND d.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('dbo_users f','a.pengguna_id = f.pengguna_id','LEFT OUTER');
-		$builder->where(array('a.approval !='=>0,'a.soft_delete'=>0));
+		$builder->where(array('a.approval !='=>0,'a.is_deleted'=>0));
 		return $builder->get();
 	}
 
@@ -56,12 +56,12 @@ a.tanggal_lahir AS tanggal_lahir_baru,b.tanggal_lahir AS tanggal_lahir_lama,
 c.nama AS desa_baru,d.nama AS desa_lama,
 a.lintang AS lintang_baru,b.lintang AS lintang_lama,
 a.bujur AS bujur_baru,b.bujur AS bujur_lama,
-a.tanggal_lahir,a.kode_wilayah,a.lintang,a.bujur,a.create_date,b.asal_data');
-		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.soft_delete = 0');
+a.tanggal_lahir,a.kode_wilayah,a.lintang,a.bujur,a.created_on,b.asal_data');
+		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.id_level_wilayah = 4 AND c.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_wilayah d','b.kode_wilayah = d.kode_wilayah AND d.id_level_wilayah = 4 AND d.expired_date IS NULL','LEFT OUTER');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.approval'=>0,'a.soft_delete'=>0));
+		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.approval'=>0,'a.is_deleted'=>0));
 		return $builder->get();
 	}
 
