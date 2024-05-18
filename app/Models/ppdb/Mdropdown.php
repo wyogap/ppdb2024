@@ -24,7 +24,7 @@ Class Mdropdown
 	// function kabupaten(){
 	// 	$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS kabupaten,b.nama AS provinsi');
 	// 	$builder = $this->db->table('ref_wilayah a');
-	// 	$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.expired_date IS NULL AND b.id_level_wilayah = 1');
+	// 	$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.is_deleted=0 AND b.id_level_wilayah = 1');
 	// 	$builder->where(array('a.id_level_wilayah'=>2,'a.expired_date'=>NULL));
 	// 	$builder->orderBy('b.nama','a.nama');
 	// 	return $builder->get();
@@ -71,8 +71,8 @@ Class Mdropdown
 	// // 	}
 	// // 	$builder->select('b.daftar_nilai_skoring_id,a.nama AS jenis,b.nama AS keterangan,b.nilai');
 	// // 	$builder = $this->db->table('ref_daftar_skoring a');
-	// // 	$builder->join('ref_daftar_nilai_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.expired_date IS NULL');
-	// // 	$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.expired_date IS NULL');
+	// // 	$builder->join('ref_daftar_nilai_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.is_deleted=0');
+	// // 	$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
 	// // 	$builder->where(array('a.expired_date'=>NULL,'a.manual'=>1,'c.kategori_prestasi'=>1,'b.penerapan_id'=>$penerapan_id));
 	// // 	$builder->orderBy('b.nilai ASC','a.nama ASC');
 	// // 	return $builder->get();
@@ -84,7 +84,7 @@ Class Mdropdown
 	function tcg_kabupaten(){
 		$builder = $this->db->table('ref_wilayah a');
 		$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS kabupaten,b.nama AS provinsi');
-		$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.expired_date IS NULL AND b.id_level_wilayah = 1');
+		$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.is_deleted=0 AND b.id_level_wilayah = 1');
 		$builder->where(array('a.id_level_wilayah'=>2,'a.expired_date'=>NULL));
 		$builder->orderBy('b.nama','a.nama');
 		return $builder->get();
@@ -194,7 +194,7 @@ Class Mdropdown
 		$sql = "select a.sekolah_id, a.nama, a.npsn 
 				from ref_sekolah  a
 				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.is_deleted=0
-				where a.expired_date is null and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
+				where a.is_deleted=0 and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
 				group by a.sekolah_id, a.nama
 				order by a.kode_wilayah, a.nama";
 
@@ -272,7 +272,7 @@ Class Mdropdown
 				select a.sekolah_id as value, concat('(',a.npsn,') ', a.nama) as label 
 				from ref_sekolah  a
 				join dbo_kuota_sekolah b on a.sekolah_id=b.sekolah_id and b.is_deleted=0
-				where a.expired_date is null and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
+				where a.is_deleted=0 and a.kode_wilayah_kab=? and (a.bentuk='SMP') and b.ikut_ppdb=1
 				group by a.sekolah_id, a.nama
 				order by a.kode_wilayah, a.nama
 			)
@@ -336,19 +336,19 @@ Class Mdropdown
 		$query = "
 		select b.skoring_id, d.nama as jenis, b.nama as keterangan, c.nilai
 		from ref_penerapan a
-		join ref_daftar_skoring b on a.jalur_id=b.jalur_id and b.expired_date IS NULL
-		join ref_daftar_nilai_skoring c on b.skoring_id=c.skoring_id and c.tahun_ajaran_id=a.tahun_ajaran_id and c.expired_date is NULL
-		join ref_tipe_skoring d on b.tipe_skoring_id=d.tipe_skoring_id and d.expired_date is NULL
-		where a.penerapan_id=$penerapan_id and a.kategori_prestasi=1 and a.expired_date is NULL
+		join ref_daftar_skoring b on a.jalur_id=b.jalur_id and b.is_deleted=0
+		join ref_daftar_nilai_skoring c on b.skoring_id=c.skoring_id and c.tahun_ajaran_id=a.tahun_ajaran_id and c.is_deleted=0
+		join ref_tipe_skoring d on b.tipe_skoring_id=d.tipe_skoring_id and d.is_deleted=0
+		where a.penerapan_id=$penerapan_id and a.kategori_prestasi=1 and a.is_deleted=0
 		order by b.tipe_skoring_id desc, c.nilai asc, b.nama asc";
 
 		return $this->db->query($query, array($penerapan_id));
 
 		// $builder->select('a.daftar_nilai_skoring_id,b.nama AS jenis,a.nama AS keterangan,a.nilai');
 		// $builder = $this->db->table('ref_daftar_nilai_skoring a');
-		// $builder->join('ref_daftar_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.expired_date IS NULL');
-		// //$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
-		// $builder->join('ref_penerapan d','d.jalur_id = a.jalur_id AND d.aktif = 1 AND d.expired_date IS NULL');
+		// $builder->join('ref_daftar_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.is_deleted=0');
+		// //$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
+		// $builder->join('ref_penerapan d','d.jalur_id = a.jalur_id AND d.aktif = 1 AND d.is_deleted=0');
 		// $builder->where(array('a.expired_date'=>NULL,'b.manual'=>1,'d.kategori_prestasi'=>1,'d.penerapan_id'=>$penerapan_id));
 		// $builder->orderBy('a.daftar_skoring_id desc', 'a.nilai ASC','a.nama ASC');
 		
@@ -375,8 +375,8 @@ Class Mdropdown
 			(
 				select a.skoring_id as value, b.nama as label, a.urutan as urutan1, b.urutan as urutan2, b.tipe_skoring_id, a.nilai
 				  from ref_daftar_nilai_skoring a
-				  join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.expired_date is null
-				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.expired_date is null and b.kunci=0 
+				  join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0 and b.kunci=0 
 			)
 		)
 		select value, label from data order by urutan1, urutan2, tipe_skoring_id, nilai desc";
@@ -438,6 +438,25 @@ Class Mdropdown
 				where expired_date is null and sekolah_id='$sekolah_id'";
 
 		return $this->db->query($sql, array($sekolah_id));	
+	}
+
+	function tcg_lookup_jenjang() {
+		$query = "
+		select a.jenjang_id as value, a.nama as label
+		from ref_jenjang a
+		order by a.jenjang_id asc";
+
+		return $this->db->query($query)->getResultArray();
+	}
+
+	function tcg_lookup_asaldata() {
+		$query = "
+		select a.value, a.label
+		from dbo_lookups a
+        where a.group='asaldata'
+		order by a.order_no asc";
+
+		return $this->db->query($query)->getResultArray();
 	}
 
 }

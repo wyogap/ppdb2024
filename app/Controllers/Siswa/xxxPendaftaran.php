@@ -45,7 +45,7 @@ class Pendaftaran extends PpdbController {
 
 	function index()
 	{
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$kode_wilayah = $this->session->get("kode_wilayah");
 		$tanggal_lahir = $this->session->get("tanggal_lahir");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
@@ -117,7 +117,7 @@ class Pendaftaran extends PpdbController {
 
 	function debug()
 	{
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$kode_wilayah = $this->session->get("kode_wilayah");
 		$tanggal_lahir = $this->session->get("tanggal_lahir");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
@@ -188,7 +188,7 @@ class Pendaftaran extends PpdbController {
     }
 
     function json() {
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
 
         $action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
@@ -215,7 +215,7 @@ class Pendaftaran extends PpdbController {
     }
 
     function uploaddokumen() {
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
 
 		$action = $_POST["action"] ?? null; 
 		if (empty($action) || $action=='view') {
@@ -289,7 +289,7 @@ class Pendaftaran extends PpdbController {
 	{
 		$penerapan_id = $_GET["penerapan_id"] ?? 0; 
 		
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$kode_wilayah = $this->session->get("kode_wilayah");
 		$tanggal_lahir = $this->session->get("tanggal_lahir");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
@@ -360,7 +360,7 @@ class Pendaftaran extends PpdbController {
 	
 	function detailsekolah()
 	{
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$penerapan_id = $_POST["penerapan_id"] ?? 0; 
 		$sekolah_id = $_POST["sekolah_id"] ?? null; 
 
@@ -391,7 +391,7 @@ class Pendaftaran extends PpdbController {
 	
 	function daftar()
 	{
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$sekolah_id = $_POST["sekolah_id"] ?? null; 
 		$penerapan_id = $_POST["penerapan_id"] ?? 0; 
 		$jenis_pilihan = $_POST["jenis_pilihan"] ?? null; 
@@ -495,7 +495,7 @@ class Pendaftaran extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 		
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$batasanperubahan = $this->Msetting->tcg_batasanperubahan();
 		$batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
@@ -526,7 +526,7 @@ class Pendaftaran extends PpdbController {
 		$jenis_pilihan_baru = $_POST["jenis_pilihan_baru"] ?? null; 
 
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$msg = '';
 		if($jenis_pilihan_awal!=$jenis_pilihan_baru){
@@ -546,7 +546,7 @@ class Pendaftaran extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 		
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$kode_wilayah = $this->session->get("kode_wilayah");
 
 		$batasanperubahan = $this->Msetting->tcg_batasanperubahan();
@@ -623,7 +623,7 @@ class Pendaftaran extends PpdbController {
 		$jalur_penerapan_baru = $_POST["jalur_penerapan_baru"] ?? null; 
 
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$msg = '';
 		if($jalur_penerapan_awal!=$jalur_penerapan_baru){
@@ -643,7 +643,7 @@ class Pendaftaran extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$kode_wilayah = $this->session->get("kode_wilayah");
 		$tanggal_lahir = $this->session->get("tanggal_lahir");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
@@ -730,7 +730,7 @@ class Pendaftaran extends PpdbController {
 		$sekolah_id = $_POST["sekolah_id"] ?? null; 
 		
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$batasanperubahan = $this->Msetting->tcg_batasanperubahan();
 		$batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
@@ -760,7 +760,7 @@ class Pendaftaran extends PpdbController {
 		$sekolah_id_baru = $_POST["sekolah_id"] ?? null; 
 
 		//only siswa can do this
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
         $this->Msetting = new Msetting();
 
@@ -808,9 +808,9 @@ class Pendaftaran extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
 		if (empty($peserta_didik_id))
-			$peserta_didik_id = $this->session->get("pengguna_id");
+			$peserta_didik_id = $this->session->get("user_id");
 
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 		$peran_id = $this->session->get("peran_id");
 
 		if($peran_id == 1 && ($peserta_didik_id != $pengguna_id)) {
@@ -858,9 +858,9 @@ class Pendaftaran extends PpdbController {
 		
 		$peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 		if (empty($peserta_didik_id))
-			$peserta_didik_id = $this->session->get("pengguna_id");
+			$peserta_didik_id = $this->session->get("user_id");
 
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 		$peran_id = $this->session->get("peran_id");
 
 		if($peran_id == 1 && $peserta_didik_id != $pengguna_id) {
@@ -903,7 +903,7 @@ class Pendaftaran extends PpdbController {
 	}
 
 	function buktipendaftaran() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$username = $this->session->get("username");
 		$peran_id = $this->session->get("peran_id");
 		$nisn = $this->session->get("nisn");
@@ -952,7 +952,7 @@ class Pendaftaran extends PpdbController {
 	}
 
 	function kesanggupankelengkapanakte() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$username = $this->session->get("username");
 		$peran_id = $this->session->get("peran_id");
 		$nisn = $this->session->get("nisn");
@@ -1001,7 +1001,7 @@ class Pendaftaran extends PpdbController {
 	}
 
 	function rekapitulasizonasi() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$data['data'] = $this->Msiswa->tcg_rekapitulasi_sekolah_dalam_zonasi($peserta_didik_id)->getResult_array();
 
@@ -1011,7 +1011,7 @@ class Pendaftaran extends PpdbController {
 	function dokumentpendukungjalur() {
 		$penerapan_id = $_POST["penerapan_id"] ?? null; 
 
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$data['dokumentambahan'] = $this->Msiswa->tcg_dokumen_pendukung_tambahan_penerapan($peserta_didik_id, $penerapan_id);
 		$data['files'] = array();
@@ -1022,7 +1022,7 @@ class Pendaftaran extends PpdbController {
 	function daftarsekolah() {
 		$penerapan_id = $_POST["penerapan_id"] ?? null; 
 		$jenis_pilihan = $_POST["jenis_pilihan"] ?? null; 
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 
 		$data = $this->Msiswa->tcg_pilihansekolah($peserta_didik_id, $penerapan_id, $jenis_pilihan);
 

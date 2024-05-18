@@ -77,11 +77,6 @@ class Daftarulang extends PpdbController {
 		}
         while (false);
 
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        //END DEBUG
-
         //content template
         $data['content_template'] = 'daftarulang.tpl';
 
@@ -177,7 +172,7 @@ class Daftarulang extends PpdbController {
 
 	function prosesdaftarulang()
 	{
-		$pengguna_id = $this->session->get('pengguna_id');
+		$pengguna_id = $this->session->get('user_id');
 		$sekolah_id = $this->session->get('sekolah_id');
 		$peran_id = $this->session->get('peran_id');
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
@@ -236,7 +231,7 @@ class Daftarulang extends PpdbController {
 
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
 		if (empty($peserta_didik_id)) {
-			$peserta_didik_id = $this->session->get("pengguna_id");
+			$peserta_didik_id = $this->session->get("user_id");
 		}
 	
 		$tahun_ajaran_id = $_GET["tahun_ajaran_id"] ?? null; 

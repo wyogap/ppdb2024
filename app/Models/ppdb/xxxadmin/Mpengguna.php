@@ -10,11 +10,8 @@ Class Mpengguna
         $this->session = \Config\Services::session();
     }
 
-	function ubahpassword($pengguna_id, $username)
+	function ubahpassword($user_id, $username)
 	{
-		// $pengguna_id = $_POST["pengguna_id"] ?? null; 
-		// $username = $_POST["username"] ?? null; 
-
 		$password = str_replace("@ppdb.go.id", "", $username);
 		$data = array(
 			'password' => md5($password),
@@ -22,7 +19,7 @@ Class Mpengguna
 		);
 
 		$builder = $this->db->table('dbo_users');
-		$builder->where(array('pengguna_id'=>$pengguna_id,'role_id'=>1,'is_deleted'=>0));
+		$builder->where(array('user_id'=>$user_id,'role_id'=>1,'is_deleted'=>0));
 		return $builder->update($data);
 	}
 
@@ -51,7 +48,7 @@ Class Mpengguna
 		from dbo_users a
 		left outer join ref_sekolah b on a.sekolah_id=b.sekolah_id 
 		left join dbo_roles c on a.role_id=c.role_id and c.is_deleted=0
-		WHERE a.role_id != 1 and a.pengguna_id = '$key' and a.is_deleted=0
+		WHERE a.role_id != 1 and a.user_id = '$key' and a.is_deleted=0
 		";
 
 		return $this->db->query($query);
@@ -59,15 +56,13 @@ Class Mpengguna
 
     function tcg_ubah_pengguna($key, $valuepair) {
 		$builder = $this->db->table('dbo_users');
-        $builder->where('pengguna_id', $key);
+        $builder->where('user_id', $key);
         $builder->update($valuepair);
 
         return 1;
     }
 
     function tcg_hapus_pengguna($key) {
-        // $builder->where('pengguna_id', $key);
-        // $builder->delete('dbo_users');
 
 		$valuepair = array (
 			'is_deleted' => 1,
@@ -75,7 +70,7 @@ Class Mpengguna
 		);
 
 		$builder = $this->db->table('dbo_users');
-        $builder->where('pengguna_id', $key);
+        $builder->where('user_id', $key);
         $builder->update($valuepair);
 
         return $this->db->affectedRows();
@@ -103,18 +98,18 @@ Class Mpengguna
     }
 
 	function tcg_pengguna_id_from_username($username) {
-		$sql = "select pengguna_id from dbo_users where user_name='$username'";
+		$sql = "select user_id from dbo_users where user_name='$username'";
 
-		$pengguna_id = "";
+		$user_id = "";
 		foreach($this->db->query($sql)->getResult() as $row) {
-			$pengguna_id = $row->pengguna_id;
+			$user_id = $row->user_id;
 		}
 
-		return $pengguna_id;
+		return $user_id;
 	}
 
-	function tcg_cek_username($pengguna_id, $username) {
-		$sql = "select count(*) cnt from dbo_users where user_name='$username' and pengguna_id!='$pengguna_id' and is_deleted=0";
+	function tcg_cek_username($peserta_didik_id, $username) {
+		$sql = "select count(*) cnt from dbo_users where user_name='$username' and peserta_didik_id!='$peserta_didik_id' and is_deleted=0";
 
 		$cnt = 0;
 		foreach($this->db->query($sql)->getResult() as $row) {

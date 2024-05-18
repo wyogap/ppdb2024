@@ -15,7 +15,7 @@ class AuditTrail {
     }
 
 	function trail($table, $reference, $action, $description, $keys = null, $values = null) {
-        $pengguna_id = $this->session->get("user_id");
+        $user_id = $this->session->get("user_id");
 
         $str_keys = "";
         $str_values = "";
@@ -63,7 +63,7 @@ class AuditTrail {
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $pengguna_id
+            'created_by' => $user_id
         );
 
         $builder = $this->db->table('dbo_audit_trails');
@@ -71,7 +71,7 @@ class AuditTrail {
     }
 
     function insert($table, $reference, $keys, $values = null) {
-        $pengguna_id = $this->session->get("user_id");
+        $user_id = $this->session->get("user_id");
 
         $action = "INSERT";
         $description = "Insert row";
@@ -111,7 +111,7 @@ class AuditTrail {
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $pengguna_id
+            'created_by' => $user_id
         );
 
         $builder = $this->db->table('dbo_audit_trails');
@@ -119,7 +119,7 @@ class AuditTrail {
     }
 
     function update($table, $reference, $keys, $values = null) {
-        $pengguna_id = $this->session->get("user_id");
+        $user_id = $this->session->get("user_id");
 
         $action = "UPDATE";
         $description = "Update row";
@@ -159,7 +159,7 @@ class AuditTrail {
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $pengguna_id
+            'created_by' => $user_id
         );
 
         $builder = $this->db->table('dbo_audit_trails');
@@ -167,7 +167,7 @@ class AuditTrail {
     }
 
     function delete($table, $reference) {
-        $pengguna_id = $this->session->get("user_id");
+        $user_id = $this->session->get("user_id");
  
          $action = "DELETE";
          $description = "Delete row";
@@ -181,7 +181,7 @@ class AuditTrail {
              'long_description' => $description,
              'col_names' => $str_keys,
              'col_values' => $str_values,
-             'created_by' => $pengguna_id
+             'created_by' => $user_id
          );
  
          $builder = $this->db->table('dbo_audit_trails');
@@ -189,7 +189,7 @@ class AuditTrail {
     }
  
     function softdelete($table, $reference) {
-        $pengguna_id = $this->session->get("user_id");
+        $user_id = $this->session->get("user_id");
 
         $action = "SOFT DELETE";
         $description = "Soft-delete row";
@@ -203,7 +203,7 @@ class AuditTrail {
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $pengguna_id
+            'created_by' => $user_id
         );
 
         $builder = $this->db->table('dbo_audit_trails');

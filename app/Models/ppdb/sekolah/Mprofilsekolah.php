@@ -23,8 +23,8 @@ Class Mprofilsekolah
 		$builder = $this->db->table('ref_sekolah a');
 
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,c3.nama AS kecamatan,a.lintang,a.bujur');
-		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
-		$builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.expired_date IS NULL','LEFT OUTER');
+		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
 		$builder->where('a.sekolah_id',$sekolah_id);
 		return $builder->get();
 	}
@@ -35,8 +35,8 @@ Class Mprofilsekolah
 
 		$builder = $this->db->table('tcg_penerapan_sekolah a');
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota');
-		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.expired_date IS NULL');
-		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0');
+		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.is_deleted'=>0, 'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 		$builder->orderBy('a.kuota DESC','c.nama ASC');
 		return $builder->get();
@@ -48,7 +48,7 @@ Class Mprofilsekolah
 
 		$builder = $this->db->table('ref_penerapan a');
 		$builder->select('a.penerapan_id,c.nama AS jalur');
-		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.aktif'=>1,'a.expired_date'=>NULL,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 		return $builder->get();
 	}
@@ -60,8 +60,8 @@ Class Mprofilsekolah
 		$builder = $this->db->table('tcg_kelengkapan_pendaftaran a');
 		$builder->select('a.kelengkapan_pendaftaran_id,d.nama AS kelengkapan,a.verifikasi');
 		$builder->join('tcg_pendaftaran b','a.pendaftaran_id = b.pendaftaran_id AND b.cabut_berkas = 0 AND b.jenis_pilihan != 0 AND b.is_deleted = 0');
-		$builder->join('ref_kelengkapan_penerapan c','a.kelengkapan_penerapan_id = c.kelengkapan_penerapan_id AND c.perlu_verifikasi = 1 AND c.expired_date IS NULL');
-		$builder->join('ref_daftar_kelengkapan d','c.daftar_kelengkapan_id = d.daftar_kelengkapan_id AND d.expired_date IS NULL');
+		$builder->join('tcg_kelengkapan_dokumen c','a.kelengkapan_dokumen_id = c.kelengkapan_dokumen_id AND c.perlu_verifikasi = 1 AND c.is_deleted=0');
+		$builder->join('ref_daftar_kelengkapan d','c.daftar_kelengkapan_id = d.daftar_kelengkapan_id AND d.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'b.sekolah_id'=>$sekolah_id,'a.is_deleted'=>0));
 		return $builder->get();
 	}
@@ -78,7 +78,7 @@ Class Mprofilsekolah
 
 	// function prosesverifikasiberkasi($kelengkapan_pendaftaran_id,$verifikasi)
 	// {
-	// 	$verifikator_id = $this->session->get("pengguna_id");
+	// 	$verifikator_id = $this->session->get("user_id");
 	// 	$data = array(
 	// 		'verifikasi' => $verifikasi,
 	// 		'verifikator_id' => $verifikator_id,
@@ -89,7 +89,7 @@ Class Mprofilsekolah
 	// }
 
 	function checkkelengkapanberkas($pendaftaran_id) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		return $this->db->query("CALL " .SQL_CEK_KELENGKAPANBERKAS. "('$pendaftaran_id', '$pengguna_id');");
 	}
@@ -116,7 +116,7 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,b.lintang,b.bujur,a.kelengkapan_berkas,skor,a.created_on');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 		$builder->orderBy('a.created_on');
@@ -146,7 +146,7 @@ Class Mprofilsekolah
 
         $approval = 1;
 		$keterangan_approval = "Update lewat sekolah";
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		return $this->db->query("CALL " .SQL_UBAH_DATA. " ('$peserta_didik_id',$approval,'$keterangan_approval','$kode_wilayah','$tanggal_lahir','$lintang','$bujur','$pengguna_id')");
 	}
@@ -158,11 +158,11 @@ Class Mprofilsekolah
 		$builder->select('f.perubahan_data_siswa_id,a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,b.tanggal_lahir AS tanggal_lahir_lama,f.tanggal_lahir AS tanggal_lahir_baru,g.nama AS desa_lama,h.nama AS desa_baru,b.lintang AS lintang_lama,f.lintang AS lintang_baru,b.bujur AS bujur_lama,f.bujur AS bujur_baru,f.approval,f.created_on');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 		$builder->join('dbo_perubahan_data_siswa f','a.peserta_didik_id = f.peserta_didik_id AND f.is_deleted = 0');
-		$builder->join('ref_wilayah g','b.kode_wilayah = g.kode_wilayah AND g.expired_date IS NULL AND g.id_level_wilayah = 4','LEFT OUTER');
-		$builder->join('ref_wilayah h','f.kode_wilayah = h.kode_wilayah AND h.expired_date IS NULL AND h.id_level_wilayah = 4','LEFT OUTER');
+		$builder->join('ref_wilayah g','b.kode_wilayah = g.kode_wilayah AND g.is_deleted=0 AND g.id_level_wilayah = 4','LEFT OUTER');
+		$builder->join('ref_wilayah h','f.kode_wilayah = h.kode_wilayah AND h.is_deleted=0 AND h.id_level_wilayah = 4','LEFT OUTER');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 		$builder->orderBy('a.created_on');
 		return $builder->get();
@@ -177,22 +177,22 @@ Class Mprofilsekolah
 		$builder->select("f.perubahan_data_siswa_id,a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,b.tanggal_lahir AS tanggal_lahir_lama,f.tanggal_lahir AS tanggal_lahir_baru,'' AS padukuhan_lama,'' AS padukuhan_baru,g.nama_desa AS desa_lama,h.nama_desa AS desa_baru,b.lintang AS lintang_lama,f.lintang AS lintang_baru,b.bujur AS bujur_lama,f.bujur AS bujur_baru,f.approval,f.created_on");
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 		$builder->join('dbo_perubahan_data_siswa f','a.peserta_didik_id = f.peserta_didik_id AND f.is_deleted = 0');
-		$builder->join('ref_wilayah g','b.kode_wilayah = g.kode_wilayah AND g.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah g4','g.kode_wilayah_desa = g4.kode_wilayah AND g4.expired_date IS NULL','LEFT OUTER');
-		$builder->join('ref_wilayah h','f.kode_wilayah = h.kode_wilayah AND h.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah h4','f.kode_wilayah_desa = h4.kode_wilayah AND h4.expired_date IS NULL','LEFT OUTER');
-		//$builder->join('ref_wilayah i','LEFT(b.kode_wilayah,10) = LEFT(i.kode_wilayah,10) AND i.expired_date IS NULL AND i.id_level_wilayah = 5','LEFT OUTER');
-		//$builder->join('ref_wilayah j','LEFT(f.kode_wilayah,10) = LEFT(j.kode_wilayah,10) AND j.expired_date IS NULL AND j.id_level_wilayah = 5','LEFT OUTER');
+		$builder->join('ref_wilayah g','b.kode_wilayah = g.kode_wilayah AND g.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah g4','g.kode_wilayah_desa = g4.kode_wilayah AND g4.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_wilayah h','f.kode_wilayah = h.kode_wilayah AND h.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah h4','f.kode_wilayah_desa = h4.kode_wilayah AND h4.is_deleted=0','LEFT OUTER');
+		//$builder->join('ref_wilayah i','LEFT(b.kode_wilayah,10) = LEFT(i.kode_wilayah,10) AND i.is_deleted=0 AND i.id_level_wilayah = 5','LEFT OUTER');
+		//$builder->join('ref_wilayah j','LEFT(f.kode_wilayah,10) = LEFT(j.kode_wilayah,10) AND j.is_deleted=0 AND j.id_level_wilayah = 5','LEFT OUTER');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.jenis_pilihan !='=>0,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 		return $builder->get();
 	}
 
 	function hapusperubahandatasiswa($perubahan_data_siswa_id, $peserta_didik_id)
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 		// $perubahan_data_siswa_id = $_POST["perubahan_data_siswa_id"] ?? null; 
 		// $peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 
@@ -215,7 +215,7 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,a.updated_on');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.jenis_pilihan'=>1,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 		$builder->orderBy('a.created_on');
@@ -229,7 +229,7 @@ Class Mprofilsekolah
 	// 	$builder = $this->db->table('tcg_pendaftaran a');
 	// 	$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 	// 	$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 	// 	$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.jenis_pilihan !='=>1,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 	// 	$builder->orderBy('a.created_on');
@@ -243,7 +243,7 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.tanggal_cabut_berkas,a.created_on,a.updated_on');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->where(array('a.jenis_pilihan'=>1,'a.cabut_berkas'=>1,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 		$builder->orderBy('a.created_on');
@@ -258,7 +258,7 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,a.updated_on');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
 		$builder->orderBy('a.created_on');
@@ -270,7 +270,7 @@ Class Mprofilsekolah
 		// $peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 		// $pendaftaran_id = $_POST["pendaftaran_id"] ?? null; 
 		// $keterangan = $_POST["keterangan"] ?? null; 
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "CALL " .SQL_CABUT_BERKAS. " (?,?,?,?)";
 		return $this->db->query($sql, array($peserta_didik_id,$pendaftaran_id,$keterangan,$pengguna_id));
@@ -281,7 +281,7 @@ Class Mprofilsekolah
 		// $peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 		// $pendaftaran_id = $_POST["pendaftaran_id"] ?? null; 
 		// $keterangan = $_POST["keterangan"] ?? null; 
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "CALL " .SQL_HAPUS_PENDAFTARAN. " (?,?,?,?)";
 		return $this->db->query($sql, array($peserta_didik_id,$pendaftaran_id,$keterangan,$pengguna_id));
@@ -474,9 +474,9 @@ Class Mprofilsekolah
 				and (z.masuk_jenis_pilihan=0 or z.masuk_jenis_pilihan=z.jenis_pilihan)
 			) as jml_pendaftar
 		from ref_penerapan a
-		join ref_jalur c on a.jalur_id = c.jalur_id AND c.expired_date IS NULL
+		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
 		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
-		where a.aktif=1 and a.expired_date is null and 
+		where a.aktif=1 and a.is_deleted=0 and 
 		d.sekolah_id=? and a.tahun_ajaran_id=?
 		order by a.penerapan_id		
 		";
@@ -498,16 +498,16 @@ Class Mprofilsekolah
 	g.kode_wilayah_kec AS kode_kecamatan,g.nama_kec AS kecamatan,c.nik,c.nisn,c.nomor_ujian,c.jenis_kelamin,c.tempat_lahir,c.tanggal_lahir,c.nama_ibu_kandung,c.nama_ayah,
 	c.nama_wali,c.kebutuhan_khusus,c.no_KIP,c.lintang,c.bujur,c.asal_data,c.cabut_berkas AS frekuensi_cabut_berkas,c.ubah_pilihan AS frekuensi_ubah_pilihan,
 	c.ubah_sekolah AS frekuensi_ubah_sekolah,a.created_on');
-		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.expired_date IS NULL');
+		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0');
 		$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id AND c.is_deleted = 0');
 		$builder->join('ref_sekolah d','a.sekolah_id = d.sekolah_id');
-		$builder->join('ref_jalur f','b.jalur_id = f.jalur_id AND f.expired_date IS NULL');
-		$builder->join('ref_wilayah g','c.kode_wilayah = g.kode_wilayah AND g.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah g4','g.kode_wilayah_desa = g4.kode_wilayah AND g4.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah g3','g.kode_wilayah_kec = g3.kode_wilayah AND g3.expired_date IS NULL','LEFT OUTER');
-		$builder->join('ref_wilayah i','d.kode_wilayah = i.kode_wilayah AND i.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah i4','i.kode_wilayah_desa = i4.kode_wilayah AND i4.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah i3','i.kode_wilayah_kec = i3.kode_wilayah AND i3.expired_date IS NULL','LEFT OUTER');
+		$builder->join('ref_jalur f','b.jalur_id = f.jalur_id AND f.is_deleted=0');
+		$builder->join('ref_wilayah g','c.kode_wilayah = g.kode_wilayah AND g.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah g4','g.kode_wilayah_desa = g4.kode_wilayah AND g4.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah g3','g.kode_wilayah_kec = g3.kode_wilayah AND g3.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_wilayah i','d.kode_wilayah = i.kode_wilayah AND i.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah i4','i.kode_wilayah_desa = i4.kode_wilayah AND i4.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah i3','i.kode_wilayah_kec = i3.kode_wilayah AND i3.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah k','c.sekolah_id = k.sekolah_id','LEFT OUTER');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.cabut_berkas'=>0,'a.jenis_pilihan!='=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 		return $builder->get();
@@ -519,7 +519,7 @@ Class Mprofilsekolah
 		$builder = $this->db->table('tcg_peserta_didik a');
 		$builder->select('b.pendaftaran_id,b.nomor_pendaftaran,b.penerapan_id,a.peserta_didik_id,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.alamat,c.keterangan,b.jenis_pilihan,d.nama AS sekolah,e.nama AS sekolah_asal,a.created_on');
 		$builder->join('tcg_pendaftaran b','a.peserta_didik_id = b.peserta_didik_id AND b.cabut_berkas = 0 AND b.is_deleted = 0 AND b.jenis_pilihan != 0');
-		$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.kategori_prestasi = 1 AND c.expired_date IS NULL');
+		$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.kategori_prestasi = 1 AND c.is_deleted=0');
 		$builder->join('ref_sekolah d','b.sekolah_id = d.sekolah_id');
 		$builder->join('ref_sekolah e','a.sekolah_id = e.sekolah_id');
 		$builder->where(array('b.sekolah_id'=>$sekolah_id,'a.is_deleted'=>0));
@@ -534,11 +534,11 @@ Class Mprofilsekolah
 		$builder->select('h.pendaftaran_id,a.peserta_didik_id,g.user_name as username,a.nisn,a.nama,b.sekolah_id,b.npsn,b.nama AS sekolah,a.nik,a.jenis_kelamin,a.kebutuhan_khusus,a.tempat_lahir,a.nama_ibu_kandung,a.alamat,a.tanggal_lahir,c.nama_desa AS desa_kelurahan,c.kode_wilayah_kec AS kode_kecamatan,c.nama_kec AS kecamatan,c.kode_wilayah_kab AS kode_kabupaten,c.nama_kab AS kabupaten,c.kode_wilayah_prov AS kode_provinsi,c.nama_prov AS provinsi,a.lintang,a.bujur,a.kode_wilayah,a.created_on,a.asal_data,h.prestasi_skoring_id,h.skor_prestasi');
 		$builder->join('tcg_pendaftaran h','a.peserta_didik_id = h.peserta_didik_id AND h.is_deleted = 0 AND h.cabut_berkas = 0 AND h.jenis_pilihan != 0');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.expired_date IS NULL','LEFT OUTER');
+		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
+		// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
 		$builder->join('dbo_users g','a.peserta_didik_id = g.pengguna_id AND g.role_id = 1 AND g.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('h.pendaftaran_id'=>$pendaftaran_id,'h.sekolah_id'=>$sekolah_id,'a.is_deleted'=>0));
 		return $builder->get();
@@ -550,9 +550,9 @@ Class Mprofilsekolah
 
 		$builder = $this->db->table('tcg_skoring_pendaftaran a');
 		$builder->select('a.skoring_pendaftaran_id,a.daftar_nilai_skoring_id,a.nilai');
-		$builder->join('ref_daftar_nilai_skoring b','a.daftar_nilai_skoring_id = b.daftar_nilai_skoring_id AND b.expired_date IS NULL');
-		$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.expired_date IS NULL AND c.kategori_prestasi = 1');
-		$builder->join('ref_daftar_skoring d','b.daftar_skoring_id = d.daftar_skoring_id AND d.manual = 1 AND d.expired_date IS NULL');
+		$builder->join('ref_daftar_nilai_skoring b','a.daftar_nilai_skoring_id = b.daftar_nilai_skoring_id AND b.is_deleted=0');
+		$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0 AND c.kategori_prestasi = 1');
+		$builder->join('ref_daftar_skoring d','b.daftar_skoring_id = d.daftar_skoring_id AND d.manual = 1 AND d.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'b.penerapan_id'=>$penerapan_id,'a.is_deleted'=>0));
 		return $builder->get();
 	}
@@ -573,8 +573,8 @@ Class Mprofilsekolah
 	// 	$builder->select('a.pendaftaran_id,a.penerapan_id,a.sekolah_id,e.nama AS jalur,a.nomor_pendaftaran,b.npsn,b.nama AS sekolah,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,a.peringkat,SUM(f.nilai) AS skor,a.created_on,b.bentuk');
 	// 	$builder = $this->db->table('tcg_pendaftaran a');
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.expired_date is NULL');
-	// 	$builder->join('ref_jalur e','c.jalur_id = e.jalur_id AND e.expired_date IS NULL');
+	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
+	// 	$builder->join('ref_jalur e','c.jalur_id = e.jalur_id AND e.is_deleted=0');
 	// 	$builder->join('tcg_skoring_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
 	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
 	// 	$builder->groupBy('a.pendaftaran_id,a.penerapan_id,a.sekolah_id,d.nama,e.nama,a.nomor_pendaftaran,b.npsn,b.nama,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,a.peringkat,a.created_on,b.bentuk');
@@ -582,85 +582,89 @@ Class Mprofilsekolah
 	// 	return $builder->get();
 	// }
 
-	function caripengajuanakun($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $approval){
-		// $nama = trim($_POST["nama"] ?? null); 
-		// $jenis_kelamin = $_POST["jenis_kelamin"] ?? null; 
-		// $tempat_lahir = $_POST["tempat_lahir"] ?? null; 
-		// $tanggal_lahir = $_POST["tanggal_lahir"] ?? null; 
-		// $approval = $_POST["approval"] ?? null; 
+	// function caripengajuanakun($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $approval){
+	// 	// $nama = trim($_POST["nama"] ?? null); 
+	// 	// $jenis_kelamin = $_POST["jenis_kelamin"] ?? null; 
+	// 	// $tempat_lahir = $_POST["tempat_lahir"] ?? null; 
+	// 	// $tanggal_lahir = $_POST["tanggal_lahir"] ?? null; 
+	// 	// $approval = $_POST["approval"] ?? null; 
 
-		$query = "
-		SELECT 
-			a.peserta_didik_id,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.alamat,b.approval 
-		FROM tcg_peserta_didik a
-		JOIN dbo_users b ON a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0
-		";
+	// 	$query = "
+	// 	SELECT 
+	// 		a.peserta_didik_id,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.alamat,b.approval 
+	// 	FROM tcg_peserta_didik a
+	// 	JOIN dbo_users b ON a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0
+	// 	";
 
-		$where = "a.is_deleted=0";
-		if (!empty($nama)) {
-			$name = secure("%$nama%");
-			$where .= " AND a.nama like $nama";
-		}
-		if (isset($approval)) {
-			if(strlen($approval) > 0) {
-				$approval = secure($approval);
-				$where .= " AND b.approval = $approval";
-			} else {
-				$where .= " AND b.approval != 1";
-			}
-		}
-		if (!empty($jenis_kelamin)) {
-			$jenis_kelamin = secure($jenis_kelamin);
-			$where .= " AND a.jenis_kelamin=$jenis_kelamin";
-		}
-		if (!empty($tempat_lahir)) {
-			$tempat_lahir = secure($tempat_lahir);
-			$where .= " AND a.tempat_lahir=$tempat_lahir";
-		}
-		if (!empty($tanggal_lahir)) {
-			$tanggal_lahir = secure($tanggal_lahir);
-			$where .= " AND a.tanggal_lahir=$tanggal_lahir";
-		}
+	// 	$where = "a.is_deleted=0";
+	// 	if (!empty($nama)) {
+	// 		$name = secure("%$nama%");
+	// 		$where .= " AND a.nama like $nama";
+	// 	}
+	// 	if (isset($approval)) {
+	// 		if(strlen($approval) > 0) {
+	// 			$approval = secure($approval);
+	// 			$where .= " AND b.approval = $approval";
+	// 		} else {
+	// 			$where .= " AND b.approval != 1";
+	// 		}
+	// 	}
+	// 	if (!empty($jenis_kelamin)) {
+	// 		$jenis_kelamin = secure($jenis_kelamin);
+	// 		$where .= " AND a.jenis_kelamin=$jenis_kelamin";
+	// 	}
+	// 	if (!empty($tempat_lahir)) {
+	// 		$tempat_lahir = secure($tempat_lahir);
+	// 		$where .= " AND a.tempat_lahir=$tempat_lahir";
+	// 	}
+	// 	if (!empty($tanggal_lahir)) {
+	// 		$tanggal_lahir = secure($tanggal_lahir);
+	// 		$where .= " AND a.tanggal_lahir=$tanggal_lahir";
+	// 	}
 
-		$query .= " WHERE $where";
+	// 	$query .= " WHERE $where";
 		
-		return $this->db->query($query);
+	// 	return $this->db->query($query);
 
-		// $builder->select('a.peserta_didik_id,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.alamat,b.approval');
-		// $builder = $this->db->table('tcg_peserta_didik a');
-		// $builder->join('dbo_users b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
-		// $builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.is_deleted'=>0));
-		// return $builder->get();
-	}
+	// 	// $builder->select('a.peserta_didik_id,a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.alamat,b.approval');
+	// 	// $builder = $this->db->table('tcg_peserta_didik a');
+	// 	// $builder->join('dbo_users b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+	// 	// $builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.is_deleted'=>0));
+	// 	// return $builder->get();
+	// }
 
-	function detailpengajuanakun($pengguna_id){
+	function tcg_pengajuan_akun(){
 		// $pengguna_id = $_GET["pengguna_id"] ?? null; 
 
 		$builder = $this->db->table('dbo_users a');
-		$builder->select('a.user_name as username,a.pengguna_id,b.sekolah_id,c.npsn,c.nama AS sekolah,b.nik,b.nisn,b.nomor_ujian,b.nama,b.jenis_kelamin,b.tempat_lahir,b.tanggal_lahir,b.nama_ibu_kandung,b.kebutuhan_khusus,b.alamat,d.nama_desa AS desa_kelurahan,d.nama_kec AS kecamatan,d.nama_kab AS kabupaten,d.nama_prov AS provinsi,b.lintang,b.bujur,a.approval');
+		$builder->select('a.user_id, a.user_name,a.pengguna_id,b.sekolah_id,c.npsn,c.nama AS sekolah,b.nik,b.nisn,b.nomor_ujian,b.nama,
+                            b.jenis_kelamin,b.tempat_lahir,b.tanggal_lahir,b.nama_ibu_kandung,b.kebutuhan_khusus,b.alamat,
+                            d.nama_desa AS desa_kelurahan,d.nama_kec AS kecamatan,d.nama_kab AS kabupaten,d.nama_prov AS provinsi,b.lintang,b.bujur,a.approval');
 		$builder->join('tcg_peserta_didik b','a.pengguna_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_sekolah c','b.sekolah_id = c.sekolah_id','LEFT OUTER');
-		$builder->join('ref_wilayah d','b.kode_wilayah = d.kode_wilayah AND d.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah d4','d.kode_wilayah_desa = d4.kode_wilayah AND d4.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah d3','d.kode_wilayah_kec = d3.kode_wilayah AND d3.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah d2','d.kode_wilayah_kab = d2.kode_wilayah AND d2.expired_date IS NULL','LEFT OUTER');
-		// $builder->join('ref_wilayah d1','d.kode_wilayah_prov = d1.kode_wilayah AND d1.expired_date IS NULL','LEFT OUTER');
-		$builder->where(array('a.pengguna_id'=>$pengguna_id,'a.role_id'=>1,'a.is_deleted'=>0));
-		return $builder->get();
+		$builder->join('ref_wilayah d','b.kode_wilayah = d.kode_wilayah AND d.is_deleted=0','LEFT OUTER');
+		$builder->where(array('a.approval'=>0,'a.role_id'=>ROLEID_SISWA,'a.is_deleted'=>0));
+
+        // $sql = $builder->getCompiledSelect();
+        // echo $sql; exit;
+
+		return $builder->get()->getResultArray();
 	}
 
-	function pengajuanakun($pengguna_id, $approval)
+	function tcg_approve_akun($user_id, $approval = 1)
 	{
-		// $pengguna_id = $_POST["pengguna_id"] ?? null; 
-		// $approval = $_POST["approval"] ?? null; 
+        $approving_id = $this->session->get('user_id');
+
+        //TODO: audit trail
 
 		$data = array(
 			'approval' => $approval,
-			'updated_on' => date("Y/m/d")
+			'updated_on' => date("Y/m/d h:m:s"),
+            'updated_by' => $approving_id
 		);
 
 		$builder = $this->db->table('dbo_users');
-		$builder->where(array('pengguna_id'=>$pengguna_id,'role_id'=>1,'is_deleted'=>0));
+		$builder->where(array('user_id'=>$user_id,'role_id'=>ROLEID_SISWA,'is_deleted'=>0));
 		return $builder->update($data);
 	}
 
@@ -683,11 +687,11 @@ Class Mprofilsekolah
 	// 	$alldata->select('a.peserta_didik_id,a.nisn,a.nama,a.sekolah_id,b.npsn,b.nama AS sekolah,a.nik,a.jenis_kelamin,a.kebutuhan_khusus,a.tempat_lahir,a.nama_ibu_kandung,a.alamat,a.tanggal_lahir,c4.nama AS desa_kelurahan,c3.kode_wilayah AS kode_kecamatan,c3.nama AS kecamatan,c2.kode_wilayah AS kode_kabupaten,c2.nama AS kabupaten,c1.kode_wilayah AS kode_provinsi,c1.nama AS provinsi,a.lintang,a.bujur,a.kode_wilayah,a.created_on');
 	// 	$alldata->from('tcg_peserta_didik a');
 	// 	$alldata->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$alldata->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
-	// 	$alldata->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.expired_date IS NULL','LEFT OUTER');
-	// 	$alldata->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.expired_date IS NULL','LEFT OUTER');
-	// 	$alldata->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.expired_date IS NULL','LEFT OUTER');
-	// 	$alldata->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.expired_date IS NULL','LEFT OUTER');
+	// 	$alldata->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
+	// 	$alldata->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
+	// 	$alldata->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
+	// 	$alldata->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
+	// 	$alldata->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
 	// 	$alldata->where(array('peserta_didik_id'=>$peserta_didik_id,'is_deleted'=>0));
 	// 	return $alldata->get();
 	// }
@@ -815,7 +819,7 @@ Class Mprofilsekolah
 	// {
 		// $peserta_didik_id = $_POST["data"] ?? null; (("peserta_didik_id");
 		// $keterangan = $_POST["data"] ?? null; (("keterangan");
-		// $pengguna_id = $this->session->get("pengguna_id");
+		// $pengguna_id = $this->session->get("user_id");
 		// return $this->db->query("CALL usp_undur_diri ('$peserta_didik_id','$keterangan','$pengguna_id')");
 	// }
 	
@@ -831,9 +835,9 @@ Class Mprofilsekolah
 				where z.penerapan_id = a.penerapan_id and z.sekolah_id=?
 			) as diterima
 		from ref_penerapan a
-		join ref_jalur c on a.jalur_id = c.jalur_id AND c.expired_date IS NULL
+		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
 		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
-		where a.aktif=1 and a.expired_date is null and 
+		where a.aktif=1 and a.is_deleted=0 and 
 		d.sekolah_id = ?
 		order by a.penerapan_id		
 		";
@@ -951,14 +955,14 @@ Class Mprofilsekolah
 		$putaran = $this->session->get('putaran_aktif');
 
 		$query = "
-		select a.penerapan_id,c.jalur_id,a.nama AS jalur,a.deskripsi,d.kuota, coalesce(e.tambahan_kuota,0) as tambahan_kuota, 
+		select a.penerapan_id,c.jalur_id,a.nama AS jalur,a.tooltip,d.kuota, coalesce(e.tambahan_kuota,0) as tambahan_kuota, 
 			   coalesce(e.memenuhi_syarat,0) as memenuhi_syarat, coalesce(e.masuk_kuota,0) as masuk_kuota, coalesce(e.daftar_tunggu,0) as daftar_tunggu, coalesce(e.diterima,0) as diterima,  coalesce(e.total_pendaftar,0) as total_pendaftar
 		from ref_penerapan a
-		join ref_jalur c on a.jalur_id = c.jalur_id AND c.expired_date IS NULL
+		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
 		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND a.tahun_ajaran_id=d.tahun_ajaran_id AND d.is_deleted = 0
 		left outer join v_rpt_sekolah_summary e on a.penerapan_id = e.penerapan_id AND a.tahun_ajaran_id=e.tahun_ajaran_id AND e.sekolah_id = d.sekolah_id
         join ref_sekolah f on f.sekolah_id=d.sekolah_id and ((f.inklusi=1 and a.jalur_id=7) or a.jalur_id != 7)
-		where a.aktif=1 and a.expired_date is null and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=?
+		where a.aktif=1 and a.is_deleted=0 and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=?
 		order by a.urutan";
 
 		return $this->db->query($query, array($sekolah_id, $tahun_ajaran_id, $putaran));
@@ -972,12 +976,12 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,a.nomor_pendaftaran,a.kelengkapan_berkas,a.status_penerimaan,a.masuk_jenis_pilihan,a.skor,a.status_penerimaan_final,a.created_on');
 		$builder->select('b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,b.lintang,b.bujur,f.nama AS lokasi_berkas,g.keterangan as label_masuk_pilihan, h.keterangan as label_jenis_pilihan');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.expired_date is null');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.is_deleted=0');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('ref_sekolah f','a.lokasi_berkas = f.sekolah_id','LEFT OUTER');
-		$builder->join('ref_jenis_pilihan g','a.masuk_jenis_pilihan = g.jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran AND g.expired_date is NULL','LEFT OUTER');
-		$builder->join('ref_jenis_pilihan h','a.jenis_pilihan = h.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran AND h.expired_date is NULL','LEFT OUTER');
+		$builder->join('ref_jenis_pilihan g','a.masuk_jenis_pilihan = g.jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran AND g.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_jenis_pilihan h','a.jenis_pilihan = h.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran AND h.is_deleted=0','LEFT OUTER');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
         $builder->where('a.tahun_ajaran_id', $tahun_ajaran_id);
         $builder->where('a.putaran', $putaran);
@@ -1035,52 +1039,67 @@ Class Mprofilsekolah
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,i.keterangan as label_jenis_pilihan');
+		$builder->select('a.pendaftaran_id,
+							a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,
+							i.keterangan as label_jenis_pilihan,
+							e.nama AS sekolah_asal,a.created_on,
+							h.nama as sedang_verifikasi');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('ref_kelengkapan_penerapan g','f.kelengkapan_penerapan_id = g.kelengkapan_penerapan_id AND g.perlu_verifikasi = 1 AND g.expired_date IS NULL');
-		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.expired_date is NULL','LEFT OUTER');
-		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+		$builder->join('dbo_users h','h.user_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
+		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
+		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->where(array('a.kelengkapan_berkas'=>0,'a.pendaftaran'=>1));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on desc');
 		return $builder->get();
 	}
 
-	function tcg_pendaftarsudahdiverifikasi($sekolah_id){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		$putaran = $this->session->get('putaran_aktif');
+	// function tcg_pendaftarsudahdiverifikasi($sekolah_id){
+	// 	$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+	// 	$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,i.keterangan as label_jenis_pilihan');
-		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
-		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('ref_kelengkapan_penerapan g','f.kelengkapan_penerapan_id = g.kelengkapan_penerapan_id AND g.perlu_verifikasi = 1 AND g.expired_date IS NULL');
-		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.expired_date is NULL','LEFT OUTER');
-		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas!='=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
-		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-		$builder->orderBy('a.created_on desc');
-		return $builder->get();
-	}
+	// 	$builder = $this->db->table('tcg_pendaftaran a');
+	// 	$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,i.keterangan as label_jenis_pilihan');
+	// 	$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
+	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
+	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
+	// 	$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
+	// 	$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
+	// 	$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+	// 	$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
+	// 	$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+	// 	$builder->where(array('a.kelengkapan_berkas!='=>0,'a.pendaftaran'=>1));
+	// 	$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
+	// 	$builder->orderBy('a.created_on desc');
+	// 	return $builder->get();
+	// }
 
 	function tcg_pendaftarbelumlengkap($sekolah_id){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on');
+		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,
+							i.keterangan as label_jenis_pilihan,
+							e.nama AS sekolah_asal,a.created_on,
+                            h.nama as sedang_verifikasi,
+                            ');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('ref_kelengkapan_penerapan g','f.kelengkapan_penerapan_id = g.kelengkapan_penerapan_id AND g.perlu_verifikasi = 1 AND g.expired_date IS NULL');
-		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>2,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+		$builder->join('dbo_users h','h.user_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
+		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
+		// $builder->join('dbo_sekolah j','j.sekolah_id = b.lokasi_berkas','LEFT OUTER');
+		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->where(array('a.kelengkapan_berkas'=>2,'a.pendaftaran'=>1));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on desc');
 		return $builder->get();
@@ -1091,16 +1110,18 @@ Class Mprofilsekolah
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,a.tanggal_verifikasi_berkas,a.verifikasi_berkas_oleh,h.nama as lokasi_berkas,i.keterangan as label_jenis_pilihan');
+		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,
+                            a.tanggal_verifikasi_berkas,a.verifikasi_berkas_oleh,h.nama as lokasi_berkas,i.keterangan as label_jenis_pilihan');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('ref_kelengkapan_penerapan g','f.kelengkapan_penerapan_id = g.kelengkapan_penerapan_id AND g.perlu_verifikasi = 1 AND g.expired_date IS NULL');
+		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
 		$builder->join('ref_sekolah h','h.sekolah_id = b.lokasi_berkas','LEFT OUTER');
-		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.expired_date is NULL','LEFT OUTER');
-		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
+		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
+		$builder->where(array('a.kelengkapan_berkas'=>1,'a.pendaftaran'=>1));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on');
 		return $builder->get();
@@ -1128,8 +1149,8 @@ Class Mprofilsekolah
 
 		$builder = $this->db->table('tcg_penerapan_sekolah a');
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota');
-		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.expired_date IS NULL');
-		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0');
+		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
 		$builder->orderBy('a.kuota DESC','c.nama ASC');
 		return $builder->get();
@@ -1151,7 +1172,7 @@ Class Mprofilsekolah
     }
 
 	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
 		return $this->db->query($query, array($table,$reference,$action,$pengguna_id,$description,null,$new_values,$old_values));
@@ -1191,12 +1212,12 @@ Class Mprofilsekolah
 					e.sekolah_id, e.npsn, e.nama as nama_sekolah, e.bentuk as bentuk_sekolah, e.status as status_sekolah,
 					a.created_on, g.keterangan as label_masuk_pilihan, h.keterangan as label_jenis_pilihan
 				from tcg_pendaftaran a
-				join ref_penerapan b on b.penerapan_id=a.penerapan_id and b.tahun_ajaran_id=a.tahun_ajaran_id and b.putaran=a.putaran AND b.aktif = 1 and b.expired_date is null
-				join ref_jalur c on c.jalur_id=b.jalur_id and c.expired_date is null
+				join ref_penerapan b on b.penerapan_id=a.penerapan_id and b.tahun_ajaran_id=a.tahun_ajaran_id and b.putaran=a.putaran AND b.aktif = 1 and b.is_deleted=0
+				join ref_jalur c on c.jalur_id=b.jalur_id and c.is_deleted=0
 				join tcg_peserta_didik d on d.peserta_didik_id=a.peserta_didik_id and d.is_deleted=0
 				left join ref_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0
-                left join ref_jenis_pilihan g on g.jenis_pilihan=a.masuk_jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran and g.expired_date is null
-                left join ref_jenis_pilihan h on h.jenis_pilihan=a.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran and h.expired_date is null
+                left join ref_jenis_pilihan g on g.jenis_pilihan=a.masuk_jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran and g.is_deleted=0
+                left join ref_jenis_pilihan h on h.jenis_pilihan=a.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran and h.is_deleted=0
 				where a.sekolah_id=? and a.penerapan_id=? and a.is_deleted=0 and a.tahun_ajaran_id=? and a.putaran=?
 				order by a.skor desc, a.peringkat_final asc";
 
@@ -1208,10 +1229,10 @@ Class Mprofilsekolah
 		$sql = "select
 					a.peserta_didik_id, b.nama, RPAD(SUBSTR(b.nisn, 1, 6), Length(b.nisn), '*') as nisn, c.nama as sekolah, 
 					concat(d.nama_desa, ' ', d.nama_kec, ' ', d.nama_kab) as alamat, a.jarak
-				from tcg_kandidat_swasta a
+				from rpt_kandidat_swasta a
 				join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id and b.is_deleted=0
 				left join ref_sekolah c on c.sekolah_id=b.sekolah_id and c.is_deleted=0
-				join ref_wilayah d on d.kode_wilayah=b.kode_wilayah and d.expired_date is null
+				join ref_wilayah d on d.kode_wilayah=b.kode_wilayah and d.is_deleted=0
 				where a.sekolah_id=? and a.tahun_ajaran_id=?
 		";
 
@@ -1258,11 +1279,11 @@ Class Mprofilsekolah
 	// 						a.status_daftar_ulang,a.tanggal_daftar_ulang, a.status_penerimaan_final,a.peringkat_final,
 	// 						a.created_on');
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.expired_date is NULL');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
+	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 	// 	$builder->join('tcg_peserta_didik e','a.peserta_didik_id = e.peserta_didik_id AND e.is_deleted = 0');
 	// 	$builder->join('ref_sekolah f','e.sekolah_id = f.sekolah_id');
-	// 	$builder->join('ref_jenis_pilihan g','g.jenis_pilihan = a.jenis_pilihan AND g.tahun_ajaran_id=a.tahun_ajaran_id AND g.expired_date is NULL');
+	// 	$builder->join('ref_jenis_pilihan g','g.jenis_pilihan = a.jenis_pilihan AND g.tahun_ajaran_id=a.tahun_ajaran_id AND g.is_deleted=0');
 	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.pendaftaran_id'=>$pendaftaran_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
 	// 	$builder->orderBy('a.created_on');
 	// 	return $builder->get();
@@ -1287,13 +1308,13 @@ Class Mprofilsekolah
 	// 	e.nama as lokasi_berkas
 	// 	");
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
+	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
 	// 	$builder->join('dbo_users d','a.peserta_didik_id = d.pengguna_id AND d.is_deleted = 0','LEFT OUTER');
 	// 	$builder->join('ref_sekolah e','e.sekolah_id = a.lokasi_berkas','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.expired_date IS NULL','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.expired_date IS NULL','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.expired_date IS NULL','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.expired_date IS NULL','LEFT OUTER');
+	// 	// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
+	// 	// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
+	// 	// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
+	// 	// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
 	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
 	// 	return $builder->get();
@@ -1305,7 +1326,7 @@ Class Mprofilsekolah
 	// 			  select a.dokumen_id, a.daftar_kelengkapan_id, b.nama, a.filename, a.path, a.web_path, a.thumbnail_path, a.verifikasi, a.catatan,
 	// 				b.dokumen_fisik, b.placeholder, a.berkas_fisik
 	// 			  from tcg_dokumen_pendukung a
-	// 			  join ref_daftar_kelengkapan b on a.daftar_kelengkapan_id=b.daftar_kelengkapan_id and b.expired_date is null
+	// 			  join ref_daftar_kelengkapan b on a.daftar_kelengkapan_id=b.daftar_kelengkapan_id and b.is_deleted=0
 	// 			  where a.peserta_didik_id=? and a.is_deleted=0
 	// 			  order by b.urutan";
 
@@ -1369,10 +1390,10 @@ Class Mprofilsekolah
 	// 						a.pendaftaran, e.keterangan as label_jenis_pilihan, f.keterangan as label_masuk_pilihan,
 	// 						a.created_on');
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.expired_date is NULL');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
-	// 	$builder->join('ref_jenis_pilihan e','e.jenis_pilihan = a.jenis_pilihan AND e.tahun_ajaran_id=a.tahun_ajaran_id AND e.expired_date IS NULL');
-	// 	$builder->join('ref_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id AND f.expired_date IS NULL', 'left outer');
+	// 	$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
+	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
+	// 	$builder->join('ref_jenis_pilihan e','e.jenis_pilihan = a.jenis_pilihan AND e.tahun_ajaran_id=a.tahun_ajaran_id AND e.is_deleted=0');
+	// 	$builder->join('ref_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id AND f.is_deleted=0', 'left outer');
 	// 	//$builder->join('tcg_skoring_pendaftaran g','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0','LEFT OUTER');
 	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 	// 	$builder->orderBy('a.jenis_pilihan');
@@ -1395,7 +1416,7 @@ Class Mprofilsekolah
 	// 			c.verifikasi, c.catatan,
 	// 			c.created_on as tanggal_upload
 	// 	from tcg_prestasi a
-	// 	join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.expired_date is null
+	// 	join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 	// 	left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
 	// 	where a.is_deleted=0 and a.peserta_didik_id=?";
 
@@ -1403,7 +1424,7 @@ Class Mprofilsekolah
 	// }
 
 
-	function tcg_sedangverifikasi($pengguna_id, $peserta_didik_id, $aktif=1) {
+	function tcg_touch_verifikasi($pengguna_id, $peserta_didik_id, $aktif=1) {
 		$valuepair = array();
 		if ($aktif == 1) {
 			$valuepair = array (
@@ -1444,12 +1465,12 @@ Class Mprofilsekolah
 							case when(sedang_verifikasi_timestamp is not null and date_add(sedang_verifikasi_timestamp, interval 15 minute)>=' .$timestamp. ') then h.nama else null end as sedang_verifikasi');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('ref_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.expired_date IS NULL');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		// $builder->join('dbo_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		// $builder->join('ref_kelengkapan_penerapan g','f.kelengkapan_penerapan_id = g.kelengkapan_penerapan_id AND g.perlu_verifikasi = 1 AND g.expired_date IS NULL');
+		// $builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
 		$builder->join('dbo_users h','h.pengguna_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
-		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.expired_date is NULL','LEFT OUTER');
+		$builder->join('ref_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
 		$builder->where(array('a.pendaftaran'=>1,'a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'b.lokasi_berkas'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 		// $builder->group_by(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on');
@@ -1458,7 +1479,7 @@ Class Mprofilsekolah
 
 	function tcg_nama_sekolah($sekolah_id){
 
-		$builder = $this->db->table('dapodik.dbo_sekolah a');
+		$builder = $this->db->table('ref_sekolah a');
 		$builder->select('a.nama');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
 
@@ -1487,10 +1508,10 @@ Class Mprofilsekolah
 					  b.kode_wilayah_desa, b.nama_desa, b.kode_wilayah_kec, b.nama_kec, c.nama as sekolah,
 					  e.nama as diterima_sekolah, a.jenis_kelamin
 				  from tcg_peserta_didik a
-				  left join ref_mst_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
-				  left join tcg_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
+				  left join ref_mst_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
+				  left join tcg_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
 				  left join tcg_pendaftaran d on d.peserta_didik_id=a.peserta_didik_id and d.status_penerimaan_final=1 and d.is_deleted=0
-				  left join tcg_sekolah e on e.sekolah_id=d.sekolah_id and e.expired_date is null 
+				  left join tcg_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
 				  ";
 
 		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA')";
@@ -1534,7 +1555,7 @@ Class Mprofilsekolah
 	}
 
 	function tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "call usp_sd_tambah_penerimaan(?, ?, ?)";
 		$query = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id))->getResultArray();;
@@ -1543,12 +1564,78 @@ Class Mprofilsekolah
 	}
 
 	function tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "call usp_sd_hapus_penerimaan(?, ?, ?)";
 		$query = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id))->getResultArray();;
 
 		return $query;
 	}
+
+    function tcg_cari_siswa($query, $jenjang = null, $asaldata = null, $inklusi = null, $afirmasi = null, $search_columns = null) {
+        $limit = 1000;;
+        $offset = 0;
+
+        if (empty($query))  return null;
+
+        if ($search_columns == null) {
+            //default searched columns
+            $search_columns = ['nama', 'nisn', 'nik', 'alamat'];
+        }
+
+        $builder = $this->db->table('tcg_peserta_didik a');
+
+        //group search filter
+        //use specified list of columns
+        $builder->groupStart();
+        foreach($search_columns as $key => $val) {
+            $builder->orLike("a." .$val, $query);
+        }
+        $builder->groupEnd();
+
+        $builder->where('a.is_deleted', 0);
+        $builder->select("a.nama, a.nisn, a.nik, a.tanggal_lahir, a.tempat_lahir, a.jenis_kelamin, d.kelengkapan_berkas");
+        $builder->select("b.nama as asal_sekolah");
+        $builder->select("c.nama as lokasi_berkas");
+        $builder->select("case when d.cnt=0 then 'Tidak Ada' 
+                            when d.cnt>0 and e.masuk_jenis_pilihan is null then 'Tidak Masuk Kuota'
+                            else e.keterangan end as status_pendaftaran");
+        $builder->join("ref_sekolah b", "b.sekolah_id=a.sekolah_id and b.is_deleted=0", 'LEFT OUTER');
+        $builder->join("ref_sekolah c", "c.sekolah_id=a.lokasi_berkas and c.is_deleted=0", 'LEFT OUTER');
+       
+        $subquery = "
+        SELECT tahun_ajaran_id, peserta_didik_id, count(*) as cnt, max(kelengkapan_berkas) as kelengkapan_berkas 
+        FROM tcg_pendaftaran 
+        where is_deleted=0
+        group by tahun_ajaran_id, peserta_didik_id";
+
+        $builder->join("($subquery) as d", "d.tahun_ajaran_id=a.tahun_ajaran_id AND d.peserta_didik_id=a.peserta_didik_id", 'LEFT OUTER');
+
+        $subquery = "
+        select *
+        from (
+            select a.tahun_ajaran_id, a.peserta_didik_id, a.putaran, a.masuk_jenis_pilihan, b.keterangan,
+                    row_number() over (partition by tahun_ajaran_id, peserta_didik_id order by pendaftaran_id) rn
+            FROM tcg_pendaftaran a
+            join ref_jenis_pilihan b on b.jenis_pilihan=a.masuk_jenis_pilihan and b.tahun_ajaran_id=a.tahun_ajaran_id 
+                and b.putaran=a.putaran and b.is_deleted=0
+            where a.is_deleted=0 and a.masuk_jenis_pilihan!=0 
+            group by a.tahun_ajaran_id, a.peserta_didik_id
+        ) a where a.rn=1
+        ";
+
+        $builder->join("($subquery) as e", "e.tahun_ajaran_id=a.tahun_ajaran_id AND e.peserta_didik_id=a.peserta_didik_id", 'LEFT OUTER');
+
+
+        if (!empty($jenjang)) $builder->where("b.bentuk", $jenjang);
+        if (!empty($asaldata)) $builder->where("a.asal_data", $jenjang);
+        if (!empty($inklusi)) $builder->where("a.kebutuhan_khusus!='Tidak ada'");
+        if (!empty($afirmasi)) $builder->where(array("a.punya_kip=>1", "a.masuk_bdt=>1"));
+
+        $arr = $builder->get($limit, $offset)->getResultArray();
+        if ($arr == null)       return $arr;
+
+        return $arr;
+    }
 
 }

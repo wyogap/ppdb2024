@@ -54,7 +54,7 @@ class Detil extends PpdbController {
 
 	function simpan()
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$kebutuhan_khusus = $_POST["kebutuhan_khusus"] ?? null;
 		$peserta_didik_id = $_POST["peserta_didik_id"] ?? null;

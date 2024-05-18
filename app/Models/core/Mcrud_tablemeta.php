@@ -687,7 +687,7 @@ class Mcrud_tablemeta implements ICrudModel
                     }
 
                     //reference to subquery
-                    $ref['reference_custom_query'] = $row['reference_custom_query'];
+                    $ref['reference_custom_query'] = $this->replace_parameters($row['reference_custom_query']);
 
                     //lookup key
                     $ref['reference_fkey_column'] = $row['reference_fkey_column'];
@@ -1452,7 +1452,8 @@ class Mcrud_tablemeta implements ICrudModel
         foreach ($this->table_metas['filter_columns'] as $key => $row) {
             if($row['type'] != 'distinct')   continue;
 
-            ($this->table_metas['filter_columns'])[$key]['options'] = $this->distinct_lookup($row['column_name']);
+            $col = empty($row['column_name']) ? $row['name'] : $row['column_name'];
+            ($this->table_metas['filter_columns'])[$key]['options'] = $this->distinct_lookup($col);
         }
 
         return true;
@@ -3070,7 +3071,7 @@ class Mcrud_tablemeta implements ICrudModel
                 $ref['reference_fkey2_column'] = $row['reference_fkey2_column'];
                 $ref['reference_soft_delete'] = ($row['reference_soft_delete'] == 1);
 
-                $ref['reference_custom_query'] = $row['reference_custom_query'];
+                $ref['reference_custom_query'] = $this->replace_parameters($row['reference_custom_query']);
 
                 $ref['reference_where_clause'] = $row['reference_where_clause'];
                 if (!empty($ref['reference_where_clause'])) {

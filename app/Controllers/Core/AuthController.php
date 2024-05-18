@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 //defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AuthController extends BaseController
+abstract class AuthController extends BaseController
 {
     protected static $DEFAULT_PROFILE_IMAGE = "assets/image/user.png";
 
@@ -52,20 +52,19 @@ class AuthController extends BaseController
     public function index()
     {
         $userid = $this->session->get('user_id');
-    
-        //no-loggedin. ask to login
-        if(empty($userid))
+        if(!empty($userid))
         {
-            $data['use_captcha'] = ($this->setting->get('use_captcha') == 1);
-            $data['is_localhost'] = (strpos(base_url(), 'localhost') >= 0);
-
-			$this->smarty->render('core/auth/login.tpl',$data);
-            return;
+            //to user page
+            $redirect = $this->get_home();
+            return redirect()->to($redirect);
         }
 
-        //to user page
-        $redirect = $this->get_home();
-        return redirect()->to($redirect);
+        $data['use_captcha'] = ($this->setting->get('use_captcha') == 1);
+        $data['is_localhost'] = (strpos(base_url(), 'localhost') >= 0);
+
+        $this->smarty->render('core/auth/login.tpl',$data);
+        return;
+
     }
     
     
@@ -81,6 +80,17 @@ class AuthController extends BaseController
             $json = 0;
         }
 
+        if (!$json) {
+            $userid = $this->session->get('user_id');
+            if(!empty($userid))
+            {
+                //to user page
+                $redirect = $this->get_home();
+                return redirect()->to($redirect);
+            }
+    
+        }
+
         $this->validation->setRule('username', 'Username', 'required|max_length[128]|trim');
         $this->validation->setRule('password', 'Password', 'required|max_length[32]');
         
@@ -94,7 +104,9 @@ class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);	
-                redirect()->back()->withInput();
+                return redirect()->to(site_url() ."auth");
+                //return redirect()->back()->withInput();
+                //return $this->response->redirect();
             }
 			return;
         }
@@ -111,7 +123,7 @@ class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);	
-                redirect()->back()->withInput();
+                return redirect()->back()->withInput();
             }
             return;
         }
@@ -128,7 +140,7 @@ class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);	
-                redirect()->back()->withInput();
+                return redirect()->back()->withInput();
             }
 			return;
 		}
@@ -143,7 +155,7 @@ class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);		
-                redirect()->back()->withInput();
+                return redirect()->back()->withInput();
             }
 			return;
 		}
@@ -156,7 +168,7 @@ class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);	
-                redirect()->back()->withInput();
+                return redirect()->back()->withInput();
             }
 			return;
         }
@@ -173,15 +185,23 @@ class AuthController extends BaseController
         //force reset session
         $this->session->set($result);
                     
+        $this->set_additional_sessions();
+        
         $redirect_url = $this->get_home();
         if ($json == 1) {
             $data = array("status"=>1, "redirect"=>$redirect_url);
             echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
         } 
         else {
+            //var_dump($redirect_url); exit;
             return redirect()->to($redirect_url);
         }
     }
+
+    /**
+     * Additional session to set
+     */
+    abstract protected function set_additional_sessions();
 
     /**
      * Determine where to go after successful login

@@ -33,14 +33,6 @@ class Peringkat extends PpdbController {
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
 
-        //DEBUG
-        $sekolah_id = '402D235A-2DF5-E011-A399-D7F6DAA2C8A5';
-        $this->session->set("sekolah_id", $sekolah_id);
-        $this->putaran = 2;
-        $this->session->set('putaran_aktif', $this->putaran);
-        $upload_dokumen = 0;
-        //END DEBUG
-
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id)->getRowArray();
 		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
         
@@ -97,12 +89,6 @@ class Peringkat extends PpdbController {
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		// $data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
-
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        $data['ganti_password'] = 0;
-        //END DEBUG
 
         //content template
         $data['content_template'] = 'peringkat.tpl';

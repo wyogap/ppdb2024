@@ -1455,12 +1455,12 @@ $(document).ready(function() {
 
     dt_{$tbl.table_id}.buttons( 0, null ).container().addClass("mr-md-2 mb-1");
 
-    dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-primary");
-    dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-remove").removeClass("btn-primary");
+    // dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-primary");
+    // dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-remove").removeClass("btn-primary");
 
-    dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-secondary");
-    dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-secondary");
-    dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-remove").removeClass("btn-secondary");
+    // dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-secondary");
+    // dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-edit").removeClass("btn-secondary");
+    // dt_{$tbl.table_id}.buttons( 0, null ).container().find(".buttons-remove").removeClass("btn-secondary");
 
     {* Button group index*}
     {assign var=idx value=0}
@@ -1540,10 +1540,10 @@ $(document).ready(function() {
         buttons.container().addClass('mr-md-2 mb-1 dt-export-buttons');
     }
 
-    buttons.container().find(".btn-import").removeClass("btn-primary");
+    // buttons.container().find(".btn-import").removeClass("btn-primary");
 
-    buttons.container().find(".btn-export").addClass("btn-secondary");
-    buttons.container().find(".btn-import").removeClass("btn-secondary");
+    // buttons.container().find(".btn-export").addClass("btn-secondary");
+    // buttons.container().find(".btn-import").removeClass("btn-secondary");
 
     dt_{$tbl.table_id}.buttons( {$idx}, null ).container().after(
         dt_{$tbl.table_id}.buttons( {$idx+1}, null ).container()
@@ -1617,8 +1617,8 @@ $(document).ready(function() {
     
         buttons.container().addClass('mr-md-2 mb-1 dt-custom-buttons');
 
-        buttons.container().find(".btn-custom-action").removeClass("btn-primary");
-        buttons.container().find(".btn-custom-action").removeClass("btn-secondary");
+        // buttons.container().find(".btn-custom-action").removeClass("btn-primary");
+        // buttons.container().find(".btn-custom-action").removeClass("btn-secondary");
 
         dt_{$tbl.table_id}.buttons( {$idx}, null ).container().after(
             dt_{$tbl.table_id}.buttons( {$idx+1}, null ).container()

@@ -406,8 +406,8 @@ Class Msetting
         //Semua tahapan (semua putaran)!!!
 		$query = "select a.putaran, c.nama as nama_putaran, a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai 
 				  from tcg_waktu_pelaksanaan a
-				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.expired_date is null
-                  join ref_putaran c on c.putaran_id=a.putaran and c.expired_date is null
+				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
+                  join ref_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
 				  where a.tahun_ajaran_id=? and a.is_deleted=0
 				  order by a.putaran, a.tahapan_id";
 
@@ -420,7 +420,7 @@ Class Msetting
 
 		$query = "select a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah 
 				  from tcg_waktu_pelaksanaan a
-				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.expired_date is null
+				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
 				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
 						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
 						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)

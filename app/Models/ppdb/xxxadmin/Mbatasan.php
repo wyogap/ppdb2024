@@ -21,7 +21,7 @@ Class Mbatasan
 
 	function tcg_batasanperubahan($tahun_ajaran_id) {
 		$query = "select a.* from ref_batasan_perubahan a
-				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.expired_date is null limit 1";
+				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0 limit 1";
 		return $this->db->query($query);
 	}
 

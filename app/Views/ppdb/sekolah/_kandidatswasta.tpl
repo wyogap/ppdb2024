@@ -54,7 +54,7 @@
                     "sLast": "Akhir"
                 }
             },
-            ajax: "{$site_url}sekolah/kandidatswasta/json?tahun_ajaran={$tahun_ajaran_id}",
+            ajax: "{$site_url}ppdb/sekolah/kandidatswasta/json?tahun_ajaran={$tahun_ajaran_id}",
             columns: [{
                     "data": "id",
                     orderable: false,

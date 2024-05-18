@@ -132,7 +132,7 @@
                                         <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
                                         <div class="header-info ms-3">
                                             <span class="font-w600 ">Halo,<b>{$nama_pengguna}</b></span>
-                                            <small class="font-w400">{$username}</small>
+                                            <small class="font-w400">{$user_name}</small>
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">

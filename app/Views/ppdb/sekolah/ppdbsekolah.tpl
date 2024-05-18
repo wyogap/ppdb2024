@@ -38,53 +38,9 @@
     
     {include file='../_css.tpl'}
 
-    <style>
-        .custom-tab-1 {
-            background-color: #fff;
-            border-radius: 16px;
-            padding-top: 16px;
-            padding-bottom: 16px;
-        }
-
-        .custom-tab-1 .tab-pane {
-            padding-left: 30px;
-            padding-right: 30px;
-            /* padding-top: 16px; */
-            /* padding-bottom: 16px; */
-        }
-
-        .badge {
-            border-radius: 8px !important;
-        }
-
-        table.dataTable tbody td.bg-gray {
-            color: #000;
-            background-color: #d2d6de !important;
-        }
-
-        table.dataTable tbody td.bg-red {
-            color: #fff;
-            background-color: red !important;
-        }
-
-        table.dataTable tbody td.bg-orange {
-            color: #fff;
-            background-color: orange !important;
-        }
-
-        table.dataTable tbody td.bg-green {
-            color: #fff;
-            background-color: #00a65a !important;
-        }
-
-        table.dataTable tbody td.bg-yellow {
-            color: #000;
-            background-color: yellow !important;
-        }
-    </style>
 </head>
 
-<body data-typography="cairo" data-theme-version="light" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 
+<body data-typography="cairo" data-theme-version="dark" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 
     data-headerbg="color_1" data-sidebarbg="color_1" data-sidebar-position="fixed" data-header-position="fixed" data-container="boxed" direction="ltr" 
     data-primary="color_1">
 
@@ -120,10 +76,11 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="app-name-short" style="display: none;">
-                                PPDB{$tahun_ajaran_id}
+                                {$app_short_name}{$tahun_ajaran_id}
                             </div>
                             <div class="app-name-long dashboard_bar">
-                                PPDB{$nama_tahun_ajaran} {$nama_putaran}
+                                <span class="app-name">{$app_name}</span>
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -131,8 +88,8 @@
                                     <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
                                         <div class="header-info ms-3">
-                                            <span class="font-w600 ">Halo,<b>{$nama_pengguna}</b></span>
-                                            <small class="font-w400">{$username}</small>
+                                            <span class="font-w600 ">Halo, <b>{$nama_pengguna}</b></span>
+                                            <small class="font-w400">{$user_name}</small>
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
@@ -140,40 +97,12 @@
                                             <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                             <span class="ms-2">Profile </span>
                                         </a>
-                                        <a href="./email-inbox.html" class="dropdown-item ai-icon">
-                                            <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                            <span class="ms-2">Inbox </span>
-                                        </a>
-                                        <a href="./login.html" class="dropdown-item ai-icon">
+                                        <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             <span class="ms-2">Logout </span>
                                         </a>
                                     </div>
                             </li>
-
-                            <!-- <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
-                                    <img src="https://framework.jejakku.id/assets/image/user.png" class="user-image img-circle elevation-2" alt="User Image" style="width: ">
-                                    <div class="header-info ms-3">
-                                        <span class="font-w600 ">Halo,<b>Wahyu Yoga Pratama</b></span>
-                                        <small class="font-w400">william@gmail.com</small>
-                                    </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right" style="width: 250px; z-index: 1035; left: inherit; right: 0px;">
-                                    <a href="./app-profile.html" class="dropdown-item ai-icon">
-                                        <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                        <span class="ms-2">Profile </span>
-                                    </a>
-                                    <a href="./email-inbox.html" class="dropdown-item ai-icon">
-                                        <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                        <span class="ms-2">Inbox </span>
-                                    </a>
-                                    <a href="./login.html" class="dropdown-item ai-icon">
-                                        <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                        <span class="ms-2">Logout </span>
-                                    </a>
-                                </div>
-                            </li> -->
                         </ul>
                     </div>
 				</nav>
@@ -312,6 +241,10 @@
                     </div>
                 {/if}
 
+                <div class="loading" id="loader">
+                <div class="loading-circle"></div>
+                </div>
+
                 {if $content_template|default: FALSE} 
                     {include file="./$content_template"}
                 {/if}
@@ -407,6 +340,31 @@
     <!-- toastr toast popup -->
     <script src="{$base_url}assets/jquery-confirm/jquery-confirm.min.js"></script>
     <script src="{$base_url}assets/toastr/toastr.min.js"></script>
+
+    <!--- moment -->
+    <script src="{$base_url}assets/moment/moment-with-locales.min.js" defer></script>
+
+    <script>
+    var dezSettingsOptions = {};
+
+    (function($) {
+        //update the theme setting. must be before dlabnav-init.js
+        dezSettingsOptions = {
+			typography: "cairo",
+			version: "light",
+			layout: "horizontal",
+			primary: "color_1",
+			navheaderBg: "color_1",
+			sidebarBg: "color_1",
+			sidebarStyle: "compact",
+			sidebarPosition: "fixed",
+			headerPosition: "fixed",
+			containerLayout: "boxed",
+		};
+        
+    })(jQuery);
+
+    </script>
 
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
     <script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>

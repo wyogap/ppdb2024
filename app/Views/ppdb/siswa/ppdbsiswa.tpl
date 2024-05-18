@@ -16,7 +16,7 @@
 
     <!-- Datatable -->
     <!-- <link href="{$base_url}/themes/dompet/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet"> -->
-    
+ 
     <!-- icons -->
     <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" /> -->
@@ -31,7 +31,7 @@
 	<link href="{$base_url}/themes/dompet/vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
     <link href="{$base_url}/themes/dompet/css/style.css" rel="stylesheet">
 
-    <style>
+    <!-- <style>
 
         .header {
             padding: 0px;
@@ -433,7 +433,16 @@
                 padding-right: 40px !important;
             }
         }
-    </style>
+    </style> -->
+
+    {include file='../_css.tpl'} 
+
+    <!-- <style>
+        .table tbody tr td {
+            border-color: var(--bs-light);
+        }
+
+    </style> -->
 
 </head>
 
@@ -495,10 +504,11 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="app-name-short" style="display: none;">
-                                PPDB{$tahun_ajaran_id}
+                                {$app_short_name}{$tahun_ajaran_id}
                             </div>
                             <div class="app-name-long dashboard_bar">
-                                PPDB{$nama_tahun_ajaran} {$nama_putaran}
+                                <span class="app-name">{$app_name}</span>
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -506,20 +516,16 @@
                                     <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
                                         <div class="header-info ms-3">
-                                            <span class="font-w600 ">Halo,<b>{$nama_pengguna}</b></span>
-                                            <small class="font-w400">{$username}</small>
+                                            <span class="font-w600 ">Halo, <b>{$nama_pengguna}</b></span>
+                                            <small class="font-w400">{$user_name}</small>
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a href="./app-profile.html" class="dropdown-item ai-icon">
                                             <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                            <span class="ms-2">Profile </span>
+                                            <span class="ms-2">Ganti PIN/Password </span>
                                         </a>
-                                        <a href="./email-inbox.html" class="dropdown-item ai-icon">
-                                            <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                            <span class="ms-2">Inbox </span>
-                                        </a>
-                                        <a href="./login.html" class="dropdown-item ai-icon">
+                                        <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             <span class="ms-2">Logout </span>
                                         </a>
@@ -608,9 +614,9 @@
             <!-- container starts -->
             <div class="container-fluid">
 
-				<div class="row page-titles">
+				<div class="row page-greeting">
 					<ol class="breadcrumb">
-                        Halo,<b>{$nama_pengguna}</b>
+                        Halo, <b>{$nama_pengguna}</b>
 					</ol>
                 </div>
 
@@ -799,6 +805,28 @@
     <script src="{$base_url}assets/jquery-confirm/jquery-confirm.min.js"></script>
     <script src="{$base_url}assets/toastr/toastr.min.js"></script>
 
+    <script>
+    var dezSettingsOptions = {};
+
+    (function($) {
+        //update the theme setting. must be before dlabnav-init.js
+        dezSettingsOptions = {
+			typography: "cairo",
+			version: "light",
+			layout: "horizontal",
+			primary: "color_1",
+			navheaderBg: "color_1",
+			sidebarBg: "color_1",
+			sidebarStyle: "compact",
+			sidebarPosition: "fixed",
+			headerPosition: "fixed",
+			containerLayout: "boxed",
+		};
+        
+    })(jQuery);
+
+    </script>
+
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
     <script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>
 	
@@ -934,8 +962,11 @@ var files = {$files|json_encode};
                 additionalOffset = open.height();
         }
 
-        let header_offset = 240;
+        let header_offset = 230;
         if (width < 785) {
+            header_offset = 100;
+        }
+        else if (width < 1040) {
             header_offset = 100;
         }
 
@@ -953,34 +984,6 @@ var files = {$files|json_encode};
             dtriwayat.columns.adjust().responsive.recalc();
         }
     });
-
-    // $('.collapse').on('show.bs.collapse', function(e) {
-    //     let el = $(this);
-    //     var card = el.closest('.accordion-item');
-    //     //resize table
-    //     if (card.prop('id') == 'prestasi') {
-    //         dtprestasi.columns.adjust().responsive.recalc();
-    //     }
-    // });
-
-    // $('.collapse').on('hidden.bs.collapse', function(e) {
-    //     let el = $(this);
-    //     var card = el.closest('.accordion-item');
-
-    //     let tag = card.attr("id");
-    //     let flagval = konfirmasi[tag];
-    //     if (flagval) {
-    //         card.removeClass("status-danger");
-    //         msg = card.find(".accordion-header-text .status").html('');
-    //     }
-    //     else {
-    //         card.addClass("status-danger");
-    //         msg = card.find(".accordion-header-text .status").html('Belum Benar');
-    //     }
-
-    // });
-
-    //let els = $("[tcg-edit-action='konfirmasi']");
 
     $("[tcg-edit-action='submit']").on("change", function(evt) {
         let select = $(this);

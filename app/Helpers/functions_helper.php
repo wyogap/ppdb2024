@@ -720,13 +720,13 @@
                     $arr = explode('.', $param, 2);
     
                     $clz = $name = $value = "";
-                    if (count($arr)>0) {
+                    if (count($arr)>1) {
                         $clz = $arr[0];
                         $name = $arr[1];
                     }
                     else {
                         $clz = 'session';
-                        $name = $arr[1];
+                        $name = $arr[0];
                     }
     
                     //get the value

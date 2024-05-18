@@ -45,7 +45,7 @@ class Daftarulang extends PpdbController {
 
     function index()
 	{
-		$peserta_didik_id = $this->session->get('pengguna_id');
+		$peserta_didik_id = $this->session->get('user_id');
 		$tahun_ajaran_id = $_GET["tahun_ajaran_id"] ?? null; 
 		if (empty($tahun_ajaran_id)) {
 			$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
@@ -138,7 +138,7 @@ class Daftarulang extends PpdbController {
 
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
 		if (empty($peserta_didik_id)) {
-			$peserta_didik_id = $this->session->get("pengguna_id");
+			$peserta_didik_id = $this->session->get("user_id");
 		}
 	
 		$tahun_ajaran_id = $_GET["tahun_ajaran_id"] ?? null; 

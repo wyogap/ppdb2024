@@ -85,7 +85,7 @@
                                         {if $row.jalur_id == $smarty.const.JALURID_INKLUSI && !$inklusi}{continue}{/if}
                                         <li {if $idx==0 && empty($show_all_pendaftar)}class="active"{/if}>
                                             <a href="#p{$row.penerapan_id}" data-toggle="tab">
-                                                <span {if !empty($row.deskripsi)}data-toggle="tooltip" title="{$row.deskripsi}" data-placement="top" data-html="true"{/if}>{$row.jalur}</span><br>
+                                                <span {if !empty($row.tooltip)}data-toggle="tooltip" title="{$row.tooltip}" data-placement="top" data-html="true"{/if}>{$row.jalur}</span><br>
                                                 <small class="label bg-blue" data-toggle="tooltip" title="Jumlah Kuota" data-placement="bottom">{$row.kuota}</small>
                                                 {if $row.tambahan_kuota>0}<small class='label bg-yellow' data-toggle="tooltip" title="Tambahan Kuota" data-placement="bottom">{$row.tambahan_kuota}</small>{/if}
                                                 <small class="label bg-green" data-toggle="tooltip" title="Jumlah Diterima" data-placement="bottom">{$row.diterima}</small>

@@ -35,7 +35,7 @@
 				<a href="{$base_url}"><b>UBAH</b>PASSWORD</a>
 			</div>
             
-			<div class="lockscreen-name">{$username}</div>
+			<div class="lockscreen-name">{$user_name}</div>
 				<div class="lockscreen-item">
 					<div class="lockscreen-image">
 						<img src="{$base_url}assets/image/user.png" alt="User Image">

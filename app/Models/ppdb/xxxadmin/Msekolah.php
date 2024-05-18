@@ -102,14 +102,14 @@ Class Msekolah
 
 		$builder = $this->db->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,c3.nama AS kecamatan,a.lintang,a.bujur');
-		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.expired_date IS NULL','LEFT OUTER');
-		$builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.expired_date IS NULL','LEFT OUTER');
+		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
 		$builder->where('a.sekolah_id',$sekolah_id);
 		return $builder->get();
 	}
 
 	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
 		return $this->db->query($query, array($table,$reference,$action,$pengguna_id,$description,null,$new_values,$old_values));

@@ -827,7 +827,7 @@
                             {* nilai SKHUN *}
                             {if ($fields.daftar_kelengkapan_id == 3)}{continue}{/if}
                             <tr>
-                                <td><span id="row-span-dokumen-{$fields.daftar_kelengkapan_id}"><i class="glyphicon glyphicon-edit"></i> </span><b>{$fields['nama']}</b></td>
+                                <td><span id="row-span-dokumen-{$fields.daftar_kelengkapan_id}"><i class="glyphicon glyphicon-edit"></i> </span><b>{$fields.nama}</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     {if !($flag_upload_dokumen)}

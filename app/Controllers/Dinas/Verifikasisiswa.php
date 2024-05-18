@@ -125,7 +125,7 @@ class Verifikasisiswa extends MY_Controller {
 
 	function prosesverifikasiberkas()
 	{
-		$pengguna_id = $this->session->get('pengguna_id');
+		$pengguna_id = $this->session->get('user_id');
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$peserta_didik_id = $_POST["data"] ?? null; (("peserta_didik_id");

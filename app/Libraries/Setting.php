@@ -55,7 +55,7 @@ class Setting
         );
 
         $builder = $this->db->table(static::$SETTING_TABLE);
-        $query = $builder->select('name, group, value, description')->getWhere($filters);
+        $query = $builder->select('name, group, value, description, autoload')->getWhere($filters);
         $arr = $query->getResultArray();
 
         return $arr;

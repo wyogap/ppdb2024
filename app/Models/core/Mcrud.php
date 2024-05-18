@@ -119,7 +119,7 @@ class Mcrud implements ICrudModel
         return $builder->get()->getResultArray();
     }
 
-    function search($query, $filter = null, $limit = null, $offset = null, $orderby = null) {
+    function search($query, $filter = null, $limit = null, $offset = null, $orderby = null, $search_columns = null) {
         if ($filter == null) $filter = array();
 
         //use view if specified
@@ -178,7 +178,7 @@ class Mcrud implements ICrudModel
         return $builder->get()->getResultArray();
     }
 
-    function list($filter = null, $limit = null, $offset = null, $orderby = null) {
+    function list($filter = null, $limit = null, $offset = null, $orderby = null, $deleted=false) {
         if ($filter == null) $filter = array();
 
         //use view if specified

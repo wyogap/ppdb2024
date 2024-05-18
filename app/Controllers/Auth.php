@@ -21,7 +21,7 @@ class Auth extends AuthController
             return site_url() ."ppdb/sekolah/beranda";
         } 
         else if ($role_id == ROLEID_DAPODIK) {
-            return site_url() ."ppdb/dapodik/beranda";
+            return site_url() ."ppdb/dapodik/daftarsiswa";
         } 
         else if ($role_id == ROLEID_DINAS) {
             return site_url() ."ppdb/dinas";
@@ -29,6 +29,20 @@ class Auth extends AuthController
         else {
             return site_url() ."user";
         }
+    }
+
+    protected function set_additional_sessions() {
+        $settings = $this->setting->list("ppdb");
+        if ($settings == null)  return;
+
+        foreach($settings as $s) {
+            if ($s['autoload'] != '1')   continue;
+            if ($s['name'] == 'batasan_peta_polygon')   continue;
+            if ($s['name'] == 'tahun_ajaran')   $this->session->set('tahun_ajaran_aktif', $s['value']);
+            if ($s['name'] == 'kode_wilayah')   $this->session->set('kode_wilayah_aktif', $s['value']);
+            $this->session->set($s['name'], $s['value']);
+        }
+
     }
 }
 

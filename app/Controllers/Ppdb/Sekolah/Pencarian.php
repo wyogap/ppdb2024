@@ -39,15 +39,12 @@ class Pencarian extends PpdbController {
 
 	function index()
 	{
-		// view('sekolah/pencarian/index');
-
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        //END DEBUG
+        $mdropdown = new \App\Models\Ppdb\Mdropdown();
+        $data['daftarjenjang'] = $mdropdown->tcg_lookup_jenjang();
+        $data['daftarasaldata'] = $mdropdown->tcg_lookup_asaldata();
 
         //content template
-        $data['content_template'] = 'beranda.tpl';
+        $data['content_template'] = 'pencarian.tpl';
 
         $data['page_title'] = 'Pencarian Siswa';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
@@ -56,8 +53,27 @@ class Pencarian extends PpdbController {
 
 	function cari()
 	{
-		$data['daftar'] = $this->Msekolah->carisiswa();
-		view('sekolah/pencarian/daftarpencarian',$data);
+        $search = $this->request->getPostGet("search");
+
+        //filter
+        $jenjang = $this->request->getPostGet("f_jenjang");
+        $asaldata = $this->request->getPostGet("f_asaldata");
+        $inklusi = $this->request->getPostGet("f_inklusi");
+        $afirmasi = $this->request->getPostGet("f_afirmasi");
+        $json = array();
+
+        //get the data
+		$data = $this->Msekolah->tcg_cari_siswa($search, $jenjang, $asaldata, $inklusi, $afirmasi);
+        if ($data == null) {
+            $json['status'] = 0;
+            $json['error'] = "Tidak ada hasil pencarian";
+        }
+        else {
+            $json['status'] = 1;
+            $json['data'] = $data;
+        }
+
+		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
 	}
 
 	function json() {

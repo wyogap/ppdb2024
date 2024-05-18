@@ -46,19 +46,12 @@ class Penerimaan extends PpdbController {
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
 
 		$sekolah_id = $this->session->get("sekolah_id");
-		$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
-		$data['page_title'] = "Penerimaan " .$nama_sekolah;
+		//$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
 
         //content template
         $data['content_template'] = 'penerimaan.tpl';
 
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        $data['notif_ganti_password'] = 1;
-        //END DEBUG
-
-		$data['page_title'] = 'Penerimaan';
+		$data['page_title'] = "Penerimaan Siswa Baru";
         $this->smarty->render('ppdb/dapodik/ppdbdapodik.tpl', $data);
 
 	}

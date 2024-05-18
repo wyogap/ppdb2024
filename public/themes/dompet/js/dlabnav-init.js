@@ -1,7 +1,7 @@
 
 "use strict"
 
-var dezSettingsOptions = {};
+//var dezSettingsOptions = {};
 
 function getUrlParams(dParam) 
 	{
@@ -32,18 +32,18 @@ function getUrlParams(dParam)
         direction = 'ltr'; 
     } */
 	
-	dezSettingsOptions = {
-			typography: "cairo",
-			version: "light",
-			layout: "horizontal",
-			primary: "color_1",
-			navheaderBg: "color_1",
-			sidebarBg: "color_1",
-			sidebarStyle: "compact",
-			sidebarPosition: "fixed",
-			headerPosition: "fixed",
-			containerLayout: "boxed",
-		};
+	// dezSettingsOptions = {
+	// 		typography: "cairo",
+	// 		version: "light",
+	// 		layout: "horizontal",
+	// 		primary: "color_1",
+	// 		navheaderBg: "color_1",
+	// 		sidebarBg: "color_1",
+	// 		sidebarStyle: "compact",
+	// 		sidebarPosition: "fixed",
+	// 		headerPosition: "fixed",
+	// 		containerLayout: "boxed",
+	// 	};
 
 	
 	

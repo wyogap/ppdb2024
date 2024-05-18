@@ -63,6 +63,12 @@
     .table-kelengkapan td {
         border-left: 0px;
         border-right: 0px;
+        border-color: var(--bs-light) !important;
+        padding: 10px 10px;
+    }
+
+    .table-kelengkapan td .bi {
+        font-size: 20px;
     }
 
     .table-kelengkapan tbody tr:last-child td {
@@ -179,16 +185,16 @@
                                     <tr>
                                         <td>Data Profil</td>
                                         <td class="text-center">
-                                            {{#kelengkapan_data}}<i class="text-blue glyphicon glyphicon-ok"></i>{{/kelengkapan_data}}
-                                            {{^kelengkapan_data}}<i class="text-red glyphicon glyphicon-remove"></i>{{/kelengkapan_data}}
+                                            {{#kelengkapan_data}}<i class="text-blue bi bi-check"></i>{{/kelengkapan_data}}
+                                            {{^kelengkapan_data}}<i class="text-red bi bi-exclamation"></i>{{/kelengkapan_data}}
                                         </td>
                                     </tr>
                                     {{#item.kelengkapan}}
                                     <tr {{#kondisi_khusus}}class="bg-warning"{{/kondisi_khusus}}>
                                         <td>{{kelengkapan}}</td>
                                         <td class="text-center">
-                                            {{#status_ok}}<i class="text-blue glyphicon glyphicon-ok"></i>{{/status_ok}}
-                                            {{#status_notok}}<i class="text-red glyphicon glyphicon-remove"></i>{{/status_notok}}
+                                            {{#status_ok}}<i class="text-blue bi bi-check"></i>{{/status_ok}}
+                                            {{#status_notok}}<i class="text-red bi bi-exclamation"></i>{{/status_notok}}
                                             {{#status_tidakada}}Tidak Ada{{/status_tidakada}}
                                             {{#status_dalamproses}}Dalam Proses{{/status_dalamproses}}
                                         </td>
@@ -200,8 +206,8 @@
                                     <tr {{#kondisi_khusus}}class="bg-warning"{{/kondisi_khusus}}>
                                         <td>{{kelengkapan}} (Berkas Fisik)</td>
                                         <td class="text-center">
-                                            {{#status_ok}}<i class="text-blue glyphicon glyphicon-ok"></i>{{/status_ok}}
-                                            {{#status_notok}}<i class="text-red glyphicon glyphicon-remove"></i>{{/status_notok}}
+                                            {{#status_ok}}<i class="text-blue bi bi-check"></i>{{/status_ok}}
+                                            {{#status_notok}}<i class="text-red bi bi-exclamation"></i>{{/status_notok}}
                                         </td>
                                     </tr>
                                     {{/item.berkasfisik}}
@@ -416,7 +422,6 @@
     </div>
 
 </script>
-
 {/literal}
 
 

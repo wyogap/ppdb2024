@@ -13,7 +13,7 @@ Class Mklarifikasidinas
 	// function tcg_daftarpenerapan($tahun_ajaran_id){
 	// 	$builder->select('a.penerapan_id,a.jalur_id,c.nama AS jalur');
 	// 	$builder = $this->db->table('ref_penerapan a');
-	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 	// 	$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
 	// 	return $builder->get();
 	// }
@@ -22,7 +22,7 @@ Class Mklarifikasidinas
 	// 	$tahun_ajaran_id = secure($tahun_ajaran_id);
 	// 	$query = "select a.penerapan_id as value, a.nama as label
 	// 			  from ref_penerapan a
-	// 			  where a.tahun_ajaran_id=$tahun_ajaran_id and a.expired_date is null order by a.aktif desc, a.urutan";
+	// 			  where a.tahun_ajaran_id=$tahun_ajaran_id and a.is_deleted=0 order by a.aktif desc, a.urutan";
 	// 	return $this->db->query($query);
 	// }
 
@@ -44,9 +44,9 @@ Class Mklarifikasidinas
 							x3.nama as sekolah_tujuan
 										");
 		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.is_deleted=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
-		$builder->join('dbo_users x1','x1.pengguna_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
-		$builder->join('dbo_users x2','x2.pengguna_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
-		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.expired_date is null','LEFT OUTER');
+		$builder->join('dbo_users x1','x1.peserta_didik_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
+		$builder->join('dbo_users x2','x2.peserta_didik_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.is_deleted=0','LEFT OUTER');
 		$builder->where("a.is_deleted", 0);
 		$builder->where("a.tahun_ajaran_id", $tahun_ajaran_id);
 		if (!empty($tipe_data)) {
@@ -94,11 +94,11 @@ Class Mklarifikasidinas
 			x3.nama as sekolah_tujuan
 						");
 		$builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id AND b.is_deleted=0 AND b.tahun_ajaran_id=a.tahun_ajaran_id");
-		$builder->join('ref_sekolah c','c.sekolah_id = b.sekolah_id AND c.expired_date IS NULL','LEFT OUTER');
-		$builder->join('ref_wilayah d','d.kode_wilayah = b.kode_wilayah AND d.expired_date IS NULL','LEFT OUTER');
-		$builder->join('dbo_users x1','x1.pengguna_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
-		$builder->join('dbo_users x2','x2.pengguna_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
-		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.expired_date is null','LEFT OUTER');
+		$builder->join('ref_sekolah c','c.sekolah_id = b.sekolah_id AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_wilayah d','d.kode_wilayah = b.kode_wilayah AND d.is_deleted=0','LEFT OUTER');
+		$builder->join('dbo_users x1','x1.peserta_didik_id = a.pengguna_sekolah AND x1.is_deleted=0','LEFT OUTER');
+		$builder->join('dbo_users x2','x2.peserta_didik_id = a.pengguna_dinas AND x2.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_sekolah x3','x3.sekolah_id = a.sekolah_id AND x3.is_deleted=0','LEFT OUTER');
 		$builder->where("a.is_deleted", 0);
 		$builder->where("a.verifikasi_id", $klarifikasi_id);
 
@@ -111,7 +111,7 @@ Class Mklarifikasidinas
 	}
 
 	function ubah($klarifikasi_id, $verifikasi, $catatan) {
-		$pengguna_id = $this->session->get('pengguna_id');
+		$user_id = $this->session->get('user_id');
 		
 		$filter = array(
 			'verifikasi_id' 	=> $klarifikasi_id,
@@ -121,7 +121,7 @@ Class Mklarifikasidinas
 		$valuepair = array(
 			'verifikasi'		=> $verifikasi,
 			'catatan_dinas'		=> $catatan,
-			'pengguna_dinas'	=> $pengguna_id,
+			'pengguna_dinas'	=> $user_id,
 			'tanggal_verifikasi'	=> date("Y/m/d H:i:s"),
 			'updated_on'		=> date("Y/m/d H:i:s")
 		);
@@ -173,14 +173,14 @@ Class Mklarifikasidinas
 	}
 
 	function baru($peserta_didik_id, $tipe_data, $kelengkapan_id, $catatan) {
-		$pengguna_id = $this->session->get('pengguna_id');
+		$user_id = $this->session->get('user_id');
 		$sekolah_id = $this->session->get('sekolah_id');
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$valuepair = array(
 			'peserta_didik_id' 	=> $peserta_didik_id,
 			'tahun_ajaran_id'	=> $tahun_ajaran_id,
-			'pengguna_sekolah'	=> $pengguna_id,
+			'pengguna_sekolah'	=> $user_id,
 			'sekolah_id'		=> $sekolah_id,
 			'tipe_data'			=> $tipe_data,
 			'daftar_kelengkapan_id'	=> $kelengkapan_id,
@@ -198,7 +198,7 @@ Class Mklarifikasidinas
 	}
 
 	function hapus($verifikasi_id) {
-		//$pengguna_id = $this->session->get('pengguna_id');
+		//$user_id = $this->session->get('user_id');
 		
 		$filter = array(
 			'verifikasi_id' 	=> $verifikasi_id,

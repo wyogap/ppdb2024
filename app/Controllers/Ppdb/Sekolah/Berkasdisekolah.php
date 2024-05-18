@@ -53,16 +53,10 @@ class Berkasdisekolah extends PpdbController {
 		}
 
 		$data['sekolah_id'] = $sekolah_id;
-		
 		$data['waktuverifikasi'] = $this->Msetting->tcg_cek_waktuverifikasi();
 
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        //END DEBUG
-
         //content template
-        $data['content_template'] = 'beranda.tpl';
+        $data['content_template'] = 'berkasdisekolah.tpl';
 
         $data['page_title'] = 'Berkas Di Sekolah';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);

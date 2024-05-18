@@ -29,22 +29,14 @@ class Siswa extends PpdbController {
     }
 
     function index() {
-        $peserta_didik_id = $this->pengguna_id;
+        $peserta_didik_id = $this->peserta_didik_id;
         if ($this->is_dinas) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null;
         }
 
         $tahun_ajaran_id = $this->tahun_ajaran_id;
         $upload_dokumen = $this->setting->get('upload_dokumen');
-
-        //DEBUG
-        $peserta_didik_id = '000EB5F3-46F3-4C5D-A95E-CF56D743B306';
-        $this->session->set("pengguna_id", $peserta_didik_id);
-        $this->putaran = 2;
-        $this->session->set('putaran_aktif', $this->putaran);
-        $upload_dokumen = 0;
-        //END DEBUG
-
+        
         //waktu pelaksanaan
         $waktudaftarulang = $this->Msetting->tcg_waktudaftarulang()->getRowArray();
         $waktupendaftaran = $this->Msetting->tcg_waktupendaftaran()->getRowArray();
@@ -52,6 +44,13 @@ class Siswa extends PpdbController {
         $cek_waktudaftarulang = ($waktudaftarulang['aktif'] == 1);
         $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1);
         $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1);
+
+        $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id)->getRowArray();
+        if (empty($profil)) {
+            //invalid session. just re-login
+            $this->session->setFlashdata("error", "Invalid session!");
+            return redirect()->to(site_url() ."auth/logout");
+        }
 
         //daftar pendaftaran
         $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id)->getResultArray();
@@ -81,8 +80,6 @@ class Siswa extends PpdbController {
         }
 
         //profil siswa | profil status
-        $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id)->getRowArray();
-
         $kelengkapan_data = 1;
         if ($profil['konfirmasi_profil'] != 1 || $profil['verifikasi_profil'] == 2) { $kelengkapan_data = 0; }
         else if ($profil['konfirmasi_lokasi'] != 1 || $profil['verifikasi_lokasi'] == 2) { $kelengkapan_data = 0; }
@@ -488,10 +485,11 @@ class Siswa extends PpdbController {
 
         //debugging
         $data['nama_pengguna'] = $profil['nama'];
-        $data['username'] = $profil['nisn'];
+        $data['user_name'] = $profil['nisn'];
         $data['profildikunci'] = 0;
         $data['cek_waktupendaftaran'] = 0;
         $data['cek_waktusosialisasi'] = 0;
+        $data['cek_waktudaftarulang'] = 1;
         $data['pendaftarandikunci'] = 0;
         $data['kebutuhan_khusus'] = 1;
         $data['satu_zonasi_satu_jalur'] = 1;
@@ -506,458 +504,13 @@ class Siswa extends PpdbController {
         $this->smarty->render('ppdb/siswa/ppdbsiswa.tpl', $data);
     }
 
-    // function json() {
-    //     $peserta_didik_id = $this->session->get("pengguna_id");
-    //     if ($this->session->get('peran_id') == 4) {
-    //         $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
-    //     }
-
-	// 	$action = $_POST["action"] ?? null; 
-	// 	if (empty($action) || $action=='view') {
-    //         $data["error"] = "not-implemented";
-	// 		echo json_encode($data);	
-    //     }
-	// 	else if ($action=='edit'){
-    //         $data = $_POST["data"] ?? null;  
-
-    //         $result = array();
-    //         $result['data'] = array();
-    //         $result['dokumen'] = array();
-
-    //         foreach ($data as $key => $valuepair) {
-    //             if (!empty($key) && $key!='null') $peserta_didik_id = $key;
-
-    //             if (!empty($valuepair['nilai_semester'])) {
-    //                 //udah ada nilai rata-rata
-    //                 unset($valuepair['kelas4_sem1']);
-    //                 unset($valuepair['kelas4_sem2']);
-    //                 unset($valuepair['kelas5_sem1']);
-    //                 unset($valuepair['kelas5_sem2']);
-    //                 unset($valuepair['kelas6_sem1']);
-    //                 unset($valuepair['kelas6_sem2']);
-    //             }
-
-    //             foreach($valuepair as $field => $value) {
- 	// 				//Important: a bug in dt editor!!
-    //                 if ($value=="" && $field=="nilai_lulus") {
-    //                     unset($valuepair[$field]);
-    //                     continue;
-    //                 }
-    //                 else if ($value=="" && 
-    //                         ($field=="nilai_semester" || $field=="kelas4_sem1" || $field=="kelas4_sem2" 
-    //                         || $field=="kelas5_sem1" || $field=="kelas5_sem2" || $field=="kelas6_sem1" || $field=="kelas6_sem2")
-    //                 ) {
-    //                     unset($valuepair[$field]);
-    //                     continue;
-    //                 }
-                    
-    //                 if ($field == 'dokumen_21') {
-    //                     //surat pernyataan kebenaran dokumen
-    //                     $kelengkapan_id = 21;
-
-    //                     if ($value == "") {
-    //                         $this->Msiswa->tcg_hapus_dokumen_pendukung($peserta_didik_id, $kelengkapan_id);
-
-    //                         $result["data"][$field] = $value;
-    //                         $valuepair['surat_pernyataan_kebenaran_dokumen'] = "";
-    //                     }
-    //                     else {
-    //                         $query = $this->Msiswa->tcg_simpan_dokumen_pendukung($value, $peserta_didik_id, $kelengkapan_id,1,0,0);
-
-    //                         $result["data"][$field] = $value;
-    //                         foreach($query->getResult() as $row) {
-    //                             $result['dokumen'][$row->daftar_kelengkapan_id] = array(
-    //                                 "dokumen_id"=>$row->dokumen_id, 
-    //                                 "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-    //                                 "verifikasi"=>'0',
-    //                                 "catatan"=>'',
-    //                                 "filename"=>$row->filename, 
-    //                                 "file_path"=>base_url().$row->path, 
-    //                                 "web_path"=>base_url().$row->web_path, 
-    //                                 "thumbnail_path"=>base_url().$row->thumbnail_path, 
-    //                                 "create_date"=>$row->create_date);
-
-    //                             $valuepair['surat_pernyataan_kebenaran_dokumen'] = $row->dokumen_id;
-    //                         }
-    //                     }
-
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if (substr($field, 0, 8) == 'dokumen_') {
-    //                     $arr = explode("_", $field);
-    //                     $kelengkapan_id = $arr[1];
-
-    //                     if ($value == "") {
-    //                         $this->Msiswa->tcg_hapus_dokumen_pendukung($peserta_didik_id, $kelengkapan_id);
-
-    //                         $result["data"][$field] = $value;
-    //                     }
-    //                     else {
-    //                         $query = $this->Msiswa->tcg_simpan_dokumen_pendukung($value, $peserta_didik_id, $kelengkapan_id,1,0,0);
-
-    //                         $result["data"][$field] = $value;
-    //                         foreach($query->getResult() as $row) {
-    //                             if($row->daftar_kelengkapan_id == 8) {
-    //                                 //ignore
-    //                                 continue;
-
-    //                                 // //dokumen prestasi
-    //                                 // if(!isset($data['dokumen'][8])) {
-    //                                 //     $data['dokumen'][8] = array();
-    //                                 // }
-    //                                 // $result['dokumen'][8][$row->dokumen_id] = array("dokumen_id"=>$row->dokumen_id, "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, "filename"=>$row->filename, "web_path"=>base_url().$row->web_path, "thumbnail_path"=>base_url().$row->thumbnail_path, "create_date"=>$row->create_date);
-    //                             }
-    //                             else {
-    //                                 $result['dokumen'][$row->daftar_kelengkapan_id] = array(
-    //                                     "dokumen_id"=>$row->dokumen_id, 
-    //                                     "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-    //                                     "verifikasi"=>'0',
-    //                                     "catatan"=>'',
-    //                                     "filename"=>$row->filename, 
-    //                                     "file_path"=>base_url().$row->path, 
-    //                                     "web_path"=>base_url().$row->web_path, 
-    //                                     "thumbnail_path"=>base_url().$row->thumbnail_path, 
-    //                                     "create_date"=>$row->create_date);
-    //                             }   
-    //                         }
-    //                     }
-
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "nilai_lulus") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaikelulusan($peserta_didik_id, $value);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "nilai_semester") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, $value, $value, $value, $value, $value, $value);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas4_sem1") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, $value, -1, -1, -1, -1, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas4_sem2") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, -1, $value, -1, -1, -1, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas5_sem1") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, -1, -1, $value, -1, -1, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas5_sem2") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, -1, -1, -1, $value, -1, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas6_sem1") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, -1, -1, -1, -1, $value, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "kelas6_sem2") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaisemester($peserta_didik_id, -1, -1, -1, -1, -1, $value);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "nilai_bin") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaiusbn($peserta_didik_id, $value, -1, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "nilai_mat") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaiusbn($peserta_didik_id, -1, $value, -1);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "nilai_ipa") {
-    //                     $value = floatval($value);
-    //                     if ($value > 100) { $value=100; }
-    //                     if ($value < 0) { $value=0; }
-
-    //                     $retval = $this->Msiswa->tcg_ubahnilaiusbn($peserta_didik_id, -1, -1, $value);
-
-    //                     if ($retval['status'] == 0) {
-    //                         $result["error"] = $retval['message'];
-    //                         unset($valuepair[$field]);
-    //                         break;
-    //                     }
-    //                     $result["data"][$field] = $value;
-    //                     unset($valuepair[$field]);
-    //                 }
-    //                 else if ($field == "punya_nilai_un") {
-    //                     if ($value == 0) {
-    //                         $this->Msiswa->tcg_ubahnilaiusbn($peserta_didik_id, 0, 0, 0);
-    //                     }
-    //                 }
-    //                 else if ($field == "punya_prestasi") {
-    //                     //handled separately
-    //                     if ($value == 0) {
-
-    //                     }
-    //                 }
-    //                 else if ($field == "punya_kip") {
-    //                     if ($value == 0) {
-    //                         $valuepair["no_kip"] = null;
-    //                     }
-    //                 }
-    //                 else if ($field == "masuk_bdt") {
-    //                     if ($value == 0) {
-    //                         $valuepair["no_bdt"] = null;
-    //                     }
-    //                 }
-    //                 else if ($field == "nomor_bdt") {
-    //                     if ($value == "-" || $value == "") {
-    //                         $valuepair["punya_bdt"] = 0;
-    //                         $valuepair["no_bdt"] = null;
-    //                         unset($valuepair["nomor_bdt"]);
-    //                     } 
-    //                     else {
-    //                         $valuepair["no_bdt"] = $value;
-    //                         unset($valuepair["nomor_bdt"]);
-    //                     }
-    //                 }
-    //                 else if ($field == "nomor_kip") {
-    //                     if ($value == "-" || $value == "") {
-    //                         $valuepair["punya_kip"] = 0;
-    //                         $valuepair["no_kip"] = null;
-    //                         unset($valuepair["nomor_kip"]);
-    //                     } 
-    //                     else {
-    //                         $valuepair["no_kip"] = $value;
-    //                         unset($valuepair["nomor_kip"]);
-    //                     }
-    //                 }
-    //             }
-
-    //             //update the profil
-    //             if (count($valuepair) > 0) {
-    //                 $this->Msiswa->tcg_ubah_profil_siswa($peserta_didik_id,$valuepair);
-
-    //                 foreach($valuepair as $field => $value) {
-    //                     $result["data"][$field] = $value;
-    //                 }
-    //             }
-    //         }
-
-    //         echo json_encode($result);	
-    //     }
-	// 	else if ($action=='remove'){
-    //         $data["error"] = "not-implemented";
-	// 		echo json_encode($data);	
-    //     }
-	// 	else if ($action=='create'){
-    //         $data["error"] = "not-implemented";
-	// 		echo json_encode($data);	
-    //     }
-    //     else if ($action == "upload") {
-
-    //         $key = $_POST["uploadField"] ?? null; 
-    //         $arr = explode("_", $key);
-
-    //         $kelengkapan_id=0;
-    //         if (count($arr) > 1) {
-    //             $kelengkapan_id = $arr[1];
-    //         }
-
-    //         $data = array();
-    //         if ($kelengkapan_id == 0) {
-    //             $data["error"] = "Kode dokumen tidak dikenal";
-    //             echo json_encode($data);
-    //             return;
-    //         }
-
-    //         $uploader = new Uploader();
-    //         $fileObj = $uploader->upload($_FILES['upload']);
-
-    //         if(!empty($fileObj['error'])) {
-    //             $data['error'] = $fileObj['error'];
-    //         } else {
-    //             $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
-    //         }
-
-    //         echo json_encode($data);
-    //         return;
-    //      }   
-    //      else if ($action == "rotate") {
-    //         $dokumen_id = $_POST["dokumen_id"] ?? null;
-    //         $degree = $_POST["degree"] ?? null;
-
-    //         $result = array();
-    //         $query = $this->Msiswa->tcg_detil_dokumen_pendukung($dokumen_id);
-            
-    //         //$result['dokumen_id'] = $dokumen_id;
-    //         //$result['data'] = $query->getResultArray();
-
-    //         $uploader = new Uploader();
-    //         foreach($query->getResult() as $row) {
-    //             $webpath = $row->web_path;
-    //             $thumbpath = $row->thumbnail_path;
-
-    //             $ext = pathinfo($webpath, PATHINFO_EXTENSION);
-    //             $dirname = pathinfo($webpath, PATHINFO_DIRNAME);
-
-    //             $filename_baru = rand(). time();
-    //             $webpath_baru = $dirname. "/". $filename_baru. ".". $ext;
-    //             $thumbpath_baru = $dirname. "/". $filename_baru. "_thumb.". $ext;
-
-    //             $msg = $uploader->imagerotate(FCPATH. $webpath, FCPATH. $webpath_baru, $degree);
-    //             if ($msg != "") {
-    //                 $result['error'] = $msg;
-    //                 break;
-    //             }
-   
-    //             $msg = $uploader->imagerotate(FCPATH. $thumbpath, FCPATH. $thumbpath_baru, $degree);
-    //             if ($msg != "") {
-    //                 $result['error'] = $msg;
-    //                 break;
-    //             }
-   
-    //             //update the file
-    //             $valuepair = array(
-    //                 'path' => $webpath_baru,
-    //                 'web_path' => $webpath_baru,
-    //                 'thumbnail_path' => $thumbpath_baru
-    //             );
-    //             $this->Msiswa->tcg_ubah_dokumen_pendukung($dokumen_id, $valuepair);
-
-    //             //return the new data
-    //             $result['data'][$dokumen_id] = array(
-    //                 "dokumen_id"=>$row->dokumen_id, 
-    //                 "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-    //                 "verifikasi"=>'0',
-    //                 "catatan"=>'',
-    //                 "filename"=>$row->filename, 
-    //                 "file_path"=>base_url().$webpath_baru, 
-    //                 "web_path"=>base_url().$webpath_baru, 
-    //                 "thumbnail_path"=>base_url().$thumbpath_baru, 
-    //                 "create_date"=>$row->create_date);
-
-    //             // //remove old files
-    //             // if (!empty($webpath) && ile_exists(FCPATH. $webpath))
-    //             //     unlink(FCPATH. $webpath);
-
-    //             // if (!empty($webpath) && ile_exists(FCPATH. $thumbpath))
-    //             //     unlink(FCPATH. $thumbpath);
-
-    //         }
-
-    //         echo json_encode($result);
-    //         return;
-    //      }
-    // }
-
 	function suratpernyataan() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
         }
 
-        $username = $this->session->get("username");
+        $username = $this->session->get("user_name");
 		$peran_id = $this->session->get("peran_id");
 		$nisn = $this->session->get("nisn");
 		
@@ -1010,7 +563,7 @@ class Siswa extends PpdbController {
 	function riwayat() {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
         }
@@ -1028,7 +581,7 @@ class Siswa extends PpdbController {
     
     //daftar prestasi (view/edit/add/delete)
     function prestasi() {
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $flag_upload_dokumen = $this->setting->get('upload_dokumen');
@@ -1155,9 +708,14 @@ class Siswa extends PpdbController {
 
     } 
 
+    function updateprofil() {
+        //TODO
+        echo 'not-implemented';
+    }
+
     //upload dokumen
     function upload() {
-
+        //TODO
     }
     
     //pilihan untuk perubahan

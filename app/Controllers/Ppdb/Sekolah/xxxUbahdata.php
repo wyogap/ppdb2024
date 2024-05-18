@@ -15,15 +15,6 @@ class Ubahdata extends PpdbController {
 
     protected $Msekolah;
 
-	// public function __construct()
-	// {
-	// 	parent::__construct();
-	// 	//return redirect()->to("Cinfo");
-	// 	if($this->session->get('isLogged')==FALSE||$this->session->get('peran_id')!=1) {
-	// 		return redirect()->to("akun/login");
-	// 	}
-	// }
-
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
@@ -73,7 +64,7 @@ class Ubahdata extends PpdbController {
 
 	function simpan()
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 		$sekolah_id = $this->session->get("sekolah_id");
 
 		$peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 

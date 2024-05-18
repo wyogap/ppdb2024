@@ -28,7 +28,7 @@ class Perubahandata extends MY_Controller {
 
 	function prosesperubahandata()
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$peserta_didik_id = $_POST["data"] ?? null; (("peserta_didik_id");
 		$approval = $_POST["data"] ?? null; (("approval");

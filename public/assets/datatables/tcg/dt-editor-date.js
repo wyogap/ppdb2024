@@ -32,7 +32,7 @@
           conf._input = $(
               '<div id="'+conf._safeId+'"></div>');
 
-          conf._input_control = $('<input type="text" class="tcg-text-input form-control" autocomplete="new-password"/>');
+          conf._input_control = $('<input type="text" class="tcg-text-input form-control" autocomplete=""/>');
 
           conf._input.append(conf._input_control);
     

@@ -22,8 +22,10 @@ class PpdbController extends BaseController {
     protected $nama_putaran = "";
     protected $putaran = "";
 
+    protected $user_id = null;
     protected $peran_id = 0;
-    protected $pengguna_id = null;
+    //protected $pengguna_id = null;
+    protected $peserta_didik_id = null;
     protected $nama_pengguna = null;
     protected $is_siswa = false;
     protected $is_sekolah = false;
@@ -49,7 +51,6 @@ class PpdbController extends BaseController {
         //load model
         $this->Msetting = new Msetting();
 
-
         //is-json
         //TODO: implement properly
         $uri = $this->request->getUri();
@@ -61,11 +62,12 @@ class PpdbController extends BaseController {
         $this->is_json = ($json_segment || $json_param);
 
         //logged-in user
-        $loggedin = $this->session->get('is_logged_in');
-        if ($loggedin) {
-            $this->peran_id = $this->session->get('peran_id');
-            $this->pengguna_id = $this->session->get("pengguna_id");
-            $this->nama_pengguna = $this->session->get("nama_pengguna");
+        $this->user_id = $this->session->get("user_id");
+        if ($this->user_id) {
+            $this->peran_id = $this->session->get('role_id');
+            //$this->pengguna_id = $this->session->get("user_id");
+            $this->peserta_didik_id = $this->session->get("peserta_didik_id");
+            $this->nama_pengguna = $this->session->get("nama");
             $this->is_siswa = ($this->peran_id == ROLEID_SISWA);
             $this->is_sekolah = ($this->peran_id == ROLEID_SEKOLAH);
             $this->is_dinas = ($this->peran_id == ROLEID_DINAS);
@@ -191,15 +193,17 @@ class PpdbController extends BaseController {
             }
 
             //smarty: logged-in user
-            if ($loggedin) {
+            if ($this->user_id) {
                 $this->smarty->assign('peran_id', $this->peran_id);
                 $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
                 $this->smarty->assign('is_siswa', $this->is_siswa);    
                 $this->smarty->assign('is_sekolah', $this->is_sekolah);    
                 $this->smarty->assign('is_dapodik', $this->is_dapodik);    
                 $this->smarty->assign('is_dinas', $this->is_dinas);    
+                $this->smarty->assign('user_name', $this->session->get('user_name'));
+
             }
-            $this->smarty->assign('pengguna_id', $this->pengguna_id);
+            $this->smarty->assign('peserta_didik_id', $this->peserta_didik_id);
 
             //smarty: flashdata
             $this->error_message = $this->session->getFlashdata('error');

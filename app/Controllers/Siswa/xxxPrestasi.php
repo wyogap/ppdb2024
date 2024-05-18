@@ -48,7 +48,7 @@ class Prestasi extends PpdbController {
     }
 
     function json() {
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $mdropdown = new Mdropdown();
@@ -169,7 +169,7 @@ class Prestasi extends PpdbController {
     }
 
 	function suratpernyataan() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
 		$username = $this->session->get("username");
 		$peran_id = $this->session->get("peran_id");
 		$nisn = $this->session->get("nisn");

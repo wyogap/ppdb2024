@@ -80,7 +80,7 @@ Class Mpendaftaran
 	}
 
 	function tcg_resetpendaftaran($peserta_didik_id) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$query = "CALL " .SQL_RESET_PENDAFTARANSISWA. "('$peserta_didik_id', '$pengguna_id')";
 		$this->db->query($query);
@@ -93,11 +93,11 @@ Class Mpendaftaran
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, c.nama as sekolah_asal, e.nama as sekolah_tujuan, f.nama as penerapan, z.*
 				  from tcg_pendaftaran z
 				  join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.is_deleted=0
-				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
-				  join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
+				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
+				  join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
 				  join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.is_deleted=0
-				  join ref_sekolah e on e.sekolah_id=z.sekolah_id and e.expired_date is null
-				  join ref_penerapan f on f.penerapan_id=z.penerapan_id and e.expired_date is null
+				  join ref_sekolah e on e.sekolah_id=z.sekolah_id and e.is_deleted=0
+				  join ref_penerapan f on f.penerapan_id=z.penerapan_id and e.is_deleted=0
 				  ";
 
 		$where = "a.nama like '%" . $nama . "%'";
@@ -154,11 +154,11 @@ Class Mpendaftaran
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, z.*
 					from tcg_pendaftaran z
 					join tcg_peserta_didik a on a.peserta_didik_id=z.peserta_didik_id and a.is_deleted=0
-					left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.expired_date is null
-					join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.expired_date is null
+					left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
+					join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
 					join dbo_users d on d.pengguna_id=a.peserta_didik_id and d.is_deleted=0
-					join ref_sekolah e on e.sekolah_id=z.sekolah_id and e.expired_date is null
-					join ref_penerapan f on f.penerapan_id=z.penerapan_id and e.expired_date is null
+					join ref_sekolah e on e.sekolah_id=z.sekolah_id and e.is_deleted=0
+					join ref_penerapan f on f.penerapan_id=z.penerapan_id and e.is_deleted=0
 				  where z.pendaftaran_id='$key'";
 
 		return $this->db->query($query);	
@@ -167,7 +167,7 @@ Class Mpendaftaran
 	// function resetpendaftaran()
 	// {
 	// 	$peserta_didik_id = $_POST["data"] ?? null; (("peserta_didik_id");
-	// 	$pengguna_id = $this->session->get("pengguna_id");
+	// 	$pengguna_id = $this->session->get("user_id");
 
 	// 	return $this->db->query("CALL " .SQL_RESET_PENDAFTARANSISWA. " ('$peserta_didik_id', '$pengguna_id')");
 	// }

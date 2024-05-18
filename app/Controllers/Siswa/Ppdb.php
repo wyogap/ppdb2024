@@ -512,7 +512,7 @@ class Ppdb extends PpdbController {
     }
 
     // function json() {
-    //     $peserta_didik_id = $this->session->get("pengguna_id");
+    //     $peserta_didik_id = $this->session->get("user_id");
     //     if ($this->session->get('peran_id') == 4) {
     //         $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
     //     }
@@ -957,7 +957,7 @@ class Ppdb extends PpdbController {
     // }
 
 	function suratpernyataan() {
-		$peserta_didik_id = $this->session->get("pengguna_id");
+		$peserta_didik_id = $this->session->get("user_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
         }
@@ -1015,7 +1015,7 @@ class Ppdb extends PpdbController {
 	function riwayat() {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
         }
@@ -1033,7 +1033,7 @@ class Ppdb extends PpdbController {
     
     //daftar prestasi (view/edit/add/delete)
     function prestasi() {
-        $peserta_didik_id = $this->session->get("pengguna_id");
+        $peserta_didik_id = $this->session->get("user_id");
 		$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $flag_upload_dokumen = $this->setting->get('upload_dokumen');

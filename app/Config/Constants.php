@@ -146,6 +146,7 @@ defined('DOCID_KIP')                        OR define('DOCID_KIP', '16');
 defined('DOCID_SUKET_BDT')                  OR define('DOCID_SUKET_BDT', '20');
 defined('DOCID_SUKET_INKLUSI')              OR define('DOCID_SUKET_INKLUSI', '9');
 defined('DOCID_SUKET_KEBENARAN_DOK')        OR define('DOCID_SUKET_KEBENARAN_DOK', '21');
+defined('DOCID_RAPOR_KELAS6')               OR define('DOCID_RAPOR_KELAS6', '26');
 
 defined('TAHAPANID_SOSIALISASI')            OR define('TAHAPANID_SOSIALISASI', '1');
 defined('TAHAPANID_REGISTRASI')             OR define('TAHAPANID_REGISTRASI', '2');
@@ -164,24 +165,4 @@ defined('COL_UPDATED_ON')                   OR define('COL_UPDATED_ON', 'updated
 defined('COL_UPDATED_BY')                   OR define('COL_UPDATED_BY', 'updated_by');
 defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired_date');
 
-// defined('CONFIG_KODE_WILAYAH')              OR define('CONFIG_KODE_WILAYAH', '030500');
-// defined('CONFIG_NAMA_WILAYAH')              OR define('CONFIG_NAMA_WILAYAH', 'Kabupaten Kebumen');
-// defined('CONFIG_ALAMAT_DINAS')              OR define('CONFIG_ALAMAT_DINAS', 'Jalan Veteran No.2 Kebumen, Jawa Tengah');
-// defined('CONFIG_TELP_DINAS')                OR define('CONFIG_TELP_DINAS', '0287-381447, 381289');
-
-// defined('MAP_STREETMAP')                    OR define('MAP_STREETMAP', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-// defined('MAP_SATELITEMAP')                  OR define('MAP_SATELITEMAP', 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-// defined('MAP_LINTANG')                      OR define('MAP_LINTANG', -7.664174);
-// defined('MAP_BUJUR')                        OR define('MAP_BUJUR', 109.617572);
-
-// global $config;
-// $config = array();
-// $config['KODE_WILAYAH'] = CONFIG_KODE_WILAYAH;
-// $config['NAMA_WILAYAH'] = CONFIG_NAMA_WILAYAH;
-// $config['ALAMAT_DINAS'] = CONFIG_ALAMAT_DINAS;
-// $config['TELP_DINAS'] = CONFIG_TELP_DINAS;
-
-// $config['MAP_STREETMAP'] = MAP_STREETMAP;
-// $config['MAP_SATELITEMAP'] = MAP_SATELITEMAP;
-// $config['MAP_LINTANG'] = MAP_LINTANG;
-// $config['MAP_BUJUR'] = MAP_BUJUR;
+defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 1);

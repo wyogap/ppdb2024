@@ -32,7 +32,7 @@ Class Mhome
 
 		$builder = $this->db->table('ref_penerapan a');
 		$builder->select('a.penerapan_id,a.jalur_id,c.nama AS jalur');
-		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
 		return $builder->get();
 	}
@@ -121,7 +121,7 @@ Class Mhome
 	// 	$sekolah_id = $this->input->get("sekolah_id");
 	// 	$builder->select('a.penerapan_id,c.nama AS jalur,d.kuota');
 	// 	$builder = $this->db->table('ref_penerapan a');
-	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.expired_date IS NULL');
+	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 	// 	$builder->join('dbo_penerapan_sekolah d','a.penerapan_id = d.penerapan_id AND d.is_deleted = 0');
 	// 	$builder->where(array('a.aktif'=>1,'a.expired_date'=>NULL,'d.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
 	// 	$builder->order_by('c.nama DESC');
@@ -171,7 +171,7 @@ Class Mhome
 	function tcg_cek_registrasi($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
@@ -185,7 +185,7 @@ Class Mhome
 	function tcg_cek_nisn($nisn){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
@@ -199,7 +199,7 @@ Class Mhome
 	function tcg_cek_nik($nik){
 		$builder = $this->db->table('dbo_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_pengguna b','a.peserta_didik_id = b.pengguna_id AND b.is_deleted = 0');
+		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nik'=>$nik,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
@@ -244,10 +244,10 @@ Class Mhome
 
 		//$peran_id = $this->input->post("peran_id",TRUE);
 		$builder = $this->db->table('dbo_users a');
-		$builder->select('a.pengguna_id,a.role_id as peran_id,a.sekolah_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
+		$builder->select('a.user_id,a.role_id as peran_id,a.sekolah_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
                             b.bentuk,CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah,c.tanggal_lahir,c.asal_data,c.nisn,c.kebutuhan_khusus,c.tutup_akses');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('dbo_peserta_didik c','a.pengguna_id = c.peserta_didik_id','LEFT OUTER');
+		$builder->join('dbo_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
 		$builder->where(array('a.is_deleted'=>0));
 		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
@@ -258,7 +258,7 @@ Class Mhome
 		$builder = $this->db->table('dbo_pengguna a');
 		$builder->select('count(*) as jumlah');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('dbo_peserta_didik c','a.pengguna_id = c.peserta_didik_id','LEFT OUTER');
+		$builder->join('dbo_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
 		$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
 		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
@@ -290,7 +290,7 @@ Class Mhome
 
 	function tcg_ubahpassword($password)
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$user_id = $this->session->get("user_id");
 
 		$data = array(
 			'password' => md5($password),
@@ -298,19 +298,19 @@ Class Mhome
 			'updated_on' => date("Y/m/d")
 		);
 
-		$builder = $this->db->table('dbo_pengguna');
-        $builder->where(array('pengguna_id' => $pengguna_id, 'is_deleted' => 0));
+		$builder = $this->db->table('dbo_users');
+        $builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
 		$retval = $builder($data);
 
 		if ($retval > 0) {
 			//put in audit trail
-			$this->tcg_audit_trail("dbo_pengguna",$pengguna_id,'update','Update password','','');
+			$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
 		}
 
 		return $retval;
 	}
 
-	function tcg_resetpassword($pengguna_id, $password)
+	function tcg_resetpassword($user_id, $password)
 	{
 		$data = array(
 			'password' => md5($password),
@@ -319,22 +319,22 @@ Class Mhome
 		);
         
 		$builder = $this->db->table('dbo_pengguna');
-		$builder->where(array('pengguna_id' => $pengguna_id, 'is_deleted' => 0));
+		$builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
 		$retval = $builder->update($data);
 
 		if ($retval > 0) {
 			//put in audit trail
-			$this->tcg_audit_trail("dbo_pengguna",$pengguna_id,'update','Update password','','');
+			$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
 		}
 
 		return $retval;
 	}
 
 	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-		$pengguna_id = $this->session->get("pengguna_id");
+		$user_id = $this->session->get("user_id");
 
 		$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-		return $this->db->query($query, array($table,$reference,$action,$pengguna_id,$description,null,$new_values,$old_values));
+		return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
 	}
 
 	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status) {

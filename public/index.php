@@ -1,5 +1,8 @@
 <?php
 
+// DEVELOPMENT
+$_SERVER['CI_ENVIRONMENT'] = 'development';
+
 /*
  *---------------------------------------------------------------
  * CHECK PHP VERSION

@@ -61,11 +61,6 @@ class Ubahprofil extends PpdbController {
 		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		$data['redirect'] = $redirect;
 
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        //END DEBUG
-
         //content template
         $data['content_template'] = 'beranda.tpl';
 
@@ -75,7 +70,7 @@ class Ubahprofil extends PpdbController {
 
 	function simpan()
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 		$peran_id = $this->session->get('peran_id');
 
 		$sekolah_id = $_POST["sekolah_id"] ?? null;

@@ -58,7 +58,7 @@ class Ubahdata extends PpdbController {
 
 	function simpan()
 	{
-		$pengguna_id = $this->session->get("pengguna_id");
+		$pengguna_id = $this->session->get("user_id");
 
 		$peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 		$kode_wilayah = $_POST["kode_wilayah"] ?? null; 

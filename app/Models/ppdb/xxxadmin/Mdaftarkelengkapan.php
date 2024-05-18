@@ -13,15 +13,15 @@ Class Mdaftarkelengkapan
 	function lookup() {
 		$query = "select a.daftar_kelengkapan_id as value, a.nama as label
 				 	from ref_daftar_kelengkapan a
-				  where a.expired_date is null order by a.urutan";
+				  where a.is_deleted=0 order by a.urutan";
 		return $this->db->query($query);
 	}
 
 	function list() {
 		$query = "select a.*, b.nama as master_kelengkapan
 				 	from ref_daftar_kelengkapan a
-				  	left join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.master_kelengkapan_id and b.expired_date is null
-				  where a.expired_date is null order by a.urutan";
+				  	left join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.master_kelengkapan_id and b.is_deleted=0
+				  where a.is_deleted=0 order by a.urutan";
 		return $this->db->query($query);
 	}
 
@@ -29,8 +29,8 @@ Class Mdaftarkelengkapan
 		$kelengkapan_id = secure($kelengkapan_id);
 		$query = "select a.*, b.nama as master_kelengkapan 
 				 	from ref_daftar_kelengkapan a
-				  	left join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.master_kelengkapan_id and b.expired_date is null
-				  where a.daftar_kelengkapan_id=$kelengkapan_id and a.expired_date is null order by a.urutan";
+				  	left join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.master_kelengkapan_id and b.is_deleted=0
+				  where a.daftar_kelengkapan_id=$kelengkapan_id and a.is_deleted=0 order by a.urutan";
 		return $this->db->query($query);
 	}
 

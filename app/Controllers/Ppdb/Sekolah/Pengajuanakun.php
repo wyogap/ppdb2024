@@ -8,7 +8,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
-class Kandidatswasta extends PpdbController {
+class Pengajuanakun extends PpdbController {
 
     protected $Msekolah;
 
@@ -39,37 +39,30 @@ class Kandidatswasta extends PpdbController {
 
 	function index()
 	{
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
-	
-        //content template
-        $data['content_template'] = 'kandidatswasta.tpl';
 
-        $data['page_title'] = 'Kandidat Siswa';
+        //content template
+        $data['content_template'] = 'pengajuanakun.tpl';
+
+        $data['page_title'] = 'Pengajuan Akun';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 
-	}
+    }
 
 	function json() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+        $data = $this->Msekolah->tcg_pengajuan_akun();
+        $json['status'] = 1;
+        $json['data'] = $data;
 
-		$sekolah_id = $this->session->get("sekolah_id");
-
-		$action = $_POST["action"] ?? null;
-		if (empty($action) || $action=='view') {
-			$data['data'] = $this->Msekolah->tcg_kandidatswasta($sekolah_id, $tahun_ajaran_id)->getResultArray(); 
-			echo json_encode($data);	
-		}
-		else {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-		}
-
+		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
 	}
 
+    function approve() {
+        $user_id = $this->request->getPostGet('userid');
+        $this->Msekolah->tcg_approve_akun($user_id);
+        $json['status'] = 1;
+
+		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
 	
 }
 ?>

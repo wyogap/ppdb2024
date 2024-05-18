@@ -31,27 +31,13 @@ class Beranda extends PpdbController {
 	function index()
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
-
-        //DEBUG
-        $sekolah_id = '402D235A-2DF5-E011-A399-D7F6DAA2C8A5';
-        $this->session->set("sekolah_id", $sekolah_id);
-        $this->putaran = 2;
-        $this->session->set('putaran_aktif', $this->putaran);
-        $upload_dokumen = 0;
-        //END DEBUG
-
+        
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
         $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		// $data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
-
-        //Debug
-        $data['nama_pengguna'] = "Wahyu Yoga Pratama";
-        $data['username'] = "wyogap@gmail.com";
-        $data['notif_ganti_password'] = 1;
-        //END DEBUG
 
         //content template
         $data['content_template'] = 'beranda.tpl';

@@ -104,7 +104,7 @@ $(document).ready(function() {
 	editor = new $.fn.dataTable.Editor( {
         ajax: "<?php echo site_url('admin/kelengkapanpenerimaan/json'); ?>?tahun_ajaran=<?php echo $tahun_ajaran_aktif; ?>",
         table: "#tnegeri",
-		idSrc: "kelengkapan_penerapan_id",
+		idSrc: "kelengkapan_dokumen_id",
         fields: [ 
 			{
 				label: "Jalur Penerimaan:",
@@ -218,7 +218,7 @@ $(document).ready(function() {
         ajax: "<?php echo site_url('admin/kelengkapanpenerimaan/json'); ?>?tahun_ajaran=<?php echo $tahun_ajaran_aktif; ?>",
         columns: [
             {
-                data: "kelengkapan_penerapan_id", className: 'dt-body-right',
+                data: "kelengkapan_dokumen_id", className: 'dt-body-right',
                 orderable: false
             },
             { data: "penerapan", className: 'dt-body-left', editField: 'penerapan_id' },

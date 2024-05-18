@@ -125,7 +125,7 @@ class Home extends PpdbController
 		$data['cek_waktusosialisasi'] = $this->Msetting->tcg_cek_waktusosialisasi();
 
         //bukan punya si login
-        if ($this->pengguna_id != $peserta_didik_id) {
+        if ($this->peserta_didik_id != $peserta_didik_id) {
             $data['tutup_akses'] = 1;
         }
 
