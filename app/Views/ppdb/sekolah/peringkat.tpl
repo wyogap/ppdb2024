@@ -21,10 +21,10 @@
             <a class="nav-link {if $idx==0 && empty($show_all_pendaftar)}active{/if}" href="#p{$row.penerapan_id}" data-bs-toggle="tab" style="min-height: 68px">
                 <span class="text-nowrap" {if !empty($row.tooltip)}data-bs-toggle="tooltip" title="{$row.tooltip}" data-placement="top" data-bs-html="true"{/if}>{$row.jalur}</span><br>
                 <span class="text-nowrap" style="color: #fff; ">
-                <span class="badge badge-secondary" data-bs-toggle="tooltip" title="Jumlah Kuota" data-placement="bottom">{$row.kuota}</span>
-                {if $row.tambahan_kuota>0}<span class='badge badge-warning' data-bs-toggle="tooltip" title="Tambahan Kuota" data-placement="bottom">{$row.tambahan_kuota}</span>{/if}
-                <span class="badge badge-primary" data-bs-toggle="tooltip" title="Jumlah Diterima" data-placement="bottom">{$row.diterima}</span>
-                <span class="badge badge-light" data-bs-toggle="tooltip" title="Total Pendaftar" data-placement="bottom">{$row.total_pendaftar}</span>
+                <span class="badge badge-secondary" data-bs-toggle="tooltip" title="Jumlah Kuota" data-placement="bottom" style="color: #000; ">{$row.kuota}</span>
+                {if $row.tambahan_kuota>0}<span class='badge badge-warning' data-bs-toggle="tooltip" title="Tambahan Kuota" data-placement="bottom" style="color: #000; ">{$row.tambahan_kuota}</span>{/if}
+                <span class="badge badge-primary" data-bs-toggle="tooltip" title="Jumlah Diterima" data-placement="bottom" style="color: #000; ">{$row.diterima}</span>
+                <span class="badge badge-light" data-bs-toggle="tooltip" title="Total Pendaftar" data-placement="bottom" style="color: #000; ">{$row.total_pendaftar}</span>
                 </span>
             </a>
         </li>
@@ -56,7 +56,7 @@
                         <td class="text-center">{$row.idx}</td>
                         <td class="text-center">{$row.nomor_pendaftaran}</td>
                         <td class="text-center">{$row.nisn}</td>
-                        <td><a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row.peserta_didik_id}" target="_blank">{$row.nama}</a></td>
+                        <td>{$row.nama}<a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row.peserta_didik_id}" target="_blank"> <i class="fa fas fa-external-link"></i></a></td>
                         <td>{$row.sekolah_asal}</td>
                         <td class="text-center">{$row.jalur}</td>
                         <td class="text-center">{$row.label_jenis_pilihan}</td>
@@ -168,10 +168,8 @@
                             {/if}
                             <td class="text-center">{$row2.nomor_pendaftaran}</td>
                             <td class="text-center">{$row2.nisn}</td>
-                            <td>
-                            <a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank">
-                                {$row2.nama}
-                            </a>
+                            <td>    
+                            {$row2.nama}<a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank"> <i class="fa fas fa-external-link"></i></a>
                             </td>
                             <td class="text-center hala">{$row2.label_jenis_pilihan}</td>
                             <td class="text-center">{$row2.created_on}</td>

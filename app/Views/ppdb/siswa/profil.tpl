@@ -345,8 +345,8 @@
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-lulus-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_lulus}"
-                                        tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_lulus' style="display: none;"></input></span>
-                                    <span id="nilai-lulus" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_lulus'>{$profilsiswa.nilai_lulus}</span>
+                                        tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_kelulusan' style="display: none;"></input></span>
+                                    <span id="nilai-kelulusan" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_kelulusan'>{$profilsiswa.nilai_lulus}</span>
                                </td>
                             </tr>
                         </table>

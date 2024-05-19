@@ -33,27 +33,29 @@ class Peringkat extends PpdbController {
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
 
-        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id)->getRowArray();
-		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
+        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
         
         //pendaftar per penerapan
         $pendaftar = array();
         foreach($data['daftarpenerapan'] as $p) {
             $penerapan_id = $p['penerapan_id'];
-            $penerapan = $this->Msekolah->tcg_pendaftaran_penerapan_id($sekolah_id, $penerapan_id)->getResultArray();
+            $penerapan = $this->Msekolah->tcg_pendaftaran_penerapanid($sekolah_id, $penerapan_id);
             for($i=0; $i<count($penerapan); $i++) {
                 $penerapan[$i]['idx'] = $i+1;
                 //mask nisn
                 $penerapan[$i]['nisn'] = substr($penerapan[$i]['nisn'],0,6) .str_repeat("*", 4);
                 $penerapan[$i]['skor'] = round($penerapan[$i]['skor'],2);
             }
+            //var_dump($penerapan);
             $pendaftar[$penerapan_id] = $penerapan;
         }
         $data['pendaftar'] = $pendaftar;
+        //exit;
 
         //semua pendaftar
         $data['show_all_pendaftar'] = 1;
-		$semuapendaftar = $this->Msekolah->tcg_pendaftar($sekolah_id)->getResultArray();
+		$semuapendaftar = $this->Msekolah->tcg_daftarpendaftaran($sekolah_id);
         for($i=0; $i<count($semuapendaftar); $i++) {
             $semuapendaftar[$i]['idx'] = $i+1;
             //mask nisn
@@ -94,6 +96,7 @@ class Peringkat extends PpdbController {
         $data['content_template'] = 'peringkat.tpl';
 
 		$data['page_title'] = 'Peringkat';
+ 
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}
 

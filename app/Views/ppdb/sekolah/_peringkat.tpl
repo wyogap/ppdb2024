@@ -50,11 +50,23 @@
                         "sLast":     "Akhir"
                     }
                 },	
-                "columnDefs": [ {
+                "columnDefs": [ 
+                {
                     "searchable": false,
                     "orderable": false,
                     "targets": 0
-                } ],
+                },
+                {
+                    "targets": 7,
+                    className: "text-end",
+                    render: function (data, type, row, meta) {
+						if (type=='display') {
+							return $.fn.dataTable.render.number(',', '.', 2, '').display(data);
+						}
+						return data;
+                    }
+                },
+                ],
                 "order": [[ 7, 'desc' ]]
             });
             {/foreach}
@@ -95,8 +107,20 @@
                         "sNext":     "Lanjut",
                         "sLast":     "Akhir"
                     }
-                }		
-            });
+                },		
+                "columnDefs": [ 
+                {
+                    "targets": 7,
+                    className: "text-end",
+                    render: function (data, type, row, meta) {
+						if (type=='display') {
+							return $.fn.dataTable.render.number(',', '.', 2, '').display(data);
+						}
+						return data;
+                    }
+                },
+                ],
+              });
         });
 
         /* Recalculates the size of the resposive DataTable */

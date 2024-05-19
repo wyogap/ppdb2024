@@ -50,11 +50,11 @@ class Daftarulang extends PpdbController {
                 return "";
             }
     
-			$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
+			$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
             $pendaftarditerima = array();
             foreach($data['daftarpenerapan'] as $row) {
                 $penerapan_id = $row['penerapan_id'];
-                $daftarpendaftar = $this->Msekolah->tcg_pendaftarditerima($sekolah_id, $penerapan_id)->getResultArray();
+                $daftarpendaftar = $this->Msekolah->tcg_pendaftarditerima($sekolah_id, $penerapan_id);
                 $pendaftarditerima[$penerapan_id] = $daftarpendaftar;
             }
             $data["pendaftarditerima"] = $pendaftarditerima;
@@ -64,11 +64,7 @@ class Daftarulang extends PpdbController {
 			// $data['daftarputaran'] = $this->Msetting->tcg_putaran();
 			$data['daftartahunajaran'] = $this->Msetting->tcg_tahunajaran();
 	
-			$inklusi=0;
-			foreach($data['profilsekolah']->getResult() as $row) {
-				$inklusi=$row->inklusi;
-			}
-			$data['inklusi'] = $inklusi;
+			$data['inklusi']=$data['profilsekolah']['inklusi'];
 			
 			$data['tahun_ajaran_aktif'] = $this->session->get('tahun_ajaran_aktif');
 			$data['putaran_aktif'] = $this->session->get('putaran_aktif');

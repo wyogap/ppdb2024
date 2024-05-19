@@ -44,7 +44,7 @@
                             <td class="text-center">{$row2.peringkat}</td>
                             <td class="text-center">{$row2.nomor_pendaftaran}</td>
                             <td class="text-center">{$row2.nisn}</td>
-                            <td><a href="{$site_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank">{$row2.nama}</a></td>
+                            <td>{$row2.nama}<a href="{$site_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank"> <i class="fa fas fa-external-link"></i></a></td>
                             <td class="text-center">{$row2.jenis_kelamin}</td>
                             <td class="text-center">{$row2.created_on}</td>
                             <td class="text-center">{$row2.skor}</td>

@@ -371,11 +371,11 @@ table.dataTable.display tbody tr.odd {
     color: var(--bs-light);
 }
 
-[data-theme-version="dark"] .form-control:focus,
+/* [data-theme-version="dark"] .form-control:focus,
 [data-theme-version="dark"] .form-control:hover
 {
     background-color: #fff;
-}
+} */
 
 [data-theme-version="dark"] .form-control:disabled,
 [data-theme-version="dark"] .form-control:disabled:hover
@@ -636,6 +636,13 @@ table.dataTable tbody td.bg-yellow {
     display: block;
 }
 
+[data-theme-version="dark"] .leaflet-layer,
+[data-theme-version="dark"] .leaflet-control-zoom-in,
+[data-theme-version="dark"] .leaflet-control-zoom-out,
+[data-theme-version="dark"] .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 @media only screen and (max-width: 784px) {
     /* .header .header-content {
         padding-left: 25px !important;
@@ -652,7 +659,7 @@ table.dataTable tbody td.bg-yellow {
     }
 
     td > button {
-        display: block !important;
+        display: block;
         margin-bottom: 4px;
         width: 100%;
     }
@@ -737,6 +744,10 @@ table.dataTable tbody td.bg-yellow {
         color: #000000;
         font-size: 34px;
         margin-top: 10px;
+    }
+
+    [data-theme-version="dark"] .header-left .app-name-short {
+        color: #fff;
     }
 
     .header-left .app-name-long {

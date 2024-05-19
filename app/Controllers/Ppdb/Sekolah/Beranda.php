@@ -36,8 +36,8 @@ class Beranda extends PpdbController {
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
         $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
 
-        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-		// $data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
+        $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+		$data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
 
         //content template
         $data['content_template'] = 'beranda.tpl';
