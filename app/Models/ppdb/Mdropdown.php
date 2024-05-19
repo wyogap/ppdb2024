@@ -71,7 +71,7 @@ Class Mdropdown
 	// // 	}
 	// // 	$builder->select('b.daftar_nilai_skoring_id,a.nama AS jenis,b.nama AS keterangan,b.nilai');
 	// // 	$builder = $this->db->table('ref_daftar_skoring a');
-	// // 	$builder->join('ref_daftar_nilai_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.is_deleted=0');
+	// // 	$builder->join('cfg_daftar_nilai_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.is_deleted=0');
 	// // 	$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
 	// // 	$builder->where(array('a.expired_date'=>NULL,'a.manual'=>1,'c.kategori_prestasi'=>1,'b.penerapan_id'=>$penerapan_id));
 	// // 	$builder->orderBy('b.nilai ASC','a.nama ASC');
@@ -337,7 +337,7 @@ Class Mdropdown
 		select b.skoring_id, d.nama as jenis, b.nama as keterangan, c.nilai
 		from ref_penerapan a
 		join ref_daftar_skoring b on a.jalur_id=b.jalur_id and b.is_deleted=0
-		join ref_daftar_nilai_skoring c on b.skoring_id=c.skoring_id and c.tahun_ajaran_id=a.tahun_ajaran_id and c.is_deleted=0
+		join cfg_daftar_nilai_skoring c on b.skoring_id=c.skoring_id and c.tahun_ajaran_id=a.tahun_ajaran_id and c.is_deleted=0
 		join ref_tipe_skoring d on b.tipe_skoring_id=d.tipe_skoring_id and d.is_deleted=0
 		where a.penerapan_id=$penerapan_id and a.kategori_prestasi=1 and a.is_deleted=0
 		order by b.tipe_skoring_id desc, c.nilai asc, b.nama asc";
@@ -345,7 +345,7 @@ Class Mdropdown
 		return $this->db->query($query, array($penerapan_id));
 
 		// $builder->select('a.daftar_nilai_skoring_id,b.nama AS jenis,a.nama AS keterangan,a.nilai');
-		// $builder = $this->db->table('ref_daftar_nilai_skoring a');
+		// $builder = $this->db->table('cfg_daftar_nilai_skoring a');
 		// $builder->join('ref_daftar_skoring b','a.daftar_skoring_id = b.daftar_skoring_id AND b.is_deleted=0');
 		// //$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		// $builder->join('ref_penerapan d','d.jalur_id = a.jalur_id AND d.aktif = 1 AND d.is_deleted=0');
@@ -374,7 +374,7 @@ Class Mdropdown
 			
 			(
 				select a.skoring_id as value, b.nama as label, a.urutan as urutan1, b.urutan as urutan2, b.tipe_skoring_id, a.nilai
-				  from ref_daftar_nilai_skoring a
+				  from cfg_daftar_nilai_skoring a
 				  join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0 and b.kunci=0 
 			)

@@ -1,3 +1,33 @@
+{literal}
+<script id="cabut-berkas" type="text/template">
+
+    <div class="alert alert-secondary alert-dismissible" role="alert">
+    Benar-benar akan melakukan <b>Cabut Berkas</b>?</b>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table class="table">
+            <tr>
+                <td><b>Nama</b></td>
+                <td>:</td>
+                <td>{{nama}}</td>
+            </tr>
+            <tr>
+                <td><b>NISN</b></td>
+                <td>:</td>
+                <td>{{nisn}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 8px;">
+        <div class="form-group has-feedback">
+            <label for="keterangan"><b>Alasan cabut berkas : </b></label>
+            <textarea id="keterangan" class="form-control" name="keterangan" placeholder="Penjelasan terkait Cabut Berkas..." data-validation="required" 
+            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" autofocus></textarea>
+        </div>
+    </div>
+
+</script>
+{/literal}
 
 <script>
     $.extend( $.fn.dataTable.defaults, { responsive: true } );
@@ -481,13 +511,6 @@
                     data: "sedang_verifikasi",
                     className: "text-center",
                     orderable: 'true',
-                    render: function(data, type, row, meta) {
-                        if (row['kelengkapan_berkas'] != 1) {
-                            return data;
-                        }
-
-                        return 'Sudah lengkap';
-                    }
                 },
                 {
                     data: null,
@@ -502,7 +525,8 @@
                         //return row['kelengkapan_berkas'];
 
                         {if ($cek_waktuverifikasi|default: FALSE)}
-                        return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
+                        str = '<a onclick=cabut_berkas(' +meta['row']+ ') href="#" class="btn btn-xs btn-danger">Cabut Berkas</a>';
+                        return str;
                         {/if}
 
                         return data;
@@ -598,6 +622,81 @@
         //     $('#label-berkas').html("Berkas Di Sekolah (" +len+ ")");
         // }
     });
+
+    function cabut_berkas(rowid) {
+        let data = dt_berkas.rows(rowid).data();
+        let peserta_didik_id = data[0].peserta_didik_id;
+        let nama = data[0].nama;
+        let nisn = data[0].nisn;
+
+        //peserta_didik_id, nama, nisn
+        // render template
+        let template = $('#cabut-berkas').html();
+        Mustache.parse(template);
+
+        let dom = Mustache.render(template, {
+            'nama'   : nama,
+            'nisn'   : nisn,
+        });
+
+        $.confirm({
+                title: 'Cabut Berkas?',
+                content: dom,
+                closeIcon: true,
+                columnClass: 'medium',
+                type: 'red',
+                typeAnimated: true,
+                buttons: {
+                    // confirm: function () {
+                    //     $.alert('Confirmed!');
+                    // },
+                    cancel: {
+                        text: 'Batal',
+                        keys: ['enter', 'shift'],
+                        action: function(){
+                            //do nothing
+                        }
+                    },
+                    confirm: {
+                        text: 'Cabut Berkas',
+                        btnClass: 'btn-danger',
+                        action: function(){
+                            var keterangan = this.$content.find('#keterangan');
+                            if(!keterangan.val().trim()){
+                                keterangan.addClass("border-red");
+                                return false;
+                            }
+
+                            $.confirm({
+                                title: 'Seriously?',
+                                content: '<p>SEKALI LAGI. Apakah anda benar-benar akan melakukan Cabut Berkas an. ' +nama+ '?</p><p><b>Setelah cabut berkas, akun yang bersangkutan akan diblok dan tidak akan bisa masuk ke sistem PPDB Online!</b></p>',
+                                icon: 'fa fa-warning',
+                                columnClass: 'medium',
+                                animation: 'scale',
+                                // closeAnimation: 'zoom',
+                                buttons: {
+                                    confirm: {
+                                        text: 'Ya, Benar!',
+                                        btnClass: 'btn-danger',
+                                        action: function(){
+                                            alert('TODO');
+                                        }
+                                    },
+                                    cancel: {
+                                        text: 'Batal',
+                                        keys: ['enter', 'shift'],
+                                        action: function(){
+                                            //do nothing
+                                        }
+                                    },
+                                }
+                            });
+                        }
+                        },
+                }
+            });      
+
+    }
 
 </script>
 

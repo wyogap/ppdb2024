@@ -137,17 +137,6 @@
 {/literal}
 
 <script>
-    var cek_waktusosialisasi = {$cek_waktusosialisasi};
-    var cek_waktupendaftaran = {$cek_waktupendaftaran};
-    var cek_batasanusia = {$cek_batasanusia};
-    var pendaftarandikunci = {$pendaftarandikunci};
-    var maxpilihannegeri = {$maxpilihannegeri};
-    var maxpilihanswasta = {$maxpilihanswasta};
-    var jumlahpendaftarannegeri = {$jumlahpendaftarannegeri};
-    var jumlahpendaftaranswasta = {$jumlahpendaftaranswasta};
-    
-    var daftarjalur = {$daftarjalur|json_encode};
-
     function update_pendaftaran_layout() {
         //update kelengkapan data
         tags.forEach(function(key) {
@@ -161,7 +150,7 @@
         }
 
         //update flag pendaftaran dikunci
-        if (!cek_batasanusia || (!cek_waktupendaftaran && !cek_waktusosialisasi) || !kelengkapan_data || tutup_akses) {
+        if (!cek_batasanusia || (!cek_waktupendaftaran && !cek_waktusosialisasi) || !kelengkapan_data || global_tutup_akses || siswa_tutup_akses) {
             pendaftarandikunci = 1;
         }
 
@@ -238,7 +227,7 @@
                     },
                     confirm: {
                         text: 'DAFTAR',
-                        btnClass: 'btn-orange',
+                        btnClass: 'btn-primary',
                         action: function(){
                             window.location.href = "#";
                         }

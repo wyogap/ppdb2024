@@ -44,17 +44,17 @@ Class Msekolah
     }
 
 	function tcg_kuotasekolahnegeri($tahun_ajaran_id) {
-		$query = "select * from v_tcg_kuota_sekolah where status='N' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null order by kode_wilayah";
+		$query = "select * from v_cfg_kuota_sekolah where status='N' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null order by kode_wilayah";
 		return $this->db->query($query);
 	}
 
 	function tcg_kuotasekolahswasta($tahun_ajaran_id) {
-		$query = "select * from v_tcg_kuota_sekolah where status='S' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null order by kode_wilayah";
+		$query = "select * from v_cfg_kuota_sekolah where status='S' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null order by kode_wilayah";
 		return $this->db->query($query);
 	}
 
 	function tcg_kuotasekolah($tahun_ajaran_id, $sekolah_id) {
-		$query = "select * from v_tcg_kuota_sekolah where sekolah_id='$sekolah_id' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null";
+		$query = "select * from v_cfg_kuota_sekolah where sekolah_id='$sekolah_id' and tahun_ajaran_id='$tahun_ajaran_id' and expired_date is null";
 		return $this->db->query($query);
 	}
 
@@ -71,7 +71,7 @@ Class Msekolah
 			$values = "$tahun_ajaran_id;$kuota_total;$kuota_zonasi;$kuota_prestasi;$kuota_afirmasi;$kuota_perpindahan;$kuota_inklusi;$kuota_susulan";
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_penerapan_sekolah",$sekolah_id,'update','Update kuota sekolah',$keys,$values);
+			$this->tcg_audit_trail("cfg_penerapan_sekolah",$sekolah_id,'update','Update kuota sekolah',$keys,$values);
 		}
 
 		return $retval;
@@ -90,7 +90,7 @@ Class Msekolah
 			$values = "$tahun_ajaran_id;$ikut_ppdb;$kuota_zonasi;$kuota_prestasi;$kuota_afirmasi;$kuota_perpindahan;$kuota_inklusi;$kuota_swasta";
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_penerapan_sekolah",$sekolah_id,'update','Update kuota sekolah',$keys,$values);
+			$this->tcg_audit_trail("cfg_penerapan_sekolah",$sekolah_id,'update','Update kuota sekolah',$keys,$values);
 		}
 
 		return $retval;

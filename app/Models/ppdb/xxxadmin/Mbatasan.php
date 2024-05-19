@@ -14,24 +14,24 @@ Class Mbatasan
 	// 	$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 	// 	$builder->select('cabut_berkas,hapus_pendaftaran,ubah_pilihan,ubah_sekolah,ubah_jalur,batal_verifikasi');
-	// 	$builder = $this->db->table('ref_batasan_perubahan');
+	// 	$builder = $this->db->table('cfg_batasan_perubahan');
 	// 	$builder->where(array('expired_date'=>NULL, 'tahun_ajaran_id'=>$tahun_ajaran_id));
 	// 	return $builder->get();
 	// }
 
 	function tcg_batasanperubahan($tahun_ajaran_id) {
-		$query = "select a.* from ref_batasan_perubahan a
+		$query = "select a.* from cfg_batasan_perubahan a
 				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0 limit 1";
 		return $this->db->query($query);
 	}
 
 	function tcg_update_batasan($batasan_id, $key, $value) {
-		$query = "update ref_batasan_perubahan set $key='$value' where batasan_perubahan_id=$batasan_id";
+		$query = "update cfg_batasan_perubahan set $key='$value' where batasan_perubahan_id=$batasan_id";
 		return $this->db->query($query);
 	}
 
 	function tcg_view_batasan($batasan_id) {
-		$query = "select a.* from ref_batasan_perubahan a
+		$query = "select a.* from cfg_batasan_perubahan a
 				  where a.batasan_perubahan_id='$batasan_id'";
 		return $this->db->query($query);
 	}
@@ -41,7 +41,7 @@ Class Mbatasan
 		$bentuk_sekolah = $this->session->get('bentuk_sekolah_aktif');
 
 		$query = "select bentuk_tujuan_sekolah,minimal_tanggal_lahir,maksimal_tanggal_lahir 
-				  from ref_batasan_usia
+				  from cfg_batasan_usia
 				  where expired_date is null and tahun_ajaran_id='$tahun_ajaran_id'";
 		
 		if (!empty($bentuk_sekolah)) {

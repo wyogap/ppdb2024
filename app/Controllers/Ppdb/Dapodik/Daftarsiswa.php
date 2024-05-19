@@ -41,7 +41,7 @@ class Daftarsiswa extends PpdbController {
 
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
-        $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
+        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 

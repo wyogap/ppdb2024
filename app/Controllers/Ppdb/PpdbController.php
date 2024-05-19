@@ -267,4 +267,35 @@ class PpdbController extends BaseController {
 		return view('ppdb/home/notauthorized');
 	}
 
+    protected function print_json_error($error_message, $error_no = 0) {
+        $json = array();
+        $json["status"] = 0;
+        $json["error"] = $error_message;
+        if (!empty($error_no)) {
+            $json["errorno"] = $error_no;
+        }
+
+        //TODO: output properly
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
+        exit;
+    }
+
+    protected function print_json_output($data) {
+        $json = array();
+        $json["status"] = 1;
+        $json['data'] = $data;
+
+        //TODO: output properly
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
+        exit;
+    }
+
+    protected function audit_siswa($peserta_didik_id, $action_type, $action_description, $columns, $new_values, $old_values) {
+
+    }
+
+    protected function audit_pendaftaran($pendaftaran_id, $action_type, $action_description, $columns, $new_values, $old_values) {
+        
+    }
+
 }

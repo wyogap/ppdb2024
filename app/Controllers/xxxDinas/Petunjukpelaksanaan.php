@@ -21,7 +21,7 @@ class Petunjukpelaksanaan extends MY_Controller {
 		// $data['jalur_penerimaan'] = $this->Mdinas->tcg_jalurpenerimaan($tahun_ajaran_id);
 		$data['tahun_ajaran'] = $this->Msetting->tcg_tahunajaran();
 		$data['tahun_ajaran_aktif'] = $tahun_ajaran_id;
-		$data['petunjuk_pelaksanaan'] = $this->Msetting->tcg_petunjuk_pelaksanaan();
+		$data['petunjuk_pelaksanaan'] = $this->Msetting->cfg_petunjuk_pelaksanaan();
 
 		$data['page'] = "konfigurasi-petunjuk";
 		view('admin/petunjukpelaksanaan/index',$data);

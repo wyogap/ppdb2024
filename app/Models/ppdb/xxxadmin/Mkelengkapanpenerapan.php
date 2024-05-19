@@ -13,7 +13,7 @@ Class Mkelengkapanpenerapan
 	function list($tahun_ajaran_id) {
 		$tahun_ajaran_id = secure($tahun_ajaran_id);
 		$query = "select a.*, b.nama as daftar_kelengkapan, c.nama as penerapan, b.urutan, b.dokumen_fisik, b.daftar_ulang
-				 	from tcg_kelengkapan_dokumen a
+				 	from cfg_kelengkapan_dokumen a
 					join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.daftar_kelengkapan_id and b.is_deleted=0
 					join ref_penerapan c on c.penerapan_id=a.penerapan_id and c.is_deleted=0
 				 where a.is_deleted=0 and a.tahun_ajaran_id=$tahun_ajaran_id order by a.penerapan_id, b.urutan";
@@ -23,7 +23,7 @@ Class Mkelengkapanpenerapan
 	function detail($kelengkapan_id) {
 		$kelengkapan_id = secure($kelengkapan_id);
 		$query = "select a.*, b.nama as daftar_kelengkapan, c.nama as penerapan, b.urutan, b.dokumen_fisik, b.daftar_ulang
-				 	from tcg_kelengkapan_dokumen a
+				 	from cfg_kelengkapan_dokumen a
 				  	join ref_daftar_kelengkapan b on b.daftar_kelengkapan_id=a.daftar_kelengkapan_id and b.is_deleted=0
 				  	join ref_penerapan c on c.penerapan_id=a.penerapan_id and c.is_deleted=0
 				  where a.daftar_kelengkapan_id=$kelengkapan_id and a.is_deleted=0 order by a.penerapan_id, b.urutan";
@@ -37,7 +37,7 @@ Class Mkelengkapanpenerapan
 		//inject updated 
         $valuepair['updated_on'] = date('Y/m/d H:i:s');
 
-        $builder = $this->db->table('tcg_kelengkapan_dokumen');
+        $builder = $this->db->table('cfg_kelengkapan_dokumen');
         $builder->where($filter);
         $builder->update($valuepair);
         
@@ -57,7 +57,7 @@ Class Mkelengkapanpenerapan
         $valuepair['tahun_ajaran_id'] = $tahun_ajaran_id;
         $valuepair['created_on'] = date('Y/m/d H:i:s');
 
-        $builder = $this->db->table('tcg_kelengkapan_dokumen');
+        $builder = $this->db->table('cfg_kelengkapan_dokumen');
 		if ($builder->insert($valuepair)) {
             $id = $this->db->insertID();
 
@@ -78,7 +78,7 @@ Class Mkelengkapanpenerapan
 			'expired_date' => date('Y/m/d H:i:s')
 		);
 
-        $builder = $this->db->table('tcg_kelengkapan_dokumen');
+        $builder = $this->db->table('cfg_kelengkapan_dokumen');
         $builder->where($filter);
         $builder->update($valuepair);
         

@@ -45,8 +45,8 @@ class Home extends PpdbController
         }
 
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResult();
-        $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
-		$data['petunjuk_pelaksanaan'] = $this->Msetting->tcg_petunjuk_pelaksanaan()->getResult();
+        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
+		$data['petunjuk_pelaksanaan'] = $this->Msetting->cfg_petunjuk_pelaksanaan()->getResult();
 
         $this->smarty->render("ppdb/home/home.tpl", $data);
 	}
@@ -331,7 +331,7 @@ class Home extends PpdbController
                 break;
             }
         }
-		$data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
+		$data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
 
         if ($data['cek_captcha']) {
             $sitekey="6LfUN-oUAAAAAAEiaEPyE-S-d3NRbzXZVoNo51-x";

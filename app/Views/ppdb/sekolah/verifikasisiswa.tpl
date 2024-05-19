@@ -177,15 +177,19 @@
                                 <b>Apakah data identitas di atas sudah benar? </b>
                                 <select class="form-control input-default status-verifikasi" 
                                     tcg-edit-action='submit' tcg-submit-tag='profil'
-                                    tcg-field='konfirmasi_profil' tcg-field-type='input'>
-                                <option value="0">BELUM Benar</option>
+                                    tcg-field='verifikasi_profil' tcg-field-type='input'>
+                                <option value="0">Belum Diverifikasi</option>
                                 <option value="1">SUDAH Benar</option>
+                                <option value="2">BELUM Benar</option>
                                 </select>
                             </td>
                         </tr>
-                        <tr id="profil-error-row" class="box-red" tcg-submit-tag='profil' tcg-edit-true='hide' tcg-edit-true='none'>
+                        <tr id="profil-catatan-row">
                             <td colspan="1">
-                                <span style="color: red; " id="profil-error-msg"></span>
+                                <span id="profil-error-msg">
+                                    <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='profil'
+                                    tcg-field='catatan_profil' tcg-field-type='input' tcg-field-submit=1></textarea>
+                                </span>
                             </td>
                         </tr>
                     </table>
@@ -274,7 +278,7 @@
                                     <b>Apakah data lokasi rumah di atas sudah benar? </b>
                                     <select class="form-control input-default status-verifikasi" 
                                         tcg-edit-action='submit' tcg-submit-tag='lokasi'
-                                        tcg-field='konfirmasi_lokasi' tcg-field-type='input'>
+                                        tcg-field='verifikasi_lokasi' tcg-field-type='input'>
                                     <option value="0">Belum Diverifikasi</option>
                                     <option value="1">SUDAH Benar</option>
                                     <option value="2">BELUM Benar</option>
@@ -286,8 +290,9 @@
                             </tr>
                             <tr id="lokasi-catatan-row">
                                 <td colspan="1">
-                                    <span style="color: red; " id="lokasi-error-msg">
-                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='lokasi'></textarea>
+                                    <span id="lokasi-error-msg">
+                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='lokasi'
+                                        tcg-field='catatan_lokasi' tcg-field-type='input' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>
@@ -445,7 +450,7 @@
                                     <b>Apakah data nilai UN dan nilai kelulusan di atas sudah benar? </b>
                                     <select class="form-control input-default status-verifikasi" 
                                         tcg-edit-action='submit' tcg-submit-tag='nilai'
-                                        tcg-field='konfirmasi_nilai' tcg-field-type='input'>
+                                        tcg-field='verifikasi_nilai' tcg-field-type='input'>
                                         <option value="0">Belum Diverifikasi</option>
                                         <option value="1">SUDAH Benar</option>
                                         <option value="2">BELUM Benar</option>
@@ -458,7 +463,8 @@
                             <tr id="nilai-catatan-row">
                                 <td colspan="1">
                                     <span style="color: red; " id="nilai-error-msg">
-                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='nilai'></textarea>
+                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='nilai'
+                                        tcg-field='catatan_nilai' tcg-field-type='input' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>
@@ -514,7 +520,7 @@
                                     <b>Apakah data prestasi di atas sudah benar? </b>
                                     <select class="form-control input-default status-verifikasi" 
                                         tcg-edit-action='submit' tcg-submit-tag='prestasi'
-                                        tcg-field='konfirmasi_prestasi' tcg-field-type='input'>
+                                        tcg-field='verifikasi_prestasi' tcg-field-type='input'>
                                         <option value="0">Belum Diverifikasi</option>
                                     <option value="1">SUDAH Benar</option>
                                     <option value="2">BELUM Benar</option>
@@ -527,7 +533,8 @@
                             <tr id="prestasi-catatan-row">
                                 <td colspan="1">
                                     <span style="color: red; " id="prestasi-error-msg">
-                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='prestasi'></textarea>
+                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='prestasi'
+                                        tcg-field='catatan_prestasi' tcg-field-type='input' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>
@@ -653,7 +660,7 @@
                                     <b>Apakah data afirmasi di atas sudah benar? </b>
                                     <select class="form-control input-default status-verifikasi" 
                                         tcg-edit-action='submit' tcg-submit-tag='afirmasi'
-                                        tcg-field='konfirmasi_afirmasi' tcg-field-type='input'>
+                                        tcg-field='verifikasi_afirmasi' tcg-field-type='input'>
                                         <option value="0">Belum Diverifikasi</option>
                                     <option value="1">SUDAH Benar</option>
                                     <option value="2">BELUM Benar</option>
@@ -666,7 +673,8 @@
                             <tr id="afirmasi-catatan-row">
                                 <td colspan="1">
                                     <span style="color: red; " id="afirmasi-error-msg">
-                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='afirmasi'></textarea>
+                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='afirmasi'
+                                        tcg-field='catatan_prestasi' tcg-field-type='input' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>
@@ -758,7 +766,7 @@
                                     <b>Apakah data kebutuhan khusus di atas sudah benar? </b>
                                     <select class="form-control input-default status-verifikasi"
                                         tcg-edit-action='submit' tcg-submit-tag='inklusi' 
-                                        tcg-field='konfirmasi_inklusi' tcg-field-type='input'>
+                                        tcg-field='verifikasi_inklusi' tcg-field-type='input'>
                                         <option value="0">Belum Diverifikasi</option>
                                         <option value="1">SUDAH Benar</option>
                                         <option value="2">BELUM Benar</option>
@@ -771,7 +779,8 @@
                             <tr id="inklusi-catatan-row">
                                 <td colspan="1">
                                     <span style="color: red; " id="inklusi-error-msg">
-                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='inklusi'></textarea>
+                                        <textarea class="form-control catatan-verifikasi" placeholder="Catatan verifikasi" tcg-submit-tag='inklusi'
+                                        tcg-field='catatan_inklusi' tcg-field-type='input' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>
@@ -825,36 +834,45 @@
 </div>
 
 <style>
-    .ctx.ctx-selesai-verifikasi {
-        background: #1ebbf0;
+    .ctx .ctx-selesai-verifikasi {
+        /* background: #1ebbf0;
         background: -moz-linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
         background: -webkit-linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
-        background: linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
-        bottom: 20px;
-        right: 70px;
+        background: linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%); */
+    }
+
+    .ctx .btn {
+        /* background-color: #fff; */
+        /* color: #6f6f6f; */
+        /* bottom: 10px; */
+        /* color: #fff; */
+        /* display: table; */
+        border-radius: 40px;
+        height: 50px;
+        right: 10px;
+        min-width: 50px;
+        text-align: center;
+        z-index: 99999;
+        outline: 0 none;
+        text-decoration: none;
+        float: right;
         font-size: 18px;
     }
 
     .ctx {
-        background-color: #fff;
-        border-radius: 40px;
-        bottom: 10px;
-        /* color: #fff; */
-        display: table;
-        height: 50px;
-        right: 10px;
-        min-width: 50px;
         position: fixed;
-        text-align: center;
-        z-index: 99999;
-        color: #6f6f6f;
-        outline: 0 none;
-        text-decoration: none;
+        bottom: 20px;
+        right: 70px;
     }
 </style>
-<a href="#top" class="btn btn-primary ctx ctx-selesai-verifikasi">
-    Selesai Verifikasi
+<div class="ctx">
+<a href="#top" class="btn btn-danger ctx-simpan">
+    Simpan
 </a>  
+<a href="#top" class="btn btn-primary ctx-batal">
+    Batal
+</a>
+</div>
 
 
 

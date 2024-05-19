@@ -12,7 +12,7 @@ Class Mskoring
 
 	function tcg_daftarskoring($tahun_ajaran_id) {
 		$query = "select a.*, b.nama as nama, b.jalur_id, b.tipe_skoring_id, d.nama as jalur, a.urutan, b.generated, a.tahun_ajaran_id 
-				  from ref_daftar_nilai_skoring a
+				  from cfg_daftar_nilai_skoring a
 				  join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 				  join ref_jalur d on b.jalur_id=d.jalur_id and d.is_deleted=0
 				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0 and b.kunci=0 
@@ -21,13 +21,13 @@ Class Mskoring
 	}
 
 	function tcg_ubah_nilai_skoring($daftar_nilai_skoring_id, $key, $value) {
-		$query = "update ref_daftar_nilai_skoring set $key='$value' where daftar_nilai_skoring_id=$daftar_nilai_skoring_id";
+		$query = "update cfg_daftar_nilai_skoring set $key='$value' where daftar_nilai_skoring_id=$daftar_nilai_skoring_id";
 		return $this->db->query($query);
 	}
 
 	function tcg_ubah_skoring($daftar_nilai_skoring_id, $key, $value) {
 		$query = "update ref_daftar_skoring a 
-		join ref_daftar_nilai_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+		join cfg_daftar_nilai_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 		set 
 			a.$key='$value' 
 		where b.daftar_nilai_skoring_id=$daftar_nilai_skoring_id";
@@ -37,7 +37,7 @@ Class Mskoring
 
 	function tcg_skoring_detil($daftar_nilai_skoring_id) {
 		$query = "select a.*, b.nama as nama, b.jalur_id, b.tipe_skoring_id, d.nama as jalur, a.urutan, b.generated, a.tahun_ajaran_id 
-				  from ref_daftar_nilai_skoring a
+				  from cfg_daftar_nilai_skoring a
 				  join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 				  join ref_jalur d on b.jalur_id=d.jalur_id and d.is_deleted=0
 				  where a.daftar_nilai_skoring_id='$daftar_nilai_skoring_id'" ;
@@ -66,7 +66,7 @@ Class Mskoring
 				'tahun_ajaran_id' => $tahun_ajaran_id,
 				'nilai' => $nilai
 			);
-            $builder = $this->db->table('ref_daftar_nilai_skoring');
+            $builder = $this->db->table('cfg_daftar_nilai_skoring');
 			if ($builder->insert($valuepair)) {
 				return $this->db->insertID();
 			}
@@ -84,7 +84,7 @@ Class Mskoring
 			'nilai' => $nilai
 		);
 
-        $builder = $this->db->table('ref_daftar_nilai_skoring');
+        $builder = $this->db->table('cfg_daftar_nilai_skoring');
 		if ($builder->insert($valuepair)) {
 			return $this->db->insertID();
 		}
@@ -95,7 +95,7 @@ Class Mskoring
 	function tcg_hapus_skoring($daftar_nilai_skoring_id) {
 		//soft-delete skoring
 		$sql = "update ref_daftar_skoring a 
-		join ref_daftar_nilai_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+		join cfg_daftar_nilai_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 		set 
 			a.expired_date=now() 
 		where b.daftar_nilai_skoring_id=$daftar_nilai_skoring_id and a.generated=0";
@@ -104,7 +104,7 @@ Class Mskoring
 		}
 
 		//delete nilai
-		$sql = "delete from ref_daftar_nilai_skoring where daftar_nilai_skoring_id=$daftar_nilai_skoring_id";
+		$sql = "delete from cfg_daftar_nilai_skoring where daftar_nilai_skoring_id=$daftar_nilai_skoring_id";
 		if (!$this->db->query($sql)) {
 			return 0;
 		}

@@ -36,7 +36,7 @@ class Pengumuman extends MY_Controller {
 		if (empty($action) || $action=='view') {
 			$this->load->model(array('Mdinas','Mdropdown'));
 
-			$data['data'] = $this->Mdinas->tcg_pengumuman($tahun_ajaran_id)->getResultArray(); 
+			$data['data'] = $this->Mdinas->cfg_pengumuman($tahun_ajaran_id)->getResultArray(); 
 			echo json_encode($data);	
 		}
 		else if ($action=='edit'){
@@ -77,7 +77,7 @@ class Pengumuman extends MY_Controller {
 			$this->load->model(array('Mdinas','Mdropdown'));
 			do {
 
-				$key = $this->Mdinas->tcg_pengumuman_baru($tahun_ajaran_id, $values[0]);
+				$key = $this->Mdinas->cfg_pengumuman_baru($tahun_ajaran_id, $values[0]);
 				if ($key == 0) {
 					$error = $builder->error();
 					if (empty($error['message'])) {

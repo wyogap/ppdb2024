@@ -128,7 +128,7 @@ Class Mpendaftaran
 	function kelengkapan_pendaftaran($pendaftaran_id){
 		$builder = $this->db->table('tcg_kelengkapan_pendaftaran a');
 		$builder->select('a.kelengkapan_pendaftaran_id,c.nama AS kelengkapan,a.verifikasi,b.kondisi_khusus,b.wajib');
-		$builder->join('tcg_kelengkapan_dokumen b','a.kelengkapan_dokumen_id = b.kelengkapan_dokumen_id AND b.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen b','a.kelengkapan_dokumen_id = b.kelengkapan_dokumen_id AND b.is_deleted=0');
 		$builder->join('ref_daftar_kelengkapan c','b.daftar_kelengkapan_id = c.daftar_kelengkapan_id AND c.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0));
 		$builder->orderBy('c.daftar_kelengkapan_id');
@@ -141,7 +141,7 @@ Class Mpendaftaran
 		$builder->select('a.skoring_pendaftaran_id,c.nama AS keterangan,a.nilai');
 		$builder->join('tcg_pendaftaran b','a.pendaftaran_id = b.pendaftaran_id AND b.cabut_berkas = 0 AND b.is_deleted = 0');
 		$builder->join('ref_daftar_skoring c','a.skoring_id = c.skoring_id AND c.is_deleted=0');
-		//$builder->join('ref_daftar_nilai_skoring d','a.skoring_id = d.skoring_id and b.tahun_ajaran_id=d.tahun_ajaran_id AND c.is_deleted=0');
+		//$builder->join('cfg_daftar_nilai_skoring d','a.skoring_id = d.skoring_id and b.tahun_ajaran_id=d.tahun_ajaran_id AND c.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0));
 		$builder->orderBy('c.nama');
 		return $builder->get();
@@ -252,7 +252,7 @@ Class Mpendaftaran
 		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.batasan_tampilan,a.kategori_jarak,a.kategori_prestasi,a.kategori_usia,a.kategori_zona,a.kategori_inklusi,a.luar_wilayah_administrasi,a.kategori_susulan');
 		$builder = $this->db->table('ref_penerapan a');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->join('ref_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah' and f.tahun_ajaran_id=a.tahun_ajaran_id");
+		$builder->join('cfg_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah' and f.tahun_ajaran_id=a.tahun_ajaran_id");
 		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
 		$builder->orderBy('a.urutan');
 		
@@ -311,7 +311,7 @@ Class Mpendaftaran
 		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.batasan_tampilan,a.kategori_jarak,a.kategori_prestasi,a.kategori_usia,a.kategori_zona,a.kategori_inklusi,a.luar_wilayah_administrasi,a.kategori_susulan');
 		$builder = $this->db->table('ref_penerapan a');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->join('ref_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah'");
+		$builder->join('cfg_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah'");
 		$builder->where(array('a.penerapan_id'=>$penerapan_id,'a.aktif'=>1,'a.expired_date'=>NULL,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
 		
 		if(substr($kode_wilayah_zonasi,0,4)!=substr($kode_wilayah_aktif,0,4)){
@@ -375,7 +375,7 @@ Class Mpendaftaran
 		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.batasan_tampilan,a.kategori_jarak,a.kategori_prestasi,a.kategori_usia,a.kategori_zona,a.kategori_inklusi,a.luar_wilayah_administrasi,a.kategori_susulan');
 		$builder = $this->db->table('ref_penerapan a');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->join('ref_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah' and f.tahun_ajaran_id=a.tahun_ajaran_id");
+		$builder->join('cfg_batasan_usia f',"f.is_deleted=0 and f.bentuk_tujuan_sekolah='$bentuk_sekolah' and f.tahun_ajaran_id=a.tahun_ajaran_id");
 		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL,'a.penerapan_id!='=>$penerapan_id));
 		$builder->orderBy('a.urutan');
 		
@@ -411,7 +411,7 @@ Class Mpendaftaran
 	function batasan_pilihan(){
 		$tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
-		$builder = $this->db->table('ref_jenis_pilihan');
+		$builder = $this->db->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->where(array('aktif'=>1,'expired_date'=>NULL,'sekolah_negeri'=>1,'sekolah_swasta'=>1,'tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -447,7 +447,7 @@ Class Mpendaftaran
 	function batasan_pilihan_negeri(){
 		$tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
-		$builder = $this->db->table('ref_jenis_pilihan');
+		$builder = $this->db->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->where(array('aktif'=>1,'expired_date'=>NULL,'sekolah_negeri'=>1,'sekolah_swasta'=>0,'tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -483,7 +483,7 @@ Class Mpendaftaran
 	function batasan_pilihan_swasta(){
 		$tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
-		$builder = $this->db->table('ref_jenis_pilihan');
+		$builder = $this->db->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->where(array('aktif'=>1,'expired_date'=>NULL,'sekolah_swasta'=>1,'sekolah_negeri'=>0,'tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -554,7 +554,7 @@ Class Mpendaftaran
 							c.nama as kelengkapan, e.nama as nama_verifikator, 
 							f.dokumen_id, max(f.web_path) as web_path, max(f.thumbnail_path) as thumbnail_path, max(f.filename) as filename,
 							max(dokumen_fisik) as dokumen_fisik, max(placeholder) as placeholder');
-		$builder->join('tcg_kelengkapan_dokumen b','a.kelengkapan_dokumen_id = b.kelengkapan_dokumen_id and b.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen b','a.kelengkapan_dokumen_id = b.kelengkapan_dokumen_id and b.is_deleted=0');
 		$builder->join('ref_daftar_kelengkapan c','b.daftar_kelengkapan_id=c.daftar_kelengkapan_id and c.is_deleted=0');
 		$builder->join('tcg_pendaftaran d','a.pendaftaran_id=d.pendaftaran_id and d.is_deleted=0 and d.cabut_berkas=0');
 		$builder->join('dbo_users e','a.verifikator_id=e.pengguna_id and e.is_deleted=0','LEFT OUTER');
@@ -834,7 +834,7 @@ Class Mpendaftaran
 		from ref_sekolah b
 		join tcg_peserta_didik c on c.peserta_didik_id=? and c.is_deleted=0
 		join ref_zona d on d.kode_zona=LEFT(c.kode_wilayah, 6) and d.is_deleted=0
-		left join tcg_zona_wilayah e on e.zona_wilayah_id=d.zona_id and e.is_deleted=0 and e.kode_wilayah = b.kode_wilayah_kec and e.tahun_ajaran_id=?
+		left join cfg_zona_wilayah e on e.zona_wilayah_id=d.zona_id and e.is_deleted=0 and e.kode_wilayah = b.kode_wilayah_kec and e.tahun_ajaran_id=?
 		where b.sekolah_id=? and b.is_deleted=0 
 			and (e.zona_wilayah_id is not null or b.status='S')";
 
@@ -939,7 +939,7 @@ Class Mpendaftaran
 		$query = "SELECT distinct(a.prestasi_skoring_id) as daftar_nilai_skoring_id, `b`.`nama`, coalesce(`c`.`nilai`,0) as nilai, 1 as `verifikasi`, '' as verifikator_id 
 		FROM `tcg_pendaftaran` `a` 
 		JOIN `ref_daftar_skoring` `b` ON `b`.`skoring_id` = `a`.`prestasi_skoring_id` and `b`.`expired_date` is null 
-		left outer join `ref_daftar_nilai_skoring` `c` on `c`.`daftar_nilai_skoring_id` = `a`.`prestasi_skoring_id` and `c`.`tahun_ajaran_id`=`a`.`tahun_ajaran_id` and `c`.`nilai` > 0 and `c`.`expired_date` is null 
+		left outer join `cfg_daftar_nilai_skoring` `c` on `c`.`daftar_nilai_skoring_id` = `a`.`prestasi_skoring_id` and `c`.`tahun_ajaran_id`=`a`.`tahun_ajaran_id` and `c`.`nilai` > 0 and `c`.`expired_date` is null 
 		WHERE `a`.`peserta_didik_id` = ? AND `a`.`is_deleted` = 0 AND `a`.`cabut_berkas` = 0 
 		AND `a`.`prestasi_skoring_id` IS NOT NULL AND `a`.`prestasi_skoring_id` != 0";
 

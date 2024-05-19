@@ -256,7 +256,7 @@ class Ppdb extends PpdbController {
         
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
-        $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
+        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
 
         //data for view
         $data['peserta_didik_id'] = $peserta_didik_id;

@@ -447,7 +447,11 @@
 
         });
 
-        $(".ctx-selesai-verifikasi").on("click", function(e) {
+        $(".ctx-batal").on("click", function(e) {
+            close_verifikasi();
+        });
+
+        $(".ctx-simpan").on("click", function(e) {
             close_verifikasi();
         });
     });
@@ -646,7 +650,9 @@
                     return;
                 }
                 //reset the content
-                show_profile(json.profil);
+                //json.data.dokumen
+                //json.data.prestasi
+                show_profile(json.data.profil);
             
                 loader.hide();
 

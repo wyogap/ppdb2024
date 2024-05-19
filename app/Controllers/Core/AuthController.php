@@ -173,6 +173,13 @@ abstract class AuthController extends BaseController
 			return;
         }
         
+        if (!$this->do_additional_checks($result, $json)) {
+            if ($json == 1) {
+                return;
+            }
+            return redirect()->back()->withInput();
+        }
+
         $result['profile_img'] = base_url(). (empty($result['profile_img']) ? static::$DEFAULT_PROFILE_IMAGE : $result['profile_img']);
         $result['is_logged_in'] = TRUE;
 
@@ -197,6 +204,11 @@ abstract class AuthController extends BaseController
             return redirect()->to($redirect_url);
         }
     }
+
+    /**
+     * Additional checks to perform
+     */
+    abstract protected function do_additional_checks($result, $json);
 
     /**
      * Additional session to set

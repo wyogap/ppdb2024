@@ -888,555 +888,530 @@
 </html>
 
 <script>
+    //profil
+    var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi', 'surat-pernyataan'];
+    var flags = ['nilai-un', 'prestasi', 'kip', 'bdt', 'inklusi'];
 
-var editor;
-var editprestasi;
-var dtprestasi;
-var dtriwayat;
+    var konfirmasi = {$konfirmasiprofil|json_encode};
+    var verifikasi = {$verifikasiprofil|json_encode};
+    var profilflag = {$profilflag|json_encode};
+    var kelengkapan_data = {$kelengkapan_data};
+    var siswa_tutup_akses = {$profilsiswa.tutup_akses};
 
-var files = {$files|json_encode};
+    var profildikunci = 0;
+    var pendaftarandikunci = 0;
 
-(function($) {           
-
-    $('[data-bs-toggle="menu"]').on( "click", function(e) {
-        e.preventDefault();
-        let dom = $(this);
-        
-        let contents = $('#menu-contents');
-        let target = contents.find(dom.attr("data-bs-target"));
-        if (target.length == 0) return;
-
-        let active = dom.hasClass('active');
-        if (active) {
-            dom.parent().parent().find(".nav-link").each(function(){
-                let peer = $(this);
-                if (peer.attr('id') != dom.attr('id')) {
-                    peer.removeClass('active');
-                }
-            });
-            target.addClass('active').addClass('show');
-            contents.find(".tab-pane").each(function(){
-                let peer = $(this);
-                if (peer.attr('id') != target.attr('id')) {
-                    peer.removeClass('active').removeClass('show');
-                }
-            });
-        } 
-        else {
-            //close all
-            contents.find(".tab-pane").removeClass('show').removeClass("active");
-            dom.parent().parent().find(".nav-link").removeClass('active');
-            //show tab
-            target.addClass('active').addClass('show');
-            dom.addClass('active');
-        }
-
-        //close side-bar
-        $('#main-wrapper').removeClass('menu-toggle');
-        $('.hamburger').removeClass('is-active');
-    } );
+    //pendaftaran
+    var cek_waktusosialisasi = {$cek_waktusosialisasi};
+    var cek_waktupendaftaran = {$cek_waktupendaftaran};
+    var cek_batasanusia = {$cek_batasanusia};
+    var global_tutup_akses = {$global_tutup_akses};
+    var maxpilihannegeri = {$maxpilihannegeri};
+    var maxpilihanswasta = {$maxpilihanswasta};
+    var jumlahpendaftarannegeri = {$jumlahpendaftarannegeri};
+    var jumlahpendaftaranswasta = {$jumlahpendaftaranswasta};
     
-    //scroll to top
-    $("a[href='#top']").click(function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });;
-        return false;
-    });
+    var daftarjalur = {$daftarjalur|json_encode};
 
-    // let width = $(window).width();
-    // if (width >= 785 && width < 1041) {
-    //     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    //     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    //         return new bootstrap.Tooltip(tooltipTriggerEl)
-    //     })
-    // }
+    //hasil pendaftaran
+    var batasanperubahan = {$batasanperubahan|json_encode};
+    var daftarpendaftaran = {$daftarpendaftaran|json_encode};
 
-    $('.collapse').on('shown.bs.collapse', function(e) {
-        let el = $(this);
-        var card = el.closest('.accordion-item');
-        var open = $(el.data('parent')).find('.collapse.show');
-        let width = $(window).width();
+    //profil
+    var editprestasi;
+    var dtprestasi = null;
+    var dtriwayat = null;
+    var userid = "{$user_id}";
 
-        var additionalOffset = 0;
-        if(card.prevAll().filter(open.closest('.accordion-item')).length !== 0)
-        {
-                additionalOffset = open.height();
+    (function($) {           
+        //profil dikunci kalau ada pendaftaran
+        if (daftarpendaftaran != null && daftarpendaftaran.length > 0) {
+            profildikunci = 1;
         }
 
-        let header_offset = 230;
-        if (width < 785) {
-            header_offset = 100;
-        }
-        else if (width < 1040) {
-            header_offset = 100;
-        }
+        $('[data-bs-toggle="menu"]').on( "click", function(e) {
+            e.preventDefault();
+            let dom = $(this);
+            
+            let contents = $('#menu-contents');
+            let target = contents.find(dom.attr("data-bs-target"));
+            if (target.length == 0) return;
 
-        $('html,body').animate({
-            scrollTop: card.offset().top - additionalOffset - header_offset
-        }, 100);
-
-        //resize table
-        if (card.prop('id') == 'prestasi') {
-            dtprestasi.columns.adjust().responsive.recalc();
-        }
-
-        //resize table
-        if (card.prop('id') == 'riwayat') {
-            dtriwayat.columns.adjust().responsive.recalc();
-        }
-    });
-
-    $("[tcg-edit-action='submit']").on("change", function(evt) {
-        let select = $(this);
-        let flagval = parseInt(select.val());
-        let submittag = select.attr('tcg-submit-tag');
-
-        let formdata = new FormData();
-
-        let elements = $("[tcg-input-tag='" +submittag+ "']");
-        elements.each(function(idx) {
-            //action
-            el = $(this);
-            if (flagval) {
-                action = el.attr('tcg-input-true');
-            }
+            let active = dom.hasClass('active');
+            if (active) {
+                dom.parent().parent().find(".nav-link").each(function(){
+                    let peer = $(this);
+                    if (peer.attr('id') != dom.attr('id')) {
+                        peer.removeClass('active');
+                    }
+                });
+                target.addClass('active').addClass('show');
+                contents.find(".tab-pane").each(function(){
+                    let peer = $(this);
+                    if (peer.attr('id') != target.attr('id')) {
+                        peer.removeClass('active').removeClass('show');
+                    }
+                });
+            } 
             else {
-                action = el.attr('tcg-input-false');
+                //close all
+                contents.find(".tab-pane").removeClass('show').removeClass("active");
+                dom.parent().parent().find(".nav-link").removeClass('active');
+                //show tab
+                target.addClass('active').addClass('show');
+                dom.addClass('active');
             }
-            if (action == 'show') el.show();
-            else if (action == 'hide') el.hide();
-            else if (action == 'enable') el.attr("disabled",false);
-            else if (action == 'disable') el.attr("disabled",true);
 
-            //data to submit
-            let field = el.attr('tcg-field');
-            if (field == null || field == '') return;
-
-            let val = 0;
-            if (flagval && field!=null && (el.is('input') || el.is('select'))) {
-                if (el.attr('type') == 'number') {
-                    val = parseFloat(el.val());
-                    if (isNaN(val)) val = 0;
-                    val = val.toFixed(2);
-                    el.val(val);
-                }
-                else {
-                    val = el.val();
-                }
-
-                //form data
-                formdata.append(field, val);
-
-                //copy value if necessary
-                //lbl = elements.find("span[tcg-field='" +field+ "']");
-                lbl = $("span[tcg-field='" +field+ "']");
-                lbl.html(val);
-            }
-        });
-
-        //TODO submit form
-        formdata.append("konfirmasi_" +submittag, flagval)
-
-        $.ajax({
-            type: "POST",
-            url: "{$site_url}ppdb/siswa/updateprofil",
-            async: true,
-            data: formdata,
-            cache: false,
-            contentType: false,
-            processData: false,
-            timeout: 60000,
-            dataType: 'json',
-            success: function(json) {
-                if (json.error !== undefined && json.error != "" && json.error != null) {
-                    return;
-                }
-                //TODO: get the return value and re-set the field
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                //TODO
-                return;
-            }
-        });
-
-        konfirmasi[submittag] = flagval;
-        if (flagval) {
-            verifikasi[submittag] = 1;
-        }
-
-        //update status
-        var card = select.closest('.accordion-item');
-        if (flagval) {
-            card.removeClass("status-danger");
-            card.find(".accordion-header-text .status").html('');
-        }
-        else {
-            card.addClass("status-danger");
-            card.find(".accordion-header-text .status").html('*Belum Benar*');
-        }
-
-        //special case
-        if (submittag == 'prestasi') {
-            if (flagval) {
-                dtprestasi.buttons( 0, null ).container().hide();
-            }
-            else {
-                dtprestasi.buttons( 0, null ).container().show();
-            }
-        }
-
-    })
-
-    $("[tcg-edit-action='toggle']").on("change", function(evt) {
-        select = $(this);
-        value = parseInt(select.val());
-        toggletag = select.attr('tcg-toggle-tag');
-
-        elements = $("[tcg-visible-tag='" +toggletag+ "']");
-        if (value) { elements.show(); }
-        else { elements.hide(); }
-
-        //update flag
-        profilflag[toggletag] = value;
+            //close side-bar
+            $('#main-wrapper').removeClass('menu-toggle');
+            $('.hamburger').removeClass('is-active');
+        } );
         
-        //special case: afirmasi
-        if (toggletag == 'kip' || toggletag == 'bdt') {
-            elements = $("[tcg-visible-tag='afirmasi']");
-            if (!profilflag['kip'] && !profilflag['bdt']) {
-                elements.hide();
-            }
-            else {
-                elements.show();
-            }
-        }
+        //scroll to top
+        $("a[href='#top']").click(function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });;
+            return false;
+        });
 
-        //special case: prestasi
-        if (toggletag == 'prestasi') {
-            if (profilflag['prestasi']) {
+        $('.collapse').on('shown.bs.collapse', function(e) {
+            let el = $(this);
+            var card = el.closest('.accordion-item');
+            var open = $(el.data('parent')).find('.collapse.show');
+            let width = $(window).width();
+
+            var additionalOffset = 0;
+            if(card.prevAll().filter(open.closest('.accordion-item')).length !== 0)
+            {
+                    additionalOffset = open.height();
+            }
+
+            let header_offset = 230;
+            if (width < 785) {
+                header_offset = 100;
+            }
+            else if (width < 1040) {
+                header_offset = 100;
+            }
+
+            $('html,body').animate({
+                scrollTop: card.offset().top - additionalOffset - header_offset
+            }, 100);
+
+            //resize table
+            if (card.prop('id') == 'prestasi') {
                 dtprestasi.columns.adjust().responsive.recalc();
             }
-        }
-    });
 
-    //all datatable must be responsive
-    $.extend( $.fn.dataTable.defaults, { responsive: true } );
+            //resize table
+            if (card.prop('id') == 'riwayat') {
+                dtriwayat.columns.adjust().responsive.recalc();
+            }
+        });
 
-    // //file list
-    // $.fn.dataTable.Editor.files[ 'files' ] = files;
+        $("[tcg-edit-action='submit']").on("change", function(evt) {
+            let select = $(this);
+            let flagval = parseInt(select.val());
+            let submittag = select.attr('tcg-submit-tag');
 
-    // //editor
-    // editor = new $.fn.dataTable.Editor( {
-    //     ajax: "<?php echo site_url('siswa/profil/json'); ?>",
-    //     fields: [ 
-    //         {
-    //             label: "Surat Pernyataan Kebenaran Dokumen:",
-    //             name: "dokumen_21",
-    //             type: "upload",
-    //             display: function ( file_id ) {
-    //                 if (file_id == "" || typeof files[file_id] === undefined) {
-    //                     return "";
-    //                 }
-    //                 return '<img src="'+editor.file( 'files', file_id ).thumbnail_path+'"/>';
-    //             },
-    //             clearText: "Hapus",
-    //             noImageText: 'No image',
-    //             uploadText: "Pilih dokumen...",
-    //             noFileText: 'Tidak ada dokumen',
-    //             processingText: 'Sedang mengunggah',
-    //             fileReadText: 'Membaca dokumen',
-    //             dragDropText: 'Seret dan letakkan dokumen di sini untuk mengunggah'
-    //         },
-    //     ],
-    //     i18n: {
-    //     create: {
-    //         button: "Baru",
-    //         title:  "Data siswa baru",
-    //         submit: "Simpan"
-    //     },
-    //     edit: {
-    //         button: "Ubah",
-    //         title:  "Ubah data siswa",
-    //         submit: "Simpan"
-    //     },
-    //     remove: {
-    //         button: "Hapus",
-    //         title:  "Hapus data siswa",
-    //         submit: "Hapus",
-    //         confirm: {
-    //             _: "Konfirmasi hapus %d data siswa?",
-    //             1: "Konfirmasi hapus 1 data siswa?"
-    //         }
-    //     },        
-    //     error: {
-    //         system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi nomor bantuan."
-    //     },
-    //     datetime: {
-    //         previous: 'Sebelum',
-    //         next:     'Selanjutnya',
-    //         months:   [ 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember' ],
-    //         weekdays: [ 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab' ],
-    //         hour: 'Jam',
-    //         minute: 'Menit'
-    //     }
-    //     }
-    // });
+            let json = {};
+            json['user_id'] = userid;
+            json['data'] = {};
 
-    editprestasi = new $.fn.dataTable.Editor( {
-        ajax: "{$site_url}ppdb/siswa/prestasi",
-        table: '#tbl-prestasi',
-        idSrc: "prestasi_id",
-        fields: [ 
-            {
-                label: "Prestasi:",
-                name: "skoring_id",
-                type: "select",
-            }, {
-                label: "Uraian:",
-                name: "uraian",
-                type: "textarea",
-            {if ($flag_upload_dokumen)}
-            }, {
-                label: "Dokumen Pendukung:",
-                name: "dokumen_pendukung",
-                type: "upload",
-                display: function ( file_id ) {
-                    if (file_id == "" || typeof files[file_id] === undefined) {
-                        return "";
+            let elements = $("[tcg-input-tag='" +submittag+ "']");
+            elements.each(function(idx) {
+                //action
+                el = $(this);
+                if (flagval) {
+                    action = el.attr('tcg-input-true');
+                }
+                else {
+                    action = el.attr('tcg-input-false');
+                }
+                if (action == 'show') el.show();
+                else if (action == 'hide') el.hide();
+                else if (action == 'enable') el.attr("disabled",false);
+                else if (action == 'disable') el.attr("disabled",true);
+
+                //data to submit
+                let field = el.attr('tcg-field');
+                if (field == null || field == '') return;
+
+                let val = 0;
+
+                if (!flagval) {
+                    //start-editing -> store old value just in case
+                    this.defaultValue = this.value;
+                }
+                else {
+                    //save editing -> only submit if change
+                    if ((el.is('input') || el.is('select')) && this.defaultValue != this.value) {
+                        if (el.attr('type') == 'number') {
+                            val = parseFloat(el.val());
+                            if (isNaN(val)) val = 0;
+                            val = val.toFixed(2);
+                            el.val(val);
+                        }
+                        else {
+                            val = el.val();
+                        }
+
+                        //form data
+                        json['data'][field] = val;
+
+                        //copy value if necessary
+                        //lbl = elements.find("span[tcg-field='" +field+ "']");
+                        lbl = $("span[tcg-field='" +field+ "']");
+                        lbl.html(val);
                     }
-                    return '<img src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'"/>';
+                }
+            });
+
+            //submit form
+            json['data']["konfirmasi_" +submittag] = flagval;
+
+            $.ajax({
+                type: 'POST',
+                url: "{$site_url}ppdb/siswa/updateprofil",
+                dataType: 'json',
+                data: json,
+                async: true,
+                cache: false,
+                //if we use formData, set processData = false. if we use json, set processData = true!
+                //contentType: true,
+                //processData: true,      
+                timeout: 60000,
+                success: function(json) {
+                    if (json.error !== undefined && json.error != "" && json.error != null) {
+                        return;
+                    }
+                    //TODO: get the return value and re-set the field
                 },
-                clearText: "Hapus",
-                noImageText: 'No image'
-            {/if}
-            }
-        ],
-        i18n: {
-        create: {
-            button: "Baru",
-            title:  "Tambah data prestasi",
-            submit: "Simpan"
-        },
-        edit: {
-            button: "Ubah",
-            title:  "Ubah prestasi",
-            submit: "Simpan"
-        },
-        remove: {
-            button: "Hapus",
-            title:  "Hapus prestasi",
-            submit: "Hapus",
-            confirm: {
-                _: "Konfirmasi hapus %d prestasi?",
-                1: "Konfirmasi hapus 1 prestasi?"
-            }
-        },        
-        error: {
-            system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi nomor bantuan."
-        },
-        datetime: {
-            previous: 'Sebelum',
-            next:     'Selanjutnya',
-            months:   [ 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember' ],
-            weekdays: [ 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab' ],
-            hour: 'Jam',
-            minute: 'Menit'
-        }
-        }
-    });
+                error: function(jqXHR, textStatus, errorThrown) {
+                    //TODO
+                    return;
+                }
+            });
 
-    editprestasi.on('preSubmit', function(e, o, action) {
-        if (action === 'create' || action === 'edit') {
-            let field = null;
+            konfirmasi[submittag] = flagval;
+            if (flagval) {
+                verifikasi[submittag] = 1;
+            }
 
-            field = this.field('skoring_id');
-            if (!field.isMultiValue()) {
-                if (!field.val() || field.val() == 0) {
-                    field.error('Prestasi harus diisi');
+            //update status
+            var card = select.closest('.accordion-item');
+            if (flagval) {
+                card.removeClass("status-danger");
+                card.find(".accordion-header-text .status").html('');
+            }
+            else {
+                card.addClass("status-danger");
+                card.find(".accordion-header-text .status").html('*Belum Benar*');
+            }
+
+            //special case
+            if (submittag == 'prestasi') {
+                if (flagval) {
+                    dtprestasi.buttons( 0, null ).container().hide();
+                }
+                else {
+                    dtprestasi.buttons( 0, null ).container().show();
                 }
             }
 
-            field = this.field('uraian');
-            if (!field.isMultiValue()) {
-                if (!field.val() || field.val() == 0) {
-                    field.error('Uraian harus diisi');
+        })
+
+        $("[tcg-edit-action='toggle']").on("change", function(evt) {
+            select = $(this);
+            value = parseInt(select.val());
+            toggletag = select.attr('tcg-toggle-tag');
+
+            elements = $("[tcg-visible-tag='" +toggletag+ "']");
+            if (value) { elements.show(); }
+            else { elements.hide(); }
+
+            //update flag
+            profilflag[toggletag] = value;
+            
+            //special case: afirmasi
+            if (toggletag == 'kip' || toggletag == 'bdt') {
+                elements = $("[tcg-visible-tag='afirmasi']");
+                if (!profilflag['kip'] && !profilflag['bdt']) {
+                    elements.hide();
+                }
+                else {
+                    elements.show();
                 }
             }
 
-            {if ($flag_upload_dokumen)}
-            field = this.field('dokumen_pendukung');
-            if (!field.isMultiValue()) {
-                if (!field.val() || field.val() == 0) {
-                    field.error('Dokumen pendukung harus diisi');
+            //special case: prestasi
+            if (toggletag == 'prestasi') {
+                if (profilflag['prestasi']) {
+                    dtprestasi.columns.adjust().responsive.recalc();
                 }
             }
-            {/if}
+        });
 
-            /* If any error was reported, cancel the submission so it can be corrected */
-            if (this.inError()) {
-                this.error('Data wajib belum diisi');
-                return false;
-            }
-        }            
-    });        
+        //all datatable must be responsive
+        $.extend( $.fn.dataTable.defaults, { responsive: true } );
 
-    dtprestasi = $('#tbl-prestasi').DataTable({
-        "responsive": true,
-        "paging": false,
-        "dom": "Brt",
-        select: true,
-        buttons: [
-            { extend: "create", editor: editprestasi, className: "btn btn-primary" },
-            // { extend: "edit", editor: editprestasi, className: "dt-button d-none" },
-            { extend: "remove", editor: editprestasi, className: "btn btn-danger" },
-        ],
-        ajax: "{$site_url}ppdb/siswa/prestasi",
-        "language": {
-            "processing":   "Sedang proses...",
-            "lengthMenu":   "Tampilan _MENU_ entri",
-            "zeroRecords":  "Tidak ditemukan data yang sesuai",
-            "loadingRecords": "Loading...",
-            "emptyTable":   "Tidak ditemukan data yang sesuai",
-            },
-        columns: [
-            // { "defaultContent": "" },
-            { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
-            { data: "prestasi", className: 'dt-body-left', "orderable": false },
-            { data: "uraian", className: 'dt-body-left', "orderable": false },
-            { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
-                render: function ( file_id, type, row ) {
-                    {if !($flag_upload_dokumen)}
-                    return "Dicocokkan di sekolah tujuan";
-                    {else}
-                    if (type === 'display') {
-                        if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
+        editprestasi = new $.fn.dataTable.Editor( {
+            ajax: "{$site_url}ppdb/siswa/prestasi",
+            table: '#tbl-prestasi',
+            idSrc: "prestasi_id",
+            fields: [ 
+                {
+                    label: "Prestasi:",
+                    name: "skoring_id",
+                    type: "select",
+                }, {
+                    label: "Uraian:",
+                    name: "uraian",
+                    type: "textarea",
+                {if ($flag_upload_dokumen)}
+                }, {
+                    label: "Dokumen Pendukung:",
+                    name: "dokumen_pendukung",
+                    type: "upload",
+                    display: function ( file_id ) {
+                        if (file_id == "" || typeof files[file_id] === undefined) {
                             return "";
                         }
-                        
-                        let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
-
-                        let verifikasi = row.verifikasi;
-                        if (verifikasi == 2) {
-                            str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
-                            str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
-                        }
-
-                        return str;
-                    }
-                    else {
-                        row.filename;
-                    }
-                    {/if}
-                },
-                defaultContent: "Tidak ada dokumen",
-                title: "Dokumen Pendukung"
-            },
-            { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
-        ],
-        "columnDefs": [ {
-            "targets": 3,
-            "createdCell": function (td, cellData, rowData, row, col) {
-                if ( rowData.verifikasi == 1 ) {
-                    $(td).removeClass('editable');
+                        return '<img src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'"/>';
+                    },
+                    clearText: "Hapus",
+                    noImageText: 'No image'
+                {/if}
                 }
-            }
-        } ],
-        order: [ 0, 'asc' ],
-    });
-
-    dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
-
-    //default: hide button
-    dtprestasi.buttons( 0, null ).container().hide();
-
-    dtriwayat = $('#triwayat').DataTable({
-        "responsive": true,
-        "paging": false,
-        "dom": 't',
-        "buttons": [
-        ],
-        "language": {
-            "sProcessing":   "Sedang proses...",
-            "sLengthMenu":   "Tampilan _MENU_ entri",
-            "sZeroRecords":  "Tidak ditemukan data yang sesuai",
-            "sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-            "sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-            "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-            "sInfoPostFix":  "",
-            "sSearch":       "Cari:",
-            "sUrl":          "",
-            "oPaginate": {
-                "sFirst":    "Awal",
-                "sPrevious": "Balik",
-                "sNext":     "Lanjut",
-                "sLast":     "Akhir"
-            }
-        },	
-        ajax: "{$site_url}ppdb/siswa/riwayat",
-        columns: [
-            { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },
-            { data: "nama", className: 'dt-body-left readonly-column', orderable: false },
-            { data: "verifikasi", className: 'dt-body-center', orderable: false, 
-                "render": function (val, type, row) {
-                        return val == 1 ? "SUDAH Lengkap" : "BELUM Lengkap";
-                    } 
+            ],
+            i18n: {
+            create: {
+                button: "Baru",
+                title:  "Tambah data prestasi",
+                submit: "Simpan"
             },
-            { data: "catatan_kekurangan", className: 'dt-body-left readonly-column', width: "50%", orderable: false,
-                "render": function (val, type, row) {
-                        return val.replace(/:/g, " : ").replace(/;/g, "<br>");
-                    } 
+            edit: {
+                button: "Ubah",
+                title:  "Ubah prestasi",
+                submit: "Simpan"
             },
-        ],
-        order: [ 0, 'desc' ],
-    });
+            remove: {
+                button: "Hapus",
+                title:  "Hapus prestasi",
+                submit: "Hapus",
+                confirm: {
+                    _: "Konfirmasi hapus %d prestasi?",
+                    1: "Konfirmasi hapus 1 prestasi?"
+                }
+            },        
+            error: {
+                system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi nomor bantuan."
+            },
+            datetime: {
+                previous: 'Sebelum',
+                next:     'Selanjutnya',
+                months:   [ 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember' ],
+                weekdays: [ 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab' ],
+                hour: 'Jam',
+                minute: 'Menit'
+            }
+            }
+        });
 
-    $('.upload-file').change(function() {
-        let el = $(this);
-        let docid = el.attr('tcg-doc-id');
-        let files = el.prop('files');
+        editprestasi.on('preSubmit', function(e, o, action) {
+            if (action === 'create' || action === 'edit') {
+                let field = null;
 
-        if (files.length == 0) {
-            alert ("Belum memilih file")
-            return;
-        }
+                field = this.field('skoring_id');
+                if (!field.isMultiValue()) {
+                    if (!field.val() || field.val() == 0) {
+                        field.error('Prestasi harus diisi');
+                    }
+                }
 
-        let file = files[0];
-        alert (docid + ":" + file.name);
+                field = this.field('uraian');
+                if (!field.isMultiValue()) {
+                    if (!field.val() || field.val() == 0) {
+                        field.error('Uraian harus diisi');
+                    }
+                }
 
-        // add assoc key values, this will be posts values
-        var formData = new FormData();
-        formData.append("upload", file, file.name);
-        formData.append("action", "upload");
+                {if ($flag_upload_dokumen)}
+                field = this.field('dokumen_pendukung');
+                if (!field.isMultiValue()) {
+                    if (!field.val() || field.val() == 0) {
+                        field.error('Dokumen pendukung harus diisi');
+                    }
+                }
+                {/if}
 
-        //TODO
-        // $.ajax({
-        //     type: "POST",
-        //     url: "",
-        //     async: true,
-        //     data: formData,
-        //     cache: false,
-        //     contentType: false,
-        //     processData: false,
-        //     timeout: 60000,
-        //     dataType: 'json',
-        //     success: function(json) {
-        //         if (json.error !== undefined && json.error != "" && json.error != null) {
-        //             return;
-        //         }
+                /* If any error was reported, cancel the submission so it can be corrected */
+                if (this.inError()) {
+                    this.error('Data wajib belum diisi');
+                    return false;
+                }
+            }            
+        });        
 
-        //         //TODO
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {
+        dtprestasi = $('#tbl-prestasi').DataTable({
+            "responsive": true,
+            "paging": false,
+            "dom": "Brt",
+            select: true,
+            buttons: [
+                { extend: "create", editor: editprestasi, className: "btn btn-primary" },
+                // { extend: "edit", editor: editprestasi, className: "dt-button d-none" },
+                { extend: "remove", editor: editprestasi, className: "btn btn-danger" },
+            ],
+            ajax: "{$site_url}ppdb/siswa/prestasi",
+            "language": {
+                "processing":   "Sedang proses...",
+                "lengthMenu":   "Tampilan _MENU_ entri",
+                "zeroRecords":  "Tidak ditemukan data yang sesuai",
+                "loadingRecords": "Loading...",
+                "emptyTable":   "Tidak ditemukan data yang sesuai",
+                },
+            columns: [
+                // { "defaultContent": "" },
+                { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
+                { data: "prestasi", className: 'dt-body-left', "orderable": false },
+                { data: "uraian", className: 'dt-body-left', "orderable": false },
+                { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
+                    render: function ( file_id, type, row ) {
+                        {if !($flag_upload_dokumen)}
+                        return "Dicocokkan di sekolah tujuan";
+                        {else}
+                        if (type === 'display') {
+                            if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
+                                return "";
+                            }
+                            
+                            let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
 
-        //         return;
-        //     }
-        // });
+                            let verifikasi = row.verifikasi;
+                            if (verifikasi == 2) {
+                                str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
+                                str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
+                            }
 
-        
-    });
+                            return str;
+                        }
+                        else {
+                            row.filename;
+                        }
+                        {/if}
+                    },
+                    defaultContent: "Tidak ada dokumen",
+                    title: "Dokumen Pendukung"
+                },
+                { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
+            ],
+            "columnDefs": [ {
+                "targets": 3,
+                "createdCell": function (td, cellData, rowData, row, col) {
+                    if ( rowData.verifikasi == 1 ) {
+                        $(td).removeClass('editable');
+                    }
+                }
+            } ],
+            order: [ 0, 'asc' ],
+        });
 
-    update_profile_layout();
-    update_pendaftaran_layout();
-    update_hasil_layout();
+        dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
 
-})(jQuery);        
+        //default: hide button
+        dtprestasi.buttons( 0, null ).container().hide();
+
+        dtriwayat = $('#triwayat').DataTable({
+            "responsive": true,
+            "paging": false,
+            "dom": 't',
+            "buttons": [
+            ],
+            "language": {
+                "sProcessing":   "Sedang proses...",
+                "sLengthMenu":   "Tampilan _MENU_ entri",
+                "sZeroRecords":  "Tidak ditemukan data yang sesuai",
+                "sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
+                "sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
+                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+                "sInfoPostFix":  "",
+                "sSearch":       "Cari:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Awal",
+                    "sPrevious": "Balik",
+                    "sNext":     "Lanjut",
+                    "sLast":     "Akhir"
+                }
+            },	
+            ajax: "{$site_url}ppdb/siswa/riwayat",
+            columns: [
+                { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },
+                { data: "nama", className: 'dt-body-left readonly-column', orderable: false },
+                { data: "verifikasi", className: 'dt-body-center', orderable: false, 
+                    "render": function (val, type, row) {
+                            return val == 1 ? "SUDAH Lengkap" : "BELUM Lengkap";
+                        } 
+                },
+                { data: "catatan_kekurangan", className: 'dt-body-left readonly-column', width: "50%", orderable: false,
+                    "render": function (val, type, row) {
+                            return val.replace(/:/g, " : ").replace(/;/g, "<br>");
+                        } 
+                },
+            ],
+            order: [ 0, 'desc' ],
+        });
+
+        $('.upload-file').change(function() {
+            let el = $(this);
+            let docid = el.attr('tcg-doc-id');
+            let files = el.prop('files');
+
+            if (files.length == 0) {
+                alert ("Belum memilih file")
+                return;
+            }
+
+            let file = files[0];
+            alert (docid + ":" + file.name);
+
+            // add assoc key values, this will be posts values
+            var formData = new FormData();
+            formData.append("upload", file, file.name);
+            formData.append("action", "upload");
+
+            //TODO
+            // $.ajax({
+            //     type: "POST",
+            //     url: "",
+            //     async: true,
+            //     data: formData,
+            //     cache: false,
+            //     contentType: false,
+            //     processData: false,
+            //     timeout: 60000,
+            //     dataType: 'json',
+            //     success: function(json) {
+            //         if (json.error !== undefined && json.error != "" && json.error != null) {
+            //             return;
+            //         }
+
+            //         //TODO
+            //     },
+            //     error: function(jqXHR, textStatus, errorThrown) {
+
+            //         return;
+            //     }
+            // });
+
+            
+        });
+
+        update_profile_layout();
+        update_pendaftaran_layout();
+        update_hasil_layout();
+
+    })(jQuery);       
+
 </script>
 

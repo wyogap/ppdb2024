@@ -21,11 +21,11 @@ class AuditTrail {
         $str_values = "";
 
         if (is_array($keys) && $values == null) {
-            unset($keys['created_on']);
-            unset($keys['created_by']);
-            unset($keys['updated_on']);
-            unset($keys['updated_by']);
-            unset($keys['is_deleted']);
+            unset($keys[COL_CREATED_ON]);
+            unset($keys[COL_CREATED_BY]);
+            unset($keys[COL_UPDATED_ON]);
+            unset($keys[COL_UPDATED_BY]);
+            unset($keys[COL_SOFT_DELETE]);
         }
 
         //for consistency

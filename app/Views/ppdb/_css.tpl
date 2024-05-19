@@ -52,12 +52,12 @@
     text-align: left;
 }
 
-[data-theme-version="dark"] .header-profile > a.nav-link .header-info span {
-    color: #fff;
-}
-
 [data-theme-version="light"] .header-profile > a.nav-link .header-info span {
     color: #000;
+}
+
+[data-theme-version="dark"] .header-profile > a.nav-link .header-info span {
+    color: #fff;
 }
 
 .header-profile > a.nav-link .header-info span {
@@ -147,6 +147,12 @@
     background-color: #fff;
     border-radius: 16px;
 }
+
+[data-theme-version="dark"] .ai-icon {
+    color: #fff;
+    background-color: #fff var(--bs-gray);;
+}
+
 
 .ai-icon.active {
     color: #fff !important;
@@ -285,32 +291,40 @@ table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column t
     background-color: unset !important;
 }
 
-[data-theme-version="light"] table.dataTable thead th, table.dataTable thead td {
+/* light theme */
+table.dataTable thead th, 
+table.dataTable thead td {
     border-top: solid 2px #000;
     border-bottom: solid 2px #000;
     color: #000;
 }
 
-[data-theme-version="dark"] table.dataTable thead th, table.dataTable thead td {
+[data-theme-version="dark"] table.dataTable thead th, 
+[data-theme-version="dark"] table.dataTable thead td {
     border-top: solid 2px #fff;
     border-bottom: solid 2px #fff;
+    border-color: var(--bs-white) !important;
     color: #fff;
 }
 
-[data-theme-version="light"] table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+/* light theme */
+table.dataTable.stripe tbody tr.odd, 
+table.dataTable.display tbody tr.odd {
     background-color: #f9f9f9;
 }
 
-[data-theme-version="dark"] table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
-    background-color: var(--sidebar-bg) !important;
+[data-theme-version="dark"] table.dataTable.stripe tbody tr, 
+[data-theme-version="dark"] table.dataTable.display tbody tr {
+    background-color: var(--sidebar-bg);
 }
+
+/* [data-theme-version="dark"] table.dataTable.stripe tbody tr.even, 
+[data-theme-version="dark"] table.dataTable.display tbody tr.even {
+    background-color: var(--sidebar-bg);
+} */
 
 [data-theme-version="light"] table.dataTable tbody tr {
     background-color: #ffffff;
-}
-
-[data-theme-version="dark"] table.dataTable tbody tr {
-    background-color: var(--sidebar-bg);
 }
 
 [data-theme-version="light"] table.dataTable.display tbody td {
@@ -360,7 +374,7 @@ table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column t
 [data-theme-version="dark"] .form-control:focus,
 [data-theme-version="dark"] .form-control:hover
 {
-    background-color: var(--bs-light);
+    background-color: #fff;
 }
 
 [data-theme-version="dark"] .form-control:disabled,
@@ -368,6 +382,37 @@ table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column t
 {
     background-color: var(--bs-dark);
     color: #fff
+}
+
+[data-theme-version="dark"] .jconfirm-box {
+    background-color: var(--bs-gray);
+    color: white;
+}
+
+[data-theme-version="dark"] .jconfirm-box .form-control {
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
+}
+
+[data-theme-version="dark"] .jconfirm-box .form-control:focus {
+    background-color: #fff;
+}
+
+[data-theme-version="dark"] .jconfirm-box .table {
+    color: #fff;
+}
+
+[data-theme-version="dark"] .jconfirm-box .alert-secondary {
+    color: #fff;
+}
+
+[data-theme-version="dark"] .header-right .dropdown-menu {
+    box-shadow: none;
+    background-color: var(--bs-gray);
+}
+
+[data-theme-version="dark"] .dropdown-menu .dropdown-item {
+    color: var(--bs-white);
 }
 
 /* [data-theme-version="dark"] .table.table-striped tbody tr {
@@ -392,9 +437,9 @@ table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column t
     border-color: var(--primary);
 }
 
-table.dataTable.display tbody td a {
+/* table.dataTable.display tbody td a {
     color: inherit;
-}
+} */
 
 [data-theme-version="dark"] table.dataTable.display tbody td a.btn-primary {
     color: #000;
@@ -566,6 +611,21 @@ table.dataTable tbody td.bg-yellow {
     margin: auto;
     margin-top: 10px;
  }
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    padding: 4px 8px;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    margin-left: 0.25em;
+    margin-right: 0.25em;
+    padding: 0px 8px;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

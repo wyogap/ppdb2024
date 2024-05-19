@@ -101,24 +101,30 @@ define('EVENT_PRIORITY_HIGH', 10);
 | Keep it as constant here to provide flexibility to use different versions
 |
 */
-defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2023_prosespendaftaran');
+defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2024_prosespendaftaran');
 defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2023_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
 defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
-defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2023_hapuspendaftaran');        //hapur satu pendaftaran
-defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2023_hitungskor_2022');
+defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2024_hapuspendaftaran');        //hapur satu pendaftaran
+defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor_2022');
 
-defined('SQL_UBAH_JENISPILIHAN')            OR define('SQL_UBAH_JENISPILIHAN', 'ppdb2023_ubah_jenispilihan');
-defined('SQL_UBAH_PILIHANSEKOLAH')          OR define('SQL_UBAH_PILIHANSEKOLAH', 'ppdb2023_ubah_pilihansekolah');
-defined('SQL_UBAH_JALUR')                   OR define('SQL_UBAH_JALUR', 'ppdb_ubah_jalur');
+defined('SQL_UBAH_JENISPILIHAN')            OR define('SQL_UBAH_JENISPILIHAN', 'ppdb2024_ubah_jenispilihan');
+defined('SQL_UBAH_PILIHANSEKOLAH')          OR define('SQL_UBAH_PILIHANSEKOLAH', 'ppdb2024_ubah_pilihansekolah');
+defined('SQL_UBAH_JALUR')                   OR define('SQL_UBAH_JALUR', 'ppdb2024_ubah_jalur');
+
 defined('SQL_UBAH_DATA')                    OR define('SQL_UBAH_DATA', 'ppdb2023_ubah_data');
 defined('SQL_UBAH_NILAIKELULUSAN')          OR define('SQL_UBAH_NILAIKELULUSAN', 'ppdb2022_ubah_nilaikelulusan');
 defined('SQL_UBAH_NILAISEMESTER')           OR define('SQL_UBAH_NILAISEMESTER', 'ppdb2022_ubah_nilaisemester');
 defined('SQL_UBAH_NILAIUSBN')               OR define('SQL_UBAH_NILAIUSBN', 'ppdb2022_ubah_nilaiusbn');
 defined('SQL_UBAH_PRESTASI')                OR define('SQL_UBAH_PRESTASI', 'ppdb2022_ubah_prestasi');
 
-defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2023_ubah_kelengkapanberkas'); //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
+defined('SQL_PILIHSEKOLAH_SEKOLAH')             OR define('SQL_PILIHSEKOLAH_SEKOLAH', 'ppdb2024_pilihsekolah_sekolah');
+defined('SQL_PILIHSEKOLAH_JENISPILIHAN')        OR define('SQL_PILIHSEKOLAH_JENISPILIHAN', 'ppdb2024_pilihsekolah_jenispilihan');
+defined('SQL_PILIHSEKOLAH_UBAHJENISPILIHAN')    OR define('SQL_PILIHSEKOLAH_UBAHJENISPILIHAN', 'ppdb2024_pilihsekolah_jenispilihan');
+
+defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2024_ubah_kelengkapanberkas'); //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
 defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2023_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
 defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
+defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
 
 defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2023_hapuspenerimaan_sd');
 defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2023_penerimaan_sd');

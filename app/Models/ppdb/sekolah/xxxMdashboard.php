@@ -30,7 +30,7 @@ Class Mdashboard
 		$sekolah_id = $this->session->get("sekolah_id");
 		$tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
-		$builder = $this->db->table('tcg_penerapan_sekolah a');
+		$builder = $this->db->table('cfg_penerapan_sekolah a');
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota');
 		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0');
 		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');
@@ -57,7 +57,7 @@ Class Mdashboard
 		$builder = $this->db->table('tcg_kelengkapan_pendaftaran a');
 		$builder->select('a.kelengkapan_pendaftaran_id,d.nama AS kelengkapan,a.verifikasi');
 		$builder->join('tcg_pendaftaran b','a.pendaftaran_id = b.pendaftaran_id AND b.cabut_berkas = 0 AND b.jenis_pilihan != 0 AND b.is_deleted = 0');
-		$builder->join('tcg_kelengkapan_dokumen c','a.kelengkapan_dokumen_id = c.kelengkapan_dokumen_id AND c.perlu_verifikasi = 1 AND c.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen c','a.kelengkapan_dokumen_id = c.kelengkapan_dokumen_id AND c.perlu_verifikasi = 1 AND c.is_deleted=0');
 		$builder->join('ref_daftar_kelengkapan d','c.daftar_kelengkapan_id = d.daftar_kelengkapan_id AND d.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'b.sekolah_id'=>$sekolah_id,'a.is_deleted'=>0));
 		return $builder->get();
@@ -469,7 +469,7 @@ Class Mdashboard
 			) as jml_pendaftar
 		from ref_penerapan a
 		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
-		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
+		join cfg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
 		where a.aktif=1 and a.is_deleted=0 and 
 		d.sekolah_id = '$sekolah_id' and a.tahun_ajaran_id='$tahun_ajaran_id'
 		order by a.penerapan_id		
@@ -544,7 +544,7 @@ Class Mdashboard
 
 		$builder = $this->db->table('tcg_skoring_pendaftaran a');
 		$builder->select('a.skoring_pendaftaran_id,a.daftar_nilai_skoring_id,a.nilai');
-		$builder->join('ref_daftar_nilai_skoring b','a.daftar_nilai_skoring_id = b.daftar_nilai_skoring_id AND b.is_deleted=0');
+		$builder->join('cfg_daftar_nilai_skoring b','a.daftar_nilai_skoring_id = b.daftar_nilai_skoring_id AND b.is_deleted=0');
 		$builder->join('ref_penerapan c','b.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0 AND c.kategori_prestasi = 1');
 		$builder->join('ref_daftar_skoring d','b.daftar_skoring_id = d.daftar_skoring_id AND d.manual = 1 AND d.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'b.penerapan_id'=>$penerapan_id,'a.is_deleted'=>0));
@@ -809,7 +809,7 @@ Class Mdashboard
 			) as diterima
 		from ref_penerapan a
 		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
-		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
+		join cfg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
 		where a.aktif=1 and a.is_deleted=0 and 
 		d.sekolah_id = '$sekolah_id'
 		order by a.penerapan_id		
@@ -914,7 +914,7 @@ Class Mdashboard
 
 		$builder = $this->db->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi,b.kuota_total');
-		$builder->join('tcg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
+		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
 
 		return $builder->get();
@@ -929,7 +929,7 @@ Class Mdashboard
 			   coalesce(e.memenuhi_syarat,0) as memenuhi_syarat, coalesce(e.masuk_kuota,0) as masuk_kuota, coalesce(e.daftar_tunggu,0) as daftar_tunggu, coalesce(e.diterima,0) as diterima,  coalesce(e.total_pendaftar,0) as total_pendaftar
 		from ref_penerapan a
 		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
-		join tcg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
+		join cfg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND d.is_deleted = 0
 		left outer join rpt_sekolah_summary e on a.penerapan_id = e.penerapan_id and e.sekolah_id = d.sekolah_id and e.putaran=d.putaran
         join ref_sekolah f on f.sekolah_id=d.sekolah_id and ((f.inklusi=1 and a.jalur_id=7) or a.jalur_id != 7)
 		where a.aktif=1 and a.is_deleted=0 and d.sekolah_id = '$sekolah_id' and a.tahun_ajaran_id='$tahun_ajaran_id' and d.putaran='$putaran'
@@ -1010,7 +1010,7 @@ Class Mdashboard
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on desc');
@@ -1028,7 +1028,7 @@ Class Mdashboard
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>2,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
 		$builder->orderBy('a.created_on desc');
@@ -1046,7 +1046,7 @@ Class Mdashboard
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-		$builder->join('tcg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
+		$builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
 		$builder->join('ref_sekolah h','h.sekolah_id = b.lokasi_berkas','LEFT OUTER');
 		$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.kelengkapan_berkas'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
 		$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
@@ -1074,7 +1074,7 @@ Class Mdashboard
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_penerapan_sekolah a');
+		$builder = $this->db->table('cfg_penerapan_sekolah a');
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota');
 		$builder->join('ref_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0');
 		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');

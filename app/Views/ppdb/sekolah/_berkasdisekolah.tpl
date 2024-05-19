@@ -51,7 +51,7 @@
                     "sLast": "Akhir"
                 }
             },
-            ajax: "{$site_url}ppdb/sekolah/pengajuanakun/json?tahun_ajaran={$tahun_ajaran_id}",
+            ajax: "{$site_url}ppdb/sekolah/verifikasi/berkasdisekolah?tahun_ajaran={$tahun_ajaran_id}",
             columns: [
                 {
                     data: "nama",
@@ -70,12 +70,23 @@
                     className: 'dt-body-left'
                 },
                 {
-                    data: "asal_sekolah",
+                    data: "sekolah_asal",
                     className: 'dt-body-left'
                 },
                 {
                     data: "kelengkapan_berkas",
-                    className: 'dt-body-left'
+                    className: 'dt-body-center',
+                    render: function(data, type, row, meta) {
+                        if(type != 'display') {
+                            return data;
+                        }
+
+                        if (data != 1) {
+                            return "Belum Lengkap";
+                        }
+
+                        return "Sudah Lengkap";
+                    }
                 },
                 {
                     data: "tanggal_verifikasi",

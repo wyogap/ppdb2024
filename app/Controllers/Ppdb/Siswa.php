@@ -45,7 +45,7 @@ class Siswa extends PpdbController {
         $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1);
         $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1);
 
-        $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id)->getRowArray();
+        $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         if (empty($profil)) {
             //invalid session. just re-login
             $this->session->setFlashdata("error", "Invalid session!");
@@ -53,7 +53,7 @@ class Siswa extends PpdbController {
         }
 
         //daftar pendaftaran
-        $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id)->getResultArray();
+        $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
 
         $cek_pendaftaran_aktif = (count($pendaftaran) > 0);
         $pendaftaran_diterima = null;
@@ -94,124 +94,115 @@ class Siswa extends PpdbController {
         $dokumen = array();
         $files = array();
 
-        // //a hack for consistent logic
-        // $dokumen[DOCID_PRESTASI] = array();
-        // $dokumen[DOCID_PRESTASI]['verifikasi'] = 1;
-
-        $query = $this->Msiswa->tcg_dokumen_pendukung($peserta_didik_id);
-        foreach($query->getResult() as $row) {
-            $row->catatan = nl2br(trim($row->catatan));
-
-            if($row->daftar_kelengkapan_id == DOCID_PRESTASI) {
-                //dokumen prestasi
-                if(!isset($dokumen[DOCID_PRESTASI])) {
-                    $dokumen[DOCID_PRESTASI] = array();
-                }
-                $dokumen[DOCID_PRESTASI][$row->dokumen_id] = array(
-                    "dokumen_id"=>$row->dokumen_id, 
-                    "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-                    "nama"=>$row->nama,
-                    "verifikasi"=>$row->verifikasi,
-                    "berkas_fisik"=>$row->berkas_fisik,
-                    "catatan"=>$row->catatan,
-                    "filename"=>$row->filename, 
-                    "file_path"=>base_url().$row->path, 
-                    "web_path"=>base_url().$row->web_path, 
-                    "thumbnail_path"=>base_url().$row->thumbnail_path
-                );
-                //a hack for consistent logic
-                if ($row->verifikasi == 2) {
-                    //ada dok yang gagal verifikasi
-                    $dokumen[DOCID_PRESTASI]['verifikasi'] = 2;
-                }
-                else if ($row->verifikasi == 0 && $dokumen[DOCID_PRESTASI]['verifikasi'] == 1) {
-                    //ada dok yang belum diverifikasi
-                    $dokumen[DOCID_PRESTASI]['verifikasi'] = 0;
-                }
-            }
-            else {
-                //dokumen lain
-                $dokumen[$row->daftar_kelengkapan_id] = array(
-                    "dokumen_id"=>$row->dokumen_id, 
-                    "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-                    "nama"=>$row->nama,
-                    "verifikasi"=>$row->verifikasi,
-                    "berkas_fisik"=>$row->berkas_fisik,
-                    "catatan"=>$row->catatan,
-                    "filename"=>$row->filename, 
-                    "file_path"=>base_url().$row->path, 
-                    "web_path"=>base_url().$row->web_path, 
-                    "thumbnail_path"=>base_url().$row->thumbnail_path);
-            }   
-
-            $files[$row->dokumen_id] = array(
-                "dokumen_id"=>$row->dokumen_id, 
-                "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-                "nama"=>$row->nama,
-                "verifikasi"=>$row->verifikasi,
-                "catatan"=>$row->catatan,
-                "filename"=>$row->filename, 
-                "file_path"=>base_url().$row->path, 
-                "web_path"=>base_url().$row->web_path, 
-                "thumbnail_path"=>base_url().$row->thumbnail_path);
-        }
-
-        //dokumen tambahan
-        $dokumen_tambahan = array();
-        $verifikasi_dokumen_tambahan = 1;
-
-        $query = $this->Msiswa->tcg_dokumen_pendukung_tambahan($peserta_didik_id);
-        foreach($query->getResult() as $row) {
-
-            $row->catatan = nl2br(trim($row->catatan));
-
-            $dokumen_tambahan[$row->daftar_kelengkapan_id] = array(
-                "dokumen_id"=>$row->dokumen_id, 
-                "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
-                "nama"=>$row->nama,
-                "verifikasi"=>$row->verifikasi,
-                "catatan"=>$row->catatan,
-                "filename"=>$row->filename, 
-                "file_path"=>base_url().$row->path, 
-                "web_path"=>base_url().$row->web_path, 
-                "thumbnail_path"=>base_url().$row->thumbnail_path);
-
-            if ($row->verifikasi == 2) {
-                $data['verifikasi_dokumen_tambahan'] = 2;
-            }
-            else if ($row->verifikasi == 0) {
-                $data['verifikasi_dokumen_tambahan'] = 0;
-            }
-        }
-
         $pernyataan_verifikasi = 0;
         $pernyataan_file = null;
         $pernyataan_tanggal = null;
+        $verifikasi_dok = 1;
+        $verifikasi_dokumen_tambahan = 1;
+
         if (!$upload_dokumen) {
             //no dok upload
             $pernyataan_verifikasi = 1;
             $pernyataan_file = "no-upload";
             $pernyataan_tanggal = "no-upload";
         }
-        else if (!empty($dokumen[DOCID_SUKET_KEBENARAN_DOK])) {
+
+        // //a hack for consistent logic
+        // $dokumen[DOCID_PRESTASI] = array();
+        // $dokumen[DOCID_PRESTASI]['verifikasi'] = 1;
+
+        if ($upload_dokumen) {
+            $query = $this->Msiswa->tcg_dokumen_pendukung($peserta_didik_id);
+            foreach($query->getResult() as $row) {
+                $row->catatan = nl2br(trim($row->catatan));
+
+                if($row->daftar_kelengkapan_id == DOCID_PRESTASI) {
+                    //dokumen prestasi
+                    if(!isset($dokumen[DOCID_PRESTASI])) {
+                        $dokumen[DOCID_PRESTASI] = array();
+                    }
+                    $dokumen[DOCID_PRESTASI][$row->dokumen_id] = array(
+                        "dokumen_id"=>$row->dokumen_id, 
+                        "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
+                        "nama"=>$row->nama,
+                        "verifikasi"=>$row->verifikasi,
+                        "berkas_fisik"=>$row->berkas_fisik,
+                        "catatan"=>$row->catatan,
+                        "filename"=>$row->filename, 
+                        "file_path"=>base_url().$row->path, 
+                        "web_path"=>base_url().$row->web_path, 
+                        "thumbnail_path"=>base_url().$row->thumbnail_path
+                    );
+                    //a hack for consistent logic
+                    if ($row->verifikasi == 2) {
+                        //ada dok yang gagal verifikasi
+                        $dokumen[DOCID_PRESTASI]['verifikasi'] = 2;
+                    }
+                    else if ($row->verifikasi == 0 && $dokumen[DOCID_PRESTASI]['verifikasi'] == 1) {
+                        //ada dok yang belum diverifikasi
+                        $dokumen[DOCID_PRESTASI]['verifikasi'] = 0;
+                    }
+                }
+                else {
+                    //dokumen lain
+                    $dokumen[$row->daftar_kelengkapan_id] = array(
+                        "dokumen_id"=>$row->dokumen_id, 
+                        "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
+                        "nama"=>$row->nama,
+                        "verifikasi"=>$row->verifikasi,
+                        "berkas_fisik"=>$row->berkas_fisik,
+                        "catatan"=>$row->catatan,
+                        "filename"=>$row->filename, 
+                        "file_path"=>base_url().$row->path, 
+                        "web_path"=>base_url().$row->web_path, 
+                        "thumbnail_path"=>base_url().$row->thumbnail_path);
+                }   
+
+                $files[$row->dokumen_id] = array(
+                    "dokumen_id"=>$row->dokumen_id, 
+                    "daftar_kelengkapan_id"=>$row->daftar_kelengkapan_id, 
+                    "nama"=>$row->nama,
+                    "verifikasi"=>$row->verifikasi,
+                    "catatan"=>$row->catatan,
+                    "filename"=>$row->filename, 
+                    "file_path"=>base_url().$row->path, 
+                    "web_path"=>base_url().$row->web_path, 
+                    "thumbnail_path"=>base_url().$row->thumbnail_path);
+            }
+
+            //verifikasi dokumen tambahan -> the metadata is already included in $dokumen
+            $verifikasi_dokumen_tambahan = 1;
+
+            $query = $this->Msiswa->tcg_dokumen_pendukung_tambahan($peserta_didik_id);
+            foreach($query->getResult() as $row) {
+
+                if ($row->verifikasi == 2) {
+                    $verifikasi_dokumen_tambahan = 2;
+                }
+                else if ($row->verifikasi == 0) {
+                    $verifikasi_dokumen_tambahan = 0;
+                }
+            }
+
+            //verifikasi suket kebenaran dok
             $pernyataan_verifikasi = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['verifikasi'];
             $pernyataan_file = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['path_surat_pernyataan'];
             $pernyataan_tanggal = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['tanggal_surat_pernyataan'];
+        
+            //verifikasi dokumen
+            if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_KK]) && $dokumen[DOCID_KK]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_SUKET_DOMISILI]) && $dokumen[DOCID_SUKET_DOMISILI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_IJAZAH_SKL]) && $dokumen[DOCID_IJAZAH_SKL]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_HASIL_UN]) && $dokumen[DOCID_HASIL_UN]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_PRESTASI]) && $dokumen[DOCID_PRESTASI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_KIP]) && $dokumen[DOCID_KIP]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_SUKET_BDT]) && $dokumen[DOCID_SUKET_BDT]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+            else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
         }
-    
-        //verifikasi dokumen
-        $verifikasi_dok = 1;
-        if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_KK]) && $dokumen[DOCID_KK]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_SUKET_DOMISILI]) && $dokumen[DOCID_SUKET_DOMISILI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_IJAZAH_SKL]) && $dokumen[DOCID_IJAZAH_SKL]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_HASIL_UN]) && $dokumen[DOCID_HASIL_UN]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_PRESTASI]) && $dokumen[DOCID_PRESTASI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_KIP]) && $dokumen[DOCID_KIP]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_SUKET_BDT]) && $dokumen[DOCID_SUKET_BDT]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-        else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
 
+        //Output
         $data = array();
 
         //tab yang aktif
@@ -248,7 +239,7 @@ class Siswa extends PpdbController {
         
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
-        $data['pengumuman'] = $this->Msetting->tcg_pengumuman()->getResult();
+        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
 
         //data for view
         $data['peserta_didik_id'] = $peserta_didik_id;
@@ -263,25 +254,25 @@ class Siswa extends PpdbController {
         $data['dokumen'] = $dokumen;   
         $data['files'] = $files;
         $data['verifikasi_dokumen'] = $verifikasi_dok;
-        $data['dokumen_tambahan'] = $dokumen_tambahan;
+        //$data['dokumen_tambahan'] = $dokumen_tambahan;
         $data['verifikasi_dokumen_tambahan'] = $verifikasi_dokumen_tambahan;
 
         $data['pernyataan_verifikasi'] = $pernyataan_verifikasi;
         $data['pernyataan_file'] = $pernyataan_file;
         $data['pernyataan_tanggal'] = $pernyataan_tanggal;
                   
-		$kebutuhan_khusus = 1;
-		if (empty($profil['kebutuhan_khusus']) || $profil['kebutuhan_khusus']=="0" || $profil['kebutuhan_khusus']=='Tidak ada') {
-			$kebutuhan_khusus = 0;
-		}
+		// $kebutuhan_khusus = 1;
+		// if (empty($profil['kebutuhan_khusus']) || $profil['kebutuhan_khusus']=="0" || $profil['kebutuhan_khusus']=='Tidak ada') {
+		// 	$kebutuhan_khusus = 0;
+		// }
 
-		$afirmasi = 1;
-		if ((empty($profil['punya_kip']) || $profil['punya_kip']=="0") && (empty($profil['masuk_bdt']) || $profil['masuk_bdt']=="0")) {
-			$afirmasi = 0;
-		}
+		// $afirmasi = 1;
+		// if ((empty($profil['punya_kip']) || $profil['punya_kip']=="0") && (empty($profil['masuk_bdt']) || $profil['masuk_bdt']=="0")) {
+		// 	$afirmasi = 0;
+		// }
 
-		$data['kebutuhan_khusus'] = $kebutuhan_khusus;
-		$data['afirmasi'] = $afirmasi;
+		// $data['kebutuhan_khusus'] = $kebutuhan_khusus;
+		// $data['afirmasi'] = $afirmasi;
 
 		$data['waktupendaftaran'] = $waktupendaftaran;
 		$data['cek_waktupendaftaran'] = $cek_waktupendaftaran;
@@ -290,7 +281,7 @@ class Siswa extends PpdbController {
 
         $data['waktusosialisasi'] = $waktusosialisasi;
         $data['cek_waktusosialisasi'] = $cek_waktusosialisasi;
-        $data['waktupendaftaransusulan'] = $this->Msetting->tcg_waktupendaftaransusulan()->getRowArray();
+        //$data['waktupendaftaransusulan'] = $this->Msetting->tcg_waktupendaftaransusulan()->getRowArray();
         // $data['cek_waktupendaftaransusulan'] = 0;
         // if (!empty($data['cek_waktupendaftaransusulan'])) {
         //     $data['cek_waktupendaftaransusulan'] = ($data['waktupendaftaransusulan']['aktif'] == 1);
@@ -336,49 +327,40 @@ class Siswa extends PpdbController {
             'inklusi' => ($profil['kebutuhan_khusus'] == 'Tidak ada') ? 0 : 1
         );
 
-        //selama ada pendaftaran aktif, kunci tidak bisa edit
-        $data['profildikunci'] = !$cek_pendaftaran_aktif;
-
-        // if ($data['aktif'] == 'profil') {
-            $data['berkas_fisik'] = $this->Msiswa->tcg_berkas_fisik($peserta_didik_id)->getResultArray();
-        // } 
+        $data['berkas_fisik'] = $this->Msiswa->tcg_berkas_fisik($peserta_didik_id)->getResultArray(); 
 
         # PENDAFTARAN
-        $global_tutup_akses = $this->session->get("tutup_akses");
-        $data['pendaftarandikunci'] = (!$cek_waktupendaftaran && !$cek_waktusosialisasi) || $global_tutup_akses;
+        $data['global_tutup_akses'] = ($this->session->get("tutup_akses") ?? 0);
+        // $data['pendaftarandikunci'] = (!$cek_waktupendaftaran && !$cek_waktusosialisasi) || $global_tutup_akses;
 
         $data['batasanperubahan'] = $this->Msetting->tcg_batasanperubahan()->getRowArray();
         $data['batasansiswa'] = $this->Msiswa->tcg_batasansiswa($peserta_didik_id)->getRowArray();
-        //$data['tutup_akses'] = $this->session->get("tutup_akses");
 
-        // if ($data['aktif'] == 'pendaftaran') {
-            $data['batasanusia'] = $this->Msetting->tcg_batasanusia("SMP")->getRowArray();
-            $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] || $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']);
+        $data['batasanusia'] = $this->Msetting->tcg_batasanusia("SMP")->getRowArray();
+        $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] || $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']);
 
-            $data['daftarjalur'] = $this->Msiswa->tcg_daftarjalur($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'))->getResultArray();
+        $data['daftarjalur'] = $this->Msiswa->tcg_daftarjalur($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'))->getResultArray();
+        
+        $daftarpilihan = $this->Msetting->tcg_daftarpilihan()->getResultArray();
+        $data['maxpilihan'] = count($daftarpilihan);
+        $data['maxpilihannegeri'] = 0;
+        $data['maxpilihanswasta'] = 0;
+        foreach($daftarpilihan as $row) {
+            if ($row['sekolah_negeri'] == 1) {
+                $data['maxpilihannegeri']++;
+            }
+            if ($row['sekolah_swasta'] == 1) {
+                $data['maxpilihanswasta']++;
+            }
+        }
             
-            $daftarpilihan = $this->Msetting->tcg_daftarpilihan()->getResultArray();
-            $data['maxpilihan'] = count($daftarpilihan);
-            $data['maxpilihannegeri'] = 0;
-            $data['maxpilihanswasta'] = 0;
-            foreach($daftarpilihan as $row) {
-                if ($row['sekolah_negeri'] == 1) {
-                    $data['maxpilihannegeri']++;
-                }
-                if ($row['sekolah_swasta'] == 1) {
-                    $data['maxpilihanswasta']++;
-                }
-            }
-                
-            //$data['statusprofil'] = $this->Msiswa->tcg_profilsiswa_status($peserta_didik_id);
-            if ($data['satu_zonasi_satu_jalur'] == 1) {
-                $data['pendaftaran_dalam_zonasi'] = $this->Msiswa->tcg_jalur_pendaftaran_dalam_zonasi($peserta_didik_id, $tahun_ajaran_id);
-            }
-        // }
+        //$data['statusprofil'] = $this->Msiswa->tcg_profilsiswa_status($peserta_didik_id);
+        if ($data['satu_zonasi_satu_jalur'] == 1) {
+            $data['pendaftaran_dalam_zonasi'] = $this->Msiswa->tcg_jalur_pendaftaran_dalam_zonasi($peserta_didik_id, $tahun_ajaran_id);
+        }
 
         ## DAFTAR PENDAFTARAN
-        //berkas dok
-        
+        //berkas dok       
         foreach($pendaftaran as $k => $p) {
             $pendaftaran_id = $p['pendaftaran_id'];
             $penerapan_id = $p['penerapan_id'];
@@ -466,37 +448,26 @@ class Siswa extends PpdbController {
 
         }
 
-        //var_dump($pendaftaran); exit; 
-        //exit;
-
         $data['daftarpendaftaran'] = $pendaftaran;
 
         ## END DAFTAR PENDAFTARAN
 
         ## DAFTAR ULANG
 
-            // $data['sekolah'] = null;
-            // if ($pendaftaran_diterima != null) {
-            //     $data['sekolah'] = $this->Msiswa->tcg_profilsekolah($pendaftaran_diterima['sekolah_id']);
-            // }
-
-
         ## END DAFTAR ULANG
 
         //debugging
-        $data['nama_pengguna'] = $profil['nama'];
-        $data['user_name'] = $profil['nisn'];
-        $data['profildikunci'] = 0;
-        $data['cek_waktupendaftaran'] = 0;
-        $data['cek_waktusosialisasi'] = 0;
-        $data['cek_waktudaftarulang'] = 1;
-        $data['pendaftarandikunci'] = 0;
-        $data['kebutuhan_khusus'] = 1;
-        $data['satu_zonasi_satu_jalur'] = 1;
-        $data['profilsiswa']['tutup_akses'] = 0;
+        if (__DEBUGGING__) {
+            $data['cek_waktupendaftaran'] = 1;
+            $data['cek_waktusosialisasi'] = 1;
+            $data['cek_waktudaftarulang'] = 1;
+            $data['kebutuhan_khusus'] = 1;
+            $data['satu_zonasi_satu_jalur'] = 1;
+            $data['profilsiswa']['tutup_akses'] = 0;
 
-        foreach($data['profilflag'] as $key => $value) {
-            $data['profilflag'][$key] = 1;
+            foreach($data['profilflag'] as $key => $value) {
+                $data['profilflag'][$key] = 1;
+            }
         }
         //end debugging
 
@@ -561,8 +532,6 @@ class Siswa extends PpdbController {
 
     //riwayat verifikasi (view only)
 	function riwayat() {
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
         $peserta_didik_id = $this->session->get("user_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
@@ -570,7 +539,7 @@ class Siswa extends PpdbController {
 
 		$action = $_POST["action"] ?? null; 
 		if (empty($action) || $action=='view') {
-			$data['data'] = $this->Msiswa->tcg_riwayat_verifikasi($peserta_didik_id)->getResultArray(); 
+			$data['data'] = $this->Msiswa->tcg_riwayat_verifikasi($peserta_didik_id); 
 			echo json_encode($data);	
 		}
 		else {
@@ -709,39 +678,414 @@ class Siswa extends PpdbController {
     } 
 
     function updateprofil() {
-        //TODO
-        echo 'not-implemented';
+        $data = $this->request->getPost("data");
+        if (empty($data))   
+            $this->print_json_error("Invalid data");
+
+        $peserta_didik_id = $this->session->get('peserta_didik_id');
+
+        $keys = array_keys($data);
+
+        $toggle = false;
+        $colname = "";
+        if (count($keys) == 1 && substr($keys[0],0,11) == "konfirmasi_") {
+            $toggle = true;
+            $colname = $keys[0];
+        }
+
+        //oldvalues
+        $oldvalues = null;
+        if (!$toggle) {
+            $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+            if ($oldvalues == null) {
+                $this->print_json_error("Invalid userid");
+            }
+        }
+
+        $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
+        if ($detail == null)
+            $this->print_json_error("Tidak berhasil mengubah data siswa.");
+
+        //audit trail
+        if ($toggle) {
+            //$this->audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
+        }
+        else {
+            $this->audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
+        }
+
+        $this->print_json_output($detail);
     }
 
     //upload dokumen
     function upload() {
-        //TODO
+        $peserta_didik_id = $this->session->get("peserta_didik_id");
+        $doc_id = $this->request->getPostGet("doc_id");
+        if (empty($doc_id)) {
+            $this->print_json_error("Kode kelengkapan dokumen tidak dikenal!");
+        }
+
+        //upload file
+        $uploader = new \App\Libraries\Uploader();
+        $fileObj = $uploader->upload($_FILES['upload']);
+
+        //store dok metadata
+        $toreplace = 1;
+        $dok_prestasi = ($doc_id == DOCID_PRESTASI);
+        $this->Msiswa->tcg_simpan_dokumenpendukung($peserta_didik_id, $fileObj['id'], $doc_id, $toreplace, $dok_prestasi);
+
+        //audit trail
+        $nama_dok = $this->Msiswa->tcg_nama_dokumen($doc_id);
+        $this->audit_siswa($peserta_didik_id, "UPLOAD DOK", "Upload dokumen " .$nama_dok, "doc_id,upload_id", "" .$doc_id. "," .$fileObj['id']. "", null);
+
+        $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
+
+        $this->print_json_output($data);  
+    }
+
+    //upload dokumen
+    function hapusupload() {
+        $peserta_didik_id = $this->session->get("peserta_didik_id");
+        $doc_id = $this->request->getPostGet("doc_id");
+        if (empty($doc_id)) {
+            $this->print_json_error("Kode kelengkapan dokumen tidak dikenal!");
+        }
+
+        $this->Msiswa->tcg_hapus_dokumenpendukung($peserta_didik_id, $doc_id);
+
+        //audit trail
+        $nama_dok = $this->Msiswa->tcg_nama_dokumen($doc_id);
+        $this->audit_siswa($peserta_didik_id, "HAPUS DOK", "Hapus dokumen " .$nama_dok, "doc_id", $doc_id, null);
+
+        $this->print_json_output(array());  
     }
     
     //pilihan untuk perubahan
     function pilihan() {
-        $pendaftaran_id = 0;
-        $action = '';   //ubahpilihan | ubahsekolah | ubahjalur | ubahpilihan
+        //ubahpilihan | ubahsekolah | ubahjalur | jenis_pilihan | sekolah
+        $tipe = $this->request->getPostGet("tipe");
+        $peserta_didik_id = $this->session->get('peserta_didik_id');
 
+        $data = null;
+        if ($tipe == 'jenis_pilihan') {
+            //daftar jenis pilihan
+            $penerapan_id = $this->request->getPostGet("penerapan_id");
+            $data = $this->Msiswa->tcg_jenispilihan($peserta_didik_id, $penerapan_id);
+        }
+        else if ($tipe == 'sekolah') {
+            //daftar sekolah sesuai penerapan dan jenis-pilihan
+            $penerapan_id = $this->request->getPostGet("penerapan_id");
+            $jenis_pilihan = $this->request->getPostGet("jenis_pilihan");
+            $data = $this->Msiswa->tcg_pilihansekolah($peserta_didik_id, $penerapan_id, $jenis_pilihan);
+        }
+        else if ($tipe == 'ubahpilihan') {
+            //daftar jenis-pilihan selain pilihan sekarang
+            $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
+            $data = $this->Msiswa->tcg_jenispilihan_perubahan($peserta_didik_id, $pendaftaran_id);
+        }
+        else if ($tipe == 'ubahsekolah') {
+            //daftar sekolah selain sekolah sekarang
+            $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
+            $pendaftaran = $this->Msiswa->tcg_pendaftaran($peserta_didik_id, $pendaftaran_id);
+            if ($pendaftaran == null) {
+                $this->print_json_error("Data pendaftaran tidak ditemukan");
+            }
+
+            $penerapan_id = $pendaftaran['penerapan_id'];
+            $jenis_pilihan = $pendaftaran['jenis_pilihan'];
+            $data = $this->Msiswa->tcg_pilihansekolah($peserta_didik_id, $penerapan_id, $jenis_pilihan);
+            if ($data == null) {
+                $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+            }
+
+            //remove existing sekolah
+            $sekolah_id_lama = $pendaftaran['sekolah_id'];
+            foreach($data as $key => $value) {
+                if ($value['sekolah_id'] == $sekolah_id_lama) {
+                    unset($data[$key]);
+                    break;
+                }
+            }
+        }
+        else if ($tipe == 'ubahjalur') {
+            $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
+
+            //penerapan yang lama
+            $pendaftaran = $this->Msiswa->tcg_pendaftaran($peserta_didik_id, $pendaftaran_id);
+            if ($pendaftaran == null) {
+                $this->print_json_error("Data pendaftaran tidak ditemukan");
+            }
+            $penerapan_id = $pendaftaran['penerapan_id'];
+
+            //profil siswa
+            $profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+            if ($profil == null) {
+                return null;
+            }
+    
+            //tidak dalam zonasi. daftar semua penerapan kecuali penerapan awal
+            $tanggal_lahir = $profil['tanggal_lahir'];
+            $kode_wilayah = $profil['kode_wilayah'];
+    
+            $kebutuhan_khusus = 1;
+            if (empty($profil['kebutuhan_khusus']) || $profil['kebutuhan_khusus']=="0" || $profil['kebutuhan_khusus']=='Tidak ada') {
+                $kebutuhan_khusus = 0;
+            }
+    
+            $afirmasi = 1;
+            if ((empty($profil['punya_kip']) || $profil['punya_kip']=="0") && (empty($profil['masuk_bdt']) || $profil['masuk_bdt']=="0")) {
+                $afirmasi = 0;
+            }
+    
+            $data = $this->Msiswa->tcg_daftarpenerapan($peserta_didik_id, $kode_wilayah, $tanggal_lahir, $kebutuhan_khusus, $afirmasi, $penerapan_id);
+    
+        }
+        else {
+            $this->print_json_error("not-implemented");
+        }
+
+        if ($data == null) {
+            $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+        }
+
+        $this->print_json_output($data);
     }
 
     //ubah pendaftaran
     function ubah() {
-        $pendaftaran_id = 0;
-        $action = '';
-    }
-    
-    //pilihan sekolah
-    function sekolah() {
-        $penerapan_id = 0;
+        //ubahpilihan | ubahsekolah | ubahjalur | jenis_pilihan | sekolah
+        $tipe = $this->request->getPostGet("tipe");
+        $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
+        $peserta_didik_id = $this->session->get('peserta_didik_id');
+
+        $pendaftaran_lama = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
+        $audit_action_type = "";
+        $audit_action_desc = '';
+        $nama = $pendaftaran_lama['nama'];
+
+		$batasanperubahan = $this->Msetting->tcg_batasanperubahan();
+		$batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
+
+        if ($tipe == 'ubahpilihan') {
+            if ($batasansiswa['ubah_pilihan'] >= $batasanperubahan['ubah_pilihan']) {
+                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+            }
+
+            $audit_action_type = "UBAH PILIHAN";
+            $audit_action_desc = "Ubah urutan pendaftaran (jenis pilihan) an. " .$nama;
+            $audit_keys = array("jenis_pilihan","label_jenis_pilihan");
+
+            //ubah data
+            $jenis_pilihan_baru = $this->request->getPostGet("jenis_pilihan_baru");
+
+            $data = $this->Msiswa->tcg_ubah_jenispilihan($peserta_didik_id, $pendaftaran_id, $jenis_pilihan_baru);
+        }
+        else if ($tipe == 'ubahsekolah') {
+            if ($batasansiswa['ubah_sekolah'] >= $batasanperubahan['ubah_sekolah']) {
+                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+            }
+
+            $audit_action_type = "UBAH SEKOLAH";
+            $audit_action_desc = "Ubah pilihan sekolah an. " .$nama;
+            $audit_keys = array("sekolah_id","sekolah");
+            
+            //daftar jenis-pilihan selain pilihan sekarang
+            $sekolah_id_baru = $this->request->getPostGet("sekolah_id_baru");
+
+            //cek di sekolah tsb
+            $penerapan_id = $pendaftaran_lama['penerapan_id'];
+            $existing = $this->Msiswa->tcg_cek_pendaftaran($peserta_didik_id, $penerapan_id, $sekolah_id_baru);
+			if ($existing > 0) {
+                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+			}
+
+            $data = $this->Msiswa->tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru);
+        }
+        else if ($tipe == 'ubahjalur') {
+            if ($batasansiswa['ubah_jalur'] >= $batasanperubahan['ubah_jalur']) {
+                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+            }
+
+            $audit_action_type = "UBAH JALUR";
+            $audit_action_desc = "Ubah jalur pendaftaran an. " .$nama;
+            $audit_keys = array("penerapan_id","jalur");
+
+            //daftar jenis-pilihan selain pilihan sekarang
+            $penerapan_id_baru = $this->request->getPostGet("penerapan_id_baru");
+
+            //cek di sekolah tsb
+            $sekolah_id = $pendaftaran_lama['sekolah_id'];
+            $existing = $this->Msiswa->tcg_cek_pendaftaran($peserta_didik_id, $penerapan_id_baru, $sekolah_id);
+			if ($existing > 0) {
+                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+			}
+
+            $data = $this->Msiswa->tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $penerapan_id_baru);
+        }
+        else {
+            $this->print_json_error("not-implemented");
+        }
+
+        if ($data == null) {
+            $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+        }
+
+        //audit trail
+        $this->audit_pendaftaran($pendaftaran_id, $audit_action_type, $audit_action_desc, $audit_keys, $data, $pendaftaran_lama);
+
+        $this->print_json_output($data);
     }
 
     //lakukan pendaftaran
     function daftar() {
-        $penerapan_id = 0;
-        $sekolah_id = 0;
-        $jenis_pilihan = 0;
+		$peserta_didik_id = $this->session->get("peserta_didik_id");
+		$sekolah_id = $this->request->getPostGet("sekolah_id");
+		$penerapan_id = $this->request->getPostGet("penerapan_id");
+		$jenis_pilihan = $this->request->getPostGet("jenis_pilihan");
 
+        //simpan dokumen pendukung tambahan
+		foreach($_POST as $key => $value)
+		{
+			if (substr($key, 0, 8) == "dokumen_")
+			{
+				$arr = explode("_", $key);
+				$kelengkapan_id = $arr[1];
+
+				if ($value == "") {
+					$this->Msiswa->tcg_hapus_dokumenpendukung($peserta_didik_id, $kelengkapan_id);
+				}
+				else {
+					$this->Msiswa->tcg_simpan_dokumenpendukung($value, $peserta_didik_id, $kelengkapan_id,1,0,1);
+				}
+			}
+		}
+		
+		$flag = 0;
+        $data = null;
+		do {
+			$existing = $this->Msiswa->tcg_cek_pendaftaran_sekolah($peserta_didik_id, $penerapan_id, $sekolah_id);
+			if ($existing > 0) {
+                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+			}
+
+            //Jenis pilihan sudah terpakai
+            $existing = $this->Msiswa->tcg_cek_pendaftaran_jenispilihan($peserta_didik_id, $jenis_pilihan);
+			if ($existing > 0) {
+                $this->print_json_error("Data tidak tersimpan. Jenis pilihan sudah terpakai.");
+			}
+
+			$satu_zonasi_satu_jalur = $this->setting->get('satu_zonasi_satu_jalur');
+			if(!empty($satu_zonasi_satu_jalur)) {
+				$flag = 1;
+				//TODO: fix usp
+				// $query = $this->Msiswa->tcg_cek_satu_zonasi_satu_jalur($peserta_didik_id, $sekolah_id, $penerapan_id);
+				// foreach($query->result() as $row) {
+				// 	$flag = $row->value;
+				// 	if ($flag == 0) {
+				// 		$this->session->set_flashdata('error', "Data tidak tersimpan. Sudah mendaftar di zonasi Kec. ". $row->nama_zona. " menggunakan jalur ". $row->nama_penerapan. ". Anda hanya bisa mendaftar dengan satu jalur yang sama pada satu zonasi.");	
+				// 		break;
+				// 	}
+				// }
+	
+				if ($flag == 0) {
+					break;
+				}
+			}
+	
+			// $pilihan_pertama_harus_zonasi = $this->setting->get('pilihan_pertama_harus_zonasi');
+			// if(!empty($pilihan_pertama_harus_zonasi)) {
+			// 	if ($jenis_pilihan==2 && $this->Msiswa->tcg_cek_sekolah_dalam_zonasi($peserta_didik_id, $sekolah_id) == 0) {
+			// 		//pilihan ke 2 di luar zonasi. pilihan 1 harus zonasi
+			// 		$jalur_id = 1;
+			// 		$query = $this->Msiswa->tcg_pendaftaran_jenis_pilihan($peserta_didik_id, 1);
+			// 		foreach($query->result() as $row) {
+			// 			$jalur_id = $row->jalur_id;
+			// 		}
+
+			// 		if ($jalur_id != 1) {
+			// 			$this->session->set_flashdata('error', "Data tidak tersimpan. Untuk memilih sekolah di luar zonasi untuk pilihan 2, pilihan 1 harus dalam zonasi dengan jalur zonasi.");	
+			// 			break;
+			// 		}
+			// 	}
+			// }
+
+			$maxpilihan = 0; $jumlahpendaftaran=0;
+			$sekolah = $this->Msiswa->tcg_profilsekolah($sekolah_id)->getRowArray();
+            if ($sekolah['status'] == 'N') {
+                $maxpilihan=$this->Msiswa->tcg_batasanpilihan_negeri();
+                $jumlahpendaftaran = $this->Msiswa->tcg_jumlahpendaftaran_negeri($peserta_didik_id);
+            } else {
+                $maxpilihan=$this->Msiswa->tcg_batasanpilihan_swasta();
+                $jumlahpendaftaran = $this->Msiswa->tcg_jumlahpendaftaran_swasta($peserta_didik_id);
+            }
+	
+			//pilihan untuk either negeri atau swasta
+			$maxpilihan_all=$this->Msiswa->tcg_batasanpilihan();
+			$jumlahpendaftaran_all = $this->Msiswa->tcg_jumlahpendaftaran($peserta_didik_id);
+	
+			if(($jumlahpendaftaran>=$maxpilihan && $jumlahpendaftaran_all>=$maxpilihan_all)) {
+				$this->print_json_error("Data tidak tersimpan. Jumlah pilihan melebihi batas yang ditentukan.");	
+			}
+            
+            $data = $this->Msiswa->tcg_daftar($peserta_didik_id, $penerapan_id, $sekolah_id, $jenis_pilihan);
+            if ($data == null) {
+                $this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");	
+            }
+
+		} while(false);
+
+        //audit trail
+        foreach($data as $pendaftaran) {
+            $pendaftaran_id = $pendaftaran['pendaftaran_id'];
+            $nama = $pendaftaran['nama'];
+            $sekolah = $pendaftaran['sekolah'];
+            $pilihan = $pendaftaran['label_jenis_pilihan'];
+            $jalur = $pendaftaran['jalur'];
+
+            $flag = $pendaftaran['pendaftaran'];
+            if ($flag == 1) {
+                $this->audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+                                            null, null, null);
+            }
+            else {
+                $this->audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran OTOMATIS an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+                                            null, null, null);
+            }
+        }
+
+        $this->print_json_output($data);
+
+    }
+
+    //hapus pendaftaran
+    function hapus() {
+        $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
+		$keterangan = $this->request->getPostGet("keterangan");
+		
+		$peserta_didik_id = $this->session->get("peserta_didik_id");
+
+		$batasanperubahan = $this->Msetting->tcg_batasanperubahan();
+		$batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
+
+        if ($batasansiswa['hapus_pendaftaran'] >= $batasanperubahan['hapus_pendaftaran']) {
+            $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+        }
+
+        $pendaftaran = $this->Msiswa->tcg_pendaftaran($peserta_didik_id, $pendaftaran_id);
+
+        $status = $this->Msiswa->tcg_hapus_pendaftaran($peserta_didik_id, $pendaftaran_id, $keterangan);
+        if (!$status) {
+            $this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
+        }
+       
+        //audit trail
+        $sekolah = $pendaftaran['sekolah'];
+        $pilihan = $pendaftaran['label_jenis_pilihan'];
+        $jalur = $pendaftaran['jalur'];
+        $this->audit_pendaftaran($pendaftaran_id, "HAPUS PENDAFTARAN", "Hapus pendaftaran di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+                                    null, null, null);
+
+        $this->print_json_output(array());
     }
 }
 ?>

@@ -158,7 +158,7 @@
                     </li>
                 </ul>
 				<div class="copyright">
-                    <p><strong>Copyright &copy; 2019 <a class="text-white" href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.</p>
+                    <p><strong>Copyright &copy; 2019 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.</p>
 				</div>
 			</div>
         </div>
@@ -351,7 +351,7 @@
         //update the theme setting. must be before dlabnav-init.js
         dezSettingsOptions = {
 			typography: "cairo",
-			version: "light",
+			version: "dark",
 			layout: "horizontal",
 			primary: "color_1",
 			navheaderBg: "color_1",

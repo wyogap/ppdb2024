@@ -10,21 +10,21 @@ Class Mpengumuman
         $this->session = \Config\Services::session();
     }
 
-	function tcg_pengumuman($tahun_ajaran_id) {
+	function cfg_pengumuman($tahun_ajaran_id) {
 		if (empty($tahun_ajaran_id)) {
 			$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');	
 		}
 
-		$sql = "select * from tcg_pengumuman where tahun_ajaran_id='$tahun_ajaran_id' and is_deleted=0";
+		$sql = "select * from cfg_pengumuman where tahun_ajaran_id='$tahun_ajaran_id' and is_deleted=0";
 
 		return $this->db->query($sql);
 	}
 
-	function tcg_pengumuman_aktif(){
+	function cfg_pengumuman_aktif(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$query = "select a.tipe, a.css, a.text, a.bisa_ditutup 
-				  from tcg_pengumuman a
+				  from cfg_pengumuman a
 				  where a.tahun_ajaran_id='$tahun_ajaran_id' and a.is_deleted=0
 						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
 						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)
@@ -35,7 +35,7 @@ Class Mpengumuman
 
 
 	function tcg_detil_pengumuman($key) {
-		$sql = "select * from tcg_pengumuman where pengumuman_id=$key and is_deleted=0";
+		$sql = "select * from cfg_pengumuman where pengumuman_id=$key and is_deleted=0";
 
 		return $this->db->query($sql);
 	}
@@ -43,21 +43,21 @@ Class Mpengumuman
 	function tcg_ubah_pengumuman($key, $valuepair) {
 		$valuepair['updated_on'] =date("Y/m/d H:i:s");
 
-		$builder = $this->db->table('tcg_pengumuman');
+		$builder = $this->db->table('cfg_pengumuman');
 		$builder->where(array('pengumuman_id'=>$key,'is_deleted'=>0));
 		return $builder->update($valuepair);	
 	}
 
 	function tcg_hapus_pengumuman($key) {
-		$sql = "update tcg_pengumuman set is_deleted=1 where pengumuman_id=$key";
+		$sql = "update cfg_pengumuman set is_deleted=1 where pengumuman_id=$key";
 
 		return $this->db->query($sql);
 	}
 
-	function tcg_pengumuman_baru($tahun_ajaran_id, $valuepair) {
+	function cfg_pengumuman_baru($tahun_ajaran_id, $valuepair) {
 		$valuepair['tahun_ajaran_id'] = $tahun_ajaran_id;
 
-		$builder = $this->db->table('tcg_pengumuman');
+		$builder = $this->db->table('cfg_pengumuman');
 		if ($builder->insert($valuepair)) {
 			return $this->db->insertID();
 		}

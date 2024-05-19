@@ -52,7 +52,7 @@ Class Msetting
 	// 	$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 	// 	$putaran = $this->session->get('putaran_aktif');
 
-	// 	$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+	// 	$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 	// 	$builder->select('a.tanggal_mulai,a.tanggal_selesai, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 	// 	$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.tahapan_id'=>3,'a.is_deleted'=>0));
 	// 	return $builder->get();
@@ -62,7 +62,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_SOSIALISASI,'a.is_deleted'=>0));
@@ -73,7 +73,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_SOSIALISASI. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran' 
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -89,7 +89,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_REGISTRASI,'a.is_deleted'=>0));
@@ -100,7 +100,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_REGISTRASI. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran' 
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -116,7 +116,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
@@ -127,7 +127,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_PENDAFTARAN. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran' 
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -143,7 +143,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_VERIFIKASI,'a.is_deleted'=>0));
@@ -154,7 +154,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_VERIFIKASI. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran' 
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -170,7 +170,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_DAFTARULANG,'a.is_deleted'=>0));
@@ -181,7 +181,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_DAFTARULANG. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran' 
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -198,7 +198,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('tcg_waktu_pelaksanaan a');
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_SUSULAN,'a.is_deleted'=>0));
@@ -209,7 +209,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$query = "select count(*) as jumlah from tcg_waktu_pelaksanaan a 
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_SUSULAN. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran'
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
@@ -228,7 +228,7 @@ Class Msetting
         }
 
 		$query = "select bentuk_tujuan_sekolah,minimal_tanggal_lahir,maksimal_tanggal_lahir 
-				  from ref_batasan_usia
+				  from cfg_batasan_usia
 				  where expired_date is null and tahun_ajaran_id='$tahun_ajaran_id'";
 		
 		if (!empty($bentuk_tujuan_sekolah)) {
@@ -355,7 +355,7 @@ Class Msetting
 	function tcg_nama_putaran($putaran) {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('ref_putaran a');
+		$builder = $this->db->table('cfg_putaran a');
 		$builder->select('a.nama');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.expired_date'=>NULL));
 
@@ -370,7 +370,7 @@ Class Msetting
 	function tcg_putaran() {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('ref_putaran a');
+		$builder = $this->db->table('cfg_putaran a');
 		$builder->select('a.putaran_id, a.putaran, coalesce(a.nama, a.tahun_ajaran_id) as nama');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
 
@@ -383,17 +383,17 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('ref_batasan_perubahan');
+		$builder = $this->db->table('cfg_batasan_perubahan');
 		$builder->select('cabut_berkas,hapus_pendaftaran,ubah_pilihan,ubah_sekolah,ubah_jalur,batal_verifikasi');
 		$builder->where(array('expired_date'=>NULL, 'tahun_ajaran_id'=>$tahun_ajaran_id));
 		return $builder->get();
 	}
 
-	function tcg_petunjuk_pelaksanaan() {
+	function cfg_petunjuk_pelaksanaan() {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('tcg_petunjuk_pelaksanaan a');
+		$builder = $this->db->table('cfg_petunjuk_pelaksanaan a');
 		$builder->select('a.jadwal_pelaksanaan,a.persyaratan,a.tata_cara_pendaftaran,a.jalur_pendaftaran,a.proses_seleksi,a.konversi_nilai,a.embedded_script');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -405,9 +405,9 @@ Class Msetting
 
         //Semua tahapan (semua putaran)!!!
 		$query = "select a.putaran, c.nama as nama_putaran, a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai 
-				  from tcg_waktu_pelaksanaan a
+				  from cfg_waktu_pelaksanaan a
 				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
-                  join ref_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
+                  join cfg_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
 				  where a.tahun_ajaran_id=? and a.is_deleted=0
 				  order by a.putaran, a.tahapan_id";
 
@@ -419,7 +419,7 @@ Class Msetting
 		$putaran = $this->session->get('putaran_aktif');
 
 		$query = "select a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah 
-				  from tcg_waktu_pelaksanaan a
+				  from cfg_waktu_pelaksanaan a
 				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
 				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
 						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
@@ -442,11 +442,11 @@ Class Msetting
 		return $value;
 	}
 
-	function tcg_pengumuman(){
+	function cfg_pengumuman(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$query = "select a.tipe, a.css, a.text, a.bisa_ditutup 
-				  from tcg_pengumuman a
+				  from cfg_pengumuman a
 				  where a.tahun_ajaran_id=? and a.is_deleted=0
 						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
 						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)
@@ -472,7 +472,7 @@ Class Msetting
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-        $builder = $this->db->table('ref_jenis_pilihan');
+        $builder = $this->db->table('cfg_jenis_pilihan');
 		$builder->select('*');
 		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'tahun_ajaran_id'=>$tahun_ajaran_id,'putaran'=>$putaran));
         return $builder->get();

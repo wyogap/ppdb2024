@@ -437,9 +437,6 @@
 
 
 <script>
-    var batasanperubahan = {$batasanperubahan|json_encode};
-    var daftarpendaftaran = {$daftarpendaftaran|json_encode};
-
     function update_hasil_layout() {
         if (daftarpendaftaran == null || daftarpendaftaran.length == 0) {
             $('#daftar-pendaftaran-notif').show();
