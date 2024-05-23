@@ -40,7 +40,7 @@
     var profil = {};
     var dokumen = {};
 
-    var dtprestasi;
+    // var dtprestasi;
     var dtriwayat;
 
     $(document).ready(function() {    
@@ -48,85 +48,85 @@
         //all datatable must be responsive
         $.extend( $.fn.dataTable.defaults, { responsive: true } );
 
-        dtprestasi = $('#tbl-prestasi').DataTable({
-            responsive: true,
-            "paging": false,
-            "dom": "Brt",
-            select: true,
-            buttons: [
-                {
-                    text: 'Prestasi Baru',
-                    className: 'btn-sm btn-primary btn-add',
-                    action: function ( e, dt, node, conf ) {
-                        dtprestasi_add(e, dt, node, conf);
-                    },
-                },
-                {
-                    text: 'Hapus Prestasi',
-                    className: 'btn-sm btn-danger btn-delete',
-                    action: function ( e, dt, node, conf ) {
-                        dtprestasi_delete(e, dt, node, conf);
-                    },
-                },
-            ],
-            ajax: "",
-            "language": {
-                "processing":   "Sedang proses...",
-                "lengthMenu":   "Tampilan _MENU_ entri",
-                "zeroRecords":  "Tidak ditemukan data yang sesuai",
-                "loadingRecords": "Loading...",
-                "emptyTable":   "Tidak ditemukan data yang sesuai",
-                },
-            columns: [
-                // { "defaultContent": "" },
-                { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
-                { data: "prestasi", className: 'dt-body-left', "orderable": false },
-                { data: "uraian", className: 'dt-body-left', "orderable": false },
-                { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
-                    render: function ( file_id, type, row ) {
-                        {if !($flag_upload_dokumen)}
-                        return "Dicocokkan di sekolah tujuan";
-                        {else}
-                        if (type === 'display') {
-                            if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
-                                return "";
-                            }
+        // dtprestasi = $('#tbl-prestasi').DataTable({
+        //     responsive: true,
+        //     "paging": false,
+        //     "dom": "Brt",
+        //     select: true,
+        //     buttons: [
+        //         {
+        //             text: 'Prestasi Baru',
+        //             className: 'btn-sm btn-primary btn-add',
+        //             action: function ( e, dt, node, conf ) {
+        //                 dtprestasi_add(e, dt, node, conf);
+        //             },
+        //         },
+        //         {
+        //             text: 'Hapus Prestasi',
+        //             className: 'btn-sm btn-danger btn-delete',
+        //             action: function ( e, dt, node, conf ) {
+        //                 dtprestasi_delete(e, dt, node, conf);
+        //             },
+        //         },
+        //     ],
+        //     ajax: "",
+        //     "language": {
+        //         "processing":   "Sedang proses...",
+        //         "lengthMenu":   "Tampilan _MENU_ entri",
+        //         "zeroRecords":  "Tidak ditemukan data yang sesuai",
+        //         "loadingRecords": "Loading...",
+        //         "emptyTable":   "Tidak ditemukan data yang sesuai",
+        //         },
+        //     columns: [
+        //         // { "defaultContent": "" },
+        //         { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
+        //         { data: "prestasi", className: 'dt-body-left', "orderable": false },
+        //         { data: "uraian", className: 'dt-body-left', "orderable": false },
+        //         { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
+        //             render: function ( file_id, type, row ) {
+        //                 {if !($flag_upload_dokumen)}
+        //                 return "Dicocokkan di sekolah tujuan";
+        //                 {else}
+        //                 if (type === 'display') {
+        //                     if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
+        //                         return "";
+        //                     }
                             
-                            let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
+        //                     let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
 
-                            let verifikasi = row.verifikasi;
-                            if (verifikasi == 2) {
-                                str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
-                                str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
-                            }
+        //                     let verifikasi = row.verifikasi;
+        //                     if (verifikasi == 2) {
+        //                         str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
+        //                         str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
+        //                     }
 
-                            return str;
-                        }
-                        else {
-                            row.filename;
-                        }
-                        {/if}
-                    },
-                    defaultContent: "Tidak ada dokumen",
-                    title: "Dokumen Pendukung"
-                },
-                { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
-            ],
-            columnDefs: [ {
-                "targets": 3,
-                "createdCell": function (td, cellData, rowData, row, col) {
-                    if ( rowData.verifikasi == 1 ) {
-                        $(td).removeClass('editable');
-                    }
-                }
-            } ],
-            order: [ 0, 'asc' ],
-        });
+        //                     return str;
+        //                 }
+        //                 else {
+        //                     row.filename;
+        //                 }
+        //                 {/if}
+        //             },
+        //             defaultContent: "Tidak ada dokumen",
+        //             title: "Dokumen Pendukung"
+        //         },
+        //         { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
+        //     ],
+        //     columnDefs: [ {
+        //         "targets": 3,
+        //         "createdCell": function (td, cellData, rowData, row, col) {
+        //             if ( rowData.verifikasi == 1 ) {
+        //                 $(td).removeClass('editable');
+        //             }
+        //         }
+        //     } ],
+        //     order: [ 0, 'asc' ],
+        // });
 
-        dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
+        // dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
 
-        //default: hide button
-        dtprestasi.buttons( 0, null ).container().hide();
+        // //default: hide button
+        // dtprestasi.buttons( 0, null ).container().hide();
 
         dtriwayat = $('#triwayat').DataTable({
             "responsive": true,
@@ -195,9 +195,9 @@
             }, 100);
 
             //resize table
-            if (card.prop('id') == 'prestasi') {
-                dtprestasi.columns.adjust().responsive.recalc();
-            }
+            // if (card.prop('id') == 'prestasi') {
+            //     dtprestasi.columns.adjust().responsive.recalc();
+            // }
 
             //resize table
             if (card.prop('id') == 'riwayat') {
@@ -349,12 +349,12 @@
                 }
             }
 
-            //special case: prestasi
-            if (toggletag == 'prestasi') {
-                if (profilflag['prestasi']) {
-                    dtprestasi.columns.adjust().responsive.recalc();
-                }
-            }
+            // //special case: prestasi
+            // if (toggletag == 'prestasi') {
+            //     if (profilflag['prestasi']) {
+            //         dtprestasi.columns.adjust().responsive.recalc();
+            //     }
+            // }
         });
 
         $(".btn-perbaikan").on("click", function(e) {
@@ -767,8 +767,8 @@
 
         });
         
-        //special case
-        dtprestasi.buttons( 0, null ).container().hide();
+        // //special case
+        // dtprestasi.buttons( 0, null ).container().hide();
 
     }       
 
@@ -1018,9 +1018,10 @@
         //     layerGroup.clearLayers();
         // });
 
-        new L.Control.EasyButton( '<span class="map-button">&curren;</span>', function(){
-            map.setView([{$map_lintang},{$map_bujur}],10);;
-        }, { position: 'topleft' }).addTo(map);
+        //TODO: include the js
+        // new L.Control.EasyButton( '<span class="map-button">&curren;</span>', function(){
+        //     map.setView([{$map_lintang},{$map_bujur}],10);;
+        // }, { position: 'topleft' }).addTo(map);
 
         streetmap.addTo(map);
     });

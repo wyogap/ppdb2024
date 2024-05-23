@@ -514,6 +514,32 @@
                                </td>
                             </tr>
                          </table>
+                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='prestasi'>
+                            <tr id="row-dokumen-prestasi">
+                                <td colspan="3"><b>Dokumen Pendukung</b></td>
+                            </tr>
+                            <tr id="row-dokumen-prestasi">
+                                <td style="width: 45%;"><b>Bukti Pendukung Prestasi yang Dilegalisir</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    {if !($flag_upload_dokumen)}
+                                    Dicocokkan di sekolah tujuan
+                                    {else}
+                                        <img id="dokumen-8" class="img-view-thumbnail" 
+                                                src="{(empty($dokumen[8])) ? '' : $dokumen[8]['thumbnail_path']}" 
+                                                img-path="{(empty($dokumen[8])) ? '' : $dokumen[8]['web_path']}" 
+                                                img-id="{(empty($dokumen[8])) ? '' : $dokumen[8]['dokumen_id']}" 
+                                                img-title="Kartu Indonesia Pintar"
+                                                style="display:none; "/>  
+                                        <span>
+                                        <input type="file" class="upload-file" tcg-doc-id="8" id="unggah-profil-8" hidden/>
+                                        <label for="unggah-profil-8" class="btn btn-primary" tcg-input-tag='prestasi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                        </span>
+                                        <div id="msg-dokumen-8" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    {/if}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">

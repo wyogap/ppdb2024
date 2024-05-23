@@ -96,10 +96,14 @@
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a href="./app-profile.html" class="dropdown-item ai-icon">
+                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon">
                                             <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                            <span class="ms-2">Profile </span>
-                                        </a>
+                                            <span class="ms-2">Mode Gelap / Mode Terang </span>
+                                        </button>
+                                        <button onclick=ganti_password() class="dropdown-item ai-icon">
+                                            <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                            <span class="ms-2">Ganti PIN/Password </span>
+                                        </button>
                                         <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             <span class="ms-2">Logout </span>
@@ -380,25 +384,76 @@
         <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 
     <script>
-    var dezSettingsOptions = {};
+        var dezSettingsOptions = {};
 
-    (function($) {
-        //update the theme setting. must be before dlabnav-init.js
-        dezSettingsOptions = {
-			typography: "cairo",
-			version: "dark",
-			layout: "horizontal",
-			primary: "color_1",
-			navheaderBg: "color_1",
-			sidebarBg: "color_1",
-			sidebarStyle: "compact",
-			sidebarPosition: "fixed",
-			headerPosition: "fixed",
-			containerLayout: "boxed",
-		};
-        
-    })(jQuery);
+        (function($) {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
 
+            //update the theme setting. must be before dlabnav-init.js
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+            
+        })(jQuery);
+
+        function toggle_dark_mode() {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
+
+            if (dark_theme == 1)    dark_theme = 0;
+            else                    dark_theme = 1;
+
+            setCookie("dark_theme", dark_theme, 30);
+
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+           
+            new dezSettings(dezSettingsOptions); 
+        }
+
+        function setCookie(c_name, value, exdays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+            document.cookie = c_name + "=" + c_value;
+        }
+
+        function getCookie(c_name) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                x = x.replace(/^\s+|\s+$/g, "");
+                if (x == c_name) {
+                    return unescape(y);
+                }
+            }
+        }
+                
     </script>
 
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
@@ -576,7 +631,91 @@
 
             //TODO
 
-        })(jQuery);        
+        })(jQuery);   
+        
+        function ganti_password() {
+            $.confirm({
+                title: 'Ganti PIN/Password',
+                content: "<div style='overflow: hidden;'><input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
+                            +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
+                            +"<span id='error-msg'>&nbsp</span></div>",
+                closeIcon: true,
+                columnClass: 'medium',
+                //type: 'purple',
+                typeAnimated: true,
+                buttons: {
+                    cancel: {
+                        text: 'Batal',
+                        action: function(){
+                            //do nothing
+                        }
+                    },
+                    confirm: {
+                        text: 'Ganti',
+                        btnClass: 'btn-primary',
+                        action: function(){
+                            let el1 = this.$content.find('#password');
+                            let el2 = this.$content.find('#password2');
+                            if (el1.val().length < 6) {
+                                let msg = this.$content.find('#error-msg');
+                                msg.html("PIN/Password harus minimal 6 huruf.");
+                                el1.addClass('border-red');
+                                return false;
+                            }
+                            else if (el1.val() != el2.val()) {
+                                let msg = this.$content.find('#error-msg');
+                                msg.html("PIN/Password baru tidak sama.");
+                                el2.addClass('border-red');
+                                return false;
+                            }
+
+                            send_ganti_password(el1.val());
+                        }
+                    },
+                },
+
+            });      
+        }
+
+        function send_ganti_password(pwd1) {
+            json = {};
+            data = {};
+            data['pwd1'] = pwd1;
+            data['pwd2'] = pwd1;
+            
+            json['data'] = {};
+            json['data'][userid] = data;
+
+            $.ajax({
+                type: 'POST',
+                url: "{$site_url}auth/resetpassword",
+                dataType: 'json',
+                data: json,
+                async: true,
+                cache: false,
+                //if we use formData, set processData = false. if we use json, set processData = true!
+                //contentType: true,
+                //processData: true,      
+                timeout: 60000,
+                success: function(json) {
+                    if (json.error !== undefined && json.error != "" && json.error != null) {
+                        toastr.error('Tidak berhasil mengubah PIN/Password. ' +json.error);
+                        return;
+                    }
+
+                    $("#ganti-password-notif").hide();
+                    
+                    //tambahkan ke daftar pendaftaran
+                    toastr.success("PIN/Password berhasil diubah.");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error('Tidak berhasil mengubah PIN/Password. ' +textStatus);
+                    return;
+                }
+            });
+
+        }
+        
     </script>
 
 </body>

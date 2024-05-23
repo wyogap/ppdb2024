@@ -103,6 +103,54 @@ class Auth extends AuthController
         }
 
     }
+
+    
+    function resetpassword() {
+
+        $json = array();
+
+        $data = $this->request->getGetPost('data');
+        if ($data == null) {
+            $json['error'] = 'no-data';
+            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            return;
+        }
+         
+        $key = array_keys($data)[0];
+        $userid = $this->session->get('user_id');
+        $mpermission = new \App\Models\Core\Crud\Mpermission();
+        if (!$mpermission->is_admin() && $key != $userid) {
+            $json['error'] = 'not-authorized';
+            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            return;
+        }
+
+        $error_msg = "";
+        foreach ($data as $key => $valuepair) {
+            $user_id = $key;
+            $pwd1 = $valuepair['pwd1'];
+            $pwd2 = $valuepair['pwd2'];
+
+            if ($pwd1 != $pwd2) {
+                $json['error'] = __("Password baru tidak sama. Silahkan ulangi kembali.");
+                continue;
+            }
+
+            if($this->Mauth->reset_password($user_id, $pwd1, array('ganti_password'=>1)) == 0) {
+                $json['error'] = __("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
+                continue;
+            } else {
+                $user = $this->Mauth->profile($user_id);
+                if ($user != null) {
+                    $json['data'] = array();
+                    $json['data'][] = $user; 
+                } 
+            }
+        }
+
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
 }
 
 ?>

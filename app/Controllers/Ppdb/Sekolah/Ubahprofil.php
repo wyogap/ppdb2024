@@ -56,13 +56,13 @@ class Ubahprofil extends PpdbController {
 			$redirect = "Clogin";
 		}
 
-		$mdropdown = new Mdropdown();
+		$mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['kabupaten'] = $mdropdown->tcg_kabupaten();
 		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		$data['redirect'] = $redirect;
 
         //content template
-        $data['content_template'] = 'beranda.tpl';
+        $data['content_template'] = 'ubahprofil.tpl';
 
         $data['page_title'] = 'Daftar Ulang';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
@@ -139,32 +139,6 @@ class Ubahprofil extends PpdbController {
 		}
 
 		redirect($redirect);
-	}
-
-	function json() {
-		
-		$action = $_POST["action"] ?? null;
-		if (empty($action) || $action=='view') {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-		}
-		else if ($action=='edit'){
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-        }
-        else if ($action=='remove') {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-        }
-        else if ($action=='create') {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-        }
-		else {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-		}
-
 	}
 	
 	// function pendaftaran() {

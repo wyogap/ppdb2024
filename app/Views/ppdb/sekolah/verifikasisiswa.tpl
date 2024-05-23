@@ -516,20 +516,32 @@
                                     </select>
                                 </td>
                             </tr>
-                        </table>
-                    </div>
-                    <div id="tbl-prestasi-kontainer" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px; margin-bottom: 20px;" 
-                            tcg-visible-tag='prestasi'>
-                        <table id="tbl-prestasi" class="display" style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" data-priority="1">#</th>
-                                    <th class="text-center" data-priority="2">Prestasi</th>
-                                    <th class="text-center" style="width: 30%;" data-priority="4">Uraian</th>
-                                    <th class="text-center" data-priority="3">Dokumen Pendukung</th>
-                                    <th class="text-center" data-priority="5">Catatan</th>
-                                </tr>
-                            </thead>
+                            <tr tcg-visible-tag='punya_prestasi'>
+                                <td style="width: 45%;"><b>Jenjang Prestasi</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <select class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='prestasi_skoring_id' 
+                                        tcg-field-type='input' tcg-field-submit=1 style="display: none;">
+                                    <option value="0">Tidak ada</option>
+                                    {foreach $daftarskoring as $skor}
+                                    <option value="{$skor.value}">{$skor.label}</option>
+                                    {/foreach}
+                                    </select>
+                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='prestasi_skoring_id'
+                                    tcg-field-type='label'></span>
+                                </td>
+                            </tr>
+                            <tr tcg-visible-tag='punya_prestasi'>
+                                <td style="width: 45%;"><b>Beri Uraian Tentang Prestasi Tersebut</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <textarea class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='uraian_prestasi' 
+                                        tcg-field-type='input' tcg-field-submit=1
+                                        style="display: none; width: 100%; height: 100px;"></textarea>
+                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='uraian_prestasi'
+                                        tcg-field-type='label'></span>
+                               </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

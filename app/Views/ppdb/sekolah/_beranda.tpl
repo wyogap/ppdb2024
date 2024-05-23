@@ -1,7 +1,8 @@
 
 
 
-<script>
+<script type="text/javascript">
+    $(document).ready(function() {
 		//Peta
 		var map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],16);
 		L.tileLayer(
@@ -24,5 +25,6 @@
 
 		new L.control.fullscreen({ position:'bottomleft' }).addTo(map);
 		new L.Control.Zoom({ position:'bottomright' }).addTo(map);
+    });
 
 </script>

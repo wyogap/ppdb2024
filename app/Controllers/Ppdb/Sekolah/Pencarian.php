@@ -39,7 +39,7 @@ class Pencarian extends PpdbController {
 
 	function index()
 	{
-        $mdropdown = new \App\Models\Ppdb\Mdropdown();
+        $mdropdown = new \App\Models\Ppdb\Mconfig();
         $data['daftarjenjang'] = $mdropdown->tcg_lookup_jenjang();
         $data['daftarasaldata'] = $mdropdown->tcg_lookup_asaldata();
 

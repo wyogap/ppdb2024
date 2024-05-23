@@ -55,7 +55,8 @@ class Verifikasi extends PpdbController {
             $data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
             $data['flag_upload_dokumen'] = $this->setting->get('upload_dokumen');
 
-			$data['info'] = $this->session->getFlashdata('info');
+            $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
+			// $data['info'] = $this->session->getFlashdata('info');
         }
         while (false);
 
@@ -102,7 +103,7 @@ class Verifikasi extends PpdbController {
         $suratpernyataan = $this->Msiswa->tcg_dokumenpendukung_from_kelengkapanid($peserta_didik_id,21);
         $data['surat_pernyataan'] = $suratpernyataan;
 
-		$data['prestasi'] = $this->Msiswa->tcg_daftarprestasi($peserta_didik_id);
+		// $data['prestasi'] = $this->Msiswa->tcg_daftarprestasi($peserta_didik_id);
 
 		//tandai sedang verifikasi
 		$this->Msekolah->tcg_touch_verifikasi($pengguna_id, $peserta_didik_id, 1); 

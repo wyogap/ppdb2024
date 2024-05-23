@@ -59,10 +59,10 @@ class Daftarulang extends PpdbController {
             }
             $data["pendaftarditerima"] = $pendaftarditerima;
 
-			$data['waktudaftarulang'] = $this->Msetting->tcg_cek_waktudaftarulang();
+			$data['waktudaftarulang'] = $this->Mconfig->tcg_cek_waktudaftarulang();
 			$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-			// $data['daftarputaran'] = $this->Msetting->tcg_putaran();
-			$data['daftartahunajaran'] = $this->Msetting->tcg_tahunajaran();
+			// $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
+			//$data['daftartahunajaran'] = $this->Mconfig->tcg_tahunajaran();
 	
 			$data['inklusi']=$data['profilsekolah']['inklusi'];
 			
@@ -128,7 +128,7 @@ class Daftarulang extends PpdbController {
 		$data['pendaftaran_id'] = $pendaftaran_id;
 		$data['peserta_didik_id'] = $peserta_didik_id;
 
-		$data['settingdaftarulang'] = $this->Msetting->tcg_waktudaftarulang();
+		$data['settingdaftarulang'] = $this->Mconfig->tcg_waktudaftarulang();
 
 		$data['punya_nilai_un'] = 0;
 		$data['punya_prestasi'] = 0;
@@ -177,7 +177,7 @@ class Daftarulang extends PpdbController {
 		$pendaftaran_id = $_POST["pendaftaran_id"] ?? null; 
 
 		//TODO: only can verify within the specified timeframe
-		$data['settingdaftarulang'] = $this->Msetting->tcg_waktudaftarulang();
+		$data['settingdaftarulang'] = $this->Mconfig->tcg_waktudaftarulang();
 
 		$kelengkapan_berkas = 1;
 		$dokumen_id = 0;

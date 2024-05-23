@@ -230,11 +230,7 @@ class Siswa extends PpdbController {
 
         $data['waktusosialisasi'] = $waktusosialisasi;
         $data['cek_waktusosialisasi'] = $cek_waktusosialisasi;
-        //$data['waktupendaftaransusulan'] = $this->Msetting->tcg_waktupendaftaransusulan()->getRowArray();
-        // $data['cek_waktupendaftaransusulan'] = 0;
-        // if (!empty($data['cek_waktupendaftaransusulan'])) {
-        //     $data['cek_waktupendaftaransusulan'] = ($data['waktupendaftaransusulan']['aktif'] == 1);
-        // }
+
 
         $data['satu_zonasi_satu_jalur'] = $this->setting->get('satu_zonasi_satu_jalur');
 

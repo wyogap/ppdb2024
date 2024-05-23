@@ -260,42 +260,49 @@ abstract class AuthController extends BaseController
 	}
 
     function resetpassword() {
-        
-        $mpermission = new Mpermission();
-        if (!$mpermission->is_admin()) {
-            $data['error'] = 'not-authorized';
-            echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
-        }
 
-        $values = $_POST["data"] ?? null; 
-        if ($values == null) {
-            $data['error'] = 'no-data';
-            echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+        $json = array();
+
+        $data = $this->request->getGetPost('data');
+        if ($data == null) {
+            $json['error'] = 'no-data';
+            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            return;
+        }
+         
+        $key = array_keys($data)[0];
+        $userid = $this->session->get('user_id');
+        $mpermission = new Mpermission();
+        if (!$mpermission->is_admin() && $key != $userid) {
+            $json['error'] = 'not-authorized';
+            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            return;
         }
 
         $error_msg = "";
-        $data['data'] = array();
-        foreach ($values as $key => $valuepair) {
+        foreach ($data as $key => $valuepair) {
             $user_id = $key;
-            $pwd1 = $valuepair["pwd1"];
-            $pwd2 = $valuepair["pwd2"];
+            $pwd1 = $valuepair['pwd1'];
+            $pwd2 = $valuepair['pwd2'];
 
             if ($pwd1 != $pwd2) {
-                $data['error'] = __("Password baru tidak sama. Silahkan ulangi kembali.");
+                $json['error'] = __("Password baru tidak sama. Silahkan ulangi kembali.");
                 continue;
             }
 
             if($this->Mauth->reset_password($user_id, $pwd1) == 0) {
-                $data['error'] = __("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
+                $json['error'] = __("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
                 continue;
             } else {
                 $user = $this->Mauth->profile($user_id);
-                if ($user != null)  $data['data'][] = $user; 
+                if ($user != null) {
+                    $json['data'] = array();
+                    $json['data'][] = $user; 
+                } 
             }
-
         }
 
-        echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
     }
 
 	function check_recaptcha_v2($captcha) {

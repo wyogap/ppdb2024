@@ -685,16 +685,12 @@
                 {/if}
 
                 {if $profilsiswa['ganti_password'] == 0}
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <p><i class="icon glyphicon glyphicon-warning-sign"></i>Anda belum mengganti PIN anda. <b>Segera ganti PIN awal anda!</b></p>
-                                <p style="margin-top: 15px !important; margin-bottom: -4px;"><a onclick=ganti_password() class="btn btn-primary">Ganti PIN</a></p>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </div>
+                    <div class="alert alert-danger alert-dismissible" role="alert" id="ganti-password-notif">
+                        <p><i class="icon glyphicon glyphicon-warning-sign"></i>Anda belum mengganti PIN anda. <b>Segera ganti PIN awal anda!</b></p>
+                        <p style="margin-top: 15px !important; margin-bottom: -4px;"><a onclick=ganti_password() class="btn btn-primary">Ganti PIN</a></p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                {/if}
+                 {/if}
 
                 <div class="tab-content" id="menu-contents">
                     <div class="tab-pane fade show active" id="content-kelengkapan" role="tabpanel" aria-labelledby="v-pills-home-tab">
@@ -1063,10 +1059,85 @@
     })(jQuery);       
 
     function ganti_password() {
-        alert("TODO");
+        $.confirm({
+            title: 'Ganti PIN/Password',
+            content: "<div style='overflow: hidden;'><input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
+                        +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
+                        +"<span id='error-msg'>&nbsp</span></div>",
+            closeIcon: true,
+            columnClass: 'medium',
+            //type: 'purple',
+            typeAnimated: true,
+            buttons: {
+                cancel: {
+                    text: 'Batal',
+                    action: function(){
+                        //do nothing
+                    }
+                },
+                confirm: {
+                    text: 'Ganti',
+                    btnClass: 'btn-primary',
+                    action: function(){
+                        let el1 = this.$content.find('#password');
+                        let el2 = this.$content.find('#password2');
+                        if (el1.val().length < 6) {
+                            let msg = this.$content.find('#error-msg');
+                            msg.html("PIN/Password harus minimal 6 huruf.");
+                            el1.addClass('border-red');
+                            return false;
+                        }
+                        else if (el1.val() != el2.val()) {
+                            let msg = this.$content.find('#error-msg');
+                            msg.html("PIN/Password baru tidak sama.");
+                            el2.addClass('border-red');
+                            return false;
+                        }
+
+                        send_ganti_password(el1.val());
+                    }
+                },
+            },
+
+        });      
     }
 
-    function send_ganti_password() {
+    function send_ganti_password(pwd1) {
+        json = {};
+        data = {};
+        data['pwd1'] = pwd1;
+        data['pwd2'] = pwd1;
+         
+        json['data'] = {};
+        json['data'][userid] = data;
+
+        $.ajax({
+            type: 'POST',
+            url: "{$site_url}auth/resetpassword",
+            dataType: 'json',
+            data: json,
+            async: true,
+            cache: false,
+            //if we use formData, set processData = false. if we use json, set processData = true!
+            //contentType: true,
+            //processData: true,      
+            timeout: 60000,
+            success: function(json) {
+                if (json.error !== undefined && json.error != "" && json.error != null) {
+                    toastr.error('Tidak berhasil mengubah PIN/Password. ' +json.error);
+                    return;
+                }
+
+                $("#ganti-password-notif").hide();
+                
+                //tambahkan ke daftar pendaftaran
+                toastr.success("PIN/Password berhasil diubah.");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error('Tidak berhasil mengubah PIN/Password. ' +textStatus);
+                return;
+            }
+        });
 
     }
 

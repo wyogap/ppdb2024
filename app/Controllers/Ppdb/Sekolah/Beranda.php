@@ -33,8 +33,8 @@ class Beranda extends PpdbController {
 		$sekolah_id = $this->session->get("sekolah_id");
         
         //notifikasi tahapan
-        $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
-        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
+        $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
+        $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
         $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		$data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
@@ -75,8 +75,8 @@ class Beranda extends PpdbController {
 	// 	$sekolah_id = $this->session->userdata("sekolah_id");
 
 	// 	//return redirect()->to("Cinfo");
-	// 	$this->load->model(array('Msekolah','Msetting'));
-	// 	$data['waktuverifikasi'] = $this->Msetting->tcg_cek_waktuverifikasi();
+	// 	$this->load->model(array('Msekolah','Mconfig'));
+	// 	$data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
 	// 	$data['belum'] = $this->Msekolah->tcg_pendaftarbelumdiverifikasi($sekolah_id);
 	// 	$data['sudah'] = $this->Msekolah->tcg_pendaftarsudahdiverifikasi($sekolah_id);
 	// 	$this->load->view('ppdb/sekolah/verifikasiberkas/index',$data);
@@ -132,8 +132,8 @@ class Beranda extends PpdbController {
 	// function cabutberkas()
 	// {
 	// 	//$this->load->model('Msekolah');
-	// 	$this->load->model(array('Msekolah','Msetting'));
-	// 	$data['settingpendaftaran'] = $this->Msetting->tcg_waktupendaftaran();
+	// 	$this->load->model(array('Msekolah','Mconfig'));
+	// 	$data['settingpendaftaran'] = $this->Mconfig->tcg_waktupendaftaran();
 	// 	$data['daftarpendaftar'] = $this->Msekolah->daftarpendaftar();
 	// 	$data['daftarpendaftarcabutberkas'] = $this->Msekolah->daftarpendaftarcabutberkas();
 	// 	$this->load->view('ppdb/sekolah/cabutberkas/index',$data);
@@ -145,9 +145,9 @@ class Beranda extends PpdbController {
 	// 	$pendaftaran_id = $this->input->get("pendaftaran_id");
 	// 	$sekolah_id = $this->session->userdata("sekolah_id");
 
-	// 	$this->load->model(array('Msekolah','Mdropdown','Msetting'));
-	// 	$data['settingpendaftaran'] = $this->Msetting->tcg_waktupendaftaran();
-	// 	$data['referensibatasanperubahan'] = $this->Msetting->tcg_batasanperubahan();
+	// 	$this->load->model(array('Msekolah','Mdropdown','Mconfig'));
+	// 	$data['settingpendaftaran'] = $this->Mconfig->tcg_waktupendaftaran();
+	// 	$data['referensibatasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
 	// 	$data['profilsiswa'] = $this->Msekolah->profilpendaftaran($sekolah_id, $pendaftaran_id);
 	// 	$data['detailpendaftarpilihansatu'] = $this->Msekolah->detailpendaftarpilihansatu();
 		
@@ -156,13 +156,13 @@ class Beranda extends PpdbController {
 
 	// function prosescabutberkas()
 	// {
-	// 	$this->load->model(array('Msekolah','Msetting'));
+	// 	$this->load->model(array('Msekolah','Mconfig'));
 	// 	if($this->Msekolah->cabutberkas()){
 	// 		$data['info'] = "<div class='alert alert-info alert-dismissable'>Pendaftaran telah berhasil dilakukan cabut berkas.</div>";
 	// 	}else{
 	// 		$data['info'] = "<div class='alert alert-danger alert-dismissable'>Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.</div>";
 	// 	}
-	// 	$data['referensibatasanperubahan'] = $this->Msetting->tcg_batasanperubahan();
+	// 	$data['referensibatasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
 	// 	$data['daftarpendaftar'] = $this->Msekolah->daftarpendaftar();
 	// 	$data['daftarpendaftarcabutberkas'] = $this->Msekolah->daftarpendaftarcabutberkas();
 	// 	$this->load->view('ppdb/sekolah/cabutberkas/index',$data);
@@ -381,7 +381,7 @@ class Beranda extends PpdbController {
 	// {
 	// 	$sekolah_id = $this->session->userdata("sekolah_id");
 
-	// 	$this->load->model(array('Msekolah', 'Msetting'));
+	// 	$this->load->model(array('Msekolah', 'Mconfig'));
 
 	// 	$this->Msekolah->resetdaftarulang();
 	// 	$this->Msekolah->resetdaftarulangrpt();
@@ -398,7 +398,7 @@ class Beranda extends PpdbController {
 	// 	$data['info'] = "<div class='alert alert-info alert-dismissable'>Daftar ulang telah berhasil disimpan.</div>";
 
 	// 	$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
-	// 	$data['waktudaftarulang'] = $this->Msetting->tcg_cek_waktudaftarulang($sekolah_id);
+	// 	$data['waktudaftarulang'] = $this->Mconfig->tcg_cek_waktudaftarulang($sekolah_id);
 	// 	$this->load->view('ppdb/sekolah/daftarulang/index',$data);
 	// }
 
@@ -418,8 +418,8 @@ class Beranda extends PpdbController {
 	// {
 	// 	$peserta_didik_id = $this->input->get("peserta_didik_id");
 
-	// 	$this->load->model(array('Msekolah','Msiswa','Msetting'));
-	// 	$data['referensibatasanperubahan'] = $this->Msetting->tcg_batasanperubahan();
+	// 	$this->load->model(array('Msekolah','Msiswa','Mconfig'));
+	// 	$data['referensibatasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
 		
 	// 	$data['profilsiswa'] = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
 	// 	$data['daftarpendaftaran'] = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
@@ -582,12 +582,12 @@ class Beranda extends PpdbController {
 	// function tcg_ubahakun($msg) {
 	// 	$pengguna_id = $this->input->get("pengguna_id");
 
-	// 	$this->load->model(array('Msekolah','Msiswa','Msetting','Mdropdown'));
+	// 	$this->load->model(array('Msekolah','Msiswa','Mconfig','Mdropdown'));
 												
 	// 	$maxtgllahir="";
 	// 	$mintgllahir="";
 
-	// 	$batasanusia = $this->Msetting->tcg_batasanusia();
+	// 	$batasanusia = $this->Mconfig->tcg_batasanusia();
 	// 	foreach($batasanusia->result() as $row):
 	// 		$maxtgllahir = $row->maksimal_tanggal_lahir;
 	// 		$mintgllahir = $row->minimal_tanggal_lahir;

@@ -1,6 +1,5 @@
 <style>
     .adv-search .form-control {
-        height: 42px;
         margin-bottom: 0px;
     }
 

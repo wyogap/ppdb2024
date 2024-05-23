@@ -671,14 +671,14 @@ table.dataTable tbody td.bg-yellow {
     margin-right: 28px !important;
 }
 
-.card .leaflet-container {
+/* .card .leaflet-container {
     border-bottom-right-radius: 1.75rem;
     border-bottom-left-radius: 1.75rem;
-}
+} */
 
-.card .card-body:has(.leaflet-container) {
+/* .card .card-body:has(.leaflet-container) {
     padding: 0px;
-}
+} */
 
 @media only screen and (max-width: 784px) {
     /* .header .header-content {
@@ -816,6 +816,10 @@ table.dataTable tbody td.bg-yellow {
         font-size: 38px;
         font-weight: 600;
         margin-top: 10px;
+    }
+
+    [data-theme-version="dark"] .header-left .app-name-short {
+        color: #fff;
     }
 
     .header-left .app-name-long {

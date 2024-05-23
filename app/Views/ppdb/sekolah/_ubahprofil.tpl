@@ -1,0 +1,63 @@
+<script type="text/javascript">
+
+    var map_profil;
+
+    $(document).ready(function() {
+		//Peta
+		var map_profil = L.map('peta-profil',{ zoomControl:false }).setView([{$profilsekolah.lintang},{$profilsekolah.bujur}],16);
+		L.tileLayer(
+			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+		).addTo(map_profil);
+
+		L.marker([{$profilsekolah.lintang},{$profilsekolah.bujur}]).addTo(map_profil)
+            .bindPopup("{$profilsekolah.alamat_jalan}, {$profilsekolah.desa_kelurahan}, {$profilsekolah.kecamatan}");
+
+		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
+			satelitemap  = L.tileLayer('{$map_satelitemap}', { id: 'mapbox.streets', attribution: '' });
+
+		var baseLayers = {
+			"Streets": streetmap,
+			"Satelite": satelitemap
+		};
+
+		var overlays = {};
+		L.control.layers(baseLayers,overlays).addTo(map_profil);
+
+		new L.control.fullscreen({ position:'bottomleft' }).addTo(map_profil);
+		new L.Control.Zoom({ position:'bottomright' }).addTo(map_profil);
+    });
+
+    function simpan_profil() {
+        let json = {};
+
+        json['inklusi'] = $("#inklusi").val();
+        json['alamat_jalan'] = $("#alamat_jalan").val();
+        json['lintang'] = $("#lintang").val();
+        json['bujur'] = $("#bujur").val();
+
+        $.ajax({
+            type: 'POST',
+            url: "{$site_url}ppdb/sekolah/ubahprofil/simpan",
+            dataType: 'json',
+            data: json,
+            async: true,
+            cache: false,
+            //if we use formData, set processData = false. if we use json, set processData = true!
+            //contentType: true,
+            //processData: true,      
+            timeout: 60000,
+            success: function(json) {
+                if (json.error !== undefined && json.error != "" && json.error != null) {
+                    toastr.error("Tidak berhasil menyimpan perubahan profil sekolah. " + json.error);
+                    return;
+                }
+                toastr.success("Perubahan profil sekolah berhasil disimpan.");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error("Tidak berhasil menyimpan perubahan profil sekolah. " + textStatus);
+                return;
+            }
+        });
+
+    }
+</script>

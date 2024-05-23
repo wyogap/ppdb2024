@@ -137,16 +137,23 @@ class Mauth
         $builder->delete();
     }
 
-    function reset_password($user_id, $password) {
+    function reset_password($user_id, $password, $additionalValues = null) {
         $filter = array(
             'user_id' => $user_id,
             'is_deleted' => 0
         );
 
+        //hash password
         $valuepair = array(
             'password' => password_hash($password, PASSWORD_DEFAULT)
         );
 
+        //set additional values
+        if ($additionalValues != null) {
+            $valuepair = array_merge($valuepair, $additionalValues);
+        }
+
+        //update values
         $table_name = 'dbo_users';
         $builder = $this->db->table($table_name);
 
@@ -155,7 +162,7 @@ class Mauth
         $affected = $this->db->affectedRows();
         if ($affected > 0) {
             //audit trail
-            $this->audittrail->trail($table_name, $user_id, "PASSWORD RESET", "Password reset by administrator");
+            $this->audittrail->trail($table_name, $user_id, "PASSWORD RESET", "Password reset by administrator or ownself");
             return $user_id;
         }
 

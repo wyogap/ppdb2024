@@ -472,12 +472,13 @@
             timeout: 60000,
             success: function(json) {
                 if (json.error !== undefined && json.error != "" && json.error != null) {
+                    toastr.error("Tidak berhasil menyimpan nomor kontak. " + json.error);
                     return;
                 }
-                //TODO: get the return value and re-set the field
+                toastr.success("Nomor kontak berhasil disimpan.");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                //TODO
+                toastr.error("Tidak berhasil menyimpan nomor kontak. " + textStatus);
                 return;
             }
         });
