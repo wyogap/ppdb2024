@@ -1,5 +1,7 @@
 <script type="text/javascript">
     // Tabel
+    var dt_siswa_kls6 = null;
+
     $(document).ready(function() {
         $.extend($.fn.dataTable.defaults, {
             responsive: true
@@ -12,7 +14,7 @@
             }).columns.adjust().responsive.recalc();
         });
 
-        $('#tnegeri').dataTable({
+        dt_siswa_kls6 = $('#tnegeri').DataTable({
             "responsive": true,
             "pageLength": 50,
             "lengthMenu": [
@@ -144,8 +146,8 @@
                     data: null,
                     className: 'dt-body-center',
                     orderable: false,
-                    "render": function(data, type, row) {
-                        return "<a href='{$site_url}ppdb/dapodik/ubahdata?peserta_didik_id=" + row.peserta_didik_id + "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'>      </a>";
+                    "render": function(data, type, row, meta) {
+                        return "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa_kls6, \"" +row['peserta_didik_id']+ "\");' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></button>";
                     }
                 },
             ],
@@ -158,4 +160,9 @@
         });
 
     });
+
+    function ubah_data(row_id, dt, key) {
+        //TODO
+    }
+    
 </script>

@@ -14,6 +14,14 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">
 
+    <link rel="stylesheet" href="{$site_url}assets/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.css"/>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/> -->
+    <!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet'/> -->
+
+    <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+
     <!-- Datatable -->
     <!-- <link href="{$base_url}/themes/dompet/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet"> -->
  
@@ -23,10 +31,10 @@
 	<link rel="stylesheet" href="{$base_url}assets/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css">
 
     <!-- icons -->
-    <!-- <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" /> -->
-    <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" /> -->
+    <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" />
     <link href="{$base_url}assets/dripicons/icons.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css"> -->
 
     <!-- toastr toast popup -->
     <link href="{$base_url}assets/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
@@ -120,10 +128,11 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="app-name-short" style="display: none;">
-                                PPDB{$tahun_ajaran_id}
+                                {$app_short_name}{$tahun_ajaran_id}
                             </div>
                             <div class="app-name-long dashboard_bar">
-                                PPDB{$nama_tahun_ajaran} {$nama_putaran}
+                                <span class="app-name">{$app_name}</span>
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -131,20 +140,20 @@
                                     <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
                                         <div class="header-info ms-3">
-                                            <span class="font-w600 ">Halo,<b>{$nama_pengguna}</b></span>
+                                            <span class="font-w600 ">Halo, <b>{$nama_pengguna}</b></span>
                                             <small class="font-w400">{$user_name}</small>
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a href="./app-profile.html" class="dropdown-item ai-icon">
+                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon">
                                             <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                            <span class="ms-2">Profile </span>
-                                        </a>
-                                        <a href="./email-inbox.html" class="dropdown-item ai-icon">
-                                            <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                            <span class="ms-2">Inbox </span>
-                                        </a>
-                                        <a href="./login.html" class="dropdown-item ai-icon">
+                                            <span class="ms-2">Mode Gelap / Mode Terang </span>
+                                        </button>
+                                        <button onclick=ganti_password() class="dropdown-item ai-icon">
+                                            <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                            <span class="ms-2">Ganti PIN/Password </span>
+                                        </button>
+                                        <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             <span class="ms-2">Logout </span>
                                         </a>
@@ -287,6 +296,10 @@
                     </div>
                 {/if}
 
+                <div class="loading" id="loader">
+                    <div class="loading-circle"></div>
+                </div>
+
                 {if $content_template|default: FALSE} 
                     {include file="./$content_template"}
                 {/if}
@@ -382,6 +395,169 @@
     <!-- toastr toast popup -->
     <script src="{$base_url}assets/jquery-confirm/jquery-confirm.min.js"></script>
     <script src="{$base_url}assets/toastr/toastr.min.js"></script>
+
+    <script src="{$site_url}assets/leaflet/leaflet.js"></script>
+    <script src="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script> -->
+    <!-- <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script> -->
+
+    <script src="{$base_url}assets/select2/js/select2.min.js"></script>
+    <script>
+        var dezSettingsOptions = {};
+
+        (function($) {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
+
+            //update the theme setting. must be before dlabnav-init.js
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+            
+        })(jQuery);
+
+        function toggle_dark_mode() {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
+
+            if (dark_theme == 1)    dark_theme = 0;
+            else                    dark_theme = 1;
+
+            setCookie("dark_theme", dark_theme, 30);
+
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+           
+            new dezSettings(dezSettingsOptions); 
+        }
+
+        function setCookie(c_name, value, exdays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+            document.cookie = c_name + "=" + c_value;
+        }
+
+        function getCookie(c_name) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                x = x.replace(/^\s+|\s+$/g, "");
+                if (x == c_name) {
+                    return unescape(y);
+                }
+            }
+        }
+
+        function ganti_password() {
+            $.confirm({
+                title: 'Ganti PIN/Password',
+                content: "<div style='overflow: hidden;'><input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
+                            +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
+                            +"<span id='error-msg'>&nbsp</span></div>",
+                closeIcon: true,
+                columnClass: 'medium',
+                //type: 'purple',
+                typeAnimated: true,
+                buttons: {
+                    cancel: {
+                        text: 'Batal',
+                        action: function(){
+                            //do nothing
+                        }
+                    },
+                    confirm: {
+                        text: 'Ganti',
+                        btnClass: 'btn-primary',
+                        action: function(){
+                            let el1 = this.$content.find('#password');
+                            let el2 = this.$content.find('#password2');
+                            if (el1.val().length < 6) {
+                                let msg = this.$content.find('#error-msg');
+                                msg.html("PIN/Password harus minimal 6 huruf.");
+                                el1.addClass('border-red');
+                                return false;
+                            }
+                            else if (el1.val() != el2.val()) {
+                                let msg = this.$content.find('#error-msg');
+                                msg.html("PIN/Password baru tidak sama.");
+                                el2.addClass('border-red');
+                                return false;
+                            }
+
+                            send_ganti_password(el1.val());
+                        }
+                    },
+                },
+
+            });      
+        }
+
+        function send_ganti_password(pwd1) {
+            json = {};
+            data = {};
+            data['pwd1'] = pwd1;
+            data['pwd2'] = pwd1;
+            
+            json['data'] = {};
+            json['data'][userid] = data;
+
+            $.ajax({
+                type: 'POST',
+                url: "{$site_url}auth/resetpassword",
+                dataType: 'json',
+                data: json,
+                async: true,
+                cache: false,
+                //if we use formData, set processData = false. if we use json, set processData = true!
+                //contentType: true,
+                //processData: true,      
+                timeout: 60000,
+                success: function(json) {
+                    if (json.error !== undefined && json.error != "" && json.error != null) {
+                        toastr.error('Tidak berhasil mengubah PIN/Password. ' +json.error);
+                        return;
+                    }
+
+                    $("#ganti-password-notif").hide();
+                    
+                    //tambahkan ke daftar pendaftaran
+                    toastr.success("PIN/Password berhasil diubah.");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error('Tidak berhasil mengubah PIN/Password. ' +textStatus);
+                    return;
+                }
+            });
+
+        }
+        
+    </script>
 
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
     <script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>

@@ -37,16 +37,17 @@ class Home extends PpdbController
         setlocale(LC_ALL, APP_LOCALE);
         date_default_timezone_set(APP_TIMEZONE);
 
-		$data['tahapan_pelaksanaan'] = $this->Msetting->tcg_tahapan_pelaksanaan()->getResult();
+		$data['tahapan_pelaksanaan'] = $this->Mconfig->tcg_tahapan_pelaksanaan();
         for($i=0; $i<count($data['tahapan_pelaksanaan']); $i++) {
+            $tahapan = $data['tahapan_pelaksanaan'][$i];
             //$data['tahapan_pelaksanaan'][$i]->tanggal_mulai = date_format(date_create($row->tanggal_mulai),"d F Y H:i");
-            $data['tahapan_pelaksanaan'][$i]->tanggal_mulai = strftime("%d %B %Y %H:%M", strtotime($data['tahapan_pelaksanaan'][$i]->tanggal_mulai));
-            $data['tahapan_pelaksanaan'][$i]->tanggal_selesai = strftime("%d %B %Y %H:%M", strtotime($data['tahapan_pelaksanaan'][$i]->tanggal_selesai));
+            $tahapan['tanggal_mulai'] = strftime("%d %B %Y %H:%M", strtotime($tahapan['tanggal_mulai']));
+            $tahapan['tanggal_selesai'] = strftime("%d %B %Y %H:%M", strtotime($tahapan['tanggal_selesai']));
         }
 
-        $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResult();
-        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
-		$data['petunjuk_pelaksanaan'] = $this->Msetting->cfg_petunjuk_pelaksanaan()->getResult();
+        $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
+        $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
+		$data['petunjuk_pelaksanaan'] = $this->Mconfig->tcg_petunjuk_pelaksanaan();
 
         $this->smarty->render("ppdb/home/home.tpl", $data);
 	}
@@ -74,37 +75,37 @@ class Home extends PpdbController
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
 
         $msiswa = new Mprofilsiswa();
-		$data['profilsiswa'] = $msiswa->tcg_profilsiswa($peserta_didik_id)->getRowArray();
-		$data['daftarpendaftaran'] = $msiswa->tcg_daftarpendaftaran($peserta_didik_id)->getResultArray();
+		$data['profilsiswa'] = $msiswa->tcg_profilsiswa($peserta_didik_id);
+		$data['daftarpendaftaran'] = $msiswa->tcg_daftarpendaftaran($peserta_didik_id);
 
         //berkas dok
         $kelengkapan = array();
         foreach($data['daftarpendaftaran'] as $p) {
             $pendaftaran_id = $p['pendaftaran_id'];
-            $berkas = $msiswa->tcg_kelengkapanpendaftaran($pendaftaran_id)->getResultArray();
+            $berkas = $msiswa->tcg_kelengkapanpendaftaran($pendaftaran_id);
             $kelengkapan[$pendaftaran_id] = $berkas;
         }
         $data['kelengkapan'] = $kelengkapan;
 
-        $berkasfisik = array();
-        foreach($data['daftarpendaftaran'] as $p) {
-            $pendaftaran_id = $p['pendaftaran_id'];
-            $berkas = $msiswa->tcg_kelengkapanpendaftaran_berkasfisik($pendaftaran_id)->getResultArray();
-            $berkasfisik[$pendaftaran_id] = $berkas;
-        }
-        $data['berkasfisik'] = $berkasfisik;        
+        // $berkasfisik = array();
+        // foreach($data['daftarpendaftaran'] as $p) {
+        //     $pendaftaran_id = $p['pendaftaran_id'];
+        //     $berkas = $msiswa->tcg_kelengkapanpendaftaran_berkasfisik($pendaftaran_id);
+        //     $berkasfisik[$pendaftaran_id] = $berkas;
+        // }
+        // $data['berkasfisik'] = $berkasfisik;        
 
         //skoring
         $nilaiskoring = array();
         foreach($data['daftarpendaftaran'] as $p) {
             $pendaftaran_id = $p['pendaftaran_id'];
-            $skoring = $msiswa->tcg_nilaiskoring($pendaftaran_id)->getResultArray();
+            $skoring = $msiswa->tcg_nilaiskoring($pendaftaran_id);
             $nilaiskoring[$pendaftaran_id] = $skoring;
         }
         $data['nilaiskoring'] = $nilaiskoring;        
 
         //kelengkapan data
-		$data['statusprofil'] = $msiswa->tcg_profilsiswa_status($peserta_didik_id)->getRowArray();
+		$data['statusprofil'] = $msiswa->tcg_profilsiswa_status($peserta_didik_id);
         $kelengkapan_data = 1;
         if ($data['statusprofil']['konfirmasi_profil'] != 1 || $data['statusprofil']['konfirmasi_lokasi'] != 1 
                 || $data['statusprofil']['konfirmasi_nilai'] != 1 || $data['statusprofil']['konfirmasi_prestasi'] != 1 
@@ -116,52 +117,59 @@ class Home extends PpdbController
         $data['kelengkapan_data'] = $kelengkapan_data;
 
         //batasan perubahan
-		$data['batasanperubahan'] = $this->Msetting->tcg_batasanperubahan()->getRowArray();
-		$data['batasansiswa'] = $msiswa->tcg_batasansiswa($peserta_didik_id)->getRowArray();
+		$data['batasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
+		$data['batasansiswa'] = $msiswa->tcg_batasansiswa($peserta_didik_id);
 
         //allow edit?
         $data['tutup_akses'] = $this->session->get("tutup_akses");
-		$data['cek_waktupendaftaran'] = $this->Msetting->tcg_cek_waktupendaftaran();
-		$data['cek_waktusosialisasi'] = $this->Msetting->tcg_cek_waktusosialisasi();
+		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
+		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
 
         //bukan punya si login
         if ($this->peserta_didik_id != $peserta_didik_id) {
             $data['tutup_akses'] = 1;
         }
 
-		$data['page'] = 'detailpendaftaran';
-        $data['page_title'] = 'Detail Pendaftaran';
-		$this->smarty->render('ppdb/home/detailpendaftaran.tpl',$data);
+        //content template
+        $data['content_template'] = '../siswa/daftarpendaftaran.tpl';
+        $data['js_template'] = '../sekolah/_peringkat.tpl';
+
+		$data['page_title'] = 'Peringkat';
+ 
+        $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
+
+		// $data['page'] = 'detailpendaftaran';
+        // $data['page_title'] = 'Detail Pendaftaran';
+		// $this->smarty->render('ppdb/home/detailpendaftaran.tpl',$data);
 	}
 
 	function peringkat() {
-		$sekolah_id = $_GET["sekolah_id"] ?? null; 
-		if (empty($sekolah_id) && $this->is_sekolah) {
-			$sekolah_id=$this->session->get('sekolah_id');
-        }
+		$sekolah_id = $this->request->getPostGet("sekolah_id");
+        $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
 
-        $msekolah = new Mprofilsekolah();
-        $data['profilsekolah'] = $msekolah->tcg_profilsekolah($sekolah_id)->getRowArray();
-		$data['daftarpenerapan'] = $msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
+        $data['profilsekolah'] = $msekolah->tcg_profilsekolah($sekolah_id);
+		$data['daftarpenerapan'] = $msekolah->tcg_daftarpenerapan($sekolah_id);
         
         //pendaftar per penerapan
         $pendaftar = array();
         foreach($data['daftarpenerapan'] as $p) {
             $penerapan_id = $p['penerapan_id'];
-            $penerapan = $msekolah->tcg_pendaftaran_penerapan_id($sekolah_id, $penerapan_id)->getResultArray();
+            $penerapan = $msekolah->tcg_pendaftaran_penerapanid($sekolah_id, $penerapan_id);
             for($i=0; $i<count($penerapan); $i++) {
                 $penerapan[$i]['idx'] = $i+1;
                 //mask nisn
                 $penerapan[$i]['nisn'] = substr($penerapan[$i]['nisn'],0,6) .str_repeat("*", 4);
                 $penerapan[$i]['skor'] = round($penerapan[$i]['skor'],2);
             }
+            //var_dump($penerapan);
             $pendaftar[$penerapan_id] = $penerapan;
         }
         $data['pendaftar'] = $pendaftar;
+        //exit;
 
         //semua pendaftar
         $data['show_all_pendaftar'] = 1;
-		$semuapendaftar = $msekolah->tcg_pendaftar($sekolah_id)->getResultArray();
+		$semuapendaftar = $msekolah->tcg_daftarpendaftaran($sekolah_id);
         for($i=0; $i<count($semuapendaftar); $i++) {
             $semuapendaftar[$i]['idx'] = $i+1;
             //mask nisn
@@ -175,7 +183,8 @@ class Home extends PpdbController
 		//terakhir kali peringkat diproses
 		$data['last_execution_date'] = '';
 		$data['next_execution_date'] = '';
-		$job = $this->Mhome->tcg_job_peringkatpendaftaran()->getRowArray();
+        $mhome = new Mhome();
+		$job = $mhome->tcg_job_peringkatpendaftaran()->getRowArray();
 		if ($job != null) {
 			$data['last_execution_date'] = $job['last_execution_end'];
 			$data['next_execution_date'] = $job['next_execution'];
@@ -187,19 +196,23 @@ class Home extends PpdbController
 		else
 			$data['show_profile_sekolah'] = 1;
 
-		$data['cek_waktupendaftaran'] = $this->Msetting->tcg_cek_waktupendaftaran();
+		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
 
 		$data['inklusi']=0;
         if ($data['profilsekolah'] != null) {
             $data['inklusi']=$data['profilsekolah']['inklusi'];
         }
 
-        $data['use_datatable'] = 1;
+        $data['profilsekolah'] = $msekolah->tcg_profilsekolah($sekolah_id);
 
-		$data['page'] = "peringkat";
-        $data["page_title"] = "Peringkat Pendaftaran";
-		$this->smarty->render('ppdb/home/peringkat.tpl',$data);
-	}
+        //content template
+        $data['content_template'] = '../sekolah/peringkat.tpl';
+        $data['js_template'] = '../sekolah/_peringkat.tpl';
+
+		$data['page_title'] = 'Peringkat';
+ 
+        $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
+    }
 
 	function peringkatfinal() {
 		$sekolah_id = $_GET["sekolah_id"] ?? null; 
@@ -208,14 +221,14 @@ class Home extends PpdbController
         }
 
         $msekolah = new Mprofilsekolah();
-        $data['profilsekolah'] = $msekolah->tcg_profilsekolah($sekolah_id)->getRowArray();
-		$data['daftarpenerapan'] = $msekolah->tcg_daftarpenerapan($sekolah_id)->getResultArray();
+        $data['profilsekolah'] = $msekolah->tcg_profilsekolah($sekolah_id);
+		$data['daftarpenerapan'] = $msekolah->tcg_daftarpenerapan($sekolah_id);
         
         //pendaftar per penerapan
         $pendaftar = array();
         foreach($data['daftarpenerapan'] as $p) {
             $penerapan_id = $p['penerapan_id'];
-            $penerapan = $msekolah->tcg_pendaftaran_penerapan_id($sekolah_id, $penerapan_id)->getResultArray();
+            $penerapan = $msekolah->tcg_pendaftaran_penerapanid($sekolah_id, $penerapan_id);
             for($i=0; $i<count($penerapan); $i++) {
                 $penerapan[$i]['idx'] = $i+1;
                 //mask nisn
@@ -228,7 +241,7 @@ class Home extends PpdbController
 
         //semua pendaftar
         $data['show_all_pendaftar'] = 1;
-		$semuapendaftar = $msekolah->tcg_pendaftar($sekolah_id)->getResultArray();
+		$semuapendaftar = $msekolah->tcg_daftarpendaftaran($sekolah_id);
         for($i=0; $i<count($semuapendaftar); $i++) {
             $semuapendaftar[$i]['idx'] = $i+1;
             //mask nisn
@@ -245,7 +258,7 @@ class Home extends PpdbController
 		else
 			$data['show_profile_sekolah'] = 1;
 
-		$data['cek_waktupendaftaran'] = $this->Msetting->tcg_cek_waktupendaftaran();
+		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
 
 		$data['inklusi']=0;
         if ($data['profilsekolah'] != null) {
@@ -277,13 +290,13 @@ class Home extends PpdbController
 	protected function rapormutu_json() {
 		$action = $_POST["action"] ?? null; 
 		if (empty($action) || $action=='view') {
-			$data['data'] = $this->Mhome->tcg_rapor_mutu($this->tahun_ajaran_id)->getResultArray(); 
+			$data['data'] = $this->Mhome->tcg_rapor_mutu($this->tahun_ajaran_id); 
 			echo json_encode($data);	
 		}
 	}    
 
 	function login() {
-		if(!empty($this->pengguna_id)) {
+		if(!empty($this->user_id)) {
 			if($this->is_siswa){
 				return redirect()->to('siswa/profil');
 			}else if($this->is_sekolah){
@@ -321,17 +334,17 @@ class Home extends PpdbController
 		);	
 		$this->session->set($sessiondata);
 
-		$data['cek_captcha'] = $this->Msetting->tcg_cek_captcha();
-		$data['cek_registrasi'] = $this->Msetting->tcg_cek_wakturegistrasi();
+		$data['cek_captcha'] = $this->Mconfig->tcg_cek_captcha();
+		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
 
-		$data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResult();
+		$data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
         foreach($data['tahapan_aktif'] as $tahapan) {
             if ($tahapan->tahapan_id == 0 || $tahapan->tahapan_id == 99) {
                 $data['cek_registrasi'] = 0;
                 break;
             }
         }
-		$data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
+		$data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
         if ($data['cek_captcha']) {
             $sitekey="6LfUN-oUAAAAAAEiaEPyE-S-d3NRbzXZVoNo51-x";
@@ -381,14 +394,14 @@ class Home extends PpdbController
 		$password = $_POST["password"] ?? null; 
 		$captcha = $_POST["g-recaptcha-response"] ?? null; 
 	
-		$cek_captcha = $this->Msetting->tcg_cek_captcha();
+		$cek_captcha = $this->Mconfig->tcg_cek_captcha();
 		if($cek_captcha == 1 && $this->check_recaptcha_v2($captcha) == 0){
 			$this->session->setFlashdata('error', "Kode Captcha yang Anda masukkan salah.");
 			return redirect()->to("akun/login");
 			return;
 		}
 
-		$detailuser = $this->Mhome->tcg_detailuser($username)->getRowArray();
+		$detailuser = $this->Mhome->tcg_detailuser($username);
 		if(empty($detailuser)){
 			$this->session->setFlashdata('error', "Username yang dimasukkan tidak terdaftar.");
 			return redirect()->to("akun/login");
@@ -407,7 +420,7 @@ class Home extends PpdbController
 			return;
 		}
 
-		$tahapan = $this->Msetting->tcg_tahapan_pelaksanaan_aktif();
+		$tahapan = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
 		if (($tahapan == 0 || $tahapan == 99) && $detailuser['peran_id'] != ROLEID_DINAS) {
 			$this->session->setFlashdata('error', "Pendaftaran PPDB Online belum dibuka.");
 			return redirect()->to("home/login");
@@ -445,7 +458,7 @@ class Home extends PpdbController
 		$this->session->set($detailuser);
 
         $this->peran_id = $detailuser['peran_id'];
-        $this->pengguna_id = $detailuser['pengguna_id'];
+        $this->user_id = $detailuser['pengguna_id'];
 
         $this->is_siswa = ($this->peran_id == ROLEID_SISWA);
         $this->is_sekolah = ($this->peran_id == ROLEID_SEKOLAH);
@@ -518,10 +531,10 @@ class Home extends PpdbController
 
     function registrasi() {
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
-		$data['cek_registrasi'] = $this->Msetting->tcg_cek_wakturegistrasi();
-        $data['kabupaten'] = $mdropdown->tcg_kabupaten()->getResultArray();
+		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
+        $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
-        $batasanusia = $this->Msetting->tcg_batasanusia("SMP")->getRowArray();
+        $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
         if (!empty($batasanusia)) {
             $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
             $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
@@ -610,10 +623,10 @@ class Home extends PpdbController
         } while (false);
 
 		$mdropdown = new \App\Models\Ppdb\Mdropdown();
-		$data['cek_registrasi'] = $this->Msetting->tcg_cek_wakturegistrasi();
-        $data['kabupaten'] = $mdropdown->tcg_kabupaten()->getResultArray();
+		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
+        $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
-        $batasanusia = $this->Msetting->tcg_batasanusia("SMP")->getRowArray();
+        $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
         if (!empty($batasanusia)) {
             $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
             $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
@@ -660,18 +673,18 @@ class Home extends PpdbController
 
 	// function tanggalRA()
 	// {
-	// 	$this->load->model(array('Msetting'));
+	// 	$this->load->model(array('Mconfig'));
 	// 	$this->load->view('dropdown/tanggalRA');
 	// }
 	// function tanggalMI()
 	// {
-	// 	$this->load->model(array('Msetting'));
+	// 	$this->load->model(array('Mconfig'));
 	// 	$this->load->view('dropdown/tanggalMI');
 	// }    
 
     function rekapitulasi()
 	{
-		$data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah()->getResultArray();
+		$data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah();
 			
         $data['use_datatable'] = 1;
 

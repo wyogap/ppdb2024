@@ -201,35 +201,35 @@
                     }
                 }
 
-				field = this.field('npsn_sekolah_asal');
-				if (!field.isMultiValue()) {
-                    hasError = false;
-                    if (!field.val() || field.val() == '') {
-                        hasError = true;
-                        field.error('NPSN sekolah asal harus diisi.');
-                    }
+				// field = this.field('npsn_sekolah_asal');
+				// if (!field.isMultiValue()) {
+                //     hasError = false;
+                //     if (!field.val() || field.val() == '') {
+                //         hasError = true;
+                //         field.error('NPSN sekolah asal harus diisi.');
+                //     }
  
-                    if (!hasError) {
-                        //TODO: validasi lebih lanjut
-						if (field.val().length != 8) {
-							hasError = true;
-                        	field.error('NPSN harus 8 digit.');
-						}
-                    }
-                }
+                //     if (!hasError) {
+                //         //TODO: validasi lebih lanjut
+				// 		if (field.val().length != 8) {
+				// 			hasError = true;
+                //         	field.error('NPSN harus 8 digit.');
+				// 		}
+                //     }
+                // }
 
-				field = this.field('asal_sekolah');
-				if (!field.isMultiValue()) {
-                    hasError = false;
-                    if (!field.val() || field.val() == '') {
-                        hasError = true;
-                        field.error('Nama sekolah asal harus diisi.');
-                    }
+				// field = this.field('asal_sekolah');
+				// if (!field.isMultiValue()) {
+                //     hasError = false;
+                //     if (!field.val() || field.val() == '') {
+                //         hasError = true;
+                //         field.error('Nama sekolah asal harus diisi.');
+                //     }
  
-                    if (!hasError) {
-                        //TODO: validasi lebih lanjut
-                    }
-                }
+                //     if (!hasError) {
+                //         //TODO: validasi lebih lanjut
+                //     }
+                // }
 
                 /* If any error was reported, cancel the submission so it can be corrected */
 				if (this.inError()) {
@@ -243,17 +243,24 @@
 
 		dt_siswa = $('#tditerima').DataTable({
 			"responsive": true,
-			"paging": false,
+			"pageLength": 10,
+			"lengthMenu": [ [5, 10, 20, -1], [5, 10, 20, "All"] ],
+			"paging": true,
+			"pagingType": "numbers",
 			"dom": 'Bfrtpil',
 			select: true,
 			buttons: [
+                {if $cek_waktupendaftaran_sd==1}
 				{ 
-					extend: "create", editor: editor_siswa,
+					extend: "create", 
+                    text: "Siswa Baru Belum Sekolah",
+                    editor: editor_siswa,
 					formButtons: [
 						{ text: 'Simpan', className: 'btn-primary', action: function () { this.submit(); } },
 						{ text: 'Batal', className: 'btn-secondary', action: function () { this.close(); } }
 					]
 				},
+                {/if}
 				{
 					extend: 'excelHtml5',
 					text: 'Ekspor',
@@ -319,6 +326,7 @@
 				{ data: "nama_ibu_kandung", className: 'dt-body-center' },
 				{ data: "npsn_sekolah_asal", className: 'dt-body-center' },
 				{ data: "asal_sekolah", className: 'dt-body-left' },
+                {if $cek_waktupendaftaran_sd==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -328,13 +336,14 @@
 							return "";
 						}
 
-                        let str = "<a href='#' onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></i></a>";
-						str += "<a href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></a>";
+                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></i></button>";
+						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
 
 						return str;
 						// return "<button href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-danger'>Hapus</button>";
 					}
 				}
+                {/if}
 			],
 			order: [ 0, 'asc' ],
 			"deferLoading": 0
@@ -360,6 +369,10 @@
 
 	function hapus_penerimaan(row_id, dt, key) {
 		// add assoc key values, this will be posts values
+        let data = dt.rows(row_id).data();
+        var nama = data[0]['nama'];
+
+        // add assoc key values, this will be posts values
 		var formData = new FormData();
 		formData.append("peserta_didik_id", key);
 		formData.append("action", "remove");
@@ -376,17 +389,21 @@
 			dataType: 'json',
 			success: function(json) {
 				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
-					alert(json.error);
+					toastr.error("Tidak berhasil menghapus penerimaan. " +json.error);
 					return;
 				}
 
 				//hide loader
 				//$("#loading2").show();
 				dt_siswa.ajax.reload();
-				dt_search.ajax.reload();
+				
+                //reload the search if necessary
+                cari_peserta_didik();
+
+                toastr.success("Data penerimaan an. " +nama+ " berhasil dihapus");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert('Gagal menghapus data');
+                toastr.error("Tidak berhasil menghapus penerimaan. " +textStatus);
 
 				return;
 			}
@@ -590,6 +607,7 @@
 				{ data: "tanggal_lahir", className: 'dt-body-center text-nowrap' },
 				{ data: "sekolah", className: 'dt-body-left' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
+                {if $cek_waktupendaftaran_sd==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -606,6 +624,7 @@
 						return "<button href='#' onclick='event.stopPropagation(); tambah_penerimaan(" +meta.row+ ", dt_search, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-primary'>Tambahkan</button>";
 					}
 				}
+                {/if}
 			],
 			order: [ 0, 'asc' ],
 			"deferLoading": 0
@@ -615,12 +634,10 @@
 
 	function cari_peserta_didik() {
 		nama_baru = $("#nama").val();
-		sekolah_id_baru = $("#sekolah_id").val();
 		nisn_baru = $("#nisn").val();
-		//nik_baru = $("#nik").val();
-		nik_baru = '';
+		sekolah_baru = $("#sekolah_id").val();
 
-		if ('' == nama_baru && '' == nik_baru && '' == nisn_baru && '' == sekolah_id_baru) {
+		if ('' == nama_baru && '' == nisn_baru && '' == sekolah_id_baru) {
 			return;
 		}
 
@@ -630,25 +647,28 @@
 		// v_nik = nik_baru;
 
 		//show loader
-		$("#loading").show();
+		$("#loader").show();
 
 		//reload
-		dt_search.ajax.url("{$site_url}dapodik/penerimaan/search?nama=" + nama_baru + "&nisn=" + nisn_baru + "&nik=" + nik_baru + "&sekolah_id=" + sekolah_id_baru );
+		dt_search.ajax.url("{$site_url}ppdb/dapodik/penerimaan/json?action=search&nama=" + nama_baru + "&nisn=" + nisn_baru );
 		dt_search.ajax.reload(function(json) {
 			//hide loader
-			$("#loading").hide();
+			$("#loader").hide();
 		}, false);
   	}
 
 	function tambah_penerimaan(row_id, dt, key) {
 		// add assoc key values, this will be posts values
+        let data = dt.rows(row_id).data();
+        var nama = data[0]['nama'];
+
 		var formData = new FormData();
 		formData.append("peserta_didik_id", key);
 		formData.append("action", "accept");
 
 		$.ajax({
 			type: "POST",
-			url: "{$site_url}dapodik/penerimaan/json",
+			url: "{$site_url}ppdb/dapodik/penerimaan/json",
 			async: true,
 			data: formData,
 			cache: false,
@@ -658,24 +678,18 @@
 			dataType: 'json',
 			success: function(json) {
 				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
-					alert(json.error);
+					toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +json.error);
 					return;
 				}
 
 				dt_search.ajax.reload();
 				dt_siswa.ajax.reload();
 
-				// $("#loading2").show();
-
-				// dt.ajax.url("<?php echo site_url('dapodik/penerimaan/json'); ?>");
-				// dt.ajax.reload(function(json) {
-				// 	//hide loader
-				// 	$("#loading2").hide();
-				// }, true);
+                toastr.success("Berhasil menambahkan penerimaan siswa an. " +nama);
 
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert('Gagal menambahkan data');
+                toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +textStatus);
 
 				return;
 			}

@@ -102,8 +102,8 @@ define('EVENT_PRIORITY_HIGH', 10);
 |
 */
 defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2024_prosespendaftaran');
-defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2023_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
-defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
+defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2024_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
+//defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
 defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2024_hapuspendaftaran');        //hapur satu pendaftaran
 defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor_2022');
 
@@ -116,13 +116,14 @@ defined('SQL_PILIHSEKOLAH_JENISPILIHAN')        OR define('SQL_PILIHSEKOLAH_JENI
 defined('SQL_UBAHPILIHAN_JENISPILIHAN')         OR define('SQL_UBAHPILIHAN_JENISPILIHAN', 'ppdb2024_ubahpilihan_jenispilihan');
 defined('SQL_SEBARAN_SEKOLAH')                  OR define('SQL_SEBARAN_SEKOLAH', 'ppdb2024_sebaransekolah');
 
-defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2024_ubah_kelengkapanberkas'); //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
-defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2023_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
-defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
-defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
+defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2024_ubah_kelengkapanberkas');     //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
+//defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2023_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
+//defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
+//defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
 
 defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2024_sd_hapus_penerimaan');
 defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2024_sd_tambah_penerimaan');
+defined('SQL_TAMBAH_SISWA_SD')              OR define('SQL_TAMBAH_SISWA_SD', 'ppdb2024_sd_tambah_siswa');
 
 // defined('SQL_UBAH_DATA')                    OR define('SQL_UBAH_DATA', 'ppdb2023_ubah_data');
 // defined('SQL_UBAH_NILAIKELULUSAN')          OR define('SQL_UBAH_NILAIKELULUSAN', 'ppdb2022_ubah_nilaikelulusan');
@@ -161,6 +162,11 @@ defined('TAHAPANID_PENDAFTARAN')            OR define('TAHAPANID_PENDAFTARAN', '
 defined('TAHAPANID_VERIFIKASI')             OR define('TAHAPANID_VERIFIKASI', '4');
 defined('TAHAPANID_DAFTARULANG')            OR define('TAHAPANID_DAFTARULANG', '6');
 defined('TAHAPANID_SUSULAN')                OR define('TAHAPANID_SUSULAN', '7');
+
+defined('PUTARAN_SD')               OR define('PUTARAN_SD', '4');
+defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '0');
+defined('JENJANGID_SD')             OR define('JENJANGID_SD', '2');
+defined('JENJANGID_SMP')            OR define('JENJANGID_SMP', '3');
 
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');

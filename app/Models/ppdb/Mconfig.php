@@ -196,6 +196,34 @@ Class Mconfig
 		return $dalamperiode;
 	}
 
+
+	function tcg_waktupendaftaran_sd(){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		$putaran = PUTARAN_SD;
+
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
+		return $builder->get()->getRowArray();
+	}
+
+	function tcg_cek_waktupendaftaran_sd(){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		$putaran = PUTARAN_SD;
+
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
+				  where a.tahapan_id=" .TAHAPANID_PENDAFTARAN. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran'
+						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
+		
+		$dalamperiode=0;
+		foreach($this->db->query($query)->getResult() as $row):
+			$dalamperiode = $row->jumlah;
+		endforeach;
+
+		return $dalamperiode;
+	}
+
 	function tcg_batasanusia($bentuk_tujuan_sekolah){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
         if (empty($bentuk_tujuan_sekolah)) {
@@ -375,4 +403,41 @@ Class Mconfig
 		$builder->orderBy('nama');
 		return $builder->get()->getResultArray();
 	}
+
+	function tcg_sekolah_smp($kode_wilayah = null) {
+		if (empty($kode_wilayah))
+			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
+
+		$builder = $this->db->table('ref_sekolah');
+		$builder->select('sekolah_id,nama,npsn');
+		$builder->where(array('bentuk'=>'SMP','expired_date'=>NULL,'kode_wilayah_kab'=>$kode_wilayah));
+		$builder->orderBy('kode_wilayah, nama');
+		return $builder->get()->getResultArray();
+	
+	}
+
+	function tcg_sekolah_sd_mi($kode_wilayah = null) {
+		if (empty($kode_wilayah))
+			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
+
+		$sql = "select sekolah_id,nama,npsn 
+		from ref_sekolah 
+		where expired_date is null and kode_wilayah_kab=? and (bentuk='SD' or bentuk='MI')
+		order by kode_wilayah, nama";
+
+		return $this->db->query($sql, array($kode_wilayah))->getResultArray();
+	}
+
+	function tcg_sekolah_tk_ra($kode_wilayah = null) {
+		if (empty($kode_wilayah))
+			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
+
+		$sql = "select sekolah_id,nama,npsn 
+		from ref_sekolah 
+		where expired_date is null and kode_wilayah_kab=? and (bentuk='TK' or bentuk='RA')
+		order by kode_wilayah, nama";
+
+		return $this->db->query($sql, array($kode_wilayah))->getResultArray();
+	}
+
 }

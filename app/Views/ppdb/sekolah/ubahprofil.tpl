@@ -4,7 +4,7 @@
 					<h3 class="box-title text-info"><b>Perubahan Data</b></h3>
 				</div>
 				<div class="card-body">
-					<div class="row" style='margin-bottom: 24px;'>
+					<div class="row" style='margin-bottom: 18px;'>
 						<!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> -->
 						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 								<div class="form-group has-feedback">

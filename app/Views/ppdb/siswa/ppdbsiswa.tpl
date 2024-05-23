@@ -1,4 +1,4 @@
-`<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -29,8 +29,8 @@
     <!-- icons -->
     <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" /> -->
-    <link href="{$base_url}assets/dripicons/icons.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css">
+    <!-- <link href="{$base_url}assets/dripicons/icons.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css"> -->
 
     <!-- toastr toast popup -->
     <link href="{$base_url}assets/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
@@ -997,6 +997,12 @@
     var userid = "{$user_id}";
 
     (function($) {           
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
         //profil dikunci kalau ada pendaftaran
         if (daftarpendaftaran != null && daftarpendaftaran.length > 0) {
             profildikunci = 1;

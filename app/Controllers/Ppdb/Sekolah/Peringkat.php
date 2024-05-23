@@ -90,7 +90,6 @@ class Peringkat extends PpdbController {
         }
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-		// $data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
 
         //content template
         $data['content_template'] = 'peringkat.tpl';

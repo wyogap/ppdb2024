@@ -11,7 +11,7 @@
 <div class="custom-tab-1" id="tabs">
     <ul class="nav nav-tabs nav-justified" id="tabNames" style="margin-bottom: 16px;">
         {if $show_all_pendaftar|default: FALSE}
-        <li class=" nav-item"><a class="nav-link active" href="#daftarpendaftar" data-bs-toggle="tab" style="min-height: 68px">Pendaftar<br></a></li>
+        <li class=" nav-item"><a class="nav-link active" href="#daftarpendaftar" data-bs-toggle="tab" style="min-height: 68px">Semua<br>Pendaftar<br></a></li>
         {/if}
 
         {assign var="idx" value=0}

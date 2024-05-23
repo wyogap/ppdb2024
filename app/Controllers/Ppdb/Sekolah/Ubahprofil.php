@@ -71,16 +71,15 @@ class Ubahprofil extends PpdbController {
 	function simpan()
 	{
 		$pengguna_id = $this->session->get("user_id");
-		$peran_id = $this->session->get('peran_id');
+		$peran_id = $this->session->get('role_id');
 
 		$sekolah_id = $_POST["sekolah_id"] ?? null;
 		if (empty($sekolah_id)) {
 			$sekolah_id = $this->session->get('sekolah_id');
 		}
 
-		if ($peran_id==2 && $sekolah_id != $this->session->get('sekolah_id')) {
-			view('home/notauthorized');
-			return;
+		if ($peran_id==ROLEID_SEKOLAH && $sekolah_id != $this->session->get('sekolah_id')) {
+			$this->print_json_error('not-authorized');
 		}
 
 		$kode_wilayah = $_POST["kode_wilayah"] ?? null; 
@@ -124,21 +123,16 @@ class Ubahprofil extends PpdbController {
 
 			if (count($valuepair) > 0) {
 				if (!$this->Msekolah->tcg_ubah_profil($sekolah_id, $valuepair)) {
-					$this->session->setFlashdata('error', "Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
+					$this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
 					break;
 				}
 			}
 
-			$this->session->setFlashdata('success', "Perubahan data telah berhasil disimpan.");
-
 		} while(false);
 
-		$redirect = $_GET["redirect"] ?? null; 
-		if (empty($redirect)) {
-			$redirect = "Csekolah";
-		}
+		$profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 
-		redirect($redirect);
+		$this->print_json_output($profil);
 	}
 	
 	// function pendaftaran() {

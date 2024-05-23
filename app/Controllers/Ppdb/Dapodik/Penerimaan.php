@@ -5,6 +5,7 @@ namespace App\Controllers\Ppdb\Dapodik;
 use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mdropdown;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
+use App\Models\Ppdb\Siswa\Mprofilsiswa;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -12,6 +13,7 @@ use Psr\Log\LoggerInterface;
 class Penerimaan extends PpdbController {
 
     protected $Msekolah;
+    protected $Msiswa;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -23,6 +25,7 @@ class Penerimaan extends PpdbController {
 
         //load model
         $this->Msekolah = new Mprofilsekolah();
+        $this->Msiswa = new Mprofilsiswa();
         
         //role-based permission
         //static::$ROLE_ID = ROLEID_DAPODIK;
@@ -42,11 +45,19 @@ class Penerimaan extends PpdbController {
 		if (empty($tahun_ajaran_id))
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-        $mdropdown = new Mdropdown();
+        $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
 
-		$sekolah_id = $this->session->get("sekolah_id");
+		//$sekolah_id = $this->session->get("sekolah_id");
 		//$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
+
+        $data['waktupendaftaran_sd'] = $this->Mconfig->tcg_waktupendaftaran_sd();
+        $data['cek_waktupendaftaran_sd'] = $this->Mconfig->tcg_cek_waktupendaftaran_sd();
+
+        //debugging
+        if (__DEBUGGING__) {
+
+        }
 
         //content template
         $data['content_template'] = 'penerimaan.tpl';
@@ -76,218 +87,157 @@ class Penerimaan extends PpdbController {
 		if (empty($tahun_ajaran_id))
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-		$action = $_POST["action"] ?? null;
+		$action = $this->request->getPostGet("action");
 		if (empty($action) || $action=='view') {
 			$sekolah_id = $this->session->get("sekolah_id");
 
 			$data = array();
 
-			$result = $this->Msekolah->tcg_pesertadidik_sd_diterima($sekolah_id);
-			if ($result == null) {
-				$data['data'] = array();
-			}
-			else if (!empty($result['status'])) {
-				$data['error'] = $result['message'];
-			}
-			else {
-				$data['data'] = $result;
-			}
+			$result = $this->Msekolah->tcg_penerimaan_sd($sekolah_id);
+            if ($result == null) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    $this->print_json_error($error);
+                } else {
+                    $this->print_json_error('Tidak berhasil mendapatkan daftar penerimaan.');
+                }
+            }
 
-			echo json_encode($data);
+			$this->print_json_output($result);
 		}
-		// else if ($action=='create'){
-		// 	$sekolah_id = $this->session->get("sekolah_id");
-        //     $values = $_POST["data"] ?? null; 
+        else if ($action=='create'){
+			$sekolah_id = $this->session->get("sekolah_id");
+            $values = $this->request->getPost("data");
 
-		// 	//TODO
-		// 	do {
-		// 		if (empty($values[0]['username']) || $values[0]['username'] == '0') {
-		// 			$data['error'] = 'Username tidak boleh kosong.';
-		// 			break;
-		// 		}
+            if (empty($values)) {
+                $this->print_json_error("Data siswa baru tidak valid/kosong.");
+            }
 
-		// 		if($values[0]['peran_id'] == 2 && !isset($values[0]['sekolah_id'])) {
-		// 			$data['error'] = 'Untuk Admin Sekolah, sekolah harus diisi.';
-		// 			break;
-		// 		}
+			$siswa = $values[0];
+            $detail = null;
+			do {
+				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
+					$this->print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
+                    break;
+				}
+
+				if (empty($siswa['nik']) || $this->Msiswa->tcg_cek_nik($siswa['nik'])) {
+					$this->print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
+                    break;
+				}
+
+                //enforce
+                $siswa['sekolah_id'] = $sekolah_id;
+                
+				$detail = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
+				if ($detail == null) {
+					$error = $this->Msekolah->get_error_message();
+					if (!empty($error)) {
+                        $this->print_json_error($error);
+					} else {
+						$this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+					}
+				}
+
+                //the expected json format of the dt editor
+                $data = array();
+                $data[] = $detail;
+
+                $this->print_json_output($data);
 	
-		// 		$cnt = $this->Mdinas->tcg_cek_username('', $values[0]['username']);
-		// 		if ($cnt > 0) {
-		// 			$data['error'] = 'Username sudah digunakan. Silahkan pilih username lain.';
-		// 			break;
-		// 		}
+			} while(false);
 
-		// 		$key = $this->Mdinas->tcg_pengguna_baru($values[0]);
-		// 		if ($key == '') {
-		// 			$error = $builder->error();
-		// 			if (empty($error['message'])) {
-		// 				$data['error'] = 'Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.';
-		// 			} else {
-		// 				$data['error'] = $error['message'];
-		// 			}
-		// 		} else {
-		// 			$data['data'] = $this->Mdinas->tcg_detil_pengguna($key)->getResultArray(); 
-		// 		}
-	
-		// 	} while(false);
+            $this->print_json_output($detail);
+		}
+        else if ($action=='edit'){
+            $values = $this->request->getPost("data");
 
-        //     echo json_encode($data);
-		// }
-		// else if ($action=='edit'){
-		// 	$sekolah_id = $this->session->get("sekolah_id");
-		// 	$values = $_POST["data"] ?? null;
+            if (empty($values)) {
+                $this->print_json_error("Data siswa baru tidak valid/kosong.");
+            }
 
-		// 	//TODO
-		// 	$data['data'] = array();
-		// 	$data['flag'] = 1;
+            $json = array();
+            foreach($values as $k => $v) {
+                $data = $this->Msiswa->tcg_update_siswa($k, $v);
 
-        //     $error_msg = "";
-		// 	foreach ($values as $key => $valuepair) {
-		// 		if (empty($valuepair['sekolah_id']) || $valuepair['sekolah_id'] == '0') {
-		// 			unset($valuepair['sekolah_id']);
-		// 		}
-	
-		// 		if (empty($valuepair['username']) || $valuepair['username'] == '0') {
-		// 			unset($valuepair['username']);
-		// 		}
-	
-		// 		if (!empty($valuepair['pwd1'])) {
-		// 			if ($valuepair['pwd1'] != $valuepair['pwd2']) {
-		// 				$data['error'] = 'PIN1 dan PIN2 tidak sama. Silahkan ulangi lagi.';
-		// 				break;
-		// 			}
-		// 			else {
-		// 				if($this->Mlogin->tcg_resetpassword($key, $valuepair['pwd1']) == 0) {
-		// 					$data['error'] = "Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.";
-		// 				} else {
-		// 					foreach($this->Mdinas->tcg_detil_pengguna($key)->getResult() as $row) {
-		// 						$data['data'][] = $row;
-		// 					}
-		// 				}
-		// 			}
-		// 			unset($valuepair['pwd1']);
-		// 			unset($valuepair['pwd2']);
-		// 		}
+                if ($data != null) {
+                    //TODO: audit trail
+                }
 
-		// 		$cnt = $this->Mdinas->tcg_cek_username($key, $valuepair['username']);
-		// 		if ($cnt > 0) {
-		// 			$data['error'] = 'Username sudah digunakan. Silahkan pilih username lain.';
-		// 			break;
-		// 		}
+                $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($k);
+            }
 
-		// 		$retval = $this->Mdinas->tcg_ubah_pengguna($key, $valuepair);
-		// 		if($retval == 0) {
-		// 			$error = $builder->error();
-		// 			if (empty($error['message'])) {
-		// 				$data['error'] = 'Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.';
-		// 			} else {
-		// 				$data['error'] = $error['message'];
-		// 			}
-		// 		} else {
-		// 			foreach($this->Mdinas->tcg_detil_pengguna($key)->getResult() as $row) {
-		// 				$data['data'][] = $row;
-		// 			}
-		// 		}
-		// 	}
+            $this->print_json_output($json);
+        }
+        else if ($action=='remove') {
+			$sekolah_id = $this->session->get("sekolah_id");
+            $peserta_didik_id = $this->request->getPostGet('peserta_didik_id');
 
-		// 	echo json_encode($data);	
-		// }
-		// else if ($action=='remove'){
-		// 	$sekolah_id = $this->session->get("sekolah_id");
-		// 	$peserta_didik_id= $_POST["peserta_didik_id"] ?? null; 
+            $status = $this->Msekolah->tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id);
+            if (!$status) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    $this->print_json_error($error);
+                } else {
+                    $this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+            }
 
-		// 	$data = array();
-		// 	$result = $this->Msekolah->tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id)[0];
-		// 	if ($result == null) {
-		// 		$data['data'] = array();
-		// 	}
-		// 	else if (!empty($result['status'])) {
-		// 		$data['error'] = $result['message'];
-		// 	}
-		// 	else {
-		// 		$data['data'] = array();
-		// 	}
-
-		// 	echo json_encode($data);	
-        // }
+			$this->print_json_output(array());
+        }
 		else if ($action=='accept'){
 			$sekolah_id = $this->session->get("sekolah_id");
-			$peserta_didik_id= $_POST["peserta_didik_id"] ?? null; 
+			$peserta_didik_id= $this->request->getPostGet("peserta_didik_id"); 
 
-			$data = array();
-			$result = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id)[0];
-			if ($result == null) {
-				$data['data'] = array();
-			}
-			else if (!empty($result['status'])) {
-				$data['error'] = $result['message'];
-			}
-			else {
-				$data['data'] = $result;
-			}
+            //sudah diterima
+            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+            if ($pendaftaran != null) {
+                $this->print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
+            }
 
-			echo json_encode($data);	
+            //batasan usia
+            $batasan_usia = $this->Mconfig->tcg_batasanusia('SD');
+            $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+
+            if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
+                $this->print_json_error('Minimal tanggal lahir: ', $batasan_usia['minimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+            }
+
+            if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
+                $this->print_json_error('Maksimal tanggal lahir: ', $batasan_usia['maksimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+            }            
+
+			$status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
+            if (!$status) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    $this->print_json_error($error);
+                } else {
+                    $this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+            }
+
+			$this->print_json_output(null);	
         }
-		else {
-			$data['error'] = "not-implemented"; 
-			echo json_encode($data);	
-		}
-	}
+        else if ($action=='sekolah') {
+            $mdropdown = new \App\Models\Ppdb\Mconfig();
+            $sekolah = $mdropdown->tcg_sekolah_tk_ra();
 
-	function search() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+            $this->print_json_output($sekolah);
+        }
+        else if ($action=='search') {
+			$nama = $this->request->getPostGet("nama"); 
+			$nisn= $this->request->getPostGet("nisn"); 
+            $limit = 1000;
 
-		$mdropdown = new Mdropdown();
-		
-		$action = $_POST["action"] ?? null;
-		if (empty($action) || $action=='search') {
-			$nama = $_GET["nama"] ?? null; 
-			$nisn= $_GET["nisn"] ?? null; 
-			$nik= null;
-			$sekolah_id= $_GET["sekolah_id"] ?? null; 
-			$jenis_kelamin= null;
-			$kode_desa= null;
-			$kode_kecamatan= null;
-	
-			if (empty($nama) && empty($nisn) && empty($nik) && empty($sekolah_id) && empty($jenis_kelamin) && empty($kode_desa) && empty($kode_kecamatan)) {
+			if (empty($nama) && empty($nisn)) {
 				//no search
-				$data['data'] = array();
-				echo json_encode($data);
+				$this->print_json_error("Tidak ada yang perlu dicari.");
 			}
-			else {
-				//search
-                $mdropdown = new Mdropdown();
-				$sekolah = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
-				$daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan);
 
-				//manual echo json file to avoid memory exhausted
-				echo '{"data":[';
-				$first = true;
-				while ($row = $daftar->unbuffered_row())
-				{
-					if ($first) {
-						echo json_encode($row);
-						$first = false;
-					} else {
-						echo ",". json_encode($row);
-					}
-				}
-				echo '],"options":{"sekolah_id":[';
-				$first = true;
-				while ($row = $sekolah->getUnbufferedRow()) 
-				{
-					if ($first) {
-						echo json_encode($row);
-						$first = false;
-					} else {
-						echo ",". json_encode($row);
-					}
-				}
-				echo ']}}';
-			}
-		}
+            $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, null, null, null, null, null, $limit);
+            $this->print_json_output($daftar);
+        }
 		else {
 			$data['error'] = "not-implemented"; 
 			echo json_encode($data);	

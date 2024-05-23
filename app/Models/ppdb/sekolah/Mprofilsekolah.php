@@ -17,17 +17,20 @@ Class Mprofilsekolah
         helper("functions");
     }
 
+    function get_error_message() {
+        return $this->error_message;
+    }
+
     // --
 
 	function tcg_profilsekolah($sekolah_id){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
         $builder->select('a.sekolah_id_lama as dapodik_id');
         $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');
-		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
+		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$this->tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
 
 		return $builder->get()->getRowArray();
@@ -93,7 +96,6 @@ Class Mprofilsekolah
 	}
 
     function tcg_daftarpenerapan($sekolah_id){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
 		$query = "
@@ -107,25 +109,22 @@ Class Mprofilsekolah
 		where a.aktif=1 and a.is_deleted=0 and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=?
 		order by a.urutan";
 
-		return $this->db->query($query, array($sekolah_id, $tahun_ajaran_id, $putaran))->getResultArray();
+		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id, $putaran))->getResultArray();
 	}
 
-	function tcg_daftarkuota(){
-		$sekolah_id = $this->session->get("sekolah_id");
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+	function tcg_daftarkuota($sekolah_id){
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('cfg_penerapan_sekolah a');
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota,b.nama as penerapan');
 		$builder->join('cfg_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0 and b.perankingan=1');
 		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
+		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
 		$builder->orderBy('b.urutan');
 		return $builder->get()->getResultArray();
 	}
 
 	function tcg_daftarpendaftaran($sekolah_id, $filters = null){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('tcg_pendaftaran a');
@@ -137,8 +136,8 @@ Class Mprofilsekolah
         $builder->select('d.jalur_id,d.nama AS jalur');
         $builder->select('case when a.status_daftar_ulang = 1 then a.tanggal_daftar_ulang else NULL end as tanggal_daftar_ulang', false);
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.is_deleted=0');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
+		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
 		$builder->join('ref_sekolah f','b.lokasi_berkas = f.sekolah_id','LEFT OUTER');
 		$builder->join('cfg_jenis_pilihan g','a.masuk_jenis_pilihan = g.jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran AND g.is_deleted=0','LEFT OUTER');
@@ -146,12 +145,16 @@ Class Mprofilsekolah
         $builder->join('dbo_users i','i.user_id = b.sedang_verifikasi_oleh and i.is_deleted = 0','LEFT OUTER');		
         $builder->join('dbo_users k','k.user_id = b.verifikator_id and k.is_deleted = 0','LEFT OUTER');		
         $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
-        $builder->where('a.tahun_ajaran_id', $tahun_ajaran_id);
-        $builder->where('a.putaran', $putaran);
+        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
 
         //additional filters
         if ($filters!=null) {
             $builder->where($filters);
+        }
+
+        //can override putaran-aktif untuk jenjang SD
+        if (empty($filters) || empty($filters['a.putaran'])) {
+            $builder->where('a.putaran', $putaran);
         }
 
         // $sql = $builder->getCompiledSelect();
@@ -174,9 +177,9 @@ Class Mprofilsekolah
         return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
 	}
 
-	function tcg_kandidatswasta($sekolah_id, $tahun_ajaran_id) {
-		$tahun_ajaran_id = substr($tahun_ajaran_id, 0, 4);
-		$sql = "select
+	function tcg_kandidatswasta($sekolah_id) {
+
+        $sql = "select
 					a.peserta_didik_id, b.nama, RPAD(SUBSTR(b.nisn, 1, 6), Length(b.nisn), '*') as nisn, c.nama as sekolah, 
 					concat(d.nama_desa, ' ', d.nama_kec, ' ', d.nama_kab) as alamat, a.jarak
 				from rpt_kandidat_swasta a
@@ -186,7 +189,7 @@ Class Mprofilsekolah
 				where a.sekolah_id=? and a.tahun_ajaran_id=?
 		";
 
-		return $this->db->query($sql, array($sekolah_id, $tahun_ajaran_id));
+		return $this->db->query($sql, array($sekolah_id, $this->tahun_ajaran_id));
 	}
 
 	function tcg_pendaftarditerima($sekolah_id, $penerapan_id){
@@ -375,11 +378,10 @@ Class Mprofilsekolah
 	function tcg_buat_verifikasidinas($peserta_didik_id, $tipe_data, $kelengkapan_id, $catatan) {
 		$pengguna_id = $this->session->get('user_id');
 		$sekolah_id = $this->session->get('sekolah_id');
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$valuepair = array(
 			'peserta_didik_id' 	=> $peserta_didik_id,
-			'tahun_ajaran_id'	=> $tahun_ajaran_id,
+			'tahun_ajaran_id'	=> $this->tahun_ajaran_id,
 			'pengguna_sekolah'	=> $pengguna_id,
 			'sekolah_id'		=> $sekolah_id,
 			'tipe_data'			=> $tipe_data,
@@ -397,28 +399,46 @@ Class Mprofilsekolah
 		return 0;
 	}
 
-    
-	function tcg_pesertadidik_sd_diterima($sekolah_id) {
-		$sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik, c.npsn as npsn_sekolah_asal, c.nama as asal_sekolah,
+	function tcg_penerimaan_sd($sekolah_id) {
+
+        // $filters = array("a.status_penerimaan_final"=>1, "a.putaran"=>PUTARAN_SD);
+
+        // $result = $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        // if($result == null) return null;
+
+        // return $result;
+        $sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik, c.npsn as npsn_sekolah_asal, c.nama as asal_sekolah,
 					   b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin
 				  from tcg_pendaftaran a
 				  left join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id
-				  left join tcg_sekolah c on c.sekolah_id=b.sekolah_id
+				  left join ref_sekolah c on c.sekolah_id=b.sekolah_id
 				  where a.is_deleted=0 and a.status_penerimaan_final=1 and a.sekolah_id=?";
 
 		return $this->db->query($sql, array($sekolah_id))->getResultArray();
 	}
 
-	function tcg_calon_pesertadidik_sd($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan){
+	function tcg_penerimaan_sd_detil($peserta_didik_id) {
+
+        $sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik, c.npsn as npsn_sekolah_asal, c.nama as asal_sekolah,
+					   b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin
+				  from tcg_pendaftaran a
+				  left join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id
+				  left join ref_sekolah c on c.sekolah_id=b.sekolah_id
+				  where a.is_deleted=0 and a.status_penerimaan_final=1 and a.peserta_didik_id=?";
+
+		return $this->db->query($sql, array($peserta_didik_id))->getRowArray();
+	}
+
+	function tcg_calon_pesertadidik_sd($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $limit){
 		$filter = 0;
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir,
 					  b.kode_wilayah_desa, b.nama_desa, b.kode_wilayah_kec, b.nama_kec, c.nama as sekolah,
 					  e.nama as diterima_sekolah, a.jenis_kelamin
 				  from tcg_peserta_didik a
-				  left join ref_mst_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
-				  left join tcg_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
+				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
+				  left join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
 				  left join tcg_pendaftaran d on d.peserta_didik_id=a.peserta_didik_id and d.status_penerimaan_final=1 and d.is_deleted=0
-				  left join tcg_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
+				  left join ref_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
 				  ";
 
 		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA')";
@@ -457,27 +477,102 @@ Class Mprofilsekolah
 		}
 
 		$query .= " WHERE " . $where;
+        $query .= " limit " . $limit;
 
 		return $this->db->query($query)->getResultArray();	
 	}
+
+    function tcg_tambah_pesertadidik_sd($valuepair) {
+        $this->error_message = '';
+
+        if (empty($valuepair)) {
+            $this->error_message = "Data siswa baru tidak lengkap";
+            return 0;
+        }
+
+        $values = array();
+        $values[] = $valuepair['sekolah_id']; 
+        $values[] = $valuepair['nama']; 
+        $values[] = empty($valuepair['jenis_kelamin']) ? null : $valuepair['jenis_kelamin']; 
+        $values[] = empty($valuepair['nisn']) ? null : $valuepair['nisn']; 
+        $values[] = empty($valuepair['nik']) ? null : $valuepair['nik']; 
+        $values[] = empty($valuepair['tempat_lahir']) ? null : $valuepair['tempat_lahir']; 
+        $values[] = empty($valuepair['tanggal_lahir']) ? null : $valuepair['tanggal_lahir'];  
+        $values[] = empty($valuepair['nama_ibu_kandung']) ? null : $valuepair['nama_ibu_kandung'];  
+        $values[] = empty($valuepair['nama_ayah']) ? null : $valuepair['nama_ayah'];  
+        $values[] = empty($valuepair['npsn_sekolah_asal']) ? null : $valuepair['npsn_sekolah_asal'];  
+        $values[] = empty($valuepair['nama_sekolah_asal']) ? null : $valuepair['nama_sekolah_asal'];  
+        $dapodik_id = uuid();
+        $values[] = $dapodik_id;
+        $values[] = $this->session->get('user_id');
+
+        
+		$sql = "call " .SQL_TAMBAH_SISWA_SD. "(?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?)";
+		$status = $this->db->query($sql, $values);
+        if (!$status) return null;
+
+        $message = $status->getRowArray();
+        if ($message != null) {
+            $this->error_message = $message['message'];
+            return null;
+        }
+
+        $sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik, c.npsn as npsn_sekolah_asal, c.nama as asal_sekolah,
+					   b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin
+				  from tcg_pendaftaran a
+				  join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id
+				  left join ref_sekolah c on c.sekolah_id=b.sekolah_id
+				  where a.is_deleted=0 and a.status_penerimaan_final=1 and b.dapodik_id=?";
+
+		return $this->db->query($sql, array($dapodik_id))->getRowArray();;
+    }
 
 	function tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
 		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "call " .SQL_PENERIMAAN_SD. "(?, ?, ?)";
-		$query = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id))->getResultArray();;
+		$status = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id));
+        if (!$status) return 0;
 
-		return $query;
+        $message = $status->getRowArray();
+        if ($message != null) {
+            $this->error_message = $message['message'];
+            return 0;
+        }
+
+		return 1;
 	}
 
 	function tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
 		$pengguna_id = $this->session->get("user_id");
 
-		$sql = "call " .SQL_HAPUS_PENERIMAAN_SD. "(?, ?, ?)";
-		$query = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id))->getResultArray();;
+        $keterangan = "Hapus pendaftaran oleh sekolah";
+		$sql = "call " .SQL_HAPUS_PENERIMAAN_SD. "(?, ?, ?, ?)";
+		$status = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $keterangan, $pengguna_id));
+        if (!$status) return 0;
 
-		return $query;
+        $message = $status->getRowArray();
+        if ($message != null) {
+            $this->error_message = $message['message'];
+            return 0;
+        }
+
+		return 1;
 	}    
+
+	function tcg_daftar_siswa($sekolah_id) {
+
+		//pass updated_on as UTC and convert on client side using moment.js
+		$query = "SELECT a.sekolah_id, b.nama as sekolah, 
+						a.peserta_didik_id, a.nama, a.jenis_kelamin, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir, a.nama_ibu_kandung, a.nama_ayah,
+						a.kode_wilayah, a.rt, a.rw, a.alamat, a.nama_dusun, a.desa_kelurahan, a.lintang, a.bujur, 
+						a.updated_on
+					FROM tcg_peserta_didik a
+					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
+					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.penerimaan_sd=0";
+
+		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id))->getResultArray();
+	}
 
 	// function tcg_pendaftarditerima($sekolah_id, $penerapan_id){
 
@@ -632,20 +727,6 @@ Class Mprofilsekolah
 	// 	// return $builder->get();
 	// }
 
-	function tcg_daftar_siswa($sekolah_id, $tahun_ajaran_id) {
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
-		//TODO: pass updated_on as UTC and convert on client side using moment.js
-		$query = "SELECT a.sekolah_id, b.nama as sekolah, 
-						a.peserta_didik_id, a.nama, a.jenis_kelamin, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir, a.nama_ibu_kandung, a.nama_ayah,
-						a.kode_wilayah, a.rt, a.rw, a.alamat, a.nama_dusun, a.desa_kelurahan, a.lintang, a.bujur, 
-						CONVERT_TZ(a.updated_on, '+00:00', '+07:00') as updated_on
-					FROM tcg_peserta_didik a
-					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
-					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0";
-
-		return $this->db->query($query, array($sekolah_id, $tahun_ajaran_id));
-	}
 
 
 	// function tcg_daftar_penerapan($sekolah_id) {

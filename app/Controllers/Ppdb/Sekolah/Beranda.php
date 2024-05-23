@@ -37,7 +37,7 @@ class Beranda extends PpdbController {
         $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
         $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-		$data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota();
+		$data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota($sekolah_id);
 
         //content template
         $data['content_template'] = 'beranda.tpl';

@@ -40,8 +40,8 @@ class Daftarsiswa extends PpdbController {
 		$sekolah_id = $this->session->get("sekolah_id");
 
         //notifikasi tahapan
-        $data['tahapan_aktif'] = $this->Msetting->tcg_tahapan_pelaksanaan_aktif()->getResultArray();
-        $data['pengumuman'] = $this->Msetting->cfg_pengumuman()->getResult();
+        $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
+        $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 
@@ -60,7 +60,7 @@ class Daftarsiswa extends PpdbController {
 
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
-			$data['data'] = $this->Msekolah->tcg_daftar_siswa($sekolah_id, $tahun_ajaran_id)->getResultArray(); 
+			$data['data'] = $this->Msekolah->tcg_daftar_siswa($sekolah_id); 
 			echo json_encode($data);	
 		}
 
@@ -98,7 +98,7 @@ class Daftarsiswa extends PpdbController {
 	// 		$tahun_ajaran_id = $this->tahun_ajaran_id;
 	// 	}
 
-	// 	$this->load->model(array('Mdinas','Msetting'));
+	// 	$this->load->model(array('Mdinas','Mconfig'));
 	// 	$daftar = $this->Mdinas->tcg_daftar_pendaftaran($tahun_ajaran_id);
 
 	// 	//manual echo json file to avoid memory exhausted

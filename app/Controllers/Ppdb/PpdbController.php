@@ -204,44 +204,41 @@ class PpdbController extends BaseController {
         $this->putaran = $putaran;
         $this->nama_putaran = $nama_putaran;
 
-        if (!$this->is_json) {
-            //smarty: vars
-            $this->smarty->assign('kode_wilayah', $this->kode_wilayah);
-            $this->smarty->assign('nama_wilayah', $this->nama_wilayah);
-            $this->smarty->assign('tahun_ajaran_id', $this->tahun_ajaran_id);
-            $this->smarty->assign('nama_tahun_ajaran', $this->nama_tahun_ajaran);
-            $this->smarty->assign('putaran', $this->putaran);
-            $this->smarty->assign('nama_putaran', $this->nama_putaran);
+        //smarty: vars
+        $this->smarty->assign('kode_wilayah', $this->kode_wilayah);
+        $this->smarty->assign('nama_wilayah', $this->nama_wilayah);
+        $this->smarty->assign('tahun_ajaran_id', $this->tahun_ajaran_id);
+        $this->smarty->assign('nama_tahun_ajaran', $this->nama_tahun_ajaran);
+        $this->smarty->assign('putaran', $this->putaran);
+        $this->smarty->assign('nama_putaran', $this->nama_putaran);
 
-            //smarty: general setting
-            $arr = $this->setting->list_group('ppdb');
-            foreach($arr as $val) {
-                $this->smarty->assign($val['name'], $val['value']);
-            }
-
-            //smarty: logged-in user
-            if ($this->user_id) {
-                $this->smarty->assign('user_id', $this->user_id);
-                $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
-                $this->smarty->assign('user_name', $this->session->get('user_name'));
-                // $this->smarty->assign('peran_id', $this->peran_id);
-                // $this->smarty->assign('is_siswa', $this->is_siswa);    
-                // $this->smarty->assign('is_sekolah', $this->is_sekolah);    
-                // $this->smarty->assign('is_dapodik', $this->is_dapodik);    
-                // $this->smarty->assign('is_dinas', $this->is_dinas);    
-            }
-            // $this->smarty->assign('peserta_didik_id', $this->peserta_didik_id);
-
-            //smarty: flashdata
-            $this->error_message = $this->session->getFlashdata('error');
-            $this->success_message = $this->session->getFlashdata('success');
-            $this->info_message = $this->session->getFlashdata('info');
-
-            $this->smarty->assign('error_message', $this->error_message);
-            $this->smarty->assign('success_message', $this->success_message);
-            $this->smarty->assign('info_message', $this->info_message);
-
+        //smarty: general setting
+        $arr = $this->setting->list_group('ppdb');
+        foreach($arr as $val) {
+            $this->smarty->assign($val['name'], $val['value']);
         }
+
+        //smarty: logged-in user
+        if ($this->user_id) {
+            $this->smarty->assign('user_id', $this->user_id);
+            $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
+            $this->smarty->assign('user_name', $this->session->get('user_name'));
+            // $this->smarty->assign('peran_id', $this->peran_id);
+            // $this->smarty->assign('is_siswa', $this->is_siswa);    
+            // $this->smarty->assign('is_sekolah', $this->is_sekolah);    
+            // $this->smarty->assign('is_dapodik', $this->is_dapodik);    
+            // $this->smarty->assign('is_dinas', $this->is_dinas);    
+        }
+        // $this->smarty->assign('peserta_didik_id', $this->peserta_didik_id);
+
+        //smarty: flashdata
+        $this->error_message = $this->session->getFlashdata('error');
+        $this->success_message = $this->session->getFlashdata('success');
+        $this->info_message = $this->session->getFlashdata('info');
+
+        $this->smarty->assign('error_message', $this->error_message);
+        $this->smarty->assign('success_message', $this->success_message);
+        $this->smarty->assign('info_message', $this->info_message);
 
         // $this->waktu_verifikasi = $this->Msetting->tcg_cek_waktuverifikasi();
         // $this->waktu_daftarulang = $this->Msetting->tcg_cek_waktudaftarulang();
@@ -309,7 +306,9 @@ class PpdbController extends BaseController {
     protected function print_json_output($data) {
         $json = array();
         $json["status"] = 1;
-        $json['data'] = $data;
+        if (!empty($data)) {
+            $json['data'] = $data;
+        }
 
         //TODO: output properly
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 

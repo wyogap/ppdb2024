@@ -8,26 +8,33 @@
     <title>PPDB ONLINE {$nama_wilayah}</title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="shortcut icon" href="{$site_url}assets/image/tutwuri.png">
-    <link rel="stylesheet" href="{$site_url}assets/adminlte/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{$site_url}assets/adminlte/plugins/select2-4.0.13/css/select2.min.css">
-    <link rel="stylesheet" href="{$site_url}assets/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="{$site_url}assets/adminlte/dist/css/AdminLTE.css">
-    <link rel="stylesheet" href="{$site_url}assets/adminlte/dist/css/skins/_all-skins.css">
- 	<!-- <script src="{$site_url}assets/adminlte/plugins/jQuery/jQuery-2.1.4.min.js"></script> -->
-    <script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.min.js"></script>
-    <script src="{$site_url}assets/adminlte/bootstrap/js/bootstrap.min.js"></script>
-    <script src="{$site_url}assets/adminlte/dist/js/app.min.js"></script>
+    <link rel="shortcut icon" href="{$base_url}assets/image/tutwuri.png">
 
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/stylesheets/bootstrap.css" >
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/stylesheets/style.css">
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/stylesheets/responsive.css">
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/stylesheets/colors/color1.css" id="colors">
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/stylesheets/animate.css">
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/revolution/css/layers.css">
-    <link rel="stylesheet" type="text/css" href="{$site_url}assets/podes/revolution/css/settings.css">
-    <link href="{$site_url}assets/podes/icon/apple-touch-icon-48-precomposed.png" rel="apple-touch-icon-precomposed" sizes="48x48">
-    <link href="{$site_url}assets/podes/icon/apple-touch-icon-32-precomposed.png" rel="apple-touch-icon-precomposed">
+    <link rel="stylesheet" href="{$base_url}assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/themes/adminlte/dist/css/adminlte.css">
+
+    <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+ 
+    <!-- <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/adminlte/dist/css/skins/_all-skins.css">
+     -->
+
+ 	<!-- <script src="{$base_url}assets/adminlte/plugins/jQuery/jQuery-2.1.4.min.js"></script> -->
+    <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.min.js"></script>
+
+    <script src="{$base_url}assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{$base_url}assets/themes/adminlte/dist/js/adminlte.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/bootstrap.css" >
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/responsive.css">
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/colors/color1.css" id="colors">
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/animate.css">
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/revolution/css/layers.css">
+    <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/revolution/css/settings.css">
+    <link href="{$base_url}assets/podes/icon/apple-touch-icon-48-precomposed.png" rel="apple-touch-icon-precomposed" sizes="48x48">
+    <link href="{$base_url}assets/podes/icon/apple-touch-icon-32-precomposed.png" rel="apple-touch-icon-precomposed">
 
 </head> 
 
@@ -56,29 +63,29 @@
             <div class="container">
                 {*Pengumuman*}
                 {foreach $pengumuman as $row}
-                {if empty($row->text)}{continue}{/if}
+                {if empty($row.text)}{continue}{/if}
 
                 {*Get alert type*}
                 {assign var='alert_type' value='alert-error'}
-                {if $row->tipe==0}{$alert_type='alert-info'}
-                {elseif $row->tipe==1}{$alert_type='alert-success'}
-                {elseif $row->tipe==2}{$alert_type='alert-danger'}
+                {if $row.tipe==0}{$alert_type='alert-info'}
+                {elseif $row.tipe==1}{$alert_type='alert-success'}
+                {elseif $row.tipe==2}{$alert_type='alert-danger'}
                 {/if}
                
-                <div class="alert {$alert_type}{if $row->bisa_ditutup==1} alert-dismissable{/if}" style="margin: 20px;">
-                    {if $row->bisa_ditutup==1}<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{/if}
-                    <p class="{$row->css}">{$row->text}</p>
+                <div class="alert {$alert_type}{if $row.bisa_ditutup==1} alert-dismissable{/if}" style="margin: 20px;">
+                    {if $row.bisa_ditutup==1}<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{/if}
+                    <p class="{$row.css}">{$row.text}</p>
                 </div>
                 {/foreach}
 
                 {*Pengumuman tahapan*}
                 {foreach $tahapan_aktif as $row}
-                {if empty($row->notifikasi_umum)}{continue}{/if}
+                {if empty($row.notifikasi_umum)}{continue}{/if}
 
                 <div class="alert alert-info alert-dismissable" style="margin: 20px;">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p><i class="icon glyphicon glyphicon-info-sign"></i>{$row->tahapan}</p>
-                    <p>{$row->notifikasi_umum}</p>
+                    <p><i class="icon glyphicon glyphicon-info-sign"></i>{$row.tahapan}</p>
+                    <p>{$row.notifikasi_umum}</p>
                 </div>
                 {/foreach}
            </div>
@@ -176,18 +183,18 @@
                         <tbody>
                             {assign var='putaran' value=''}
                             {foreach $tahapan_pelaksanaan as $row} 
-                            {if $row->tahapan_id==0 || $row->tahapan_id==99} {continue} {/if} 
-                            {if $putaran!=$row->putaran}
+                            {if $row.tahapan_id==0 || $row.tahapan_id==99} {continue} {/if} 
+                            {if $putaran!=$row.putaran}
                             {if $putaran!=''}<tr><td colspan=5></td>{/if}
                             <tr class="h4" style="padding-top: 10px; padding-bottom: 10px">
-                                <td colspan=5>{$row->nama_putaran}</td>
+                                <td colspan=5>{$row.nama_putaran}</td>
                             </tr>
-                            {$putaran=$row->putaran}
+                            {$putaran=$row.putaran}
                             {/if}
                             <tr class="h4" style="padding-top: 10px; padding-bottom: 10px">
-                                <td width="300px">{$row->tahapan}</td><td></td>
-                                {if ($row->tanggal_mulai == $row->tanggal_selesai)}<td colspan=3>{$row->tanggal_mulai}</td>
-                                {else}<td width="200px">{$row->tanggal_mulai}</td><td width="20px">s.d.</td><td width="200px">{$row->tanggal_selesai}</td>
+                                <td width="300px">{$row.tahapan}</td><td></td>
+                                {if ($row.tanggal_mulai == $row.tanggal_selesai)}<td colspan=3>{$row.tanggal_mulai}</td>
+                                {else}<td width="200px">{$row.tanggal_mulai}</td><td width="20px">s.d.</td><td width="200px">{$row.tanggal_selesai}</td>
                                 {/if}
                             </tr>
                             {/foreach}
@@ -209,27 +216,27 @@
                         <div class="flat-accordion style2">
                             <div class="flat-toggle">
                                 <div class="toggle-title">JADWAL PELAKSANAAN</div>
-                                <div class="toggle-content">{$row->jadwal_pelaksanaan}</div>
+                                <div class="toggle-content">{$row.jadwal_pelaksanaan}</div>
                             </div><!-- /toggle -->
                             <div class="flat-toggle">
                                 <div class="toggle-title">PERSYARATAN</div>
-                                <div class="toggle-content">{$row->persyaratan}
+                                <div class="toggle-content">{$row.persyaratan}
                             </div><!-- /toggle -->
                             <div class="flat-toggle">
                                 <div class="toggle-title">TATA CARA PENDAFTARAN</div>
-                                <div class="toggle-content">{$row->tata_cara_pendaftaran}
+                                <div class="toggle-content">{$row.tata_cara_pendaftaran}
                             </div>
                             <div class="flat-toggle">
                                 <div class="toggle-title">JALUR PENDAFTARAN</div>
-                                <div class="toggle-content">{$row->jalur_pendaftaran}
+                                <div class="toggle-content">{$row.jalur_pendaftaran}
                             </div>
                             <div class="flat-toggle">
                                 <div class="toggle-title">SELEKSI</div>
-                                <div class="toggle-content">{$row->proses_seleksi}
+                                <div class="toggle-content">{$row.proses_seleksi}
                             </div>
                             <div class="flat-toggle">
                                 <div class="toggle-title">KONVERSI NILAI</div>
-                                <div class="toggle-content">{$row->konversi_nilai}
+                                <div class="toggle-content">{$row.konversi_nilai}
                             </div>
                         </div>
                     </div>
@@ -252,7 +259,7 @@
                 <div class="row">
                     <div class="col-md-2">
                         <div class="title-footer8">
-                            <img src="{$site_url}assets/image/logodinas.png" style="width:150px">
+                            <img src="{$base_url}assets/image/logodinas.png" style="width:150px">
                         </div>
                     </div>
                     <div class="col-md-10">
@@ -269,32 +276,32 @@
     </div>
 </body>
 
-<script src="{$site_url}assets/adminlte/plugins/select2/select2.full.min.js"></script>
+<script src="{$base_url}assets/select2/js/select2.full.min.js"></script>
 
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.easing.js"></script>      
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery-validate.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/imagesloaded.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.isotope.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/owl.carousel.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery-countTo.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.cookie.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.tweet.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/parallax.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/main.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/TimeCircles.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/jquery.themepunch.tools.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/jquery.themepunch.revolution.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/slider2.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.actions.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.migration.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
-<script type="text/javascript" src="{$site_url}assets/podes/revolution/js/extensions/revolution.extension.slideanims.min.js"></script> 
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery-waypoints.js"></script> 
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/jquery.magnific-popup.min.js"></script>  
-<script type="text/javascript" src="{$site_url}assets/podes/javascript/countdown.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.easing.js"></script>      
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-validate.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/imagesloaded.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.isotope.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/owl.carousel.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-countTo.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.cookie.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.tweet.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/parallax.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/main.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/TimeCircles.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/jquery.themepunch.tools.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/jquery.themepunch.revolution.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/slider2.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.slideanims.min.js"></script> 
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-waypoints.js"></script> 
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.magnific-popup.min.js"></script>  
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/countdown.js"></script>
 
 </html>

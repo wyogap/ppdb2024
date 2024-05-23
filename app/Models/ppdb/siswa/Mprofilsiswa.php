@@ -18,6 +18,10 @@ Class Mprofilsiswa
 
         helper("functions");
     }
+
+    function get_error_message() {
+        return $this->error_message;
+    }
     
     function tcg_update_siswa($peserta_didik_id, $values) {
         $this->error_message = null;
@@ -184,23 +188,27 @@ Class Mprofilsiswa
 							a.created_on, a.status_daftar_ulang, a.pendaftaran, a.tag,
                             g.nama as nama, c.nama as penerapan, c.parent_id as parent_penerapan_id');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.aktif = 1 AND c.is_deleted=0');
-		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
+		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.aktif = 1 AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');
 		$builder->join('cfg_jenis_pilihan e','e.jenis_pilihan = a.jenis_pilihan AND e.tahun_ajaran_id=a.tahun_ajaran_id and e.putaran=a.putaran AND e.is_deleted=0','LEFT OUTER');
 		$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id and f.putaran=a.putaran AND f.is_deleted=0','LEFT OUTER');
 		$builder->join('tcg_peserta_didik g','g.peserta_didik_id = a.peserta_didik_id AND g.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
         $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
-        $builder->where('a.putaran', $putaran);
 
         //additional filters
         if ($filters!=null) {
             $builder->where($filters);
         }
 
+        //can override putaran-aktif untuk jenjang SD
+        if (empty($filters) || empty($filters['a.putaran'])) {
+            $builder->where('a.putaran', $putaran);
+        }
+
 		$builder->orderBy('a.jenis_pilihan');
 
-        //echo $builder->getQuery(); exit;
+        // echo $builder->getCompiledSelect(); exit;
 
 		return $builder->get()->getResultArray();
 
@@ -250,8 +258,18 @@ Class Mprofilsiswa
         return $result;
 	}    
 
-	function tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru)
-	{
+	function tcg_pendaftaran_diterima_sd($peserta_didik_id){
+        $this->error_message = null;
+        
+        $filters = array("a.status_penerimaan_final"=>1, "a.putaran"=>PUTARAN_SD);
+
+        $result = $this->tcg_daftarpendaftaran($peserta_didik_id, $filters);
+        if($result == null) return null;
+
+        return $result[0];
+	}    
+  
+	function tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru){
         $this->error_message = null;
         $user_id = $this->session->get('user_id');
         
@@ -351,6 +369,13 @@ Class Mprofilsiswa
         if ($result == null)    return 0;
 
 		return $result['jumlah'];
+	}
+
+	function tcg_cek_pendaftaran_sekolah_sd($peserta_didik_id, $sekolah_id){
+        $this->error_message = null;
+        
+        $filters = array('a.sekolah_id'=>$sekolah_id);
+        return $this->tcg_cek_pendaftaran($peserta_didik_id, $filters);
 	}
 
 	function tcg_cek_pendaftaran_jenispilihan($peserta_didik_id, $jenis_pilihan){
@@ -497,25 +522,25 @@ Class Mprofilsiswa
         return 1;
 	}
 
-	function tcg_simpan_dokumenpendukung($peserta_didik_id,$upload_id,$kelengkapan_id, $replace=1, $prestasi=0, $tambahan=0){
-        $this->error_message = null;
+	// function tcg_simpan_dokumenpendukung($peserta_didik_id,$upload_id,$kelengkapan_id, $replace=1, $prestasi=0, $tambahan=0){
+    //     $this->error_message = null;
         
-        $user_id = $this->session->get('user_id');
-		$query = "call " .SQL_SIMPAN_DOKUMEN. "(?, ?, ?, ?, ?, ?, ?)";
-		$status = $this->db->query($query, array($upload_id,$peserta_didik_id,$kelengkapan_id,$replace,$prestasi,$tambahan,$user_id));
+    //     $user_id = $this->session->get('user_id');
+	// 	$query = "call " .SQL_SIMPAN_DOKUMEN. "(?, ?, ?, ?, ?, ?, ?)";
+	// 	$status = $this->db->query($query, array($upload_id,$peserta_didik_id,$kelengkapan_id,$replace,$prestasi,$tambahan,$user_id));
         
-        $message = $status->getRowArray();
-        if ($message != null) {
-            $this->error_message = $message['message'];
-            return 0;
-        }
+    //     $message = $status->getRowArray();
+    //     if ($message != null) {
+    //         $this->error_message = $message['message'];
+    //         return 0;
+    //     }
 
-        $filters = array("a.dokumen_id"=>$upload_id);
-        $result = $this->tcg_dokumenpendukung($peserta_didik_id, $filters);
-        if ($result == null)    return null;
+    //     $filters = array("a.dokumen_id"=>$upload_id);
+    //     $result = $this->tcg_dokumenpendukung($peserta_didik_id, $filters);
+    //     if ($result == null)    return null;
 
-		return $result[0];
-	}
+	// 	return $result[0];
+	// }
 
 	function tcg_hapus_dokumenpendukung($peserta_didik_id,$kelengkapan_id){
         $this->error_message = null;
@@ -760,6 +785,25 @@ Class Mprofilsiswa
 
 		return $builder->get()->getResultArray();
 	}
+
+    function tcg_cek_nik($nik) {
+        $sql = "select count(*) as jumlah from tcg_peserta_didik where is_deleted=0 and nik=?";
+
+        $result = $this->db->query($sql, array($nik))->getRowArray();
+        if ($result == null)    return 0;
+
+        return $result['jumlah'];
+    }
+
+    function tcg_cek_nisn($nisn) {
+        $sql = "select count(*) as jumlah from tcg_peserta_didik where is_deleted=0 and nisn=?";
+
+        $result = $this->db->query($sql, array($nisn))->getRowArray();
+        if ($result == null)    return 0;
+
+        return $result['jumlah'];
+    }
+
 
     //---
 
@@ -1092,7 +1136,7 @@ Class Mprofilsiswa
 		$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND (a.peserta_didik_id=f.peserta_didik_id or a.surat_pernyataan_kebenaran_dokumen=1) AND f.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
-		return $builder->get();
+		return $builder->get()->getRowArray();
 	}    
 
 

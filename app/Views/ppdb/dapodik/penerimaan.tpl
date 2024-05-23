@@ -5,6 +5,13 @@
     </ol>
 </div>
 
+{if $cek_waktupendaftaran_sd==0 && $waktupendaftaran_sd}
+<div class="alert alert-secondary" role='alert'>
+    Periode pendaftaran SD adalah dari tanggal <b><span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
+        <span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_selesai_aktif}</span></b>.      
+</div>
+{/if}
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center justify-content-center" id="loading2" style="position: absolute; margin-top: 24px; margin-left: -12px;">
     <div class="loader" role="status">
         <span class="sr-only">Loading...</span>
@@ -29,7 +36,9 @@
                             <td class="text-center">Nama Ibu Kandung</td>
                             <td class="text-center">NPSN Sekolah Asal</td>
                             <td class="text-center" data-priority="4">Sekolah Asal</td>
+                            {if $cek_waktupendaftaran_sd==1}
                             <td class="text-center" data-priority="2"></td>
+                            {/if}
                         </tr>
                     </thead>
                 </table>
@@ -86,7 +95,9 @@
                             <td class="text-center" data-priority="4">Tanggal Lahir</td>
                             <td class="text-center">Asal Sekolah</td>
                             <td class="text-center">Diterima Di</td>
+                            {if $cek_waktupendaftaran_sd==1}
                             <td class="text-center" data-priority="2"></td>
+                            {/if}
                         </tr>
                     </thead>
                 </table>
