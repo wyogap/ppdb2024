@@ -81,12 +81,12 @@
 								?>
 							<tr>
 								<td><b><?php echo $row->jalur;?></b></td>
-								<td class="text-right"><?php echo $row->kuota;?></td>
+								<td class="text-end"><?php echo $row->kuota;?></td>
 							</tr>
 							<?php endforeach;?>
 							<tr class="bg-gray">
-								<td class="text-right"><b>Total Kuota</b></td>
-								<td class="text-right"><?php echo $totalkuota;?></td>
+								<td class="text-end"><b>Total Kuota</b></td>
+								<td class="text-end"><?php echo $totalkuota;?></td>
 							</tr>
 
 						</table>

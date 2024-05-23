@@ -42,6 +42,9 @@ abstract class CrudController extends BaseController {
     protected $is_json;
     protected $navigation;
 
+    protected $method = "";
+    protected $params = array();
+
 	abstract function index($params = array());
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -56,12 +59,31 @@ abstract class CrudController extends BaseController {
         //helper
         $helpers[] = 'functions';
 
-        //is-json
-        //TODO: implement properly
-        $uri = $this->request->getUri();
+        //URI params
+        $segments = $this->request->getUri()->getSegments();
+        $total = count($segments);
+        $controller = strtolower(basename(get_class($this)));
 
-        $segments = $uri->getSegments();
-        $json_segment = (array_search('json', $segments) != FALSE);
+        $this->method = "";
+        $this->params = array();
+        for($i=0; $i<$total; $i++) {
+            $segment = strtolower($segments[$i]);
+            if ($segment == $controller) {
+                if ($i+1<$total) {
+                    $this->method=$segments[$i+1];
+                }
+                else {
+                    $this->method='index';
+                }
+                for($j=$i+2; $j<$total; $j++) {
+                    $this->params[] = $segments[$j];
+                }
+                break;
+            }
+        }
+
+        //is-json
+        $json_segment = $this->method=='json' || (array_search('json', $segments) != FALSE);
         $json_param = !empty($this->request->getGetPost("json"));
 
         $this->is_json = ($json_segment || $json_param);

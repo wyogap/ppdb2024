@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 
 <html lang="en">
 
@@ -14,7 +14,16 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">
 
-    <!-- Datatable -->
+
+    <link rel="stylesheet" href="{$site_url}assets/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.css"/>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/> -->
+    <!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet'/> -->
+
+    <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+   <!-- Datatable -->
     <!-- <link href="{$base_url}/themes/dompet/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet"> -->
  
     <!-- icons -->
@@ -521,10 +530,14 @@
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a href="./app-profile.html" class="dropdown-item ai-icon">
+                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon">
+                                            <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                            <span class="ms-2">Mode Gelap / Mode Terang </span>
+                                        </button>
+                                        <button onclick=ganti_password() class="dropdown-item ai-icon">
                                             <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                             <span class="ms-2">Ganti PIN/Password </span>
-                                        </a>
+                                        </button>
                                         <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             <span class="ms-2">Logout </span>
@@ -676,7 +689,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="alert alert-danger alert-dismissible" role="alert">
                                 <p><i class="icon glyphicon glyphicon-warning-sign"></i>Anda belum mengganti PIN anda. <b>Segera ganti PIN awal anda!</b></p>
-                                <p style="margin-top: 15px !important; margin-bottom: -4px;"><a href="{$base_url}index.php/akun/password" class="btn btn-primary">Ganti PIN</a></p>
+                                <p style="margin-top: 15px !important; margin-bottom: -4px;"><a onclick=ganti_password() class="btn btn-primary">Ganti PIN</a></p>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         </div>
@@ -805,26 +818,85 @@
     <script src="{$base_url}assets/jquery-confirm/jquery-confirm.min.js"></script>
     <script src="{$base_url}assets/toastr/toastr.min.js"></script>
 
+    <script src="{$site_url}assets/leaflet/leaflet.js"></script>
+    <script src="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script> -->
+    <!-- <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script> -->
+
+    <script src="{$base_url}assets/select2/js/select2.min.js"></script>
+
     <script>
-    var dezSettingsOptions = {};
+        var dezSettingsOptions = {};
 
-    (function($) {
-        //update the theme setting. must be before dlabnav-init.js
-        dezSettingsOptions = {
-			typography: "cairo",
-			version: "light",
-			layout: "horizontal",
-			primary: "color_1",
-			navheaderBg: "color_1",
-			sidebarBg: "color_1",
-			sidebarStyle: "compact",
-			sidebarPosition: "fixed",
-			headerPosition: "fixed",
-			containerLayout: "boxed",
-		};
-        
-    })(jQuery);
+        (function($) {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
 
+            //update the theme setting. must be before dlabnav-init.js
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+            
+        })(jQuery);
+
+        function toggle_dark_mode() {
+            let dark_theme = getCookie('dark_theme');
+            if (dark_theme === undefined) {
+                dark_theme = 0;
+            } 
+
+            if (dark_theme == 1)    dark_theme = 0;
+            else                    dark_theme = 1;
+
+            setCookie("dark_theme", dark_theme, 30);
+
+            dezSettingsOptions = {
+                typography: "cairo",
+                version: ((dark_theme==1) ? "dark" : "light"),
+                layout: "horizontal",
+                primary: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "compact",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "boxed",
+            };
+           
+            new dezSettings(dezSettingsOptions); 
+        }
+
+        function setCookie(c_name, value, exdays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+            document.cookie = c_name + "=" + c_value;
+        }
+
+        function getCookie(c_name) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                x = x.replace(/^\s+|\s+$/g, "");
+                if (x == c_name) {
+                    return unescape(y);
+                }
+            }
+        }
+                
     </script>
 
     <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
@@ -887,19 +959,24 @@
 
 </html>
 
-<script>
-    //profil
-    var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi', 'surat-pernyataan'];
-    var flags = ['nilai-un', 'prestasi', 'kip', 'bdt', 'inklusi'];
+{include file="./_profil.tpl"}
+{include file="./_pendaftaran.tpl"}
 
-    var konfirmasi = {$konfirmasiprofil|json_encode};
-    var verifikasi = {$verifikasiprofil|json_encode};
-    var profilflag = {$profilflag|json_encode};
+<script type="text/javascript">
+    //profil
+    var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi', 'surat-pernyataan', 'nomer-hp'];
+    var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
+
+    var profil = {$profilsiswa|json_encode};
+    var konfirmasi = {};
+    var verifikasi = {};
+    var profilflag = {};
     var kelengkapan_data = {$kelengkapan_data};
     var siswa_tutup_akses = {$profilsiswa.tutup_akses};
 
     var profildikunci = 0;
     var pendaftarandikunci = 0;
+    var kebutuhankhusus = 0;
 
     //pendaftaran
     var cek_waktusosialisasi = {$cek_waktusosialisasi};
@@ -911,15 +988,15 @@
     var jumlahpendaftarannegeri = {$jumlahpendaftarannegeri};
     var jumlahpendaftaranswasta = {$jumlahpendaftaranswasta};
     
-    var daftarjalur = {$daftarjalur|json_encode};
+    var daftarpenerapan = {$daftarpenerapan|json_encode};
 
     //hasil pendaftaran
     var batasanperubahan = {$batasanperubahan|json_encode};
     var daftarpendaftaran = {$daftarpendaftaran|json_encode};
 
     //profil
-    var editprestasi;
-    var dtprestasi = null;
+    // var editprestasi;
+    // var dtprestasi = null;
     var dtriwayat = null;
     var userid = "{$user_id}";
 
@@ -929,6 +1006,9 @@
             profildikunci = 1;
         }
 
+        reload_profil();
+         
+        //menu
         $('[data-bs-toggle="menu"]').on( "click", function(e) {
             e.preventDefault();
             let dom = $(this);
@@ -962,456 +1042,35 @@
                 dom.addClass('active');
             }
 
+            //raise event
+            target.trigger("shown.bs.tab");
+
             //close side-bar
             $('#main-wrapper').removeClass('menu-toggle');
             $('.hamburger').removeClass('is-active');
         } );
-        
+
         //scroll to top
         $("a[href='#top']").click(function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });;
             return false;
         });
 
-        $('.collapse').on('shown.bs.collapse', function(e) {
-            let el = $(this);
-            var card = el.closest('.accordion-item');
-            var open = $(el.data('parent')).find('.collapse.show');
-            let width = $(window).width();
-
-            var additionalOffset = 0;
-            if(card.prevAll().filter(open.closest('.accordion-item')).length !== 0)
-            {
-                    additionalOffset = open.height();
-            }
-
-            let header_offset = 230;
-            if (width < 785) {
-                header_offset = 100;
-            }
-            else if (width < 1040) {
-                header_offset = 100;
-            }
-
-            $('html,body').animate({
-                scrollTop: card.offset().top - additionalOffset - header_offset
-            }, 100);
-
-            //resize table
-            if (card.prop('id') == 'prestasi') {
-                dtprestasi.columns.adjust().responsive.recalc();
-            }
-
-            //resize table
-            if (card.prop('id') == 'riwayat') {
-                dtriwayat.columns.adjust().responsive.recalc();
-            }
-        });
-
-        $("[tcg-edit-action='submit']").on("change", function(evt) {
-            let select = $(this);
-            let flagval = parseInt(select.val());
-            let submittag = select.attr('tcg-submit-tag');
-
-            let json = {};
-            json['user_id'] = userid;
-            json['data'] = {};
-
-            let elements = $("[tcg-input-tag='" +submittag+ "']");
-            elements.each(function(idx) {
-                //action
-                el = $(this);
-                if (flagval) {
-                    action = el.attr('tcg-input-true');
-                }
-                else {
-                    action = el.attr('tcg-input-false');
-                }
-                if (action == 'show') el.show();
-                else if (action == 'hide') el.hide();
-                else if (action == 'enable') el.attr("disabled",false);
-                else if (action == 'disable') el.attr("disabled",true);
-
-                //data to submit
-                let field = el.attr('tcg-field');
-                if (field == null || field == '') return;
-
-                let val = 0;
-
-                if (!flagval) {
-                    //start-editing -> store old value just in case
-                    this.defaultValue = this.value;
-                }
-                else {
-                    //save editing -> only submit if change
-                    if ((el.is('input') || el.is('select')) && this.defaultValue != this.value) {
-                        if (el.attr('type') == 'number') {
-                            val = parseFloat(el.val());
-                            if (isNaN(val)) val = 0;
-                            val = val.toFixed(2);
-                            el.val(val);
-                        }
-                        else {
-                            val = el.val();
-                        }
-
-                        //form data
-                        json['data'][field] = val;
-
-                        //copy value if necessary
-                        //lbl = elements.find("span[tcg-field='" +field+ "']");
-                        lbl = $("span[tcg-field='" +field+ "']");
-                        lbl.html(val);
-                    }
-                }
-            });
-
-            //submit form
-            json['data']["konfirmasi_" +submittag] = flagval;
-
-            $.ajax({
-                type: 'POST',
-                url: "{$site_url}ppdb/siswa/updateprofil",
-                dataType: 'json',
-                data: json,
-                async: true,
-                cache: false,
-                //if we use formData, set processData = false. if we use json, set processData = true!
-                //contentType: true,
-                //processData: true,      
-                timeout: 60000,
-                success: function(json) {
-                    if (json.error !== undefined && json.error != "" && json.error != null) {
-                        return;
-                    }
-                    //TODO: get the return value and re-set the field
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    //TODO
-                    return;
-                }
-            });
-
-            konfirmasi[submittag] = flagval;
-            if (flagval) {
-                verifikasi[submittag] = 1;
-            }
-
-            //update status
-            var card = select.closest('.accordion-item');
-            if (flagval) {
-                card.removeClass("status-danger");
-                card.find(".accordion-header-text .status").html('');
-            }
-            else {
-                card.addClass("status-danger");
-                card.find(".accordion-header-text .status").html('*Belum Benar*');
-            }
-
-            //special case
-            if (submittag == 'prestasi') {
-                if (flagval) {
-                    dtprestasi.buttons( 0, null ).container().hide();
-                }
-                else {
-                    dtprestasi.buttons( 0, null ).container().show();
-                }
-            }
-
-        })
-
-        $("[tcg-edit-action='toggle']").on("change", function(evt) {
-            select = $(this);
-            value = parseInt(select.val());
-            toggletag = select.attr('tcg-toggle-tag');
-
-            elements = $("[tcg-visible-tag='" +toggletag+ "']");
-            if (value) { elements.show(); }
-            else { elements.hide(); }
-
-            //update flag
-            profilflag[toggletag] = value;
-            
-            //special case: afirmasi
-            if (toggletag == 'kip' || toggletag == 'bdt') {
-                elements = $("[tcg-visible-tag='afirmasi']");
-                if (!profilflag['kip'] && !profilflag['bdt']) {
-                    elements.hide();
-                }
-                else {
-                    elements.show();
-                }
-            }
-
-            //special case: prestasi
-            if (toggletag == 'prestasi') {
-                if (profilflag['prestasi']) {
-                    dtprestasi.columns.adjust().responsive.recalc();
-                }
-            }
-        });
-
-        //all datatable must be responsive
-        $.extend( $.fn.dataTable.defaults, { responsive: true } );
-
-        editprestasi = new $.fn.dataTable.Editor( {
-            ajax: "{$site_url}ppdb/siswa/prestasi",
-            table: '#tbl-prestasi',
-            idSrc: "prestasi_id",
-            fields: [ 
-                {
-                    label: "Prestasi:",
-                    name: "skoring_id",
-                    type: "select",
-                }, {
-                    label: "Uraian:",
-                    name: "uraian",
-                    type: "textarea",
-                {if ($flag_upload_dokumen)}
-                }, {
-                    label: "Dokumen Pendukung:",
-                    name: "dokumen_pendukung",
-                    type: "upload",
-                    display: function ( file_id ) {
-                        if (file_id == "" || typeof files[file_id] === undefined) {
-                            return "";
-                        }
-                        return '<img src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'"/>';
-                    },
-                    clearText: "Hapus",
-                    noImageText: 'No image'
-                {/if}
-                }
-            ],
-            i18n: {
-            create: {
-                button: "Baru",
-                title:  "Tambah data prestasi",
-                submit: "Simpan"
-            },
-            edit: {
-                button: "Ubah",
-                title:  "Ubah prestasi",
-                submit: "Simpan"
-            },
-            remove: {
-                button: "Hapus",
-                title:  "Hapus prestasi",
-                submit: "Hapus",
-                confirm: {
-                    _: "Konfirmasi hapus %d prestasi?",
-                    1: "Konfirmasi hapus 1 prestasi?"
-                }
-            },        
-            error: {
-                system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi nomor bantuan."
-            },
-            datetime: {
-                previous: 'Sebelum',
-                next:     'Selanjutnya',
-                months:   [ 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember' ],
-                weekdays: [ 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab' ],
-                hour: 'Jam',
-                minute: 'Menit'
-            }
-            }
-        });
-
-        editprestasi.on('preSubmit', function(e, o, action) {
-            if (action === 'create' || action === 'edit') {
-                let field = null;
-
-                field = this.field('skoring_id');
-                if (!field.isMultiValue()) {
-                    if (!field.val() || field.val() == 0) {
-                        field.error('Prestasi harus diisi');
-                    }
-                }
-
-                field = this.field('uraian');
-                if (!field.isMultiValue()) {
-                    if (!field.val() || field.val() == 0) {
-                        field.error('Uraian harus diisi');
-                    }
-                }
-
-                {if ($flag_upload_dokumen)}
-                field = this.field('dokumen_pendukung');
-                if (!field.isMultiValue()) {
-                    if (!field.val() || field.val() == 0) {
-                        field.error('Dokumen pendukung harus diisi');
-                    }
-                }
-                {/if}
-
-                /* If any error was reported, cancel the submission so it can be corrected */
-                if (this.inError()) {
-                    this.error('Data wajib belum diisi');
-                    return false;
-                }
-            }            
-        });        
-
-        dtprestasi = $('#tbl-prestasi').DataTable({
-            "responsive": true,
-            "paging": false,
-            "dom": "Brt",
-            select: true,
-            buttons: [
-                { extend: "create", editor: editprestasi, className: "btn btn-primary" },
-                // { extend: "edit", editor: editprestasi, className: "dt-button d-none" },
-                { extend: "remove", editor: editprestasi, className: "btn btn-danger" },
-            ],
-            ajax: "{$site_url}ppdb/siswa/prestasi",
-            "language": {
-                "processing":   "Sedang proses...",
-                "lengthMenu":   "Tampilan _MENU_ entri",
-                "zeroRecords":  "Tidak ditemukan data yang sesuai",
-                "loadingRecords": "Loading...",
-                "emptyTable":   "Tidak ditemukan data yang sesuai",
-                },
-            columns: [
-                // { "defaultContent": "" },
-                { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
-                { data: "prestasi", className: 'dt-body-left', "orderable": false },
-                { data: "uraian", className: 'dt-body-left', "orderable": false },
-                { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
-                    render: function ( file_id, type, row ) {
-                        {if !($flag_upload_dokumen)}
-                        return "Dicocokkan di sekolah tujuan";
-                        {else}
-                        if (type === 'display') {
-                            if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
-                                return "";
-                            }
-                            
-                            let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
-
-                            let verifikasi = row.verifikasi;
-                            if (verifikasi == 2) {
-                                str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
-                                str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
-                            }
-
-                            return str;
-                        }
-                        else {
-                            row.filename;
-                        }
-                        {/if}
-                    },
-                    defaultContent: "Tidak ada dokumen",
-                    title: "Dokumen Pendukung"
-                },
-                { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
-            ],
-            "columnDefs": [ {
-                "targets": 3,
-                "createdCell": function (td, cellData, rowData, row, col) {
-                    if ( rowData.verifikasi == 1 ) {
-                        $(td).removeClass('editable');
-                    }
-                }
-            } ],
-            order: [ 0, 'asc' ],
-        });
-
-        dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
-
-        //default: hide button
-        dtprestasi.buttons( 0, null ).container().hide();
-
-        dtriwayat = $('#triwayat').DataTable({
-            "responsive": true,
-            "paging": false,
-            "dom": 't',
-            "buttons": [
-            ],
-            "language": {
-                "sProcessing":   "Sedang proses...",
-                "sLengthMenu":   "Tampilan _MENU_ entri",
-                "sZeroRecords":  "Tidak ditemukan data yang sesuai",
-                "sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-                "sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-                "sInfoPostFix":  "",
-                "sSearch":       "Cari:",
-                "sUrl":          "",
-                "oPaginate": {
-                    "sFirst":    "Awal",
-                    "sPrevious": "Balik",
-                    "sNext":     "Lanjut",
-                    "sLast":     "Akhir"
-                }
-            },	
-            ajax: "{$site_url}ppdb/siswa/riwayat",
-            columns: [
-                { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },
-                { data: "nama", className: 'dt-body-left readonly-column', orderable: false },
-                { data: "verifikasi", className: 'dt-body-center', orderable: false, 
-                    "render": function (val, type, row) {
-                            return val == 1 ? "SUDAH Lengkap" : "BELUM Lengkap";
-                        } 
-                },
-                { data: "catatan_kekurangan", className: 'dt-body-left readonly-column', width: "50%", orderable: false,
-                    "render": function (val, type, row) {
-                            return val.replace(/:/g, " : ").replace(/;/g, "<br>");
-                        } 
-                },
-            ],
-            order: [ 0, 'desc' ],
-        });
-
-        $('.upload-file').change(function() {
-            let el = $(this);
-            let docid = el.attr('tcg-doc-id');
-            let files = el.prop('files');
-
-            if (files.length == 0) {
-                alert ("Belum memilih file")
-                return;
-            }
-
-            let file = files[0];
-            alert (docid + ":" + file.name);
-
-            // add assoc key values, this will be posts values
-            var formData = new FormData();
-            formData.append("upload", file, file.name);
-            formData.append("action", "upload");
-
-            //TODO
-            // $.ajax({
-            //     type: "POST",
-            //     url: "",
-            //     async: true,
-            //     data: formData,
-            //     cache: false,
-            //     contentType: false,
-            //     processData: false,
-            //     timeout: 60000,
-            //     dataType: 'json',
-            //     success: function(json) {
-            //         if (json.error !== undefined && json.error != "" && json.error != null) {
-            //             return;
-            //         }
-
-            //         //TODO
-            //     },
-            //     error: function(jqXHR, textStatus, errorThrown) {
-
-            //         return;
-            //     }
-            // });
-
-            
-        });
-
-        update_profile_layout();
-        update_pendaftaran_layout();
+        init_profil();
+        init_pendaftaran();
         update_hasil_layout();
 
     })(jQuery);       
 
+    function ganti_password() {
+        alert("TODO");
+    }
+
+    function send_ganti_password() {
+
+    }
+
 </script>
+
+
 

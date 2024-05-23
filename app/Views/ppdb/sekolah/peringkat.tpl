@@ -60,7 +60,7 @@
                         <td>{$row.sekolah_asal}</td>
                         <td class="text-center">{$row.jalur}</td>
                         <td class="text-center">{$row.label_jenis_pilihan}</td>
-                        <td class="text-right">{$row.skor}</td>
+                        <td class="text-end">{$row.skor}</td>
                         <td class="text-center">{$row.created_on}</td>
                         {*
                             status_penerimaan == 0  => belum diperingkat
@@ -173,7 +173,7 @@
                             </td>
                             <td class="text-center hala">{$row2.label_jenis_pilihan}</td>
                             <td class="text-center">{$row2.created_on}</td>
-                            <td class="text-right">{$row2.skor}</td>
+                            <td class="text-end">{$row2.skor}</td>
                         </tr>
                         {/foreach}
 

@@ -165,7 +165,7 @@
 									</td>
 									<td class="text-center"><?php echo $row2->jenis_pilihan;?></td>
 									<td class="text-center"><?php echo $row2->created_on;?><?php echo $row2->skor;?></td>
-									<td class="text-right"><?php echo $row2->skor;?></td>
+									<td class="text-end"><?php echo $row2->skor;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 								<?php } ?>
@@ -216,7 +216,7 @@
 									</td>
 									<td class="text-center"><?php echo $row2->jenis_pilihan;?></td>
 									<td class="text-center"><?php echo $row2->created_on;?></td>
-									<td class="text-right"><?php echo $row2->skor;?></td>
+									<td class="text-end"><?php echo $row2->skor;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 								<?php } ?>

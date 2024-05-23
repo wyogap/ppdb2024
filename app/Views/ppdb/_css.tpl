@@ -106,7 +106,7 @@
     left: 0px !important;
     padding-left: 40px !important;
     padding-right: 40px !important;
-    height: 104px !important;
+    height: 114px !important;
     width: 75% !important;
     max-width: 800px !important;
 }
@@ -424,6 +424,17 @@ table.dataTable.display tbody tr.odd {
     color: var(--nav-headbg);
 } */
 
+
+[data-theme-version="dark"] table.dataTable.hover tbody tr:hover, 
+[data-theme-version="dark"] table.dataTable.display tbody tr:hover {
+    background-color: var(--bs-gray);
+}
+
+[data-theme-version="dark"] table.dataTable.stripe tbody tr.odd, 
+[data-theme-version="dark"] table.dataTable.display tbody tr.odd {
+    background-color: var(--sidebar-bg);
+}
+
 [data-theme-version="light"] .accordion__body {
     background-color: white;
 }
@@ -636,11 +647,37 @@ table.dataTable tbody td.bg-yellow {
     display: block;
 }
 
+.select2-container--default .select2-selection--single {
+    border-radius: 1rem;
+}
+
 [data-theme-version="dark"] .leaflet-layer,
 [data-theme-version="dark"] .leaflet-control-zoom-in,
 [data-theme-version="dark"] .leaflet-control-zoom-out,
 [data-theme-version="dark"] .leaflet-control-attribution {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+[data-theme-version="dark"] .leaflet-control a {
+    color: var(--sidebar-bg);
+}
+
+[data-theme-version="dark"] .leaflet-control-zoom a  {
+    color: var(--bs-white);
+    background-color: var(--title);
+}
+
+.card .leaflet-control-attribution, .leaflet-control-scale-line {
+    margin-right: 28px !important;
+}
+
+.card .leaflet-container {
+    border-bottom-right-radius: 1.75rem;
+    border-bottom-left-radius: 1.75rem;
+}
+
+.card .card-body:has(.leaflet-container) {
+    padding: 0px;
 }
 
 @media only screen and (max-width: 784px) {

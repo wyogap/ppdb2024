@@ -229,12 +229,12 @@
                                     {{#item.skoring}}
                                     <tr>
                                         <td>{{keterangan}}</td>
-                                        <td class="text-right">{{nilai}}</td>
+                                        <td class="text-end">{{nilai}}</td>
                                     </tr>
                                     {{/item.skoring}}
                                     <tr class="bg-gray">
                                         <th>Total</th>
-                                        <th class="text-right">{{item.totalskoring}}</th>
+                                        <th class="text-end">{{item.totalskoring}}</th>
                                     </tr>
                                 </table>
 

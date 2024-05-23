@@ -111,9 +111,9 @@
 									<td class="text-center"><?php echo $row->npsn;?></td>
 									<td><?php echo $row->nama;?></td>
 									<td class="text-center"><?php echo $row->kuota_total;?></td>
-                                    <td class="text-right"><?php echo $row->swasta_diterima;?></td>
-                                    <td class="text-right"><?php echo $row->swasta_tidak_diterima;?></td>
-                                    <td class="text-right"><?php echo $row->pendaftar_swasta;?></td>
+                                    <td class="text-end"><?php echo $row->swasta_diterima;?></td>
+                                    <td class="text-end"><?php echo $row->swasta_tidak_diterima;?></td>
+                                    <td class="text-end"><?php echo $row->pendaftar_swasta;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 							</tbody>

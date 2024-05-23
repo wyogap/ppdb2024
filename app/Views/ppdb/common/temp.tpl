@@ -206,13 +206,13 @@
                                                     {foreach $nilaiskoring[$row.pendaftaran_id] as $row2}
                                                     <tr>
                                                         <td>{$row2.keterangan}</td>
-                                                        <td class="text-right">{$row2.nilai}</td>
+                                                        <td class="text-end">{$row2.nilai}</td>
                                                     </tr>
                                                     {$totalnilai = $totalnilai + $row2.nilai}
                                                     {/foreach}
                                                     <tr class="bg-gray">
                                                         <th>Total</th>
-                                                        <th class="text-right">{$totalnilai}</th>
+                                                        <th class="text-end">{$totalnilai}</th>
                                                     </tr>
                                                 </table>
  

@@ -51,18 +51,18 @@
 									<td class="text-center"><a href="<?php echo base_url();?>index.php/Chome/peringkat?sekolah_id=<?php echo $row->sekolah_id;?>"><i class="glyphicon glyphicon-list-alt"></i></a></td>
 									<td class="text-center"><?php echo $row->npsn;?></td>
 									<td><?php echo $row->nama;?></td>
-									<td class="text-right"><?php echo $row->zonasi_diterima;?></td>
-									<td class="text-right"><?php echo $row->zonasi_tidak_diterima;?></td>
-									<td class="text-right"><?php echo $row->pendaftar_zonasi;?></td>
-									<td class="text-right"><?php echo $row->prestasi_diterima;?></td>
-									<td class="text-right"><?php echo $row->prestasi_tidak_diterima;?></td>
-									<td class="text-right"><?php echo $row->pendaftar_prestasi;?></td>
-									<td class="text-right"><?php echo $row->afirmasi_diterima;?></td>
-									<td class="text-right"><?php echo $row->afirmasi_tidak_diterima;?></td>
-									<td class="text-right"><?php echo $row->pendaftar_afirmasi;?></td>
-									<td class="text-right"><?php echo $row->perpindahan_orang_tua_diterima;?></td>
-									<td class="text-right"><?php echo $row->perpindahan_orang_tua_tidak_diterima;?></td>
-									<td class="text-right"><?php echo $row->pendaftar_perpindahan_orang_tua;?></td>
+									<td class="text-end"><?php echo $row->zonasi_diterima;?></td>
+									<td class="text-end"><?php echo $row->zonasi_tidak_diterima;?></td>
+									<td class="text-end"><?php echo $row->pendaftar_zonasi;?></td>
+									<td class="text-end"><?php echo $row->prestasi_diterima;?></td>
+									<td class="text-end"><?php echo $row->prestasi_tidak_diterima;?></td>
+									<td class="text-end"><?php echo $row->pendaftar_prestasi;?></td>
+									<td class="text-end"><?php echo $row->afirmasi_diterima;?></td>
+									<td class="text-end"><?php echo $row->afirmasi_tidak_diterima;?></td>
+									<td class="text-end"><?php echo $row->pendaftar_afirmasi;?></td>
+									<td class="text-end"><?php echo $row->perpindahan_orang_tua_diterima;?></td>
+									<td class="text-end"><?php echo $row->perpindahan_orang_tua_tidak_diterima;?></td>
+									<td class="text-end"><?php echo $row->pendaftar_perpindahan_orang_tua;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 							</tbody>
@@ -91,9 +91,9 @@
 									<td class="text-center"><a href="<?php echo base_url();?>index.php/Chome/peringkat?sekolah_id=<?php echo $row->sekolah_id;?>"><i class="glyphicon glyphicon-list-alt"></i></a></td>
 									<td class="text-center"><?php echo $row->npsn;?></td>
 									<td><?php echo $row->nama;?></td>
-                                    <td class="text-right"><?php echo $row->swasta_diterima;?></td>
-                                    <td class="text-right"><?php echo $row->swasta_tidak_diterima;?></td>
-                                    <td class="text-right"><?php echo $row->pendaftar_swasta;?></td>
+                                    <td class="text-end"><?php echo $row->swasta_diterima;?></td>
+                                    <td class="text-end"><?php echo $row->swasta_tidak_diterima;?></td>
+                                    <td class="text-end"><?php echo $row->pendaftar_swasta;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 							</tbody>

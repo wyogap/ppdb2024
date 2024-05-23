@@ -1,6 +1,8 @@
 <?php
 namespace App\Libraries;
 
+include_once APPPATH ."libraries/qrcode/phpqrcode.php";
+
 use Config\Paths;
 use QRcode;
 use QRimage;
@@ -20,9 +22,9 @@ use QRimage;
 class QRCodeLibrary
 {
 	var $cacheable = true;
-	var $cachedir = 'application/cache/';
-	var $errorlog = 'application/logs/';
-	var $imagedir = 'application/qrcode/';
+	var $cachedir = WRITEPATH ."/cache/";
+	var $errorlog = WRITEPATH ."/logs/";
+	var $imagedir = WRITEPATH ."/qrcode/";
 	var $quality = true;
 	var $size = 1024;
 	
@@ -39,10 +41,9 @@ class QRCodeLibrary
 		// include "qrcode/qrmask.php";
 		// include "qrcode/qrencode.php";
 		
-        $path = new Paths();
-        $this->cachedir = $path->writableDirectory ."/cache/";
-        $this->errorlog = $path->writableDirectory ."/logs/";
-        $this->imagedir = $path->writableDirectory ."/qrcode/";
+        // $this->cachedir = WRITEPATH ."/cache/";
+        // $this->errorlog = WRITEPATH ."/logs/";
+        // $this->imagedir = WRITEPATH ."/qrcode/";
 
 		$this->initialize($config);
 	}

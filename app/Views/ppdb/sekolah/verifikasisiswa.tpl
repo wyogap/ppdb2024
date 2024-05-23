@@ -213,7 +213,7 @@
             <div class="accordion-body-text">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="peta" style="width: 100%; height: 400px;"></div>
+                        <div id="peta" style="width: 100%; height: 400px; z-index: 1;"></div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">

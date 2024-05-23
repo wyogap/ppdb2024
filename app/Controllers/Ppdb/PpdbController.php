@@ -3,7 +3,7 @@ namespace App\Controllers\Ppdb;
 
 use App\Controllers\Core\BaseController;
 
-use App\Models\Ppdb\Admin\Msetting;
+use App\Models\Ppdb\Mconfig;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -11,9 +11,9 @@ use Psr\Log\LoggerInterface;
 class PpdbController extends BaseController {
 
 	protected static $AUTHENTICATED = true;
-	protected static $ROLE_ID = 0;
+	protected static $ROLE_ID = 0;              //$ROLE_ID can be an array!
 
-    protected $Msetting;
+    protected $Mconfig;
 
     protected $nama_wilayah = "";
     protected $kode_wilayah = "";
@@ -39,6 +39,8 @@ class PpdbController extends BaseController {
     protected $waktu_verifikasi = 0;
     protected $waktu_daftarulang = 0;
 
+    protected $method = "";
+    protected $params = array();
     protected $is_json = false;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -49,17 +51,42 @@ class PpdbController extends BaseController {
         //load library
 
         //load model
-        $this->Msetting = new Msetting();
+        $this->Mconfig = new Mconfig();
+
+        //URI params
+        $segments = $this->request->getUri()->getSegments();
+        $total = count($segments);
+        $controller = strtolower(basename(get_class($this)));
+
+        $this->method = "";
+        $this->params = array();
+        for($i=0; $i<$total; $i++) {
+            $segment = strtolower($segments[$i]);
+            if ($segment == $controller) {
+                if ($i+1<$total) {
+                    $this->method=$segments[$i+1];
+                }
+                else {
+                    $this->method='index';
+                }
+                for($j=$i+2; $j<$total; $j++) {
+                    $this->params[] = $segments[$j];
+                }
+                break;
+            }
+        }
 
         //is-json
-        //TODO: implement properly
-        $uri = $this->request->getUri();
+        if (!$this->is_json) {
+            //other than the index, all are json call
+            $this->is_json = ($this->method != '') && ($this->method != 'index');
+        }
 
-        $segments = $uri->getSegments();
-        $json_segment = (array_search('json', $segments) != FALSE);
-        $json_param = !empty($this->request->getGetPost("json"));
+        // //is-json
+        // $json_segment = $this->method=='json' || (array_search('json', $segments) !== FALSE);
+        // $json_param = !empty($this->request->getGetPost("json"));
 
-        $this->is_json = ($json_segment || $json_param);
+        // $this->is_json = ($json_segment || $json_param);
 
         //logged-in user
         $this->user_id = $this->session->get("user_id");
@@ -97,7 +124,7 @@ class PpdbController extends BaseController {
         }
 
         if (!empty($kode_wilayah) && empty($nama_wilayah)) {
-            $nama_wilayah = $this->Msetting->tcg_nama_wilayah($kode_wilayah);
+            $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
         }
 
 		//set from session if necessary
@@ -132,7 +159,7 @@ class PpdbController extends BaseController {
 		}
 
         if (!empty($tahun_ajaran_id) && empty($nama_tahun_ajaran)) {
-            $nama_tahun_ajaran = $this->Msetting->tcg_nama_tahunajaran($tahun_ajaran_id);
+            $nama_tahun_ajaran = $this->Mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
         }
 
 		if ($this->session->get('tahun_ajaran_aktif') != $tahun_ajaran_id) {
@@ -165,7 +192,7 @@ class PpdbController extends BaseController {
 		}
 
         if (!empty($putaran) && empty($nama_putaran)) {
-            $nama_putaran = $this->Msetting->tcg_nama_putaran($putaran);
+            $nama_putaran = $this->Mconfig->tcg_nama_putaran($putaran);
         }
 
 		if ($this->session->get('putaran_aktif') != $putaran) {
@@ -194,16 +221,16 @@ class PpdbController extends BaseController {
 
             //smarty: logged-in user
             if ($this->user_id) {
-                $this->smarty->assign('peran_id', $this->peran_id);
+                $this->smarty->assign('user_id', $this->user_id);
                 $this->smarty->assign('nama_pengguna', $this->nama_pengguna);
-                $this->smarty->assign('is_siswa', $this->is_siswa);    
-                $this->smarty->assign('is_sekolah', $this->is_sekolah);    
-                $this->smarty->assign('is_dapodik', $this->is_dapodik);    
-                $this->smarty->assign('is_dinas', $this->is_dinas);    
                 $this->smarty->assign('user_name', $this->session->get('user_name'));
-
+                // $this->smarty->assign('peran_id', $this->peran_id);
+                // $this->smarty->assign('is_siswa', $this->is_siswa);    
+                // $this->smarty->assign('is_sekolah', $this->is_sekolah);    
+                // $this->smarty->assign('is_dapodik', $this->is_dapodik);    
+                // $this->smarty->assign('is_dinas', $this->is_dinas);    
             }
-            $this->smarty->assign('peserta_didik_id', $this->peserta_didik_id);
+            // $this->smarty->assign('peserta_didik_id', $this->peserta_didik_id);
 
             //smarty: flashdata
             $this->error_message = $this->session->getFlashdata('error');
@@ -229,9 +256,7 @@ class PpdbController extends BaseController {
 		$isLoggedIn = !empty($this->session->get('user_id'));
 		if (static::$AUTHENTICATED && !$isLoggedIn) {
 			if ($this->is_json) {
-				//$this->json_not_login();
-                echo "not-login";
-                return;
+				$this->print_json_error("not-login");
 			} else {
 				return redirect()->to(site_url() .'auth');
 			}
@@ -239,14 +264,15 @@ class PpdbController extends BaseController {
 
         //must be role_id?
         $role_id = $this->session->get("role_id");
-		if (!empty(static::$ROLE_ID) && static::$ROLE_ID != $role_id) {
+		if (!empty(static::$ROLE_ID) && 
+                //current role is not static::$ROLE_ID
+                ((!is_array(static::$ROLE_ID) && static::$ROLE_ID != $role_id) || 
+                //static::$ROLE_ID can be an array
+                (is_array(static::$ROLE_ID) && array_search($role_id,static::$ROLE_ID) === FALSE))) {
 			if ($this->is_json) {
-				//$this->json_not_login();
-                echo "not-authorized";
-                return;
+				$this->print_json_error("not-authorized");
 			} else {
                 return view('ppdb/home/notauthorized');		//not-authorized
-                return;
             }
 		}
 
@@ -267,7 +293,7 @@ class PpdbController extends BaseController {
 		return view('ppdb/home/notauthorized');
 	}
 
-    protected function print_json_error($error_message, $error_no = 0) {
+    protected function print_json_error($error_message, $error_no = -1) {
         $json = array();
         $json["status"] = 0;
         $json["error"] = $error_message;

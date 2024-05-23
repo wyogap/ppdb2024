@@ -35,9 +35,11 @@ class Verifikasi extends PpdbController {
         $this->Msekolah = new Mprofilsekolah();
         $this->Msiswa = new Mprofilsiswa();
 
-        // if($this->session->get('is_logged_in')==FALSE || $this->session->get('peran_id')!=ROLEID_SEKOLAH) {
-		// 	redirect(site_url() .'auth');
-		// }
+        //is-json
+        if (!$this->is_json) {
+            //other than the index, all are json call
+            $this->is_json = ($this->method != '') && ($this->method != 'index');
+        }
     }
 
 	function index()
@@ -50,7 +52,7 @@ class Verifikasi extends PpdbController {
 		do {   
 			$data['sekolah_id'] = $sekolah_id;
 
-            $data['waktuverifikasi'] = $this->Msetting->tcg_cek_waktuverifikasi();
+            $data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
             $data['flag_upload_dokumen'] = $this->setting->get('upload_dokumen');
 
 			$data['info'] = $this->session->getFlashdata('info');
@@ -400,336 +402,281 @@ class Verifikasi extends PpdbController {
 	// }
 
     function simpan() {
-        //TODO: cek kelengkapan berkas
-
-        //TODO: simpan data di riwayat verifikasi
-		$pengguna_id = $this->session->userdata('pengguna_id');
-		$sekolah_id = $this->session->userdata('sekolah_id');
-		$peran_id = $this->session->userdata('peran_id');
-
-		$tahun_ajaran_id = $this->session->userdata('tahun_ajaran_aktif');
-
-		$peserta_didik_id = $this->input->post("peserta_didik_id");
-
-		//redirect("Cinfo");
-		$this->load->model(array('Msekolah','Msetting','Msiswa'));
-
-		//TODO: only can verify within the specified timeframe
-		$data['settingverifikasiberkas'] = $this->Msetting->tcg_waktuverifikasi();
-
-		$jumlahberkas = 0;
-		$jumlahberkasfisik = 0;
-		$jumlahupdate = 0;
-
-		//daftar catatan kekurangan
-		$kelengkapan_profil = 1;
-		$kelengkapan_berkas = 1;
-		$catatan_kekurangan = "";
-
-		//daftar prestasi
-		$verifikasi_bukti_prestasi = 1;
-
-		//verifikasi profil siswa
-		$verifikasi_siswa = array();
-
-		// $kelengkapan_id = 21;
-		// echo ''. $this->input->post("system_".$kelengkapan_id). ';'. $this->input->post("orig_system_".$kelengkapan_id). ';'. $this->input->post("catatan_".$kelengkapan_id). ';'. $this->input->post("orig_catatan_".$kelengkapan_id). ';<br>' ;
-
-		//verifikasi dokumen pendukung satu-satu
-		foreach ($_POST as $key => $value) {
-			if(substr($key,0,6)=="radio_"){
-				if (empty($value)) {
-					//ignore
-					continue;
-				}
-
-				$dokumen_id = str_replace('radio_','',$key);
-
-				//tidak ada perubahan
-				if ($this->input->post("radio_".$dokumen_id) == $this->input->post("orig_radio_".$dokumen_id) 
-						&& $this->input->post("catatan_".$dokumen_id) == $this->input->post("orig_catatan_".$dokumen_id)) {
-					//data lama masih menunjukkan belum lengkap -> dan tidak ada perubahan
-					if ($value != 1) {
-						$kelengkapan_berkas = 2;
-					}
-					continue;
-				}
-
-				$verifikasi = $value;
-				if ($value == 1) {
-					$catatan = "";
-				} else {
-					$catatan = nohtml($this->input->post("catatan_$dokumen_id"));
-				}
-
-				//$catatan = str_replace(array("\r\n", "\n", "\r"),"<br>",$catatan);
-
-				//verifikasi dokumen pendukung
-				$this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$dokumen_id,$verifikasi,$catatan,$pengguna_id);
-
-				//verifikasi berkas untuk semua pendaftaran
-				$this->Msiswa->tcg_verifikasi_berkas($peserta_didik_id,$tahun_ajaran_id,$dokumen_id,$verifikasi,$pengguna_id);
-
-				//catatan kekurangan untuk riwayat verifikasi
-				if ($value != 1) {
-					$nama_dokumen = $this->Msetting->tcg_nama_dokumenpendukung($dokumen_id);
-					$catatan_kekurangan .= "$nama_dokumen:$catatan;";
-					$kelengkapan_berkas = 2;
-				} 
-
-				//mark data prestasi 
-				if ($dokumen_id == 8 && $verifikasi == 2) {
-					$verifikasi_bukti_prestasi = 2;
-				}
-
-				$jumlahberkas++;
-			}
-			else if (substr($key,0,11)=="verifikasi_") {
-				if (empty($value)) {
-					//ignore
-					continue;
-				}
-
-				$name = str_replace('verifikasi_','',$key);
-
-				//tidak ada perubahan
-				if ($this->input->post("verifikasi_".$name) == $this->input->post("orig_verifikasi_".$name) 
-						&& $this->input->post("catatan_".$name) == $this->input->post("orig_catatan_".$name)) {
-					if ($value != 1) {
-						$kelengkapan_profil = 2;
-					}
-					continue;
-				}
-
-				$verifikasi = $value;
-				if ($verifikasi == 1) {
-					$catatan = "";
-				}
-				else {
-					$catatan = nohtml($this->input->post("catatan_".$name));
-				}
-
-				//$catatan = str_replace(array("\r\n", "\n", "\r"),"<br>",$catatan);
-
-				$verifikasi_siswa["verifikasi_".$name] = $verifikasi;
-				$verifikasi_siswa["catatan_".$name] = $catatan;	
-				$verifikasi_siswa["konfirmasi_".$name] = $verifikasi;
-
-				if ($value == 3) {
-					//add entry verifikasi dinas
-					$this->Msekolah->tcg_verifikasidinas_baru($peserta_didik_id,$name,null,$catatan);
-				}
-				
-				if ($value != 1) {
-					$title = "";
-					switch($name) {
-						case "profil": $title = "Identitas Siswa"; break;
-						case "lokasi": $title = "Lokasi Rumah"; break;
-						case "nilai": $title = "Nilai Kelulusan / Nilai Ujian Nasional"; break;
-						case "prestasi": $title = "Data Prestasi"; break;
-						case "afirmasi": $title = "Data Afirmasi"; break;
-						case "inklusi": $title = "Data Kebutuhan Khusus"; break;
-						default: "Tidak ada";
-					}
-					
-					if ($value == 3) {
-						$catatan_kekurangan .= "Klarifikasi Dinas ($title):$catatan;";
-					}
-					else {
-						$catatan_kekurangan .= "$title:$catatan;";
-					}
-					$kelengkapan_profil = 2;
-				}
-
-				$jumlahupdate++;	
-
-			}
-			else if (substr($key,0,7)=="berkas_") {
-				if (!isset($value)) {
-					//ignore
-					continue;
-				}
-
-				$dokumen_id = str_replace('berkas_','',$key);
-
-				//tidak ada perubahan
-				if ($this->input->post("berkas_".$dokumen_id) == $this->input->post("orig_berkas_".$dokumen_id)) {
-					if ($value != 1) {
-						$kelengkapan_berkas = 2;
-					}
-					continue;
-				}
-
-				//verifikasi berkas untuk semua pendaftaran
-				$this->Msiswa->tcg_verifikasi_berkas_fisik($peserta_didik_id,$dokumen_id,$value,$pengguna_id);
-
-				//catatan kekurangan untuk riwayat verifikasi
-				if ($value == 1) {
-					$nama_dokumen = $this->Msetting->tcg_nama_dokumenpendukung($dokumen_id);
-					$catatan_kekurangan .= "$nama_dokumen (berkas fisik):diterima;";
-				} 
-				else {
-					$nama_dokumen = $this->Msetting->tcg_nama_dokumenpendukung($dokumen_id);
-					$catatan_kekurangan .= "$nama_dokumen (berkas fisik):belum-diterima;";
-					//mark belum lengkap
-					$kelengkapan_berkas = 2;
-				}
-
-				$jumlahberkasfisik++;	
-			}
-
-			if(substr($key,0,7)=="system_"){
-				if (empty($value)) {
-					//ignore
-					continue;
-				}
-
-				$kelengkapan_id = str_replace('system_','',$key);
-
-				$query = $this->Msiswa->tcg_dokumen_pendukung_kelengkapan_id($peserta_didik_id, $kelengkapan_id);
-				if ($query->num_rows() > 0) {
-					return;
-				}
-				
-				//tidak ada perubahan
-				if ($this->input->post("system_".$kelengkapan_id) == $this->input->post("orig_system_".$kelengkapan_id) 
-						&& $this->input->post("catatan_".$kelengkapan_id) == $this->input->post("orig_catatan_".$kelengkapan_id)) {
-					if ($value != 1) {
-						$kelengkapan_berkas = 2;
-					}
-					continue;
-				}
-
-				$verifikasi = $value;
-				if ($value == 1) {
-					$catatan = "";
-				} else {
-					$catatan = nohtml($this->input->post("catatan_$kelengkapan_id"));
-				}
-
-				//$catatan = str_replace(array("\r\n", "\n", "\r"),"<br>",$catatan);
-
-				//catatan kekurangan untuk riwayat verifikasi
-				if ($value != 1) {
-					$nama_dokumen = $this->Msetting->tcg_nama_daftarkelengkapan($kelengkapan_id);
-					$catatan_kekurangan .= "$nama_dokumen:$catatan;";
-					$kelengkapan_berkas = 2;
-				} 
-
-				//create dokumen dummy
-				$this->Msiswa->tcg_dokumen_pendukung_hilang($peserta_didik_id, $kelengkapan_id, $pengguna_id, $catatan);
-
-				$jumlahberkas++;
-			}
-		}
-
-		//override status of data prestasi if necessary
-		if ($verifikasi_bukti_prestasi == 2 && $verifikasi_siswa["verifikasi_prestasi"] != 2) {
-			$verifikasi_siswa["verifikasi_prestasi"] = 2;
-			$verifikasi_siswa["catatan_prestasi"] = "Verifikasi dokumen bukti prestasi belum benar.";	
-			$verifikasi_siswa["konfirmasi_prestasi"] = 2;
-			$catatan_kekurangan .= "Data Prestasi:". $verifikasi_siswa["catatan_prestasi"]. ";";
-			$kelengkapan_profil = 2;
-			$jumlahupdate++;
-		}
-
-		//update kelengkapan data
-		if ($jumlahupdate > 0) {
-			$this->Msiswa->tcg_verifikasi_siswa($peserta_didik_id,$verifikasi_siswa, $pengguna_id);
-		}
-		
-		//if no update, just redirect
-		if ($jumlahberkas == 0 && $jumlahupdate == 0 && $jumlahberkasfisik == 0) {
-			$this->session->set_flashdata('success', "Tidak ada perubahan data.");
-			redirect("sekolah/verifikasi/siswa?peserta_didik_id=$peserta_didik_id");
-			return;
-		}
-
-		//var_dump($kelengkapan_berkas); exit;
-
-		//riwayat verifikasi. update it before tcg_ubah_kelengkapanberkas()
-		$status_verifikasi = 0;
-		if ($kelengkapan_profil == 1 && $kelengkapan_berkas == 1) {
-			$status_verifikasi = 1;
-		}
-		else {
-			$status_verifikasi = 2;
-		}
-		$this->Msiswa->tcg_tambah_riwayatverifikasi($peserta_didik_id, $pengguna_id, $status_verifikasi, $catatan_kekurangan);
-
-		//echo "$status_verifikasi; $kelengkapan_profil; $kelengkapan_berkas"; exit;
-
-		//update status kelengkapan berkas untuk semua pendaftaran
-		if ($kelengkapan_profil == 2 || $kelengkapan_berkas == 2) {
-			//force to status: belum lengkap
-			$this->Msiswa->tcg_ubah_kelengkapanberkas($peserta_didik_id,$tahun_ajaran_id, 2, $pengguna_id);
-		} else {
-			//sesuai daftar kelengkapan berkas
-			$this->Msiswa->tcg_ubah_kelengkapanberkas($peserta_didik_id,$tahun_ajaran_id, 0, $pengguna_id);
-		}
-
-		//update lokasi berkas
-		if ($jumlahberkasfisik > 0) {
-			$this->Msiswa->tcg_ubah_lokasiberkas($peserta_didik_id,$sekolah_id);
-		}
-
-		$this->session->set_flashdata('info', "<div class='alert alert-info alert-dismissable'>Data verifikasi telah berhasil disimpan. Status Verifikasi: " . ($status_verifikasi == 1 ? 'SUDAH Lengkap' : 'BELUM Lengkap') . "</div>");
-		if ($peran_id == 2) {
-			$this->Msekolah->tcg_sedangverifikasi($pengguna_id, $peserta_didik_id, 0); 
-			redirect("sekolah/verifikasi");
-		}
-		else {
-			//$this->Msekolah->tcg_sedangverifikasi($pengguna_id, $peserta_didik_id, 1); 
-			redirect("sekolah/verifikasi/siswa?peserta_didik_id=$peserta_didik_id");
-		}
-
-    }
-
-    function verifikasi() {
         $data = $this->request->getPost("data");
         if (empty($data))   
             $this->print_json_error("Invalid data");
 
         $peserta_didik_id = $this->request->getPost('peserta_didik_id');
 
-        //oldvalues
-        $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
-        if ($oldvalues == null) {
-            $this->print_json_error("Invalid userid");
+		//only can verify within the specified timeframe
+		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+        if ($cek_waktuverifikasi != 1) {
+            $this->print_json_error("Tidak sedang tahapan verifikasi");
         }
 
-        //only save changed data
-        foreach($data as $key => $val) {
-            if ($val == $oldvalues[$key]) {
-                unset($data[$key]);
+        $profil = !empty($data['profil']) ? $data['profil'] : array();
+        $dokumen = !empty($data['dokumen']) ? $data['dokumen'] : array();
+
+        $message = array();
+        $kelengkapan_profil = 1;
+        $kelengkapan_dokumen = 1;
+        $jml_verifikasi = 0;
+        
+        //VERIFIKASI DATA
+        do {
+            //oldvalues
+            $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+            if ($oldvalues == null) {
+                $this->print_json_error("Invalid ID siswa");
             }
+
+            //only save changed data
+            $updated = array();
+            foreach($profil as $key => $val) {
+                if ($val != $oldvalues[$key]) {
+                    if (substr($key,0,8)=="catatan_") {
+                        $updated[$key] = nohtml($profil[$key]);
+                    } 
+                    else {
+                        $updated[$key] = $profil[$key];
+                    }
+                }
+            }
+
+            if (count($updated)) {
+                break;
+            }
+
+            $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
+            if ($detail == null)
+                $this->print_json_error("Tidak berhasil mengubah data siswa.");
+
+            //audit trail
+            $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($data), $data, $oldvalues);
+
+            //RIWAYAT VERIFIKASI
+            //perbaikan data
+            $perbaikan = array();
+            foreach($updated as $key => $val) {
+                if (substr($key,0,11)!="verifikasi_" && substr($key,0,8)!="catatan_") {
+                    $perbaikan[$key] = $data[$key];
+                }
+            }
+
+            if (count($perbaikan) > 0) {
+                $str = "Perbaikan data: ";
+                foreach($perbaikan as $key => $value) {
+                    $str .= "$key=$value, ";
+                }
+                $message[] = substr($str, 0, strlen($str)-2);
+            }
+
+            //status verifikasi profil
+            foreach($updated as $key => $val) {
+                if (substr($key,0,11)!="verifikasi_") continue;
+
+                $tag = substr($key,1,strlen($key)-11);
+                $tagname = "";
+                switch($tag) {
+                    case "profil": $tagname = "Identitas Siswa"; break;
+                    case "lokasi": $tagname = "Lokasi Rumah"; break;
+                    case "nilai": $tagname = "Nilai Kelulusan / Nilai Ujian Nasional"; break;
+                    case "prestasi": $tagname = "Data Prestasi"; break;
+                    case "afirmasi": $tagname = "Data Afirmasi"; break;
+                    case "inklusi": $tagname = "Data Kebutuhan Khusus"; break;
+                    default: $tag;
+                }
+
+                if ($val == 0) {
+                    //belum diverifikasi
+                    $str = $tag ." direset menjadi belum diverifikasi.";
+                    if (!empty($updated['catatan_' .$tag])) {
+                        $str .= " Catatan: " .$updated['catatan_' .$tag];
+                    }
+                    $message[] = $str;
+                    $kelengkapan_profil = 2;
+                }
+                else if ($val == 1) {
+                    $str = $tag ." diverifikasi SUDAH BENAR.";
+                    if (!empty($updated['catatan_' .$tag])) {
+                        $str .= " Catatan Perbaikan: " .$updated['catatan_' .$tag];
+                    }
+                    $message[] = $str;
+                }
+                else if ($val == 2) {
+                    $str = $tag ." diverifikasi BELUM BENAR.";
+                    if (!empty($updated['catatan_' .$tag])) {
+                        $str .= " Catatan: " .$updated['catatan_' .$tag];
+                    }
+                    $message[] = $str;
+                    $kelengkapan_profil = 2;
+                }
+                else if ($val == 2) {
+                    $str = "Verifikasi " .$tag ." dieskalasi ke DINAS.";
+                    $catatan = "";
+                    if (!empty($updated['catatan_' .$tag])) {
+                        $catatan = $updated['catatan_' .$tag];
+                        $str .= " Catatan: " .$catatan;
+                    }
+                    $message[] = $str;
+                    $kelengkapan_profil = 2;
+                    //buat eskalasi dinas
+                    $this->Msekolah->tcg_buat_verifikasidinas($peserta_didik_id,$tag,null,$catatan);
+                }
+
+                $jml_verifikasi++;
+            }
+
+        } while (false);
+
+        //VERIFIKASI DOK
+        do {
+            //oldvalues
+            $oldvalues = array();
+            $result = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
+            if ($result == null) {
+                //tidak ada dokumen pendukung
+                break;
+            }
+
+            //get old values
+            foreach ($result as $key => $val) {
+                $oldvalues[ $val['daftar_kelengkapan_id'] ] = $val['verifikasi'];
+            }
+
+            //only save changed data
+            foreach($dokumen as $key => $val) {
+                if ($val != $oldvalues[$key]) {
+
+                    $nama_dok = $this->Msiswa->tcg_nama_dokumenpendukung($key);
+
+                    if ($val == 0) {
+                        $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
+
+                        //audit trail
+                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Dokumen " .$nama_dok. " tidak ada / belum diterima"
+                                            , array('daftar_kelengkapan_id'), array($key), null);
+
+                        //riwayat verifikasi
+                        $str = "Dokumen " .$nama_dok. " tidak ada / belum diterima.";
+                        $message[] = $str;
+                    }
+                    else if ($val == 1) {
+                        $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
+
+                        //audit trail
+                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " SUDAH BENAR"
+                                            , array('daftar_kelengkapan_id'), array($key), null);
+
+                        //riwayat verifikasi
+                        $str = "Dokumen " .$nama_dok. " diverifikasi SUDAH BENAR.";
+                        $message[] = $str;
+                    }
+                    else if ($val == 2) {
+                        $catatan = !empty( $dokumen["catatan_" .$key] ) ? nohtml($dokumen["catatan_" .$key]) : '';
+                        $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,$catatan);
+
+                        //audit trail
+                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " BELUM BENAR"
+                                            , array('daftar_kelengkapan_id','catatan'), array($key, $catatan), null);
+
+                        //riwayat verifikasi
+                        $str = "Dokumen " .$nama_dok. " diverifikasi SUDAH BENAR.";
+                        if (!empty($catatan)) {
+                            $str .= " Catatan: " .$catatan;
+                        }
+                        $message[] = $str;
+                        $kelengkapan_dokumen = 2;
+                    }
+
+                    $jml_verifikasi++;
+                }
+            }
+    
+        } while (false);
+
+		//update kelengkapan data
+        $status_verifikasi = 0;
+        $catatan_verifikasi = "";
+		if ($jml_verifikasi > 0) {
+            //recalc status kelengkapan berkas
+            $status_verifikasi = $this->Msiswa->tcg_update_kelengkapanberkas($peserta_didik_id);
+
+            //riwayat verifikasi
+            foreach ($message as $val) {
+                if ($catatan_verifikasi != "")  $catatan_verifikasi .= "<br>";
+                $catatan_verifikasi .= $val;
+            }
+            $this->Msiswa->tcg_tambah_riwayatverifikasi($peserta_didik_id, $status_verifikasi, $catatan_verifikasi);
+
+            //set lokasi berkas ke sekolah ini (perlu konfirmasi secara explisit oleh user?)
+            $sekolah_id = $this->session->get('sekolah_id');
+			$this->Msiswa->tcg_ubah_lokasiberkas($peserta_didik_id, $sekolah_id);
+
+            //audit trail
+            $nama_siswa = $oldvalues['nama'];
+            $nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
+            $this->audit_siswa($peserta_didik_id, "LOKASI BERKAS", "Ubah lokasi berkas an. " .$nama_siswa. " ke " .$nama_sekolah
+                                , array('peserta_didik_id','sekolah_id'), array($key, $catatan), null);
+
         }
 
-        //start updating
-        $keys = array_keys($data);
-
-        $toggle = false;
-        $colname = "";
-        if (count($keys) == 1 && substr($keys[0],0,11) == "verifikasi_") {
-            $toggle = true;
-            $colname = $keys[0];
-        }
-
-        $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
-        if ($detail == null)
-            $this->print_json_error("Tidak berhasil mengubah data siswa.");
-
-        //audit trail
-        if ($toggle) {
-            $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
-        }
-        else {
-            $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi data siswa", $keys, $data, $oldvalues);
-        }
-
-        $this->print_json_output($detail);
+        //untouch 
+        $this->Msekolah->tcg_touch_verifikasi($peserta_didik_id, 0); 
+		
+        $json = array();
+        // $json['kelengkapan_profil'] = $kelengkapan_profil;
+        // $json['kelengkapan_dokumen'] = $kelengkapan_dokumen;
+        $json['kelengkapan_berkas'] = $status_verifikasi;
+        $this->print_json_output($json);
 
     }
+
+    // function ubahprofilsiswa() {
+    //     $data = $this->request->getPost("data");
+    //     if (empty($data))   
+    //         $this->print_json_error("Invalid data");
+
+    //     $peserta_didik_id = $this->request->getPost('peserta_didik_id');
+
+    //     //oldvalues
+    //     $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+    //     if ($oldvalues == null) {
+    //         $this->print_json_error("Invalid userid");
+    //     }
+
+    //     //only save changed data
+    //     foreach($data as $key => $val) {
+    //         if ($val == $oldvalues[$key]) {
+    //             unset($data[$key]);
+    //         }
+    //     }
+
+    //     //start updating
+    //     $keys = array_keys($data);
+
+    //     $toggle = false;
+    //     $colname = "";
+    //     if (count($keys) == 1 && substr($keys[0],0,11) == "verifikasi_") {
+    //         $toggle = true;
+    //         $colname = $keys[0];
+    //     }
+
+    //     $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
+    //     if ($detail == null)
+    //         $this->print_json_error("Tidak berhasil mengubah data siswa.");
+
+    //     //audit trail
+    //     if ($toggle) {
+    //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
+    //     }
+    //     else {
+    //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi data siswa", $keys, $data, $oldvalues);
+    //     }
+
+    //     $this->print_json_output($detail);
+
+    // }
 	
 	function riwayat() {
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 

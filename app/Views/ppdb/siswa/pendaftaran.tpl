@@ -17,8 +17,8 @@
 </div>
 {/if}
 
-{if !$profilsiswa.tutup_akses && $kebutuhan_khusus}
-<div class="alert alert-secondary alert-dismissible" role="alert">
+{if !$profilsiswa.tutup_akses}
+<div class="alert alert-secondary alert-dismissible" role="alert" id='kebutuhan-khusus-notif'>
     Hanya jalur pendaftaran dan sekolah yang mendukung <b>Kebutuhan Khusus</b> yang ditampilkan.
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
@@ -61,178 +61,20 @@
 </div>
 {/if}
 
-<div class="row" id='pendaftaran' {if $cek_batasanusia && ($cek_waktupendaftaran || $cek_waktusosialisasi)}style="display: none;"{/if}>
+<div class="row" id='jalur-pendaftaran' {if $cek_batasanusia && ($cek_waktupendaftaran || $cek_waktusosialisasi)}style="display: none;"{/if}>
 </div>
 
-<div class="row" id="peta-sebaran">
+<div class="row" id="peta-sebaran-wrapper">
     <div class="col-12"> 
         <div class="card box-default box-solid">
             <div class="card-header bg-purple with-border">
                 <h3 class="box-title">Peta Sebaran Sekolah</h3>
             </div>
             <div class="card-body">
-                <div id="peta" style="width: 100%; height: 400px;"></div>
+                <div id="peta-sebaran" style="width: 100%; height: 400px;"></div>
             </div>
         </div>
     </div>
 </div>
 
-{literal}
-<script id="jalur-pendaftaran" type="text/template">
 
-    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"> 
-        <div class="card box-default box-solid">
-            <div class="card-header bg-purple with-border">
-                <h3 class="box-title">{{jalur.nama}}</h3>
-                <div class="box-tools pull-right">
-                    <i class="glyphicon glyphicon-ok"></i>
-                </div>
-            </div>
-            <div class="card-body">
-                {{jalur.keterangan}}
-            </div>
-            <div class="card-footer">
-                <a href="#" onclick=pilih_sekolah({{idx}}) 
-                class="btn btn-primary {{#tutup_akses}}disabled{{/tutup_akses}}>">Klik disini untuk mendaftar</a>
-            </div>
-        </div>
-    </div>
-
-</script>
-
-<script id="pilih-sekolah" type="text/template">
-
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <table class="table">
-            <tr class="alert-secondary">
-                <td><b>Jalur</b></td>
-                <td>:</td>
-                <td>{{jalur.nama}}</td>
-            </tr>
-        </table>
-    </div>
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 8px;">
-        <div class="form-group has-feedback">
-            <label for="jenis_pilihan"><b>Urutan Pilihan</b></label>
-            <select id="jenis_pilihan" name="jenis_pilihan" class="form-control select2" data-validation="required" autofocus>
-                <option value="">-- Silahkan Pilih Urutan --</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 8px;">
-        <div class="form-group has-feedback">
-            <label for="sekolah_id"><b>Daftar Sekolah</b></label>
-            <select id="sekolah_id" name="sekolah_id" class="form-control select2" data-validation="required" data-validation-error-msg="Belum memilih sekolah">
-                <option value="">-- Silahkan Pilih Sekolah --</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div id="detailsekolah"></div>
-    </div>
-    <div id="dokumen_pendukung" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    </div>
-
-</script>
-{/literal}
-
-<script>
-    function update_pendaftaran_layout() {
-        //update kelengkapan data
-        tags.forEach(function(key) {
-            if(!konfirmasi[key]) {
-                kelengkapan_data = 0;
-            }
-        });
-
-        if (!konfirmasi['nomer-hp']) {
-            kelengkapan_data = 0;
-        }
-
-        //update flag pendaftaran dikunci
-        if (!cek_batasanusia || (!cek_waktupendaftaran && !cek_waktusosialisasi) || !kelengkapan_data || global_tutup_akses || siswa_tutup_akses) {
-            pendaftarandikunci = 1;
-        }
-
-        //sisa slot pendaftaran
-        let slotnegeri = maxpilihannegeri - jumlahpendaftarannegeri;
-        let slotswasta = maxpilihanswasta - jumlahpendaftaranswasta;
-        $("#slot-negeri").html(slotnegeri);
-        $("#slot-swasta").html(slotswasta);
-
-        //update layout
-        el = $("#kelengkapan-data-notif");
-        if (kelengkapan_data) {
-            el.hide();
-        } else {
-            el.show();
-        }
-
-        el = $("#pendaftaran");
-        if (pendaftarandikunci) {
-            el.hide();
-        } else {
-            el.show();
-        }
-        
-        daftarjalur.forEach(function(jalur, idx) {
-            // render template
-            let template = $('#jalur-pendaftaran').html();
-            Mustache.parse(template);
-
-            let dom = Mustache.render(template, {
-                'jalur'      : jalur,
-                'idx'        : idx,
-                'tutup_akses': false
-            });
-
-            let parent = $("#pendaftaran");
-            parent.append(dom);
-        });
-    }
-
-    function pilih_sekolah(idx) {
-        let p = daftarjalur[idx];
-        let jalur_id = p['jalur_id'];
-        let nama_jalur = p['nama'];
-
-        //TODO: get opsi pilihan
-
-        // render template
-        let template = $('#pilih-sekolah').html();
-        Mustache.parse(template);
-
-        let dom = Mustache.render(template, {
-            'jalur'     : p,
-            'has_dokumen_tambahan' : false
-        });
-
-        $.confirm({
-                title: 'Pilih Sekolah',
-                content: dom,
-                closeIcon: true,
-                columnClass: 'medium',
-                // type: 'info',
-                // typeAnimated: true,
-                buttons: {
-                    // confirm: function () {
-                    //     $.alert('Confirmed!');
-                    // },
-                    cancel: {
-                        text: 'Batal',
-                        keys: ['enter', 'shift'],
-                        action: function(){
-                            //do nothing
-                        }
-                    },
-                    confirm: {
-                        text: 'DAFTAR',
-                        btnClass: 'btn-primary',
-                        action: function(){
-                            window.location.href = "#";
-                        }
-                    },
-                }
-            });      
-    }
-</script>

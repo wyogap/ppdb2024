@@ -101,12 +101,12 @@
                                                     ?>
                                                     <tr>
                                                         <td><?php echo $row3->keterangan;?></td>
-                                                        <td class="text-right"><?php echo $row3->nilai;?></td>
+                                                        <td class="text-end"><?php echo $row3->nilai;?></td>
                                                     </tr>
                                                     <?php $jumlah_nilai = $jumlah_nilai+$row3->nilai; endforeach;?>
                                                     <tr class="bg-gray">
                                                         <th>Total</th>
-                                                        <th class="text-right"><?php echo $jumlah_nilai;?></th>
+                                                        <th class="text-end"><?php echo $jumlah_nilai;?></th>
                                                     </tr>
                                                 </table>
                                                 <?php } ?>

@@ -374,7 +374,7 @@
 				{ data: "asal_sekolah", className: 'dt-body-left' },
 				{
 					data: null,
-					className: 'text-right inline-flex text-nowrap inline-actions',
+					className: 'text-end inline-flex text-nowrap inline-actions',
 					"orderable": false,
 					render: function(data, type, row, meta) {
 						if(type != 'display') {

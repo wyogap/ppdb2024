@@ -977,21 +977,27 @@
     var map_enable_edit = false;
 
     $(document).ready(function() {
-        map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],10);
-        var tile = L.tileLayer(
-            '{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
-        ).addTo(map);
+        map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],16);
+		L.tileLayer(
+			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+		).addTo(map);
 
-        var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
-            satelitemap  = L.tileLayer('{$map_satelitemap}', { id: 'mapbox.streets',   attribution: '' });
+		L.marker([{$map_lintang},{$map_bujur}]).addTo(map)
+            .bindPopup("");
 
-        var baseLayers = {
-            "Streets": streetmap,
-            "Satelite": satelitemap
-        };
+		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
+			satelitemap  = L.tileLayer('{$map_satelitemap}', { id: 'mapbox.streets', attribution: '' });
 
-        var overlays = {};
-        L.control.layers(baseLayers,overlays).addTo(map);
+		var baseLayers = {
+			"Streets": streetmap,
+			"Satelite": satelitemap
+		};
+
+		var overlays = {};
+		L.control.layers(baseLayers,overlays).addTo(map);
+
+		new L.control.fullscreen({ position:'bottomleft' }).addTo(map);
+		new L.Control.Zoom({ position:'bottomright' }).addTo(map);
 
         var layerGroup = L.layerGroup().addTo(map);
         function onMapClick(e) {
@@ -1004,15 +1010,13 @@
             document.getElementById("lintang-input").value=lintang;
             document.getElementById("bujur-input").value=bujur;
         }
+
         map.on('click', onMapClick);
 
-        var searchControl = L.esri.Geocoding.geosearch().addTo(map);
-        searchControl.on('layerGroup', function(data){
-            layerGroup.clearLayers();
-        });
-
-        new L.Control.Fullscreen({ position:'bottomleft' }).addTo(map);
-        new L.Control.Zoom({ position:'bottomright' }).addTo(map);
+        // var searchControl = L.esri.Geocoding.geosearch().addTo(map);
+        // searchControl.on('layerGroup', function(data){
+        //     layerGroup.clearLayers();
+        // });
 
         new L.Control.EasyButton( '<span class="map-button">&curren;</span>', function(){
             map.setView([{$map_lintang},{$map_bujur}],10);;

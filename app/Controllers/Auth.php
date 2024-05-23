@@ -39,9 +39,9 @@ class Auth extends AuthController
 
             $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
             $siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
-
+            
             //akses ditutup
-            if ($siswa['tutup_akses'] != '1') {
+            if ($siswa['tutup_akses'] == '1') {
                 $error = __('Akses login anda untuk sementara ditolak');
                 if ($json == 1) {
                     $data = array('status'=>'0', 'error'=>$error);
@@ -54,7 +54,7 @@ class Auth extends AuthController
             }
  
             //cabut berkas
-            if ($siswa['cabut_berkas'] != '1') {
+            if ($siswa['cabut_berkas'] == '1') {
                 $error = __('Anda sudah melakukan cabut berkas. Akses login anda ditolak!');
                 if ($json == 1) {
                     $data = array('status'=>'0', 'error'=>$error);

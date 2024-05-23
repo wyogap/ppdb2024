@@ -298,7 +298,7 @@
 									//echo $cek_waktusosialisasi;
 									$cnt = 0; $harus_tampil = 0;
 									$tutup_akses = 0;
-									foreach($daftarjalur->getResult() as $row):
+									foreach($daftarpenerapan->getResult() as $row):
 										// if ($cek_waktupendaftaransusulan != $row->kategori_susulan) {
 										// 	continue;
 										// }
@@ -362,7 +362,7 @@
 											</div>
 										</div>
 									</div>
-								<?php if ($cnt % 3 == 0 && $daftarjalur->num_rows() > $cnt) { ?>
+								<?php if ($cnt % 3 == 0 && $daftarpenerapan->num_rows() > $cnt) { ?>
 								</div>
 								</div>
 								<div class="row">

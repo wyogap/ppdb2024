@@ -33,8 +33,8 @@ class Kuota extends MY_Controller {
 		$data['swasta_perpindahan'] = 0;
 		$data['swasta_swasta'] = 0;
 
-		$daftarjalur = $this->Mpenerapan->tcg_jalur_pendaftaran($tahun_ajaran_id)->getResultArray(); 
-		foreach($daftarjalur as $jalur) {
+		$daftarpenerapan = $this->Mpenerapan->tcg_jalur_pendaftaran($tahun_ajaran_id)->getResultArray(); 
+		foreach($daftarpenerapan as $jalur) {
 			switch ($jalur['jalur_id']) {
 				case 1:		//zonasi
 					if ($jalur['sekolah_negeri'])	$data['negeri_zonasi']=1;

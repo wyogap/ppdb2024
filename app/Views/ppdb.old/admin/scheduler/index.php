@@ -68,7 +68,7 @@
 								<a href="#" class="btn btn-xs btn-primary" onClick="execute_job(<?php echo $row2->source; ?>, <?php echo $row2->job_id; ?>); return false;" title="Klik untuk mengeksekusi job">Jalankan</a>
 								<!-- <a href="<?php echo base_url().'index.php/admin/scheduler/executejob?id='.$row2->job_id.'&source='.$row2->source; ?>" class="btn btn-xs btn-primary" title="Klik untuk mengeksekusi job">Jalankan</a> -->
 								</td>
-								<td class="text-right"><?php echo $row2->job_id; ?></td>
+								<td class="text-end"><?php echo $row2->job_id; ?></td>
 								<td class="text-left"><?php echo $row2->title;?></td>
 								<td class="text-center"><?php echo $row2->next_execution;?></td>
 								<td class="text-center"><?php echo $row2->last_execution_start;?></td>

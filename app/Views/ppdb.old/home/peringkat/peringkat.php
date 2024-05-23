@@ -142,7 +142,7 @@
 									<td><?php echo $row->sekolah_asal;?></td>
 									<td class="text-center"><?php echo $row->jalur;?></td>
 									<td class="text-center"><?php echo $row->jenis_pilihan;?></td>
-									<td class="text-right"><?php echo $row->skor;?></td>
+									<td class="text-end"><?php echo $row->skor;?></td>
 									<td class="text-center"><?php echo $row->created_on;?></td>
 									<td class="text-center 
 										<?php if($row->status_penerimaan_final==1 || $row->status_penerimaan_final==3){?>bg-green
@@ -249,7 +249,7 @@
 									</td>
 									<td class="text-center hala"><?php echo $row2->label_jenis_pilihan;?></td>
 									<td class="text-center"><?php echo $row2->created_on;?></td>
-									<td class="text-right"><?php echo round($row2->skor,2);?></td>
+									<td class="text-end"><?php echo round($row2->skor,2);?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 								<?php } ?>
@@ -300,7 +300,7 @@
 									</td>
 									<td class="text-center"><?php echo $row2->label_jenis_pilihan;?></td>
 									<td class="text-center"><?php echo $row2->created_on;?></td>
-									<td class="text-right"><?php echo $row2->skor;?></td>
+									<td class="text-end"><?php echo $row2->skor;?></td>
 								</tr>
 								<?php $i++; endforeach;?>
 								<?php } ?>

@@ -4,9 +4,9 @@
 <script>
 		//Peta
 		var map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],16);
-		// L.tileLayer(
-		// 	'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
-		// ).addTo(map);
+		L.tileLayer(
+			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+		).addTo(map);
 
 		L.marker([{$map_lintang},{$map_bujur}]).addTo(map)
             .bindPopup("{$profil.alamat_jalan}, {$profil.desa_kelurahan}, {$profil.kecamatan}");

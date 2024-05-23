@@ -1129,7 +1129,7 @@ $(document).ready(function() {
             {if count($tbl.row_actions) > 0}
             {
                 data: null,
-                className: 'text-right inline-flex text-nowrap inline-actions',
+                className: 'text-end inline-flex text-nowrap inline-actions',
                 "orderable": false,
                 render: function(data, type, row, meta) {
                     if(type != 'display') {

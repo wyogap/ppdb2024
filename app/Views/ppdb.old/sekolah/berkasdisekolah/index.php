@@ -129,7 +129,7 @@ $(document).ready(function() {
 		"columns": [
 				{
 					data: null,
-					className: "text-right",
+					className: "text-end",
 					orderable: 'false',
 					defaultContent: '',
 					render: function(data, type, row, meta) {

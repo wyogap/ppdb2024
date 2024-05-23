@@ -76,7 +76,7 @@
 							?>
 							<tr>
 								<td class="text-center"><a href="<?php echo base_url();?>index.php/Cadmin/ubahkuotanegeri?waktu_pelaksanaan_id=<?php echo $row2->waktu_pelaksanaan_id;?>" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i></a></td>
-								<td class="text-right"><?php echo $row2->tahapan_id; ?></td>
+								<td class="text-end"><?php echo $row2->tahapan_id; ?></td>
 								<td class="text-left"><?php echo $row2->tahapan;?></td>
 								<td class="text-center"><?php echo $row2->tanggal_mulai;?></td>
 								<td class="text-center"><?php echo $row2->tanggal_selesai;?></td>

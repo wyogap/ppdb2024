@@ -69,7 +69,7 @@
             <div class="accordion-body-text">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <table class="table table-striped" style="margin-bottom: 20px !important;">
+                        <table class="table table-striped">
                             <tr>
                                 <td style="width: 45%;"><b>NIK</b></td>
                                 <td>:</td>
@@ -230,7 +230,7 @@
             <div class="accordion-body-text">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="peta" style="width: 100%; height: 400px;"></div>
+                        <div id="profil-peta" style="position:relative; width: 100%; height: 100%; min-height: 400px;"></div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
@@ -344,9 +344,9 @@
                                 <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <span><input class="form-control" id="nilai-lulus-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_lulus}"
+                                    <span><input class="form-control" id="nilai-lulus-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_kelulusan}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_kelulusan' style="display: none;"></input></span>
-                                    <span id="nilai-kelulusan" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_kelulusan'>{$profilsiswa.nilai_lulus}</span>
+                                    <span id="nilai-kelulusan" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_kelulusan'>{$profilsiswa.nilai_kelulusan}</span>
                                </td>
                             </tr>
                         </table>
@@ -358,37 +358,37 @@
                                     <b>Nilai Ujian Nasional? </b>
                                     <select class="form-control input-default " id="nilai-un" name="nilai-un" 
                                         tcg-input-tag='nilai' tcg-input-true='disable' tcg-input-false='enable' tcg-field='punya_nilai_un'
-                                        tcg-edit-action='toggle' tcg-toggle-tag='nilai-un'>
+                                        tcg-edit-action='toggle' tcg-toggle-tag='punya_nilai_un'>
                                     <option value="0" {if empty($profilsiswa.punya_nilai_un)}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.punya_nilai_un==1)}selected{/if}>YA</option>
                                     </select>
                                 </td>
                             </tr>
-                            <tr id="row-un-bin" tcg-visible-tag='nilai-un' tcg-field='nilai_bin'>
+                            <tr id="row-un-bin" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_bin'>
                                 <td style="width: 45%;"><b>Bahasa Indonesia</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-bin-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_bin}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_bin' style="display: none;"></input></span>
-                                    <span id="nilai-bin" tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_bin'>{$profilsiswa.nilai_bin}</span>
+                                    <span id="nilai-bin" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_bin'>{$profilsiswa.nilai_bin}</span>
                                 </td>
                             </tr>
-                            <tr id="row-un-mat" tcg-visible-tag='nilai-un' tcg-field='nilai_mat'>
+                            <tr id="row-un-mat" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_mat'>
                                 <td><b>Matematika</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-mat-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_mat}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_mat' style="display: none;"></input></span>
-                                    <span id="nilai-mat" tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_mat'>{$profilsiswa.nilai_mat}</span>
+                                    <span id="nilai-mat" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_mat'>{$profilsiswa.nilai_mat}</span>
                                 </td>
                             </tr>
-                            <tr id="row-un-ipa" tcg-visible-tag='nilai-un' tcg-field='nilai_ipa'>
+                            <tr id="row-un-ipa" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_ipa'>
                                 <td><b>IPA</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-ipa-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_ipa}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_ipa' style="display: none;"></input></span>
-                                    <span id="nilai-ipa" tcg-input-true='show' tcg-input-false='hide' tcg-input-action='hide' tcg-field='nilai_ipa'>{$profilsiswa.nilai_ipa}</span>
+                                    <span id="nilai-ipa" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_ipa'>{$profilsiswa.nilai_ipa}</span>
                                 </td>
                             </tr>
                         </table>
@@ -421,7 +421,7 @@
                                     {/if}
                                 </td>
                             </tr>
-                            <tr id="row-dokumen-un" tcg-visible-tag='nilai-un'>
+                            <tr id="row-dokumen-un" tcg-visible-tag='punya_nilai_un'>
                                 <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
                                 <td>:</td>
                                 <td>
@@ -485,27 +485,35 @@
                                     <b>Punya prestasi akademis atau non-akademis (olahraga/seni/dll)? </b>
                                     <select class="form-control input-default " id="prestasi-akademis" name="prestasi-akademis" 
                                         tcg-input-tag='prestasi' tcg-input-true='disable' tcg-input-false='enable' tcg-field='punya_prestasi'
-                                        tcg-edit-action='toggle' tcg-toggle-tag='prestasi'>
+                                        tcg-edit-action='toggle' tcg-toggle-tag='punya_prestasi'>
                                     <option value="0" {if empty($profilsiswa.punya_prestasi)}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.punya_prestasi==1)}selected{/if}>YA</option>
                                     </select>
                                 </td>
                             </tr>
-                        </table>
-                    </div>
-                    <div id="tbl-prestasi-kontainer" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px; margin-bottom: 20px;" 
-                            tcg-visible-tag='prestasi'>
-                        <table id="tbl-prestasi" class="display" style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" data-priority="1">#</th>
-                                    <th class="text-center" data-priority="2">Prestasi</th>
-                                    <th class="text-center" style="width: 30%;" data-priority="4">Uraian</th>
-                                    <th class="text-center" data-priority="3">Dokumen Pendukung</th>
-                                    <th class="text-center" data-priority="5">Catatan</th>
-                                </tr>
-                            </thead>
-                        </table>
+                            <tr tcg-visible-tag='punya_prestasi'>
+                                <td style="width: 45%;"><b>Jenjang Prestasi</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <select class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='prestasi_skoring_id' style="display: none;">
+                                    <option value="0" {if empty($profilsiswa.prestasi_skoring_id)}selected{/if}>Tidak ada</option>
+                                    {foreach $daftarskoring as $skor}
+                                    <option value="{$skor.value}" {if ($profilsiswa.prestasi_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
+                                    {/foreach}
+                                    </select>
+                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='prestasi_skoring_id'>{$profilsiswa.prestasi_skoring_label}</span>
+                                </td>
+                            </tr>
+                            <tr tcg-visible-tag='punya_prestasi'>
+                                <td style="width: 45%;"><b>Beri Uraian Tentang Prestasi Tersebut</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <textarea class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='uraian_prestasi' 
+                                        style="display: none; width: 100%; height: 100px;">{$profilsiswa.uraian_prestasi}</textarea>
+                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='uraian_prestasi'>{$profilsiswa.uraian_prestasi}</span>
+                               </td>
+                            </tr>
+                         </table>
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
@@ -546,22 +554,22 @@
                                     <b>Punya Kartu Indonesia Pintar? </b>
                                     <select class="form-control input-default " id="kip" name="kip" 
                                         tcg-input-tag='afirmasi' tcg-input-true='disable' tcg-input-false='enable' tcg-field='punya_kip'
-                                        tcg-edit-action='toggle' tcg-toggle-tag='kip'>
+                                        tcg-edit-action='toggle' tcg-toggle-tag='punya_kip'>
                                     <option value="0" {if empty($profilsiswa.punya_kip)}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.punya_kip==1)}selected{/if}>YA</option>
                                     </select>
                                 </td>
                             </tr>
-                            <tr id="row-kip" tcg-visible-tag='kip'>
+                            <tr id="row-kip" tcg-visible-tag='punya_kip'>
                                 <td style="width: 45%;"><b>Nomor Kartu Indonesia Pintar</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <span><input class="form-control" id="nomor-kip-input" type="text" value="{$profilsiswa.nomor_kip}" 
-                                        tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide' tcg-field='nomor_kip' style="display: none;"></input></span>
-                                    <span id="nomor-kip" tcg-input-tag='afirmasi' tcg-input-false='hide' tcg-input-true='show' tcg-field='nomor_kip'>{$profilsiswa.nomor_kip}</span>
+                                    <span><input class="form-control" id="nomor-kip-input" type="text" value="{$profilsiswa.no_kip}" 
+                                        tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide' tcg-field='no_kip' style="display: none;"></input></span>
+                                    <span id="nomor-kip" tcg-input-tag='afirmasi' tcg-input-false='hide' tcg-input-true='show' tcg-field='no_kip'>{$profilsiswa.no_kip}</span>
                                 </td>
                             </tr>
-                            <tr tcg-visible-tag='kip'>
+                            <tr tcg-visible-tag='punya_kip'>
                                 <td colspan="3"></td>
                             </tr>
                             <tr>
@@ -569,19 +577,19 @@
                                     <b>Masuk di dalam Basis Data Terpadu dalam kategori Keluarga Miskin? </b>
                                     <select class="form-control input-default " id="bdt" name="bdt" 
                                         tcg-input-tag='afirmasi' tcg-input-true='disable' tcg-input-false='enable' tcg-field='masuk_bdt'
-                                        tcg-edit-action='toggle' tcg-toggle-tag='bdt'>
+                                        tcg-edit-action='toggle' tcg-toggle-tag='masuk_bdt'>
                                     <option value="0" {if empty($profilsiswa.masuk_bdt)}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.masuk_bdt==1)}selected{/if}>YA</option>
                                     </select>
                                 </td>
                             </tr>
-                            <tr id="row-bdt" tcg-visible-tag='bdt'>
+                            <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
                                 <td style="width: 45%;"><b>Nomor PKH/KJS/BDT</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <span><input class="form-control" id="nomor-bdt-input" type="text" value="{$profilsiswa.nomor_bdt}"
-                                        tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide' tcg-field='nomor_bdt' style="display: none;"></input></span>
-                                    <span id="nomor-bdt" tcg-input-tag='afirmasi' tcg-input-false='hide' tcg-input-true='show' tcg-field='nomor_bdt'>{$profilsiswa.nomor_bdt}</span>
+                                    <span><input class="form-control" id="nomor-bdt-input" type="text" value="{$profilsiswa.no_bdt}"
+                                        tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide' tcg-field='no_bdt' style="display: none;"></input></span>
+                                    <span id="nomor-bdt" tcg-input-tag='afirmasi' tcg-input-false='hide' tcg-input-true='show' tcg-field='no_bdt'>{$profilsiswa.no_bdt}</span>
                                 </td>
                             </tr>
                         </table>
@@ -589,7 +597,7 @@
                             <tr id="row-dokumen-afirmasi">
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
-                            <tr id="row-dokumen-kip" tcg-visible-tag='kip'>
+                            <tr id="row-dokumen-kip" tcg-visible-tag='punya_kip'>
                                 <td style="width: 45%;"><b>Kartu Indonesia Pintar</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
@@ -610,7 +618,7 @@
                                     {/if}
                                 </td>
                             </tr>
-                            <tr id="row-dokumen-bdt" tcg-visible-tag='bdt'>
+                            <tr id="row-dokumen-bdt" tcg-visible-tag='masuk_bdt'>
                                 <td style="width: 45%;"><b>Kartu PKH / Kartu KJS / Surat Keterangan masuk BDT dari Desa/Kelurahan</b></td>
                                 <td>:</td>
                                 <td>
@@ -672,13 +680,13 @@
                                     <b>Punya Kebutuhan Khusus? </b>
                                     <select class="form-control input-default " id="inklusi" name="inklusi" 
                                         tcg-input-tag='inklusi' tcg-input-true='disable' tcg-input-false='enable' tcg-field=''
-                                        tcg-edit-action='toggle' tcg-toggle-tag='inklusi'>
+                                        tcg-edit-action='toggle' tcg-toggle-tag='kebutuhan_khusus'>
                                     <option value="0" {if ($profilsiswa.kebutuhan_khusus == 'Tidak ada')}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.kebutuhan_khusus != 'Tidak ada')}selected{/if}>YA</option>
                                     </select>
                                 </td>
                             </tr>
-                            <tr id="row-kebutuhan-khusus" tcg-visible-tag='inklusi'>
+                            <tr id="row-kebutuhan-khusus" tcg-visible-tag='kebutuhan_khusus'>
                                 <td style="width:45%;"><b>Kebutuhan Khusus</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
@@ -703,7 +711,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='inklusi'>
+                        <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='kebutuhan_khusus'>
                             <tr id="row-dokumen-header">
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
@@ -763,7 +771,7 @@
             <div class="accordion-body-text">
                 <div class="row"><div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <p>
-                    Silahkan unduh Surat Pernyataan Kebenaran Dokumen di sini: <a href="{site_url('siswa/profil/suratpernyataan')}" class="btn btn-primary" target="_blank">Unduh</a>
+                    Silahkan unduh Surat Pernyataan Kebenaran Dokumen di sini: <a href="{site_url('ppdb/siswa/suratpernyataan')}" class="btn btn-primary" target="_blank">Unduh</a>
                 </p>
                 </div></div>
                 {if !($flag_upload_dokumen)}
@@ -798,7 +806,7 @@
             <div class="accordion-body-text">
                 <div class="row"><div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <p>Calon peserta didik yang pada saat pendaftaran belum memiliki akte kelahiran, dapat diganti dengan surat pernyataan kesanggupan dari orang tua/wali untuk melengkapi paling lambat pada semester 2 (dua) di tahun ajaran yang sama.
-                <a href="{$base_url}index.php/siswa/pendaftaran/kesanggupankelengkapanakte" class="btn btn-primary" target="_blank"><i class="glyphicon glyphicon-print"></i> Unduh Surat Pernyataan</a>
+                <a href="{$site_url}ppdb/siswa/suratkesanggupan" class="btn btn-primary" target="_blank"><i class="glyphicon glyphicon-print"></i> Unduh Surat Pernyataan</a>
                 </p>
                 </div></div>
                 <div class="box-footer">
@@ -811,7 +819,7 @@
             </div>
         </div>
     </div>
-    {if  (count($dokumen_tambahan) > 0)}
+    {if  ($jml_dokumen_tambahan > 0)}
     <div class="accordion-item" id="dokumen" data-editor-id="{$peserta_didik_id}">
         <div class="accordion-header rounded-lg collapsed" id="dokumen-header" data-bs-toggle="collapse" data-bs-target="#dokumen-content" aria-controls="dokumen-content" aria-expanded="true" role="button">
             <span class="accordion-header-icon"></span>
@@ -852,45 +860,6 @@
         </div>
     </div>
     {/if}
-    {if !empty($berkas_fisik)}
-    <div class="accordion-item" id="berkas-fisik" data-editor-id="{$peserta_didik_id}">
-        <div class="accordion-header rounded-lg collapsed" id="berkas-fisik-header" data-bs-toggle="collapse" data-bs-target="#berkas-fisik-content" aria-controls="berkas-fisik-content" aria-expanded="true" role="button">
-            <span class="accordion-header-icon"></span>
-        <span class="accordion-header-text">Berkas Fisik</span>
-        <span class="accordion-header-indicator"></span>
-        </div>
-        <div id="berkas-fisik-content" class="collapse accordion__body" aria-labelledby="berkas-fisik-header" data-bs-parent="#profil-siswa" style="">
-            <div class="accordion-body-text">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <table id="tberkas" class="table table-striped" style="margin-bottom:0px !important;">
-                            {foreach $berkas_fisik as $berkas}
-                            {if ($profilsiswa.punya_prestasi==0 && $berkas.daftar_kelengkapan_id==$smarty.const.DOCID_PRESTASI)}{continue}{/if}
-                            {if ($profilsiswa.punya_nilai_un==0 && $berkas.daftar_kelengkapan_id==$smarty.const.DOCID_HASIL_UN)}{continue}{/if}
-                            {if ($profilsiswa.punya_kip==0 && $berkas.daftar_kelengkapan_id==$smarty.const.DOCID_KIP)}{continue}{/if}
-                            {if ($profilsiswa.masuk_bdt==0 && $berkas.daftar_kelengkapan_id==$smarty.const.DOCID_SUKET_BDT)}{continue}{/if}
-                            {if ($profilsiswa.kebutuhan_khusus=='Tidak ada' && $berkas.daftar_kelengkapan_id==$smarty.const.DOCID_SUKET_INKLUSI)}{continue}{/if}
-                            <input type="hidden" id="orig_berkas_{$berkas.dokumen_id}" name="orig_berkas_{$berkas.dokumen_id}" value="{$berkas.berkas_fisik}">
-                            <tr >
-                                <td>
-                                    <div style="display: block; margin-bottom: 15px;"><b>{$berkas.nama}</b></div>
-                                </td>
-                                <td style="width: 50%">
-                                    {if ($berkas.berkas_fisik==1)}
-                                        <div id="catatan_berkas_{$berkas.dokumen_id}">Diterima oleh {$berkas.penerima_berkas} di {$berkas.sekolah} tanggal {$berkas.tanggal_berkas}</div>
-                                    {else}
-                                        <div id="catatan_berkas_{$berkas.dokumen_id}">Belum diserahkan ke sekolah tujuan</div>
-                                    {/if}
-                                </td>
-                            </tr>
-                            {/foreach}
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {/if}
     <div class="accordion-item" id="riwayat" data-editor-id="{$peserta_didik_id}">
         <div class="accordion-header rounded-lg collapsed" id="riwayat-header" data-bs-toggle="collapse" data-bs-target="#riwayat-content" aria-controls="riwayat-content" aria-expanded="true" role="button">
             <span class="accordion-header-icon"></span>
@@ -918,129 +887,4 @@
     </div>
 
 </div>
-
- <script>
-
-    function update_profile_layout() {
-        //dikunci: editability
-        elements = $("[tcg-visible-tag='dikunci']");
-        if (profildikunci) {
-            elements.hide();
-            $("#profil-dikunci-notif").show();
-        }
-        else {
-            elements.show();
-            $("#profil-dikunci-notif").hide();
-        }
-
-        //flag: visibility
-        flags.forEach(function(key) {
-            value = profilflag[key];
-            if (value) { $("[tcg-visible-tag='" +key+ "']").show(); }
-            else { $("[tcg-visible-tag='" +key+ "']").hide(); }
-        });
-
-        //special case: afirmasi
-        elements = $("[tcg-visible-tag='afirmasi']");
-        if (!profilflag['kip'] && !profilflag['bdt']) {
-            elements.hide();
-        }
-        else {
-            elements.show();
-        }
-
-        //konfirmasi: editability
-        tags.forEach(function(key) {
-            value = verifikasi[key];
-            if (value == 2) {
-                konfirmasi[key] = 0;
-            }
-
-            value = konfirmasi[key];
-            elements = $("[tcg-input-tag='" +key+ "']");
-            elements.each(function(idx) {
-                el = $(this);
-                if (value) {
-                    action = el.attr('tcg-input-true');
-                }
-                else {
-                    action = el.attr('tcg-input-false');
-                }
-                if (action == 'show') el.show();
-                else if (action == 'hide') el.hide();
-                else if (action == 'enable') el.attr("disabled",false);
-                else if (action == 'disable') el.attr("disabled",true);
-            });
-
-            let card = $("#" +key);
-            if (value) {
-                card.removeClass("status-danger");
-                card.find(".accordion-header-text .status").html('');
-            }
-            else {
-                card.addClass("status-danger");
-                card.find(".accordion-header-text .status").html('*Belum Benar*');
-            }
-
-        });
-        
-        //special case: nomor-hp
-        let flagval = konfirmasi['nomer-hp'];
-        let card = $("#nomer-hp");
-        if (flagval) {
-            card.removeClass("status-danger");
-            card.find(".accordion-header-text .status").html('');
-        }
-        else {
-            card.addClass("status-danger");
-            card.find(".accordion-header-text .status").html('*Belum Diisi*');
-        }
-
-        //special case: surat pernyataan
-        flagval = konfirmasi['surat-pernyataan'];
-        card = $("#surat-pernyataan");
-        {if !($flag_upload_dokumen)}
-        {* no upload -> always OK *}
-        card.removeClass("status-danger");
-        card.find(".accordion-header-text .status").html('');
-        {else}
-        if (flagval) {
-            card.removeClass("status-danger");
-            card.find(".accordion-header-text .status").html('');
-        }
-        else {
-            card.addClass("status-danger");
-            card.find(".accordion-header-text .status").html('*Belum Unggah Dokumen*');
-        }
-        {/if}
-
-        //special case
-        flagval = konfirmasi['prestasi'];
-        if (flagval) {
-            dtprestasi.buttons( 0, null ).container().hide();
-        }
-        else {
-            dtprestasi.buttons( 0, null ).container().show();
-        }
-
-    }       
-
-    function impose_min_max(el){
-        if(el.value != ""){
-            val = parseFloat(el.value);
-            if (isNaN(val)) val = 0;
-
-            min = parseFloat(el.getAttribute('tcg-min'));
-            max = parseFloat(el.getAttribute('tcg-max'));
-            if(!isNaN(min) && val < min){
-                el.value = min;
-            }
-            else if(!isNaN(max) && val > max){
-                el.value = max;
-            }
-        }
-    }
-
-</script>
-
 

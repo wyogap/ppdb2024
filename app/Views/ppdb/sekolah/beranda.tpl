@@ -1,3 +1,14 @@
+<style>
+    /* .leaflet-bottom {
+        z-index: 1 !important;
+    } */
+    
+    .leaflet-control-attribution.leaflet-control {
+        margin-right: 32px;
+    }
+
+</style>
+
 <div class="row">
 	<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 		<div class="card box-solid">
@@ -81,7 +92,7 @@
                             <tbody>
                             <tfoot>
 							<tr>
-								<td class="text-right"><b>Total Kuota</b></td>
+								<td class="text-end"><b>Total Kuota</b></td>
 								<td class="text-end">{$totalkuota}</td>
 							</tr>
                             </tfoot>
@@ -96,10 +107,10 @@
 			<div class="card-header with-border">
 				<h3 class="box-title text-info"><b>Lokasi Sekolah</b></h3>
 			</div>
-			<div class="card-body">
+			<div class="card-body" style="padding: 0px;">
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<div id="peta" style="width: 100%; height: 400px;"></div>
+						<div id="peta" style="width: 100%; height: 400px; z-index: 1; border-bottom-left-radius: 32px; border-bottom-right-radius: 32px;"></div>
 					</div>
 				</div>
 			</div>

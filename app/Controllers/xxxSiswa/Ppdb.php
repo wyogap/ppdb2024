@@ -363,7 +363,7 @@ class Ppdb extends PpdbController {
             $data['batasanusia'] = $this->Msetting->tcg_batasanusia("SMP")->getRowArray();
             $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] || $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']);
 
-            $data['daftarjalur'] = $this->Msiswa->tcg_daftarjalur($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'))->getResultArray();
+            $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'))->getResultArray();
             
             $daftarpilihan = $this->Msetting->tcg_daftarpilihan()->getResultArray();
             $data['maxpilihan'] = count($daftarpilihan);
