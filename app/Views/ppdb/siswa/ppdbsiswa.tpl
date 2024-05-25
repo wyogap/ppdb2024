@@ -294,6 +294,7 @@
 
 {include file="./_profil.tpl"}
 {include file="./_pendaftaran.tpl"}
+{include file="./_daftarpendaftaran.tpl"}
 
 <script type="text/javascript">
     //profil
