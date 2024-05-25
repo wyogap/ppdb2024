@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<html lang="en" class="h-100">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="" />
+	<meta name="author" content="" />
+	<meta name="robots" content="" />
+	<meta name="description" content="PPDB ONLINE {$nama_wilayah}" />
+	<meta property="og:title" content="PPDB ONLINE {$nama_wilayah}" />
+	<meta property="og:description" content="PPDB ONLINE {$nama_wilayah}" />
+	<meta property="og:image" content="{$base_url}assets/image/tutwuri.png" />
+	<meta name="format-detection" content="telephone=no">
+	
+	<!-- PAGE TITLE HERE -->
     <title>PPDB ONLINE {$nama_wilayah}</title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="shortcut icon" href="{$base_url}assets/image/tutwuri.png">
+    <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">
 
-    <link rel="stylesheet" href="{$base_url}assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{$base_url}assets/themes/adminlte/dist/css/adminlte.css">
-
-    <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-    <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
- 
-    <!-- <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="{$base_url}assets/adminlte/dist/css/skins/_all-skins.css">
-     -->
-
- 	<!-- <script src="{$base_url}assets/adminlte/plugins/jQuery/jQuery-2.1.4.min.js"></script> -->
-    <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.min.js"></script>
-
-    <script src="{$base_url}assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="{$base_url}assets/themes/adminlte/dist/js/adminlte.js"></script>
+    <!-- <link rel="stylesheet" href="{$base_url}assets/bootstrap/css/bootstrap.min.css"> -->
 
     <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/bootstrap.css" >
     <link rel="stylesheet" type="text/css" href="{$base_url}assets/podes/stylesheets/style.css">
@@ -36,10 +31,37 @@
     <link href="{$base_url}assets/podes/icon/apple-touch-icon-48-precomposed.png" rel="apple-touch-icon-precomposed" sizes="48x48">
     <link href="{$base_url}assets/podes/icon/apple-touch-icon-32-precomposed.png" rel="apple-touch-icon-precomposed">
 
-</head> 
+	<!-- FAVICONS ICON -->
+    <link href="{$base_url}/themes/dompet/css/style.css" rel="stylesheet">
 
-<body class="header_sticky page-loading">
-    <section class="loading-overlay">
+    <style>
+        .tp-caption.botton-slider.bg2e2f {
+            background-color: black;
+            color: #fff;
+            padding: 11px 28px 10px 32px !important;
+        }
+
+        .ti-mouse {
+            color: var(--dark) !important;
+        }
+        
+        .accordion-header {
+            border: 1px solid #969ba0;
+            border-radius: 1rem;
+            font-size: 18px;
+        }
+
+        .accordion-body-text .table tbody tr td {
+            border-bottom: 1px solid #969ba0;;
+            border-top: 1px solid #969ba0;;
+        }
+
+    </style>
+</head>
+
+<body class="vh-100">
+
+<section class="loading-overlay">
         <div class="preload-inner">
             <div class="wBall" id="wBall_1">
                 <div class="wInnerBall"></div>
@@ -72,7 +94,7 @@
                 {elseif $row.tipe==2}{$alert_type='alert-danger'}
                 {/if}
                
-                <div class="alert {$alert_type}{if $row.bisa_ditutup==1} alert-dismissable{/if}" style="margin: 20px;">
+                <div class="alert {$alert_type}{if $row.bisa_ditutup==1} alert-dismissible{/if}" style="margin: 20px;">
                     {if $row.bisa_ditutup==1}<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{/if}
                     <p class="{$row.css}">{$row.text}</p>
                 </div>
@@ -82,7 +104,7 @@
                 {foreach $tahapan_aktif as $row}
                 {if empty($row.notifikasi_umum)}{continue}{/if}
 
-                <div class="alert alert-info alert-dismissable" style="margin: 20px;">
+                <div class="alert alert-info alert-dismissible" style="margin: 20px;">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <p><i class="icon glyphicon glyphicon-info-sign"></i>{$row.tahapan}</p>
                     <p>{$row.notifikasi_umum}</p>
@@ -157,7 +179,7 @@
                                 data-paddingleft="[0,0,0,0]"
                                 style="z-index: 17; white-space: normal;color:white">Sistem <b>PPDB</b> Online Tahun {$nama_tahun_ajaran}
                             </div>
-                            <a href="{site_url()}home/login" class="tp-caption flat-button botton-slider bg2e2f fontsize13 smooth bg-blue"
+                            <a href="{site_url()}auth" class="tp-caption flat-button botton-slider bg2e2f fontsize13 smooth bg-blue"
                                 data-frames='[{ "from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","mask":"x:0px;y:[100%];s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":2000,"ease":"Power4.easeInOut" },{ "delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut" }]'
                                 data-x="['right','right','right','right']" data-hoffset="['-73','30','30','30']" 
                                 data-y="['middle','middle','middle','middle']" data-voffset="['158','158','140','100']" 
@@ -173,125 +195,127 @@
                 <a class="icon-right-arrow rotate arrow-bottom active smooth" href="#waktupelaksanaan"><i class="ti-mouse"></i></a>
             </div>
         </div>
-        <section id="waktupelaksanaan" class="flat-row element-countdown bg-black">
-            <div class="container">
-                <div class="title-call-action another text-white text-center">
-                    Waktu Pelaksanaan PPDB
-                </div>
-                <div class="row text-center">
-                    <table class="table">
-                        <tbody>
-                            {assign var='putaran' value=''}
-                            {foreach $tahapan_pelaksanaan as $row} 
-                            {if $row.tahapan_id==0 || $row.tahapan_id==99} {continue} {/if} 
-                            {if $putaran!=$row.putaran}
-                            {if $putaran!=''}<tr><td colspan=5></td>{/if}
-                            <tr class="h4" style="padding-top: 10px; padding-bottom: 10px">
-                                <td colspan=5>{$row.nama_putaran}</td>
-                            </tr>
-                            {$putaran=$row.putaran}
-                            {/if}
-                            <tr class="h4" style="padding-top: 10px; padding-bottom: 10px">
-                                <td width="300px">{$row.tahapan}</td><td></td>
-                                {if ($row.tanggal_mulai == $row.tanggal_selesai)}<td colspan=3>{$row.tanggal_mulai}</td>
-                                {else}<td width="200px">{$row.tanggal_mulai}</td><td width="20px">s.d.</td><td width="200px">{$row.tanggal_selesai}</td>
-                                {/if}
-                            </tr>
-                            {/foreach}
-                            <tr><td colspan=5></td></tr>
-                        </tbody>
-                    </table>
-                </div>
+    </div>
+    <section id="waktupelaksanaan" class="flat-row element-countdown">
+        <div class="container">
+            <div class="title-call-action another text-center">
+                Waktu Pelaksanaan PPDB
             </div>
-        </section>
-        {if !empty($petunjuk_pelaksanaan)}
-        <section id="pentunjukpelaksanaan" class="flat-row element-tab">
-            {foreach $petunjuk_pelaksanaan as $row}
-            <div class="container">
-                <div class="title-call-action another text-center">
-                    Petunjuk Pelaksanaan
-                </div>
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="flat-accordion style2">
-                            <div class="flat-toggle">
-                                <div class="toggle-title">JADWAL PELAKSANAAN</div>
-                                <div class="toggle-content">{$row.jadwal_pelaksanaan}</div>
-                            </div><!-- /toggle -->
-                            <div class="flat-toggle">
-                                <div class="toggle-title">PERSYARATAN</div>
-                                <div class="toggle-content">{$row.persyaratan}
-                            </div><!-- /toggle -->
-                            <div class="flat-toggle">
-                                <div class="toggle-title">TATA CARA PENDAFTARAN</div>
-                                <div class="toggle-content">{$row.tata_cara_pendaftaran}
-                            </div>
-                            <div class="flat-toggle">
-                                <div class="toggle-title">JALUR PENDAFTARAN</div>
-                                <div class="toggle-content">{$row.jalur_pendaftaran}
-                            </div>
-                            <div class="flat-toggle">
-                                <div class="toggle-title">SELEKSI</div>
-                                <div class="toggle-content">{$row.proses_seleksi}
-                            </div>
-                            <div class="flat-toggle">
-                                <div class="toggle-title">KONVERSI NILAI</div>
-                                <div class="toggle-content">{$row.konversi_nilai}
+            <div class="row text-center">
+                <div class="col-12">
+                <div class="accordion accordion-active-header" id="accordion-nine">
+                    {foreach $putaran as $p}
+                    {if empty($p.tahapan)}{continue}{/if}
+                    <div class="accordion-item">
+                        <div class="accordion-header rounded-lg collapsed" id="accord-{$p.putaran}" data-bs-toggle="collapse" data-bs-target="#collapse-{$p.putaran}" aria-controls="collapse-{$p.putaran}" aria-expanded="true" role="button">
+                            <span class="accordion-header-icon"></span>
+                            <span class="accordion-header-text">{$p.nama}</span>
+                            <span class="accordion-header-indicator"></span>
+                        </div>
+                        <div id="collapse-{$p.putaran}" class="accordion__body collapse" aria-labelledby="accord-{$p.putaran}" data-bs-parent="#accordion-nine" style="">
+                            <div class="accordion-body-text">
+                                <table class="table">
+                                    <tbody>
+                                        {foreach $p.tahapan as $t}
+                                        {if $t.tahapan_id==0 || $t.tahapan_id==99} {continue} {/if} 
+                                        <tr class="" style="padding-top: 10px; padding-bottom: 10px">
+                                            <td  class="">{$t.tahapan}</td><td></td>
+                                            {if ($t.tanggal_mulai == $t.tanggal_selesai)}<td class="" colspan=3>{$t.tanggal_mulai}</td>
+                                            {else}<td class="">{$t.tanggal_mulai}</td><td width="20px">s.d.</td><td class="">{$t.tanggal_selesai}</td>
+                                            {/if}
+                                        </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+                    {/foreach}
+                </div>
                 </div>
             </div>
-            {/foreach}
-        </section>
-        {/if}
-        {if 1==0}
-        <section id="dashboard" class="flat-row element-countdown bg-black">
-            <?php view('ppdb/home/dashboard');?>
-        </section>
-        <section id="sekolahpenyelenggara" class="flat-row">
-            <?php view('home/rekapitulasi');?>
-        </section> 
-        {/if}
-
-        <section id="kontak" class=" blancejqurey bg-black" style="padding-bottom: 36px;">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="title-footer8">
-                            <img src="{$base_url}assets/image/logodinas.png" style="width:150px">
+        </div>
+    </section>
+    {if !empty($petunjuk_pelaksanaan)}
+    <section id="pentunjukpelaksanaan" class="flat-row element-tab">
+        <div class="container">
+            <div class="title-call-action another text-center">
+                Petunjuk Pelaksanaan
+            </div>
+            <div class="row">
+                <div class="col-12">
+                <div class="accordion accordion-active-header" id="accordion-2">
+                    {foreach $petunjuk_pelaksanaan as $p}
+                    <div class="accordion-item">
+                        <div class="accordion-header rounded-lg collapsed text-center" id="accord2-{$p.id}" data-bs-toggle="collapse" data-bs-target="#collapse2-{$p.id}" aria-controls="collapse2-{$p.id}" aria-expanded="true" role="button">
+                            <span class="accordion-header-icon"></span>
+                            <span class="accordion-header-text">{$p.title}</span>
+                            <span class="accordion-header-indicator"></span>
+                        </div>
+                        <div id="collapse2-{$p.id}" class="accordion__body collapse" aria-labelledby="accord2-{$p.id}" data-bs-parent="#accordion-2" style="">
+                            <div class="accordion-body-text">
+                                {$p.text}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-10">
-                        <div class="title-footer8">{$nama_wilayah}</div><br>
-                        <p>{$alamat_dinas}</p><br>
-                        <div class="info-contact" style="font-size: 36px;"><div class="phone">{$nomor_telp_dinas}</div></div>
-                    </div>
+                    {/foreach}
                 </div>
-            </div>        
-        </section>
-        <a class="go-top">
+            </div>
+        </div>
+    </section>
+    {/if}
+    <a class="go-top">
             <i class="ti-angle-up"></i>
         </a> 
-    </div>
+
+    <section id="kontak" class=" blancejqurey bg-black" style="padding-bottom: 36px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title-footer8">
+                        <img src="{$base_url}assets/image/logodinas.png" style="width:150px">
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="title-footer8">{$nama_wilayah}</div><br>
+                    <p>{$alamat_dinas}</p><br>
+                    <div class="info-contact" style="font-size: 36px;"><div class="phone">{$nomor_telp_dinas}</div></div>
+                </div>
+            </div>
+        </div>        
+    </section>
+
+	
 </body>
 
-<script src="{$base_url}assets/select2/js/select2.full.min.js"></script>
+<!--**********************************
+    Scripts
+***********************************-->
+<!-- Required vendors -->
+<script src="{$base_url}/themes/dompet/vendor/global/global.min.js"></script>
 
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.easing.js"></script>      
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.min.js"></script>
+<script type="text/javascript" src="{$base_url}assets/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.easing.js"></script>      
 <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-validate.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/javascript/imagesloaded.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.isotope.min.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/owl.carousel.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-countTo.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/owl.carousel.js"></script> -->
+<!-- <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-countTo.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.cookie.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.tweet.min.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/parallax.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/main.js"></script>
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/TimeCircles.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.tweet.min.js"></script> -->
+<!-- <script type="text/javascript" src="{$base_url}assets/podes/javascript/parallax.js"></script>
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/main.js"></script> -->
+<!-- <script type="text/javascript" src="{$base_url}assets/podes/javascript/TimeCircles.js"></script> -->
+<!-- <script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-waypoints.js"></script> 
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.magnific-popup.min.js"></script>  
+<script type="text/javascript" src="{$base_url}assets/podes/javascript/countdown.js"></script> -->
+
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/jquery.themepunch.tools.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/jquery.themepunch.revolution.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/slider2.js"></script>
+
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.actions.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
@@ -300,8 +324,81 @@
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
 <script type="text/javascript" src="{$base_url}assets/podes/revolution/js/extensions/revolution.extension.slideanims.min.js"></script> 
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery-waypoints.js"></script> 
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/jquery.magnific-popup.min.js"></script>  
-<script type="text/javascript" src="{$base_url}assets/podes/javascript/countdown.js"></script>
+
+<script>
+    var dezSettingsOptions = {};
+
+    (function($) {
+        let dark_theme = getCookie('dark_theme');
+        if (dark_theme === undefined) {
+            dark_theme = 0;
+        } 
+
+        //update the theme setting. must be before dlabnav-init.js
+        dezSettingsOptions = {
+            typography: "cairo",
+            version: ((dark_theme==1) ? "dark" : "light"),
+            layout: "horizontal",
+            primary: "color_1",
+            navheaderBg: "color_1",
+            sidebarBg: "color_1",
+            sidebarStyle: "compact",
+            sidebarPosition: "fixed",
+            headerPosition: "fixed",
+            containerLayout: "boxed",
+        };
+        
+    })(jQuery);
+
+    function toggle_dark_mode() {
+        let dark_theme = getCookie('dark_theme');
+        if (dark_theme === undefined) {
+            dark_theme = 0;
+        } 
+
+        if (dark_theme == 1)    dark_theme = 0;
+        else                    dark_theme = 1;
+
+        setCookie("dark_theme", dark_theme, 30);
+
+        dezSettingsOptions = {
+            typography: "cairo",
+            version: ((dark_theme==1) ? "dark" : "light"),
+            layout: "horizontal",
+            primary: "color_1",
+            navheaderBg: "color_1",
+            sidebarBg: "color_1",
+            sidebarStyle: "compact",
+            sidebarPosition: "fixed",
+            headerPosition: "fixed",
+            containerLayout: "boxed",
+        };
+        
+        new dezSettings(dezSettingsOptions); 
+    }
+
+    function setCookie(c_name, value, exdays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+        document.cookie = c_name + "=" + c_value;
+    }
+
+    function getCookie(c_name) {
+        var i, x, y, ARRcookies = document.cookie.split(";");
+        for (i = 0; i < ARRcookies.length; i++) {
+            x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+            x = x.replace(/^\s+|\s+$/g, "");
+            if (x == c_name) {
+                return unescape(y);
+            }
+        }
+    }
+            
+</script>
+
+<script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
+<script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>
 
 </html>

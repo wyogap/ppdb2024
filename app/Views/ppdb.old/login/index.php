@@ -30,13 +30,13 @@
 			</div>
 			<div class="text-center"><p><a href="<?php echo base_url();?>" class="btn btn-default"><i class="glyphicon glyphicon-step-backward"></i> Kembali ke <b>Beranda</b></a></p></div>
 			<?php if (($tahapan_id == 0 || $tahapan_id == 99) && (!empty($notifikasi_umum))) { ?>
-				<p class="alert alert-info alert-dismissable"><b><?php echo $notifikasi_umum; ?></b></p>
+				<p class="alert alert-info alert-dismissible"><b><?php echo $notifikasi_umum; ?></b></p>
 			<?php } ?>
 
 			<!-- <div class="alert alert-success">
 				<p class="text-center"><a href="<?php echo base_url();?>index.php/home/rekapitulasi" style="text-decoration:none;">Rekapitulasi Hasil PPDB Online 2020</a></p>
 			</div>
-			<div class="alert alert-info alert-dismissable">
+			<div class="alert alert-info alert-dismissible">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p><i class="icon glyphicon glyphicon-info-sign"></i>Silahkan masuk dengan akun siswa dan gunakan menu Daftar Ulang untuk mendapatkan informasi lebih lanjut mengenai proses daftar ulang.</p>
 			</div> -->
@@ -45,10 +45,10 @@
 				if(empty($row->text)) 
 					continue;
 			?>
-				<?php if ($row->tipe == 0) { ?><div class="alert alert-info <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin-bottom: 10px;">
-				<?php } else if ($row->tipe == 1) { ?><div class="alert alert-success <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin-bottom: 10px;">
-				<?php } else if ($row->tipe == 2) { ?><div class="alert alert-danger <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin-bottom: 10px;">
-				<?php } else { ?><div class="alert alert-error <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin-bottom: 10px;">
+				<?php if ($row->tipe == 0) { ?><div class="alert alert-info <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin-bottom: 10px;">
+				<?php } else if ($row->tipe == 1) { ?><div class="alert alert-success <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin-bottom: 10px;">
+				<?php } else if ($row->tipe == 2) { ?><div class="alert alert-danger <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin-bottom: 10px;">
+				<?php } else { ?><div class="alert alert-error <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin-bottom: 10px;">
 				<?php } ?>
 				<?php if($row->bisa_ditutup==1) {?>
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -61,7 +61,7 @@
 				if(empty($row->notifikasi_umum)) 
 					continue;
 			?>
-				<div class="alert alert-info alert-dismissable" style="margin-bottom: 10px;">
+				<div class="alert alert-info alert-dismissible" style="margin-bottom: 10px;">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					<p><i class="icon glyphicon glyphicon-info-sign"></i><?php echo $row->tahapan; ?></p>
 					<p><?php echo $row->notifikasi_umum; ?></p>

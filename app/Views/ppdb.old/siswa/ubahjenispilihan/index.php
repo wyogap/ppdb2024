@@ -17,12 +17,12 @@
 					</section>
 					<section class="content">
 						<?php if ($maxubahjenispilihan > $ubahjenispilihansiswa) { ?>
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-sign"></i>
 							Anda hanya bisa melakukan perubahan <b>"Jenis Pilihan"</b> sebanyak <b><?php echo $maxubahjenispilihan-$ubahjenispilihansiswa;?> kali</b>. Jika salah satu jenis pilihan sekolah diperbaharui, sistem mungkin akan menyesuikan jenis pilihan lain secara otomatis.</b>.
 						</div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-warning"></i>
 							Anda sudah tidak bisa melakukan perubahan <b>"Jenis Pilihan"</b> karena sudah melebihi batasan.</b>.
 						</div>

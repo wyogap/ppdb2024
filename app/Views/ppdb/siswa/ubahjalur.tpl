@@ -18,32 +18,32 @@
 					</section>
 					<section class="content">
 						<?php if ($maxubahjalur > $ubahjalursiswa) { ?>
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-sign"></i>
 							Anda hanya bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> sebanyak <b><?php echo $maxubahjalur-$ubahjalursiswa;?> kali</b>.
 						</div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-warning"></i>
 							Anda sudah tidak bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> karena sudah melebihi batasan.</b>.
 						</div>
 						<?php } ?>
 
                         <?php if ($jalurswasta == 1) { ?>
-                            <div class="alert alert-danger alert-dismissable">
+                            <div class="alert alert-danger alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 <p><i class="icon glyphicon glyphicon-exclamation-sign"></i>Anda tidak bisa mengubah jalur pendaftaran dari jalur Swasta. Jalur pendaftaran Swasta dikhususkan untuk pendaftaran ke sekolah swasta.</p>             
                             </div>
                         <?php } ?>
 
                         <?php if ($dalam_zonasi == 1 && $jalurswasta != 1 && $satu_zonasi_satu_jalur == 1) { ?>
-                            <div class="alert alert-danger alert-dismissable">
+                            <div class="alert alert-danger alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 <p><i class="icon glyphicon glyphicon-exclamation-sign"></i>Anda hanya bisa mendaftar menggunakan satu jalur pada satu zonasi. Mohon berhati-hati dalam menentukan jalur pendaftaran.</p>             
                             </div>
 
                             <?php if ($jalurid_dalam_zonasi) { ?>
-                                <div class="alert alert-warning alert-dismissable">
+                                <div class="alert alert-warning alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     <p><i class="icon glyphicon glyphicon-info-sign"></i>Anda mempunyai pendaftaran menggunakan jalur <?php echo $namajalur_dalam_zonasi; ?> di dalam zonasi anda. Silahkan hapus terlebih dahulu pendaftaran tersebut.</p>             
                                 </div>

@@ -27,7 +27,7 @@
 
 <span><?php if(isset($info)){echo $info;}?></span>
 <?php if(isset($msg)){?>
-			<div class="alert alert-info alert-dismissable">
+			<div class="alert alert-info alert-dismissible">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<i class="icon glyphicon glyphicon-info-sign"></i><?php echo $msg; ?>
 			</div>

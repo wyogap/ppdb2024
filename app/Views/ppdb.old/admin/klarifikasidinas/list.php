@@ -145,8 +145,8 @@ $(document).ready(function() {
  
 	dt_profil = $('#tprofil').DataTable({
 		"responsive": true,
-		"pageLength": 50,
-		"lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
+		"pageLength": 25,
+		"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 		"paging": true,
 		"pagingType": "numbers",
 		"dom": 'Bfrtpil',
@@ -159,11 +159,11 @@ $(document).ready(function() {
 		],
 		"language": {
 			"sProcessing":   "Sedang proses...",
-			"sLengthMenu":   "Tampilan _MENU_ entri",
+			"sLengthMenu":   "Tampilan _MENU_ baris",
 			"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-			"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+			"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 			"sInfoPostFix":  "",
 			"sSearch":       "Cari:",
 			"sUrl":          "",
@@ -250,8 +250,8 @@ $(document).ready(function() {
 
 	dt_lokasi = $('#tlokasi').DataTable({
 		"responsive": true,
-		"pageLength": 50,
-		"lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
+		"pageLength": 25,
+		"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 		"paging": true,
 		"pagingType": "numbers",
 		"dom": 'Bfrtpil',
@@ -264,11 +264,11 @@ $(document).ready(function() {
 		],
 		"language": {
 			"sProcessing":   "Sedang proses...",
-			"sLengthMenu":   "Tampilan _MENU_ entri",
+			"sLengthMenu":   "Tampilan _MENU_ baris",
 			"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-			"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+			"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 			"sInfoPostFix":  "",
 			"sSearch":       "Cari:",
 			"sUrl":          "",

@@ -89,7 +89,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="box-title">
-                    (<b>{{item.npsn}}</b>) <b>{{item.sekolah}}</b>)
+                    (<b>{{item.npsn}}</b>) <b>{{item.sekolah}}</b>
                     
                     {{#allow_edit}}
                     <div style="min-height: 38px; margin-top: 8px;">
@@ -247,7 +247,10 @@
     </div>
 
 </script>
+{/literal}
 
+{if !$is_public|default: FALSE}
+{literal}
 <script id="ubah-pilihan" type="text/template">
 
     <div class="alert alert-secondary alert-dismissible" role="alert">
@@ -424,7 +427,16 @@
 
 </script>
 {/literal}
+{/if}
 
+{if $is_public|default: FALSE}
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Pendaftaran</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">{$profilsiswa.nama}</a></li>
+    </ol>
+</div>
+{/if}
 
 <div class="row" id="daftar-pendaftaran-notif">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -461,14 +473,15 @@
                 'allow_edit': !pendaftarandikunci,
                 'kelengkapan_data' : kelengkapan_data,
                 'item'      : pendaftaran,
-                'batasan'   : batasanperubahan,
-                'idx'       : idx
+                //'batasan'   : batasanperubahan,
+                //'idx'       : idx
             });
 
             parent.append(dom);
         });
     }
 
+    {if !$is_public|default: FALSE}
     function hapus_pendaftaran(idx) {
         let p = daftarpendaftaran[idx];
         let pendaftaran_id = p['pendaftaran_id'];
@@ -991,6 +1004,7 @@
             }
         });
     }
-
+    {/if}
+    
 </script>
 

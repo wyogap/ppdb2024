@@ -52,7 +52,7 @@
 	if($error)
 	{
 ?>
-	<div class="alert alert-danger alert-dismissable">
+	<div class="alert alert-danger alert-dismissible">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 		<?php echo $error; ?>                    
 	</div>
@@ -63,7 +63,7 @@
 	if($success)
 	{
 ?>
-	<div class="alert alert-success alert-dismissable">
+	<div class="alert alert-success alert-dismissible">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 		<?php echo $success; ?>                    
 	</div>
@@ -1326,11 +1326,11 @@ $(document).ready(function() {
 		],
 		"language": {
 			"sProcessing":   "Sedang proses...",
-			"sLengthMenu":   "Tampilan _MENU_ entri",
+			"sLengthMenu":   "Tampilan _MENU_ baris",
 			"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-			"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+			"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+			"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 			"sInfoPostFix":  "",
 			"sSearch":       "Cari:",
 			"sUrl":          "",
@@ -1399,7 +1399,7 @@ $(document).ready(function() {
 		ajax: "<?php echo site_url('admin/verifikasisiswa/prestasi') . '?peserta_didik_id=' . $peserta_didik_id; ?>",
 		"language": {
 			"processing":   "Sedang proses...",
-			"lengthMenu":   "Tampilan _MENU_ entri",
+			"lengthMenu":   "Tampilan _MENU_ baris",
 			"zeroRecords":  "Tidak ditemukan data yang sesuai",
 			"loadingRecords": "Loading...",
 			"emptyTable":   "Tidak ditemukan data yang sesuai",

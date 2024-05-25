@@ -49,7 +49,8 @@ class PpdbController extends BaseController {
         parent::initController($request, $response, $logger);
 
         //load library
-
+        helper("ppdb");
+        
         //load model
         $this->Mconfig = new Mconfig();
 
@@ -253,7 +254,7 @@ class PpdbController extends BaseController {
 		$isLoggedIn = !empty($this->session->get('user_id'));
 		if (static::$AUTHENTICATED && !$isLoggedIn) {
 			if ($this->is_json) {
-				$this->print_json_error("not-login");
+				print_json_error("not-login");
 			} else {
 				return redirect()->to(site_url() .'auth');
 			}
@@ -267,7 +268,7 @@ class PpdbController extends BaseController {
                 //static::$ROLE_ID can be an array
                 (is_array(static::$ROLE_ID) && array_search($role_id,static::$ROLE_ID) === FALSE))) {
 			if ($this->is_json) {
-				$this->print_json_error("not-authorized");
+				print_json_error("not-authorized");
 			} else {
                 return view('ppdb/home/notauthorized');		//not-authorized
             }
@@ -290,37 +291,5 @@ class PpdbController extends BaseController {
 		return view('ppdb/home/notauthorized');
 	}
 
-    protected function print_json_error($error_message, $error_no = -1) {
-        $json = array();
-        $json["status"] = 0;
-        $json["error"] = $error_message;
-        if (!empty($error_no)) {
-            $json["errorno"] = $error_no;
-        }
-
-        //TODO: output properly
-        echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
-        exit;
-    }
-
-    protected function print_json_output($data) {
-        $json = array();
-        $json["status"] = 1;
-        if (!empty($data)) {
-            $json['data'] = $data;
-        }
-
-        //TODO: output properly
-        echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
-        exit;
-    }
-
-    protected function audit_siswa($peserta_didik_id, $action_type, $action_description, $columns, $new_values, $old_values) {
-
-    }
-
-    protected function audit_pendaftaran($pendaftaran_id, $action_type, $action_description, $columns, $new_values, $old_values) {
-        
-    }
 
 }

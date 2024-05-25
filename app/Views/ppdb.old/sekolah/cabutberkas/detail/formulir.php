@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/adminlte/plugins/datepicker/datepicker3.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/leaflet/leaflet.css"/>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet'/>
-<div class="alert alert-danger alert-dismissable">
+<div class="alert alert-danger alert-dismissible">
 	<i class="icon glyphicon glyphicon-warning-sign"></i>
 	Untuk cabut berkas dimasing-masing siswa hanya dibatasi <b><?php echo $batasancabutberkas;?> kali</b>. Mohon berhati-hati dan berkonfirmasi lebih lanjut dengan Siswa/Orang Tua yang bersangkutan.
 </div>
@@ -62,7 +62,7 @@
 	?>
 	<?php if ($cabut_berkas >= $batasancabutberkas) { ?>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<div class="alert alert-info alert-dismissable">
+		<div class="alert alert-info alert-dismissible">
 			<i class="icon glyphicon glyphicon-info-sign"></i></h4>
 			Sudah tidak bisa melakukan cabut berkas. Batasan maksimal sudah tercapai.
 		</div>

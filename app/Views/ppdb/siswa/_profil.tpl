@@ -82,23 +82,6 @@
             "dom": 't',
             "buttons": [
             ],
-            "language": {
-                "sProcessing":   "Sedang proses...",
-                "sLengthMenu":   "Tampilan _MENU_ entri",
-                "sZeroRecords":  "Tidak ditemukan data yang sesuai",
-                "sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-                "sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-                "sInfoPostFix":  "",
-                "sSearch":       "Cari:",
-                "sUrl":          "",
-                "oPaginate": {
-                    "sFirst":    "Awal",
-                    "sPrevious": "Balik",
-                    "sNext":     "Lanjut",
-                    "sLast":     "Akhir"
-                }
-            },	
             ajax: "{$site_url}ppdb/siswa/riwayat",
             columns: [
                 { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },
@@ -317,6 +300,26 @@
 
         profilflag['kebutuhan_khusus'] = kebutuhankhusus;
 
+        //reset kelengkapan data
+        kelengkapan_data = 1;
+        tags.forEach(function(key) {
+            if(konfirmasi[key] != 1 || verifikasi[key] == 2) {
+                kelengkapan_data = 0;
+            }
+        });
+
+        if (!konfirmasi['nomer-hp']) {
+            kelengkapan_data = 0;
+        }
+
+        siswa_tutup_akses = profil['tutup_akses'];
+
+        //update flag pendaftaran dikunci
+        if (!kelengkapan_data || siswa_tutup_akses) {
+            pendaftarandikunci = 1;
+        }
+
+        //redraw is necessary
         if (redraw) {
             update_profile_layout();
             update_pendaftaran_layout();

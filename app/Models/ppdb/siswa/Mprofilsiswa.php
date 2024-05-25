@@ -208,7 +208,7 @@ Class Mprofilsiswa
 
 		$builder->orderBy('a.jenis_pilihan');
 
-        // echo $builder->getCompiledSelect(); exit;
+        //echo $builder->getCompiledSelect(); exit;
 
 		return $builder->get()->getResultArray();
 

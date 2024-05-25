@@ -175,14 +175,6 @@
                                         </tr>
                                         {/foreach}
 
-                                        {foreach $berkasfisik[$row.pendaftaran_id] as $row2}
-                                        <tr {if ($row2.kondisi_khusus>0)}class="bg-warning"{/if}>
-                                            <td>{$row2.kelengkapan} (Berkas Fisik)</td>
-                                            <td class="text-center">
-                                            {if ($row2.berkas_fisik==1)}<i class="text-blue glyphicon glyphicon-ok"></i>
-                                            {else}<i class="text-red glyphicon glyphicon-remove"></i>{/if}</td>
-                                        </tr>
-                                        {/foreach}
                                         <tr>
                                             <td colspan="2" class="text-warning"><b>Note</b> : Jika ada kelengkapan yang bertanda <i class="text-red glyphicon glyphicon-remove"></i> mohon untuk memperbaiki di halaman <a href="{base_url()}siswa/profil">Profil Siswa</a>.</td>
                                         </tr>

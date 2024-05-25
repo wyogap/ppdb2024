@@ -12,7 +12,32 @@
 	var nama, sekolah_id, peran_id, username;
 
 	$(document).ready(function() {
-		$.extend( $.fn.dataTable.defaults, { responsive: true } );
+		$.extend( $.fn.dataTable.defaults, { 
+            responsive: true, 
+			"language": {
+				"processing":   "Sedang proses...",
+				"lengthMenu":   "Tampilan _MENU_ baris",
+				"zeroRecords":  "Tidak ditemukan data yang sesuai",
+				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
+				"infoPostFix":  "",
+				"loadingRecords": "Loading...",
+				"emptyTable":   "Tidak ditemukan data yang sesuai",
+				"search":       "Cari:",
+				"url":          "",
+				"paginate": {
+                    "first":    "Awal",
+                    "previous": "Balik",
+                    "next":     "Lanjut",
+                    "last":     "Akhir"
+				},
+				aria: {
+                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
+                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
+				}
+			},	
+        } );
 
 		$('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
 		$.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
@@ -273,29 +298,6 @@
 					},
 				},
 			],
-			"language": {
-				"processing":   "Sedang proses...",
-				"lengthMenu":   "Tampilan _MENU_ entri",
-				"zeroRecords":  "Tidak ditemukan data yang sesuai",
-				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"infoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-				"infoPostFix":  "",
-				"loadingRecords": "Loading...",
-				"emptyTable":   "Tidak ditemukan data yang sesuai",
-				"search":       "Cari:",
-				"url":          "",
-				"paginate": {
-				"first":    "Awal",
-				"previous": "Balik",
-				"next":     "Lanjut",
-				"last":     "Akhir"
-				},
-				aria: {
-						sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
-						sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
-					},
- 			},	
 			"ajax": {
                 "type" : "POST",
                 "url" : "{$site_url}ppdb/dapodik/penerimaan/json",
@@ -573,29 +575,6 @@
 			// 	},
 			// 	{ extend: "edit", editor: editor_pwd }
 			// ],
-			"language": {
-				"processing":   "Sedang proses...",
-				"lengthMenu":   "Tampilan _MENU_ entri",
-				"zeroRecords":  "Tidak ditemukan data yang sesuai",
-				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"infoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-				"infoPostFix":  "",
-				"loadingRecords": "Loading...",
-				"emptyTable":   "Tidak ditemukan data yang sesuai",
-				"search":       "Cari:",
-				"url":          "",
-				"paginate": {
-				"first":    "Awal",
-				"previous": "Balik",
-				"next":     "Lanjut",
-				"last":     "Akhir"
-				},
-				aria: {
-						sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
-						sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
-					}
-			},	
 			columns: [
 				{ data: "nama", className: 'dt-body-left'
 				},

@@ -112,8 +112,8 @@ $(document).ready(function() {
 		"language": {
 			"sProcessing":   "Sedang proses...",
 			"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-			"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+			"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+			"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 			"sInfoPostFix":  "",
 			"sSearch":       "Cari:",
 			"sUrl":          ""

@@ -194,8 +194,8 @@ class Siswa extends PpdbController {
         $data['peserta_didik_id'] = $peserta_didik_id;
         $data['tahun_ajaran'] = $tahun_ajaran_id;
         $data['profilsiswa'] = $profil;
-        $data['kelengkapan_data'] = $kelengkapan_data;
-        $data['verifikasi_dok'] = $verifikasi_dok;
+        //$data['kelengkapan_data'] = $kelengkapan_data;
+        //$data['verifikasi_dok'] = $verifikasi_dok;
 
         //var_dump($dokumen); exit;
 
@@ -230,7 +230,6 @@ class Siswa extends PpdbController {
 
         $data['waktusosialisasi'] = $waktusosialisasi;
         $data['cek_waktusosialisasi'] = $cek_waktusosialisasi;
-
 
         $data['satu_zonasi_satu_jalur'] = $this->setting->get('satu_zonasi_satu_jalur');
 
@@ -312,7 +311,7 @@ class Siswa extends PpdbController {
 
         ## DAFTAR PENDAFTARAN
         //berkas dok  
-        $pendaftaran = $this->_update_daftarpendaftaran($pendaftaran, $data['batasanperubahan'], $data['batasansiswa']);     
+        $pendaftaran = update_daftarpendaftaran($pendaftaran, $data['batasanperubahan'], $data['batasansiswa']);     
 
         $data['daftarpendaftaran'] = $pendaftaran;
 
@@ -593,7 +592,7 @@ class Siswa extends PpdbController {
     function updateprofil() {
         $data = $this->request->getPost("data");
         if (empty($data))   
-            $this->print_json_error("Invalid data");
+            print_json_error("Invalid data");
 
         $peserta_didik_id = $this->session->get('peserta_didik_id');
 
@@ -611,13 +610,13 @@ class Siswa extends PpdbController {
         if (!$toggle) {
             $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
             if ($oldvalues == null) {
-                $this->print_json_error("Invalid userid");
+                print_json_error("Invalid userid");
             }
         }
 
         $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
         if ($detail == null)
-            $this->print_json_error("Tidak berhasil mengubah data siswa.");
+            print_json_error("Tidak berhasil mengubah data siswa.");
 
         //audit trail
         if ($toggle) {
@@ -627,7 +626,7 @@ class Siswa extends PpdbController {
             $this->audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
         }
 
-        $this->print_json_output($detail);
+        print_json_output($detail);
     }
 
     //upload dokumen
@@ -635,7 +634,7 @@ class Siswa extends PpdbController {
         $peserta_didik_id = $this->session->get("peserta_didik_id");
         $doc_id = $this->request->getPostGet("doc_id");
         if (empty($doc_id)) {
-            $this->print_json_error("Kode kelengkapan dokumen tidak dikenal!");
+            print_json_error("Kode kelengkapan dokumen tidak dikenal!");
         }
 
         //upload file
@@ -653,7 +652,7 @@ class Siswa extends PpdbController {
 
         $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
 
-        $this->print_json_output($data);  
+        print_json_output($data);  
     }
 
     //upload dokumen
@@ -661,7 +660,7 @@ class Siswa extends PpdbController {
         $peserta_didik_id = $this->session->get("peserta_didik_id");
         $doc_id = $this->request->getPostGet("doc_id");
         if (empty($doc_id)) {
-            $this->print_json_error("Kode kelengkapan dokumen tidak dikenal!");
+            print_json_error("Kode kelengkapan dokumen tidak dikenal!");
         }
 
         $this->Msiswa->tcg_hapus_dokumenpendukung($peserta_didik_id, $doc_id);
@@ -670,7 +669,7 @@ class Siswa extends PpdbController {
         $nama_dok = $this->Msiswa->tcg_nama_dokumen($doc_id);
         $this->audit_siswa($peserta_didik_id, "HAPUS DOK", "Hapus dokumen " .$nama_dok, "doc_id", $doc_id, null);
 
-        $this->print_json_output(array());  
+        print_json_output(array());  
     }
     
     //pilihan untuk perubahan
@@ -685,7 +684,7 @@ class Siswa extends PpdbController {
             $penerapan_id = $this->request->getPostGet("penerapan_id");
             $data = $this->Msiswa->tcg_jenispilihan($peserta_didik_id, $penerapan_id);
             if ($data == null) {
-                $this->print_json_error("Tidak ada pilihan yang bisa dipakai.");
+                print_json_error("Tidak ada pilihan yang bisa dipakai.");
             }        
         }
         else if ($tipe == 'sekolah') {
@@ -704,14 +703,14 @@ class Siswa extends PpdbController {
             $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
             $pendaftaran = $this->Msiswa->tcg_pendaftaran($peserta_didik_id, $pendaftaran_id);
             if ($pendaftaran == null) {
-                $this->print_json_error("Data pendaftaran tidak ditemukan");
+                print_json_error("Data pendaftaran tidak ditemukan");
             }
 
             $penerapan_id = $pendaftaran['penerapan_id'];
             $jenis_pilihan = $pendaftaran['jenis_pilihan'];
             $data = $this->Msiswa->tcg_pilihansekolah($peserta_didik_id, $penerapan_id, $jenis_pilihan);
             if ($data == null) {
-                $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+                print_json_error("Tidak berhasil mendapatkan data pilihan.");
             }
 
             //remove existing sekolah
@@ -729,7 +728,7 @@ class Siswa extends PpdbController {
             //penerapan yang lama
             $pendaftaran = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
             if ($pendaftaran == null) {
-                $this->print_json_error("Data pendaftaran tidak ditemukan");
+                print_json_error("Data pendaftaran tidak ditemukan");
             }
             $penerapan_id = $pendaftaran['penerapan_id'];
             $parent_penerapan_id = $pendaftaran['parent_penerapan_id'];
@@ -772,14 +771,14 @@ class Siswa extends PpdbController {
             // $data = $penerapan;
         }
         else {
-            $this->print_json_error("not-implemented");
+            print_json_error("not-implemented");
         }
 
         if ($data == null) {
-            $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+            print_json_error("Tidak berhasil mendapatkan data pilihan.");
         }
 
-        $this->print_json_output($data);
+        print_json_output($data);
     }
 
     //ubah pendaftaran
@@ -799,7 +798,7 @@ class Siswa extends PpdbController {
 
         if ($tipe == 'ubahpilihan') {
             if ($batasansiswa['ubah_pilihan'] >= $batasanperubahan['ubah_pilihan']) {
-                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+                print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
             }
 
             $audit_action_type = "UBAH PILIHAN";
@@ -813,7 +812,7 @@ class Siswa extends PpdbController {
         }
         else if ($tipe == 'ubahsekolah') {
             if ($batasansiswa['ubah_sekolah'] >= $batasanperubahan['ubah_sekolah']) {
-                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+                print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
             }
 
             $audit_action_type = "UBAH SEKOLAH";
@@ -827,14 +826,14 @@ class Siswa extends PpdbController {
             $penerapan_id = $pendaftaran_lama['penerapan_id'];
             $existing = $this->Msiswa->tcg_cek_pendaftaran_sekolah($peserta_didik_id, $penerapan_id, $sekolah_id_baru);
 			if ($existing > 0) {
-                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+                print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
 			}
 
             $data = $this->Msiswa->tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru);
         }
         else if ($tipe == 'ubahjalur') {
             if ($batasansiswa['ubah_jalur'] >= $batasanperubahan['ubah_jalur']) {
-                $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+                print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
             }
 
             $audit_action_type = "UBAH JALUR";
@@ -848,17 +847,17 @@ class Siswa extends PpdbController {
             $sekolah_id = $pendaftaran_lama['sekolah_id'];
             $existing = $this->Msiswa->tcg_cek_pendaftaran_sekolah($peserta_didik_id, $penerapan_id_baru, $sekolah_id);
 			if ($existing > 0) {
-                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+                print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
 			}
 
             $data = $this->Msiswa->tcg_ubah_jalur($peserta_didik_id, $pendaftaran_id, $penerapan_id_baru);
         }
         else {
-            $this->print_json_error("not-implemented");
+            print_json_error("not-implemented");
         }
 
         if ($data == null) {
-            $this->print_json_error("Tidak berhasil mendapatkan data pilihan.");
+            print_json_error("Tidak berhasil mendapatkan data pilihan.");
         }
 
         //audit trail
@@ -871,9 +870,9 @@ class Siswa extends PpdbController {
         $batasanperubahan = $this->Mconfig->tcg_batasanperubahan();
         $batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
 
-        $data = $this->_update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
+        $data = update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
         
-        $this->print_json_output($data);
+        print_json_output($data);
     }
 
     //lakukan pendaftaran
@@ -902,7 +901,7 @@ class Siswa extends PpdbController {
 		
         $cek_penerapan = $this->Msiswa->tcg_cek_penerapan($penerapan_id);
         if ($cek_penerapan == 0) {
-            $this->print_json_error("Jalur penerapan ini tidak dibuka di putaran ini.");
+            print_json_error("Jalur penerapan ini tidak dibuka di putaran ini.");
         }
 
 		$flag = 0;
@@ -910,13 +909,13 @@ class Siswa extends PpdbController {
 		do {
 			$existing = $this->Msiswa->tcg_cek_pendaftaran_sekolah($peserta_didik_id, $penerapan_id, $sekolah_id);
 			if ($existing > 0) {
-                $this->print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
+                print_json_error("Data tidak tersimpan. Sudah mendaftar di sekolah yang dipilih dengan jalur yang sama.");
 			}
 
             //Jenis pilihan sudah terpakai
             $existing = $this->Msiswa->tcg_cek_pendaftaran_jenispilihan($peserta_didik_id, $jenis_pilihan);
 			if ($existing > 0) {
-                $this->print_json_error("Data tidak tersimpan. Jenis pilihan sudah terpakai.");
+                print_json_error("Data tidak tersimpan. Jenis pilihan sudah terpakai.");
 			}
 
 			$satu_zonasi_satu_jalur = $this->setting->get('satu_zonasi_satu_jalur');
@@ -969,19 +968,19 @@ class Siswa extends PpdbController {
 			$jumlahpendaftaran_all = $this->Msiswa->tcg_jumlahpendaftaran($peserta_didik_id);
 	
 			if(($jumlahpendaftaran>=$maxpilihan && $jumlahpendaftaran_all>=$maxpilihan_all)) {
-				$this->print_json_error("Data tidak tersimpan. Jumlah pilihan melebihi batas yang ditentukan.");	
+				print_json_error("Data tidak tersimpan. Jumlah pilihan melebihi batas yang ditentukan.");	
 			}
             
             $data = $this->Msiswa->tcg_daftar($peserta_didik_id, $penerapan_id, $sekolah_id, $jenis_pilihan);
             if ($data == null) {
-                $this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");	
+                print_json_error("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");	
             }
 
             //update with additional data
             $batasanperubahan = $this->Mconfig->tcg_batasanperubahan();
             $batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
     
-            $data = $this->_update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
+            $data = update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
 
 		} while(false);
 
@@ -1004,7 +1003,7 @@ class Siswa extends PpdbController {
             }
         }
 
-        $this->print_json_output($data);
+        print_json_output($data);
 
     }
 
@@ -1019,7 +1018,7 @@ class Siswa extends PpdbController {
 		$batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
 
         if ($batasansiswa['hapus_pendaftaran'] >= $batasanperubahan['hapus_pendaftaran']) {
-            $this->print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
+            print_json_error("Data tidak tersimpan. Sudah melebihi batasan yang diperbolehkan.");
         }
 
         //pendaftaran lama
@@ -1028,7 +1027,7 @@ class Siswa extends PpdbController {
         //hapus
         $status = $this->Msiswa->tcg_hapus_pendaftaran($peserta_didik_id, $pendaftaran_id, $keterangan);
         if (!$status) {
-            $this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
+            print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
         }
        
         //audit trail
@@ -1045,9 +1044,9 @@ class Siswa extends PpdbController {
         $batasanperubahan = $this->Mconfig->tcg_batasanperubahan();
         $batasansiswa = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
 
-        $data = $this->_update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
+        $data = update_daftarpendaftaran($data, $batasanperubahan, $batasansiswa);
 
-        $this->print_json_output($data);
+        print_json_output($data);
     }
 
     //daftar sebaran sekolah
@@ -1059,96 +1058,9 @@ class Siswa extends PpdbController {
         }
 
         $data = $this->Msiswa->tcg_sebaransekolah($peserta_didik_id, $limit);
-        $this->print_json_output($data);
+        print_json_output($data);
     }
 
-    protected function _update_daftarpendaftaran($pendaftaran, $batasan_perubahan, $batasan_siswa) {
 
-        foreach($pendaftaran as $k => $p) {
-            $pendaftaran_id = $p['pendaftaran_id'];
-            $penerapan_id = $p['penerapan_id'];
-
-            //data for view
-            $pendaftaran[$k]['url_ubah_pilihan'] = base_url() ."siswa/pendaftaran/ubahjenispilihan?pendaftaran_id=". $pendaftaran_id;
-            $pendaftaran[$k]['url_ubah_jalur'] = base_url() ."siswa/pendaftaran/ubahjalur?pendaftaran_id==". $pendaftaran_id;
-            $pendaftaran[$k]['url_ubah_sekolah'] = base_url() ."siswa/pendaftaran/ubahsekolah?pendaftaran_id=". $pendaftaran_id ."&penerapan_id=". $penerapan_id;
-            $pendaftaran[$k]['url_hapus'] = base_url() ."siswa/pendaftaran/hapus?pendaftaran_id=". $pendaftaran_id;
-
-            $pendaftaran[$k]['ubah_pilihan'] = ($batasan_perubahan['ubah_pilihan'] > 0);
-            $pendaftaran[$k]['ubah_jalur'] = ($batasan_perubahan['ubah_jalur'] > 0);
-            $pendaftaran[$k]['ubah_sekolah'] = ($batasan_perubahan['ubah_sekolah'] > 0);
-            $pendaftaran[$k]['hapus_pendaftaran'] = ($batasan_perubahan['hapus_pendaftaran'] > 0);
-
-            $pendaftaran[$k]['allow_ubah_pilihan'] = !(($batasan_siswa['ubah_pilihan']>=$batasan_perubahan['ubah_pilihan']&&$p['jenis_pilihan']!=0)||$p['pendaftaran']!=1);
-            $pendaftaran[$k]['allow_ubah_jalur'] = !(($batasan_siswa['ubah_jalur']>=$batasan_perubahan['ubah_jalur'])||$p['pendaftaran']!=1);
-            $pendaftaran[$k]['allow_ubah_sekolah'] = !(($batasan_siswa['ubah_sekolah']>=$batasan_perubahan['ubah_sekolah'])||$p['pendaftaran']!=1);
-            $pendaftaran[$k]['allow_hapus'] = !(($batasan_siswa['hapus_pendaftaran']>=$batasan_perubahan['hapus_pendaftaran'])||$p['pendaftaran']!=1);
-
-            //perankingan
-            if ($p['peringkat'] = 0) $pendaftaran[$k]['label_peringkat'] = "Belum Ada";
-            else if ($p['peringkat'] == -1) $pendaftaran[$k]['label_peringkat'] = "Tidak Ada";
-            else if ($p['status_penerimaan_final'] == 2 || $p['status_penerimaan_final'] == 4) $pendaftaran[$k]['label_peringkat'] = "Tidak Dihitung";
-            else if ($p['status_penerimaan_final'] == 1 || $p['status_penerimaan_final'] == 3) $pendaftaran[$k]['label_peringkat'] = $p['peringkat_final'];
-            else $pendaftaran[$k]['label_peringkat'] = "Belum Ada";
-
-            $pendaftaran[$k]['url_perankingan'] = base_url() ."home/peringkat?sekolah_id=" .$p['sekolah_id']. "&bentuk=" .$p['bentuk'];
-
-            //status penerimaan
-            if ($p['status_penerimaan'] == 0) $pendaftaran[$k]['class_status_penerimaan'] = "status-tidak-dihitung";
-            else if ($p['status_penerimaan'] == 1) $pendaftaran[$k]['class_status_penerimaan'] = "status-masuk-kuota";
-            else if ($p['status_penerimaan'] == 2) $pendaftaran[$k]['class_status_penerimaan'] = "status-tidak-masuk-kuota";
-            else if ($p['status_penerimaan'] == 3) $pendaftaran[$k]['class_status_penerimaan'] = "status-daftar-tunggu";
-            else if ($p['status_penerimaan'] == 4) $pendaftaran[$k]['class_status_penerimaan'] = "status-tidak-dihitung";
-            else $pendaftaran[$k]['class_status_penerimaan'] = "status-tidak-dihitung";
-
-            if ($p['status_penerimaan'] == 0) $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-search";
-            else if ($p['status_penerimaan'] == 1) $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-check";
-            else if ($p['status_penerimaan'] == 2) $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-info-sign";
-            else if ($p['status_penerimaan'] == 3) $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-check";
-            else if ($p['status_penerimaan'] == 4) $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-info-sign";
-            else $pendaftaran[$k]['icon_status_penerimaan'] = "glyphicon glyphicon-search";
-
-            if ($p['status_penerimaan'] == 0) $pendaftaran[$k]['label_status_penerimaan'] = "Dalam Proses Verifikasi";
-            else if ($p['status_penerimaan'] == 1) $pendaftaran[$k]['label_status_penerimaan'] = "Masuk Kuota";
-            else if ($p['status_penerimaan'] == 2) $pendaftaran[$k]['label_status_penerimaan'] = "Tidak Masuk Kuota";
-            else if ($p['status_penerimaan'] == 3) $pendaftaran[$k]['label_status_penerimaan'] = "Daftar Tunggu";
-            else if ($p['status_penerimaan'] == 4) $pendaftaran[$k]['label_status_penerimaan'] = "Masuk Kuota " .$p['label_masuk_pilihan'];
-            else $pendaftaran[$k]['label_status_penerimaan'] = "Dalam Proses Seleksi";
-
-            //kelengkapan
-            $kelengkapan = $this->Msiswa->tcg_kelengkapanpendaftaran($pendaftaran_id);
-            foreach ($kelengkapan as $k2 => $i) {
-                $kelengkapan[$k2]['status_ok'] = ($i['verifikasi']==1);
-                $kelengkapan[$k2]['status_notok'] = ($i['verifikasi']==2);
-                $kelengkapan[$k2]['status_tidakada'] = ($i['verifikasi']==3 || ($i['verifikasi']==0 && $i['wajib']==0));
-                $kelengkapan[$k2]['status_dalamproses'] = (!$kelengkapan[$k2]['status_ok'] && !$kelengkapan[$k2]['status_notok'] && !$kelengkapan[$k2]['status_tidakada']);
-                $kelengkapan[$k2]['kondisi_khusus'] = ($i['kondisi_khusus']!=0);
-            }
-            $pendaftaran[$k]['kelengkapan'] = $kelengkapan;
-            
-            // //berkas fisik
-            // $berkas = $this->Msiswa->tcg_kelengkapanpendaftaran_berkasfisik($pendaftaran_id)->getResultArray();
-            // foreach ($berkas as $k2 => $i) {
-            //     $berkas[$k2]['status_ok'] = ($i['berkas_fisik']==1);
-            //     $berkas[$k2]['status_notok'] = ($i['berkas_fisik']!=1);
-            //     $berkas[$k2]['kondisi_khusus'] = ($i['kondisi_khusus']!=0);
-            // }
-            // $pendaftaran[$k]['berkasfisik'] = $berkas;
-
-            //skoring
-            $skoring = $this->Msiswa->tcg_nilaiskoring($pendaftaran_id);
-            $pendaftaran[$k]['skoring'] = $skoring;
-
-            //total skoring
-            $totalskoring = 0;
-            foreach($skoring as $k2 => $s) {
-                $val = floatval($s['nilai']);
-                $totalskoring += $val;
-            }
-            $pendaftaran[$k]['totalskoring'] = number_format($totalskoring,2,".","");
-        }
-
-        return $pendaftaran;
-    }
 }
 ?>

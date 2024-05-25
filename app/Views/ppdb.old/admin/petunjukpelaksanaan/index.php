@@ -143,11 +143,11 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
 						$success = $this->session->flashdata('success');
 					?>
 
-					<div id="alert-error" class="alert alert-danger alert-dismissable" <?php if(empty($error)) { echo "style='display:none;'"; } ?>>
+					<div id="alert-error" class="alert alert-danger alert-dismissible" <?php if(empty($error)) { echo "style='display:none;'"; } ?>>
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
 							<?php echo $error; ?>                    
 					</div>
-					<div id="alert-success" class="alert alert-success alert-dismissable" <?php if(empty($success)) { echo "style='display:none;'"; } ?>>
+					<div id="alert-success" class="alert alert-success alert-dismissible" <?php if(empty($success)) { echo "style='display:none;'"; } ?>>
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
 							<?php echo $success; ?>                    
 					</div>

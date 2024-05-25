@@ -2,7 +2,7 @@
 
 <div class="row" id="profil-dikunci-notif" style="display: none;">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="alert alert-info alert-dismissable" role="alert">
+        <div class="alert alert-info alert-dismissible" role="alert">
             <i class="icon glyphicon glyphicon-info-sign"></i>Data profil terkunci karena anda sudah melakukan pendaftaran.
         </div>
     </div>

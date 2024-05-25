@@ -134,7 +134,7 @@
 			?>
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<div class="alert alert-success alert-dismissable">
+						<div class="alert alert-success alert-dismissible">
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 							<p><i class="icon glyphicon glyphicon-info-sign"></i>Tahapan <?php echo $row->tahapan; ?></p>
 							<p><?php echo $row->notifikasi_siswa; ?></p>
@@ -148,7 +148,7 @@
 			<?php if ($dikunci > 0) { ?>
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<div class="alert alert-info alert-dismissable">
+						<div class="alert alert-info alert-dismissible">
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 							<p><i class="icon glyphicon glyphicon-info-sign"></i>Data profil terkunci karena anda sudah melakukan pendaftaran.</p>
 						</div>
@@ -2573,7 +2573,7 @@
 			ajax: "<?php echo site_url('siswa/prestasi/json'); ?>",
 			"language": {
 				"processing":   "Sedang proses...",
-				"lengthMenu":   "Tampilan _MENU_ entri",
+				"lengthMenu":   "Tampilan _MENU_ baris",
 				"zeroRecords":  "Tidak ditemukan data yang sesuai",
 				"loadingRecords": "Loading...",
 				"emptyTable":   "Tidak ditemukan data yang sesuai",
@@ -3011,11 +3011,11 @@
 			],
 			"language": {
 				"sProcessing":   "Sedang proses...",
-				"sLengthMenu":   "Tampilan _MENU_ entri",
+				"sLengthMenu":   "Tampilan _MENU_ baris",
 				"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 				"sInfoPostFix":  "",
 				"sSearch":       "Cari:",
 				"sUrl":          "",

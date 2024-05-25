@@ -99,7 +99,7 @@
                 <!-- <div class="alert alert-success" style="margin: 20px;">
                     <p class="text-center"><a href="<?php echo base_url();?>index.php/home/rekapitulasi" style="text-decoration:none;">Rekapitulasi Hasil PPDB Online 2020</a></p>
                 </div>
-                <div class="alert alert-info alert-dismissable" style="margin: 20px;">
+                <div class="alert alert-info alert-dismissible" style="margin: 20px;">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <p><i class="icon glyphicon glyphicon-info-sign"></i>Silahkan masuk dengan akun siswa dan gunakan menu Daftar Ulang untuk mendapatkan informasi lebih lanjut mengenai proses daftar ulang.</p>
                 </div> -->
@@ -108,10 +108,10 @@
                     if(empty($row->text)) 
                         continue;
                 ?>
-                    <?php if ($row->tipe == 0) { ?><div class="alert alert-info <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin: 20px;">
-                    <?php } else if ($row->tipe == 1) { ?><div class="alert alert-success <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin: 20px;">
-                    <?php } else if ($row->tipe == 2) { ?><div class="alert alert-danger <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin: 20px;">
-                    <?php } else { ?><div class="alert alert-error <?php if($row->bisa_ditutup==1) {?>alert-dismissable<?php } ?>" style="margin: 20px;">
+                    <?php if ($row->tipe == 0) { ?><div class="alert alert-info <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin: 20px;">
+                    <?php } else if ($row->tipe == 1) { ?><div class="alert alert-success <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin: 20px;">
+                    <?php } else if ($row->tipe == 2) { ?><div class="alert alert-danger <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin: 20px;">
+                    <?php } else { ?><div class="alert alert-error <?php if($row->bisa_ditutup==1) {?>alert-dismissible<?php } ?>" style="margin: 20px;">
                     <?php } ?>
                     <?php if($row->bisa_ditutup==1) {?>
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -125,7 +125,7 @@
                     if(empty($row->notifikasi_umum)) 
                         continue;
                 ?>
-                    <div class="alert alert-info alert-dismissable" style="margin: 20px;">
+                    <div class="alert alert-info alert-dismissible" style="margin: 20px;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <p><i class="icon glyphicon glyphicon-info-sign"></i><?php echo $row->tahapan; ?></p>
                         <p><?php echo $row->notifikasi_umum; ?></p>

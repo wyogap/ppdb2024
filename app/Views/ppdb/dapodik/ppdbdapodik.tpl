@@ -1,96 +1,49 @@
-<!DOCTYPE html>
+{include file="../header.tpl"}
 
-<html lang="en">
+<style>
+    .custom-tab-1 {
+        background-color: #fff;
+        border-radius: 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
 
-<head>
-    <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="keywords" content="" />
-	<meta name="author" content="" />
-	<meta name="robots" content="" />
+    .custom-tab-1 .tab-pane {
+        padding-left: 30px;
+        padding-right: 30px;
+        /* padding-top: 16px; */
+        /* padding-bottom: 16px; */
+    }
 
-    <title>PPDB ONLINE {$nama_wilayah} - {$page_title}</title>
+    .badge {
+        border-radius: 8px !important;
+    }
 
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">
+    table.dataTable tbody td.bg-gray {
+        color: #000;
+        background-color: #d2d6de !important;
+    }
 
-    <link rel="stylesheet" href="{$site_url}assets/leaflet/leaflet.css"/>
-    <link rel="stylesheet" href="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.css"/>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/> -->
-    <!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet'/> -->
+    table.dataTable tbody td.bg-red {
+        color: #fff;
+        background-color: red !important;
+    }
 
-    <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-    <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    table.dataTable tbody td.bg-orange {
+        color: #fff;
+        background-color: orange !important;
+    }
 
-    <!-- Datatable -->
-    <!-- <link href="{$base_url}/themes/dompet/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet"> -->
- 
-    <link rel="stylesheet" href="{$base_url}assets/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="{$base_url}assets/datatables/Select-1.3.1/css/select.dataTables.min.css">
-    <link rel="stylesheet" href="{$base_url}assets/datatables/Responsive-2.2.3/css/responsive.dataTables.min.css">
-	<link rel="stylesheet" href="{$base_url}assets/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css">
+    table.dataTable tbody td.bg-green {
+        color: #fff;
+        background-color: #00a65a !important;
+    }
 
-    <!-- icons -->
-    <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
-    <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" />
-    <link href="{$base_url}assets/dripicons/icons.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{$base_url}assets/ionicons/css/ionicons.min.css"> -->
-
-    <!-- toastr toast popup -->
-    <link href="{$base_url}assets/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
-    <link href="{$base_url}assets/toastr/toastr.min.css" rel="stylesheet" type="text/css" />
-
-	<!-- FAVICONS ICON -->
-	<link href="{$base_url}/themes/dompet/vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
-    <link href="{$base_url}/themes/dompet/css/style.css" rel="stylesheet">
-    
-    {include file='../_css.tpl'}
-
-    <style>
-        .custom-tab-1 {
-            background-color: #fff;
-            border-radius: 16px;
-            padding-top: 16px;
-            padding-bottom: 16px;
-        }
-
-        .custom-tab-1 .tab-pane {
-            padding-left: 30px;
-            padding-right: 30px;
-            /* padding-top: 16px; */
-            /* padding-bottom: 16px; */
-        }
-
-        .badge {
-            border-radius: 8px !important;
-        }
-
-        table.dataTable tbody td.bg-gray {
-            color: #000;
-            background-color: #d2d6de !important;
-        }
-
-        table.dataTable tbody td.bg-red {
-            color: #fff;
-            background-color: red !important;
-        }
-
-        table.dataTable tbody td.bg-orange {
-            color: #fff;
-            background-color: orange !important;
-        }
-
-        table.dataTable tbody td.bg-green {
-            color: #fff;
-            background-color: #00a65a !important;
-        }
-
-        table.dataTable tbody td.bg-yellow {
-            color: #000;
-            background-color: yellow !important;
-        }
-    </style>
-</head>
+    table.dataTable tbody td.bg-yellow {
+        color: #000;
+        background-color: yellow !important;
+    }
+</style>
 
 <body data-typography="cairo" data-theme-version="light" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 
     data-headerbg="color_1" data-sidebarbg="color_1" data-sidebar-position="fixed" data-header-position="fixed" data-container="boxed" direction="ltr" 
@@ -313,273 +266,21 @@
         <!--**********************************
             Footer start
         ***********************************-->
-        {include file='../footer.tpl'}
+       
 
         <!--**********************************
             Footer end
         ***********************************-->
 
-        <style>
-            .DZ-theme-btn.DZ-bt-scroll-top {
-                background: #1ebbf0;
-                background: -moz-linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
-                background: -webkit-linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
-                background: linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%);
-                bottom: 20px;
-            }
-
-            .DZ-theme-btn.DZ-bt-scroll-top img {
-                margin-top: 4px;
-            }
-    
-            .DZ-theme-btn {
-                background-color: #fff;
-                border-radius: 40px;
-                bottom: 10px;
-                /* color: #fff; */
-                display: table;
-                height: 50px;
-                right: 10px;
-                min-width: 50px;
-                position: fixed;
-                text-align: center;
-                z-index: 99999;
-                color: #6f6f6f;
-                outline: 0 none;
-                text-decoration: none;
-            }
-        </style>
-        <a href="#top" class="DZ-bt-scroll-top DZ-theme-btn">
-            <img src="http://localhost/ppdb2024/images/icons8-arrow-up-50.png" enable-background="new 0 0 512 512" height="40" viewBox="0 0 512 512" width="40">
-        </a>  
-    
-        
     </div>
     <!--**********************************
         Main wrapper end
     ***********************************-->
 
-    <!--**********************************
-        Scripts
-    ***********************************-->
-
-    <!-- Required vendors -->
-    <script src="{$base_url}/themes/dompet/vendor/global/global.min.js"></script>
-	<script src="{$base_url}/themes/dompet/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
-
-    <link rel="stylesheet" href="{$base_url}assets/adminlte/plugins/select2/select2.min.css">
-    <script src="{$base_url}assets/adminlte/plugins/select2/select2.full.min.js"></script>
-
-    <!-- Datatable -->
-    <!-- <script src="{$base_url}/themes/dompet/vendor/datatables/js/jquery.dataTables.min.js"></script> -->
-
-    <script src="{$base_url}assets/datatables/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="{$base_url}assets/datatables/Select-1.3.1/js/dataTables.select.min.js"></script>
-    <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
-	<script src="{$base_url}assets/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
-    <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.flash.min.js"></script>
-    <script src="{$base_url}assets/datatables/JSZip-2.5.0/jszip.min.js"></script>
-    <script src="{$base_url}assets/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>
-    <script src="{$base_url}assets/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
-    <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.html5.min.js"></script>
-    <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.print.min.js"></script>
-    
-    <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css">
-    <script src="{$base_url}assets/datatables/Editor-1.9.2/js/dataTables.editor.min.js"></script>
-
-    <!-- <script src="{$base_url}/themes/dompet/js/plugins-init/datatables.init.js"></script> -->
-
-    <!-- mustache templating -->
-    <script src="{$base_url}assets/mustache/mustache.min.js"></script>
-
-    <!-- toastr toast popup -->
-    <script src="{$base_url}assets/jquery-confirm/jquery-confirm.min.js"></script>
-    <script src="{$base_url}assets/toastr/toastr.min.js"></script>
-
-    <script src="{$site_url}assets/leaflet/leaflet.js"></script>
-    <script src="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.min.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script> -->
-    <!-- <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script> -->
-
-    <script src="{$base_url}assets/select2/js/select2.min.js"></script>
-    <script>
-        var dezSettingsOptions = {};
-
-        (function($) {
-            let dark_theme = getCookie('dark_theme');
-            if (dark_theme === undefined) {
-                dark_theme = 0;
-            } 
-
-            //update the theme setting. must be before dlabnav-init.js
-            dezSettingsOptions = {
-                typography: "cairo",
-                version: ((dark_theme==1) ? "dark" : "light"),
-                layout: "horizontal",
-                primary: "color_1",
-                navheaderBg: "color_1",
-                sidebarBg: "color_1",
-                sidebarStyle: "compact",
-                sidebarPosition: "fixed",
-                headerPosition: "fixed",
-                containerLayout: "boxed",
-            };
-            
-        })(jQuery);
-
-        function toggle_dark_mode() {
-            let dark_theme = getCookie('dark_theme');
-            if (dark_theme === undefined) {
-                dark_theme = 0;
-            } 
-
-            if (dark_theme == 1)    dark_theme = 0;
-            else                    dark_theme = 1;
-
-            setCookie("dark_theme", dark_theme, 30);
-
-            dezSettingsOptions = {
-                typography: "cairo",
-                version: ((dark_theme==1) ? "dark" : "light"),
-                layout: "horizontal",
-                primary: "color_1",
-                navheaderBg: "color_1",
-                sidebarBg: "color_1",
-                sidebarStyle: "compact",
-                sidebarPosition: "fixed",
-                headerPosition: "fixed",
-                containerLayout: "boxed",
-            };
-           
-            new dezSettings(dezSettingsOptions); 
-        }
-
-        function setCookie(c_name, value, exdays) {
-            var exdate = new Date();
-            exdate.setDate(exdate.getDate() + exdays);
-            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-            document.cookie = c_name + "=" + c_value;
-        }
-
-        function getCookie(c_name) {
-            var i, x, y, ARRcookies = document.cookie.split(";");
-            for (i = 0; i < ARRcookies.length; i++) {
-                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
-                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
-                x = x.replace(/^\s+|\s+$/g, "");
-                if (x == c_name) {
-                    return unescape(y);
-                }
-            }
-        }
-
-        function ganti_password() {
-            $.confirm({
-                title: 'Ganti PIN/Password',
-                content: "<div style='overflow: hidden;'><input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
-                            +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
-                            +"<span id='error-msg'>&nbsp</span></div>",
-                closeIcon: true,
-                columnClass: 'medium',
-                //type: 'purple',
-                typeAnimated: true,
-                buttons: {
-                    cancel: {
-                        text: 'Batal',
-                        action: function(){
-                            //do nothing
-                        }
-                    },
-                    confirm: {
-                        text: 'Ganti',
-                        btnClass: 'btn-primary',
-                        action: function(){
-                            let el1 = this.$content.find('#password');
-                            let el2 = this.$content.find('#password2');
-                            if (el1.val().length < 6) {
-                                let msg = this.$content.find('#error-msg');
-                                msg.html("PIN/Password harus minimal 6 huruf.");
-                                el1.addClass('border-red');
-                                return false;
-                            }
-                            else if (el1.val() != el2.val()) {
-                                let msg = this.$content.find('#error-msg');
-                                msg.html("PIN/Password baru tidak sama.");
-                                el2.addClass('border-red');
-                                return false;
-                            }
-
-                            send_ganti_password(el1.val());
-                        }
-                    },
-                },
-
-            });      
-        }
-
-        function send_ganti_password(pwd1) {
-            json = {};
-            data = {};
-            data['pwd1'] = pwd1;
-            data['pwd2'] = pwd1;
-            
-            json['data'] = {};
-            json['data'][userid] = data;
-
-            $.ajax({
-                type: 'POST',
-                url: "{$site_url}auth/resetpassword",
-                dataType: 'json',
-                data: json,
-                async: true,
-                cache: false,
-                //if we use formData, set processData = false. if we use json, set processData = true!
-                //contentType: true,
-                //processData: true,      
-                timeout: 60000,
-                success: function(json) {
-                    if (json.error !== undefined && json.error != "" && json.error != null) {
-                        toastr.error('Tidak berhasil mengubah PIN/Password. ' +json.error);
-                        return;
-                    }
-
-                    $("#ganti-password-notif").hide();
-                    
-                    //tambahkan ke daftar pendaftaran
-                    toastr.success("PIN/Password berhasil diubah.");
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    toastr.error('Tidak berhasil mengubah PIN/Password. ' +textStatus);
-                    return;
-                }
-            });
-
-        }
-        
-    </script>
-
-    <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>
-    <script src="{$base_url}/themes/dompet/js/dlabnav-init.js"></script>
-	
-
-    {if $content_template|default: FALSE} 
-        {include file="./_$content_template"}
-    {/if}
-
-    <script>
-
-        (function($) {           
-
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-
-            //TODO
-
-        })(jQuery);        
-    </script>
-
 </body>
-</html>
+
+{include file="../footer.tpl"}
+
+{if $content_template|default: FALSE} 
+    {include file="./_$content_template"}
+{/if}

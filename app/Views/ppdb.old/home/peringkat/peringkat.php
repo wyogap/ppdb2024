@@ -78,7 +78,7 @@
 	<?php } ?>
 	<?php if(empty($final_ranking)) { ?>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-	<div class="alert alert-info alert-dismissable">
+	<div class="alert alert-info alert-dismissible">
 		<i class="icon glyphicon glyphicon-info-sign"></i>
 		Perhitungan peringkat dilakukan oleh system secara otomotis pada: <b><?php echo tanggal_indo($last_execution_date); ?></b>. 
 		<?php if($cek_waktupendaftaran==1 && !empty($next_execution_date)) { ?>
@@ -326,8 +326,8 @@
 		<?php foreach($daftarpenerapan->getResult() as $row):?>
 		$('#t<?php echo $row->penerapan_id;?>').dataTable({
 			"responsive": true,
-			"pageLength": 50,
-			"lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
+			"pageLength": 25,
+			"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 			"paging": true,
 			"pagingType": "numbers",
 			"dom": 'Bfrtpil',
@@ -339,11 +339,11 @@
 			],
 			"language": {
 				"sProcessing":   "Sedang proses...",
-				"sLengthMenu":   "Tampilan _MENU_ entri",
+				"sLengthMenu":   "Tampilan _MENU_ baris",
 				"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 				"sInfoPostFix":  "",
 				"sSearch":       "Cari:",
 				"sUrl":          "",
@@ -364,8 +364,8 @@
 		<?php endforeach;?>
 		$('#tdaftarpendaftar').dataTable({
 			"responsive": true,
-			"pageLength": 50,
-			"lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
+			"pageLength": 25,
+			"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 			"paging": true,
 			"pagingType": "numbers",
 			"dom": 'Bfrtpil',
@@ -377,11 +377,11 @@
 			],
 			"language": {
 				"sProcessing":   "Sedang proses...",
-				"sLengthMenu":   "Tampilan _MENU_ entri",
+				"sLengthMenu":   "Tampilan _MENU_ baris",
 				"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"sInfoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
 				"sInfoPostFix":  "",
 				"sSearch":       "Cari:",
 				"sUrl":          "",

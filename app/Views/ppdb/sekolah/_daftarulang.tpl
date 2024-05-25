@@ -1,6 +1,31 @@
 <script type="text/javascript">
 
-	$.extend( $.fn.dataTable.defaults, { responsive: true } );
+	$.extend( $.fn.dataTable.defaults, { 
+        responsive: true,
+        "language": {
+				"processing":   "Sedang proses...",
+				"lengthMenu":   "Tampilan _MENU_ baris",
+				"zeroRecords":  "Tidak ditemukan data yang sesuai",
+				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
+				"infoPostFix":  "",
+				"loadingRecords": "Loading...",
+				"emptyTable":   "Tidak ditemukan data yang sesuai",
+				"search":       "Cari:",
+				"url":          "",
+				"paginate": {
+                    "first":    "Awal",
+                    "previous": "Balik",
+                    "next":     "Lanjut",
+                    "last":     "Akhir"
+				},
+				aria: {
+                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
+                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
+				}
+			},	
+    } );
 
     $('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
         $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
@@ -17,8 +42,8 @@
 		{foreach $daftarpenerapan as $row}
 		$('#t{$row.penerapan_id}').dataTable({
 			"responsive": true,
-			"pageLength": 50,
-			"lengthMenu": [ [50, 100, 200, -1], [50, 100, 200, "All"] ],
+			"pageLength": 25,
+			"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 			"paging": true,
 			"pagingType": "numbers",
 			"dom": 'Bfrtpil',
@@ -35,23 +60,6 @@
 					},
 				},
 			],
-			"language": {
-				"sProcessing":   "Sedang proses...",
-				"sLengthMenu":   "Tampilan _MENU_ entri",
-				"sZeroRecords":  "Tidak ditemukan data yang sesuai",
-				"sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-				"sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-				"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-				"sInfoPostFix":  "",
-				"sSearch":       "Cari:",
-				"sUrl":          "",
-				"oPaginate": {
-					"sFirst":    "Awal",
-					"sPrevious": "Balik",
-					"sNext":     "Lanjut",
-					"sLast":     "Akhir"
-				}
-			},		
 			"columnDefs": [
 				{
 					// The `data` parameter refers to the data for the cell (defined by the

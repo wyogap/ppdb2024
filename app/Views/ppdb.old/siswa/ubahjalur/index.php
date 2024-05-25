@@ -20,12 +20,12 @@
 					</section>
 					<section class="content">
 						<?php if ($maxubahjalur > $ubahjalursiswa) { ?>
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-sign"></i>
 							Anda hanya bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> sebanyak <b><?php echo $maxubahjalur-$ubahjalursiswa;?> kali</b>.
 						</div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-warning"></i>
 							Anda sudah tidak bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> karena sudah melebihi batasan.</b>.
 						</div>

@@ -46,87 +46,32 @@
     $(document).ready(function() {    
 
         //all datatable must be responsive
-        $.extend( $.fn.dataTable.defaults, { responsive: true } );
-
-        // dtprestasi = $('#tbl-prestasi').DataTable({
-        //     responsive: true,
-        //     "paging": false,
-        //     "dom": "Brt",
-        //     select: true,
-        //     buttons: [
-        //         {
-        //             text: 'Prestasi Baru',
-        //             className: 'btn-sm btn-primary btn-add',
-        //             action: function ( e, dt, node, conf ) {
-        //                 dtprestasi_add(e, dt, node, conf);
-        //             },
-        //         },
-        //         {
-        //             text: 'Hapus Prestasi',
-        //             className: 'btn-sm btn-danger btn-delete',
-        //             action: function ( e, dt, node, conf ) {
-        //                 dtprestasi_delete(e, dt, node, conf);
-        //             },
-        //         },
-        //     ],
-        //     ajax: "",
-        //     "language": {
-        //         "processing":   "Sedang proses...",
-        //         "lengthMenu":   "Tampilan _MENU_ entri",
-        //         "zeroRecords":  "Tidak ditemukan data yang sesuai",
-        //         "loadingRecords": "Loading...",
-        //         "emptyTable":   "Tidak ditemukan data yang sesuai",
-        //         },
-        //     columns: [
-        //         // { "defaultContent": "" },
-        //         { data: "prestasi_id", className: 'dt-body-center', "orderable": false },
-        //         { data: "prestasi", className: 'dt-body-left', "orderable": false },
-        //         { data: "uraian", className: 'dt-body-left', "orderable": false },
-        //         { data: "dokumen_pendukung", className: 'dt-body-left editable', "orderable": false,
-        //             render: function ( file_id, type, row ) {
-        //                 {if !($flag_upload_dokumen)}
-        //                 return "Dicocokkan di sekolah tujuan";
-        //                 {else}
-        //                 if (type === 'display') {
-        //                     if (typeof editprestasi.file( 'files', file_id ) === "undefined") {
-        //                         return "";
-        //                     }
-                            
-        //                     let str= '<img class="img-view-thumbnail" src="'+editprestasi.file( 'files', file_id ).thumbnail_path+'" img-title="'+row.uraian+'" img-path="'+editprestasi.file( 'files', file_id ).web_path+'"/>';
-
-        //                     let verifikasi = row.verifikasi;
-        //                     if (verifikasi == 2) {
-        //                         str += ' <button class="img-view-button editable-prestasi" data-editor-field="dokumen_pendukung" data-editor-value="' +file_id+ '" data-editor-id="' +row.prestasi_id+ '" >Unggah</button>';
-        //                         str += '<div class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px;">' +row.catatan+ '</div>'
-        //                     }
-
-        //                     return str;
-        //                 }
-        //                 else {
-        //                     row.filename;
-        //                 }
-        //                 {/if}
-        //             },
-        //             defaultContent: "Tidak ada dokumen",
-        //             title: "Dokumen Pendukung"
-        //         },
-        //         { data: "catatan", className: 'dt-body-left', width: '20%', "orderable": false },
-        //     ],
-        //     columnDefs: [ {
-        //         "targets": 3,
-        //         "createdCell": function (td, cellData, rowData, row, col) {
-        //             if ( rowData.verifikasi == 1 ) {
-        //                 $(td).removeClass('editable');
-        //             }
-        //         }
-        //     } ],
-        //     order: [ 0, 'asc' ],
-        // });
-
-        // dtprestasi.buttons( 0, null ).container().find(".dt-button").removeClass("dt-button").addClass('btn');
-
-        // //default: hide button
-        // dtprestasi.buttons( 0, null ).container().hide();
+        $.extend( $.fn.dataTable.defaults, { 
+            responsive: true,
+			"language": {
+				"processing":   "Sedang proses...",
+				"lengthMenu":   "Tampilan _MENU_ baris",
+				"zeroRecords":  "Tidak ditemukan data yang sesuai",
+				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
+				"infoPostFix":  "",
+				"loadingRecords": "Loading...",
+				"emptyTable":   "Tidak ditemukan data yang sesuai",
+				"search":       "Cari:",
+				"url":          "",
+				"paginate": {
+                    "first":    "Awal",
+                    "previous": "Balik",
+                    "next":     "Lanjut",
+                    "last":     "Akhir"
+				},
+				aria: {
+                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
+                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
+				}
+			},	
+        } );
 
         dtriwayat = $('#triwayat').DataTable({
             "responsive": true,
@@ -134,23 +79,6 @@
             "dom": 't',
             "buttons": [
             ],
-            "language": {
-                "sProcessing":   "Sedang proses...",
-                "sLengthMenu":   "Tampilan _MENU_ entri",
-                "sZeroRecords":  "Tidak ditemukan data yang sesuai",
-                "sInfo":         "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-                "sInfoEmpty":    "Tampilan 0 hingga 0 dari 0 entri",
-                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-                "sInfoPostFix":  "",
-                "sSearch":       "Cari:",
-                "sUrl":          "",
-                "oPaginate": {
-                    "sFirst":    "Awal",
-                    "sPrevious": "Balik",
-                    "sNext":     "Lanjut",
-                    "sLast":     "Akhir"
-                }
-            },	
             ajax: "",
             columns: [
                 { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },

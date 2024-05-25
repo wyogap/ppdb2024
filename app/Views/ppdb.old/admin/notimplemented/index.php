@@ -24,7 +24,7 @@
 					<section class="content">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 								<i class="icon glyphicon glyphicon-info-sign"></i>
 								Fitur ini belum diimplementasikan. Perubahan konfigurasi masih harus dilakukan secara manual langsung di database.
 							</div>

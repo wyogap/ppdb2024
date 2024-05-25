@@ -26,6 +26,7 @@ use Psr\Log\LoggerInterface;
 abstract class AuthController extends BaseController
 {
     protected static $DEFAULT_PROFILE_IMAGE = "assets/image/user.png";
+    protected static $LOGIN_PAGE = "";
 
     protected Validation $validation;
 
@@ -104,9 +105,8 @@ abstract class AuthController extends BaseController
             }
             else {
                 $this->session->setFlashdata('error', $error);	
-                return redirect()->to(site_url() ."auth");
+                return redirect()->to(site_url() .static::$LOGIN_PAGE);
                 //return redirect()->back()->withInput();
-                //return $this->response->redirect();
             }
 			return;
         }

@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/adminlte/plugins/datepicker/datepicker3.css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/leaflet/leaflet.css"/>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet'/>
-<div class="alert alert-danger alert-dismissable">
+<div class="alert alert-danger alert-dismissible">
 	<h4><i class="icon glyphicon glyphicon-trash"></i> Peringatan!</h4>
 	Mohon berhati-hati dan berkonfirmasi lebih lanjut dengan Siswa/Orang Tua yang bersangkutan.
 </div>

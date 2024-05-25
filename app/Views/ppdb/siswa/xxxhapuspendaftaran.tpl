@@ -17,12 +17,12 @@
 					</section>
 					<section class="content">
 					<?php if ($maxhapuspendaftaran > $hapuspendaftaransiswa) { ?>
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-sign"></i>
 							Anda hanya bisa <b>menghapus</b> pendaftaran sebanyak <b><?php echo $maxhapuspendaftaran-$hapuspendaftaransiswa;?> kali</b>. Jika salah satu pilihan sekolah diperbaharui/dihapus, sistem mungkin akan menyesuikan jenis pilihan lain secara otomatis.
 						</div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-warning"></i>
 							Anda sudah tidak bisa <b>menghapus</b> pendaftaran karena sudah melebihi batasan.</b>.
 						</div>

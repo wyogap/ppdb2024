@@ -78,7 +78,7 @@ class Verifikasi extends PpdbController {
 
 		$pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
         if (empty($pendaftaran_id)) {
-            $this->print_json_error("Pendaftaran tidak ditemukan.");
+            print_json_error("Pendaftaran tidak ditemukan.");
             return;
         }
 
@@ -90,7 +90,7 @@ class Verifikasi extends PpdbController {
 
 		$profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         if ($profil == null) {
-            $this->print_json_error("Pendaftaran tidak ditemukan.");
+            print_json_error("Pendaftaran tidak ditemukan.");
             return;
         }
         
@@ -108,7 +108,7 @@ class Verifikasi extends PpdbController {
 		//tandai sedang verifikasi
 		$this->Msekolah->tcg_touch_verifikasi($pengguna_id, $peserta_didik_id, 1); 
 		
-        $this->print_json_output($data);
+        print_json_output($data);
 	}
 
 	// function prosesverifikasiberkas()
@@ -405,14 +405,14 @@ class Verifikasi extends PpdbController {
     function simpan() {
         $data = $this->request->getPost("data");
         if (empty($data))   
-            $this->print_json_error("Invalid data");
+            print_json_error("Invalid data");
 
         $peserta_didik_id = $this->request->getPost('peserta_didik_id');
 
 		//only can verify within the specified timeframe
 		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
         if ($cek_waktuverifikasi != 1) {
-            $this->print_json_error("Tidak sedang tahapan verifikasi");
+            print_json_error("Tidak sedang tahapan verifikasi");
         }
 
         $profil = !empty($data['profil']) ? $data['profil'] : array();
@@ -428,7 +428,7 @@ class Verifikasi extends PpdbController {
             //oldvalues
             $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
             if ($oldvalues == null) {
-                $this->print_json_error("Invalid ID siswa");
+                print_json_error("Invalid ID siswa");
             }
 
             //only save changed data
@@ -450,7 +450,7 @@ class Verifikasi extends PpdbController {
 
             $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
             if ($detail == null)
-                $this->print_json_error("Tidak berhasil mengubah data siswa.");
+                print_json_error("Tidak berhasil mengubah data siswa.");
 
             //audit trail
             $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($data), $data, $oldvalues);
@@ -629,21 +629,21 @@ class Verifikasi extends PpdbController {
         // $json['kelengkapan_profil'] = $kelengkapan_profil;
         // $json['kelengkapan_dokumen'] = $kelengkapan_dokumen;
         $json['kelengkapan_berkas'] = $status_verifikasi;
-        $this->print_json_output($json);
+        print_json_output($json);
 
     }
 
     // function ubahprofilsiswa() {
     //     $data = $this->request->getPost("data");
     //     if (empty($data))   
-    //         $this->print_json_error("Invalid data");
+    //         print_json_error("Invalid data");
 
     //     $peserta_didik_id = $this->request->getPost('peserta_didik_id');
 
     //     //oldvalues
     //     $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
     //     if ($oldvalues == null) {
-    //         $this->print_json_error("Invalid userid");
+    //         print_json_error("Invalid userid");
     //     }
 
     //     //only save changed data
@@ -665,7 +665,7 @@ class Verifikasi extends PpdbController {
 
     //     $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
     //     if ($detail == null)
-    //         $this->print_json_error("Tidak berhasil mengubah data siswa.");
+    //         print_json_error("Tidak berhasil mengubah data siswa.");
 
     //     //audit trail
     //     if ($toggle) {
@@ -675,7 +675,7 @@ class Verifikasi extends PpdbController {
     //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi data siswa", $keys, $data, $oldvalues);
     //     }
 
-    //     $this->print_json_output($detail);
+    //     print_json_output($detail);
 
     // }
 	
@@ -704,10 +704,10 @@ class Verifikasi extends PpdbController {
 				$data['data'][$key]['web_path'] = base_url(). $valuepair['web_path'];
 				$data['data'][$key]['thumbnail_path'] = base_url(). $valuepair['thumbnail_path'];
  			}
-             $this->print_json_output($data);	
+             print_json_output($data);	
 		}
 		else {
-			$this->print_json_error("not-implemented");
+			print_json_error("not-implemented");
 		}
 	}
 
@@ -738,10 +738,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_pendaftarbelumdiverifikasi($sekolah_id); 
-			$this->print_json_output($data);	
+			print_json_output($data);	
 		}
 		else {
-			$this->print_json_error("not-implemented");
+			print_json_error("not-implemented");
 		}
 	}
 
@@ -754,10 +754,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_pendaftarbelumlengkap($sekolah_id); 
-			$this->print_json_output($data);	
+			print_json_output($data);	
 		}
 		else {
-			$this->print_json_error("not-implemented");
+			print_json_error("not-implemented");
 		}
 	}
 
@@ -770,10 +770,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_pendaftarsudahlengkap($sekolah_id); 
-			$this->print_json_output($data);	
+			print_json_output($data);	
 		}
 		else {
-			$this->print_json_error("not-implemented");
+			print_json_error("not-implemented");
 		}
 	}
 
@@ -786,10 +786,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_berkasdisekolah($sekolah_id); 
-			$this->print_json_output($data);	
+			print_json_output($data);	
 		}
 		else {
-			$this->print_json_error("not-implemented");
+			print_json_error("not-implemented");
 		}
 	}
 

@@ -3,7 +3,7 @@
 <span><?php if(isset($info)){echo $info;}?></span>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-	<div class="alert alert-info alert-dismissable">
+	<div class="alert alert-info alert-dismissible">
 		<i class="icon glyphicon glyphicon-info-sign"></i>
 		Untuk pengajuan akun siswa Madrasah atau siswa Luar Daerah, mohon dibantu melakukan verifikasi data yang dimasukkan.
 	</div>	

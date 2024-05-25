@@ -17,12 +17,12 @@
 					</section>
 					<section class="content">
 					<?php if ($maxubahsekolah > $ubahsekolahsiswa) { ?>
-						<div class="alert alert-danger alert-dismissable">
+						<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-sign"></i>
 							Anda hanya bisa melakukan perubahan <b>"Sekolah"</b> sebanyak <b><?php echo $maxubahsekolah-$ubahsekolahsiswa;?> kali</b>.
 						</div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
 							<i class="icon glyphicon glyphicon-info-warning"></i>
 							Anda sudah tidak bisa melakukan perubahan <b>"Sekolah"</b> karena sudah melebihi batasan.</b>.
 						</div>

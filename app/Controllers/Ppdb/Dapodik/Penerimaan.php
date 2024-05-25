@@ -97,32 +97,32 @@ class Penerimaan extends PpdbController {
             if ($result == null) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
-                    $this->print_json_error($error);
+                    print_json_error($error);
                 } else {
-                    $this->print_json_error('Tidak berhasil mendapatkan daftar penerimaan.');
+                    print_json_error('Tidak berhasil mendapatkan daftar penerimaan.');
                 }
             }
 
-			$this->print_json_output($result);
+			print_json_output($result);
 		}
         else if ($action=='create'){
 			$sekolah_id = $this->session->get("sekolah_id");
             $values = $this->request->getPost("data");
 
             if (empty($values)) {
-                $this->print_json_error("Data siswa baru tidak valid/kosong.");
+                print_json_error("Data siswa baru tidak valid/kosong.");
             }
 
 			$siswa = $values[0];
             $detail = null;
 			do {
 				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
-					$this->print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
+					print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
                     break;
 				}
 
 				if (empty($siswa['nik']) || $this->Msiswa->tcg_cek_nik($siswa['nik'])) {
-					$this->print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
+					print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
                     break;
 				}
 
@@ -133,9 +133,9 @@ class Penerimaan extends PpdbController {
 				if ($detail == null) {
 					$error = $this->Msekolah->get_error_message();
 					if (!empty($error)) {
-                        $this->print_json_error($error);
+                        print_json_error($error);
 					} else {
-						$this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+						print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
 					}
 				}
 
@@ -143,17 +143,17 @@ class Penerimaan extends PpdbController {
                 $data = array();
                 $data[] = $detail;
 
-                $this->print_json_output($data);
+                print_json_output($data);
 	
 			} while(false);
 
-            $this->print_json_output($detail);
+            print_json_output($detail);
 		}
         else if ($action=='edit'){
             $values = $this->request->getPost("data");
 
             if (empty($values)) {
-                $this->print_json_error("Data siswa baru tidak valid/kosong.");
+                print_json_error("Data siswa baru tidak valid/kosong.");
             }
 
             $json = array();
@@ -167,7 +167,7 @@ class Penerimaan extends PpdbController {
                 $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($k);
             }
 
-            $this->print_json_output($json);
+            print_json_output($json);
         }
         else if ($action=='remove') {
 			$sekolah_id = $this->session->get("sekolah_id");
@@ -177,13 +177,13 @@ class Penerimaan extends PpdbController {
             if (!$status) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
-                    $this->print_json_error($error);
+                    print_json_error($error);
                 } else {
-                    $this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
                 }
             }
 
-			$this->print_json_output(array());
+			print_json_output(array());
         }
 		else if ($action=='accept'){
 			$sekolah_id = $this->session->get("sekolah_id");
@@ -192,7 +192,7 @@ class Penerimaan extends PpdbController {
             //sudah diterima
             $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
             if ($pendaftaran != null) {
-                $this->print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
+                print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
             }
 
             //batasan usia
@@ -200,30 +200,30 @@ class Penerimaan extends PpdbController {
             $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
 
             if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
-                $this->print_json_error('Minimal tanggal lahir: ', $batasan_usia['minimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+                print_json_error('Minimal tanggal lahir: ', $batasan_usia['minimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
             }
 
             if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
-                $this->print_json_error('Maksimal tanggal lahir: ', $batasan_usia['maksimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+                print_json_error('Maksimal tanggal lahir: ', $batasan_usia['maksimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
             }            
 
 			$status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
             if (!$status) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
-                    $this->print_json_error($error);
+                    print_json_error($error);
                 } else {
-                    $this->print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
                 }
             }
 
-			$this->print_json_output(null);	
+			print_json_output(null);	
         }
         else if ($action=='sekolah') {
             $mdropdown = new \App\Models\Ppdb\Mconfig();
             $sekolah = $mdropdown->tcg_sekolah_tk_ra();
 
-            $this->print_json_output($sekolah);
+            print_json_output($sekolah);
         }
         else if ($action=='search') {
 			$nama = $this->request->getPostGet("nama"); 
@@ -232,11 +232,11 @@ class Penerimaan extends PpdbController {
 
 			if (empty($nama) && empty($nisn)) {
 				//no search
-				$this->print_json_error("Tidak ada yang perlu dicari.");
+				print_json_error("Tidak ada yang perlu dicari.");
 			}
 
             $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, null, null, null, null, null, $limit);
-            $this->print_json_output($daftar);
+            print_json_output($daftar);
         }
 		else {
 			$data['error'] = "not-implemented"; 

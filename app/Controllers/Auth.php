@@ -3,9 +3,116 @@
 namespace App\Controllers;
 
 use App\Controllers\Core\AuthController;
+use App\Controllers\Ppdb\PpdbController;
+use App\Models\Ppdb\Mhome;
+use App\Models\Ppdb\Sekolah\Mprofilsekolah;
+use App\Models\Ppdb\Siswa\Mprofilsiswa;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 class Auth extends AuthController
 {
+    protected static $LOGIN_PAGE = "";
+    
+    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
+    {
+        // Do Not Edit This Line
+        parent::initController($request, $response, $logger);
+
+        helper("ppdb");
+    }
+
+    function index() {
+		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
+		if (empty($tahun_ajaran_id)) {
+			$tahun_ajaran_id = $this->setting->get('tahun_ajaran');
+		}
+		
+		$putaran = $_GET["putaran"] ?? null; 
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+		
+		$kode_wilayah_aktif = $_GET["kode_wilayah"] ?? null; 
+		if (empty($kode_wilayah_aktif)) {
+			$kode_wilayah_aktif = $this->setting->get('kode_wilayah');
+		}
+		
+		$bentuk_sekolah_aktif = "SMP";
+
+		$mconfig = new \App\Models\Ppdb\Mconfig();
+        $nama_tahun_ajaran = $mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
+        $nama_wilayah = $mconfig->tcg_nama_wilayah($kode_wilayah_aktif);
+        $nama_putaran = $mconfig->tcg_nama_putaran($putaran);
+        
+		$sessiondata = array(
+			'tahun_ajaran_aktif'=>$tahun_ajaran_id,
+            'nama_tahun_ajaran_aktif'=>$nama_tahun_ajaran,
+			'kode_wilayah_aktif'=>$kode_wilayah_aktif,
+            'nama_wilayah_aktif'=>$nama_wilayah,
+            'putaran_aktif'=>$putaran,
+            'nama_putaran_aktif'=>$nama_putaran,
+			'bentuk_sekolah_aktif'=>$bentuk_sekolah_aktif
+		);	
+		$this->session->set($sessiondata);
+
+        $data['kode_wilayah']=$kode_wilayah_aktif;
+        $data['nama_wilayah']=$nama_wilayah;
+        $data['tahun_ajaran_id']=$tahun_ajaran_id;
+        $data['nama_tahun_ajaran']=$nama_tahun_ajaran;
+        $data['putaran']=$putaran;
+        $data['nama_putaran']=$nama_putaran;
+
+		$data['cek_registrasi'] = $mconfig->tcg_cek_wakturegistrasi();
+
+		$data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
+        foreach($data['tahapan_aktif'] as $tahapan) {
+            if ($tahapan->tahapan_id == 0 || $tahapan->tahapan_id == 99) {
+                $data['cek_registrasi'] = 0;
+                break;
+            }
+        }
+		$data['pengumuman'] = $mconfig->tcg_pengumuman();
+
+        $putaran = $mconfig->tcg_putaran();
+        foreach($putaran as $k => $p) {
+            $putaran[$k]['tahapan'] = $mconfig->tcg_tahapan_pelaksanaan($p['putaran']);
+        }
+        $data['putaran'] = $putaran;
+
+        $petunjuk = $mconfig->tcg_petunjuk_pelaksanaan();
+        $data['petunjuk_pelaksanaan'] = array();
+        // $data['petunjuk_pelaksanaan'][] = array("id"=>1, "title"=>"JADWAL PELAKSANAAN", "text"=>$petunjuk['jadwal_pelaksanaan']);
+        $data['petunjuk_pelaksanaan'][] = array("id"=>2, "title"=>"PERSYARATAN", "text"=>$petunjuk['persyaratan']);
+        $data['petunjuk_pelaksanaan'][] = array("id"=>3, "title"=>"TATA CARA PENDAFTARAN", "text"=>$petunjuk['tata_cara_pendaftaran']);
+        $data['petunjuk_pelaksanaan'][] = array("id"=>4, "title"=>"JALUR PENDAFTARAN", "text"=>$petunjuk['jalur_pendaftaran']);
+        $data['petunjuk_pelaksanaan'][] = array("id"=>5, "title"=>"PROSES SELEKSI", "text"=>$petunjuk['proses_seleksi']);
+        $data['petunjuk_pelaksanaan'][] = array("id"=>6, "title"=>"KONVERSI NILAI", "text"=>$petunjuk['konversi_nilai']);
+
+        // if ($data['cek_captcha']) {
+        //     $sitekey="6LfUN-oUAAAAAAEiaEPyE-S-d3NRbzXZVoNo51-x";
+        //     if(strpos(base_url(), 'localhost')) {
+        //         $sitekey="6LdDOOoUAAAAABvtPcoIZ4RHTm545Wb9lgD8j2Ab";
+        //     }
+        //     $data['captcha_sitekey'] = $sitekey;
+        // }
+
+        $user_id = $this->session->get('user_id');
+        if (!empty($user_id)) {
+            $data['nama_pengguna'] = $this->session->get('nama');
+            $data['user_name'] = $this->session->get('user_name');
+        }
+        $data['user_id'] = $user_id;
+
+        $data['login_page'] = site_url() .static::$LOGIN_PAGE;
+
+        //dont show standard footer text
+        $data['show_footer'] = 0;
+
+		$this->smarty->render('ppdb/home/login.tpl',$data);
+    }
+
     protected function get_home() {
         $role_id = $this->session->get('role_id');
         if ($role_id == ROLEID_SYSADMIN) {
@@ -103,9 +210,8 @@ class Auth extends AuthController
         }
 
     }
-
-    
-    function resetpassword() {
+ 
+    function changepassword() {
 
         $json = array();
 

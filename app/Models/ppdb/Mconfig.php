@@ -260,21 +260,35 @@ Class Mconfig
 		$builder->select('a.jadwal_pelaksanaan,a.persyaratan,a.tata_cara_pendaftaran,a.jalur_pendaftaran,a.proses_seleksi,a.konversi_nilai,a.embedded_script');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 
+		return $builder->get()->getRowArray();
+	}
+
+	function tcg_putaran() {
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+
+        //Tidak per putaran!!!
+		$builder = $this->db->table('cfg_putaran a');
+		$builder->select('a.*');
+		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
+
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_tahapan_pelaksanaan(){
+	function tcg_tahapan_pelaksanaan($putaran=null){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+        if ($putaran == null) {
+            $putaran = $this->session->get("putaran_aktif");
+        }
 
         //Semua tahapan (semua putaran)!!!
 		$query = "select a.putaran, c.nama as nama_putaran, a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai 
 				  from cfg_waktu_pelaksanaan a
 				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
                   join cfg_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
-				  where a.tahun_ajaran_id=? and a.is_deleted=0
+				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
 				  order by a.putaran, a.tahapan_id";
 
-		return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
+		return $this->db->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
 	}
 
 	function tcg_pengumuman(){
@@ -283,8 +297,8 @@ Class Mconfig
 		$query = "select a.tipe, a.css, a.text, a.bisa_ditutup 
 				  from cfg_pengumuman a
 				  where a.tahun_ajaran_id=? and a.is_deleted=0
-						and (a.tanggal_mulai <= now() or a.tanggal_mulai is null)
-						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)
+						and (a.tanggal_mulai = '0000-00-00 00:00:00' or a.tanggal_mulai <= now() or a.tanggal_mulai is null)
+						and (a.tanggal_selesai = '0000-00-00 00:00:00' or a.tanggal_selesai >= now() or a.tanggal_selesai is null)
 				  order by a.tanggal_mulai asc";
 
 		return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
@@ -401,6 +415,18 @@ Class Mconfig
 		$builder->select('CONVERT(kode_wilayah,CHAR(10)) AS kode_wilayah,nama');
 		$builder->where(array('id_level_wilayah'=>5,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah_desa));
 		$builder->orderBy('nama');
+		return $builder->get()->getResultArray();
+	}
+
+	function tcg_sekolah($kode_wilayah, $bentuk){
+		$builder = $this->db->table('ref_sekolah');
+		$builder->select('sekolah_id,npsn,nama');
+		$builder->where('bentuk',$bentuk);
+		$builder->where('LEFT(kode_wilayah,4)',substr($kode_wilayah,0,4),true);
+		$builder->orderBy('nama');
+
+        //$sql = $builder->getCompiledSelect(); echo $sql; exit;
+
 		return $builder->get()->getResultArray();
 	}
 

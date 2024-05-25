@@ -60,26 +60,26 @@
 					</section>
 					<section class="content">
 					    <?php if ($maxubahsekolah > $ubahsekolahsiswa) { ?>
-                            <div class="alert alert-danger alert-dismissable">
+                            <div class="alert alert-danger alert-dismissible">
                                 <i class="icon glyphicon glyphicon-info-sign"></i>
                                 Anda hanya bisa melakukan perubahan <b>"Sekolah"</b> sebanyak <b><?php echo $maxubahsekolah-$ubahsekolahsiswa;?> kali</b>.
                             </div>
 						<?php } else { ?>
-							<div class="alert alert-danger alert-dismissable">
+							<div class="alert alert-danger alert-dismissible">
                                 <i class="icon glyphicon glyphicon-info-warning"></i>
                                 Anda sudah tidak bisa melakukan perubahan <b>"Sekolah"</b> karena sudah melebihi batasan.</b>.
                             </div>
 						<?php } ?>
 
                         <?php if ($jalurswasta != 1 && $satu_zonasi_satu_jalur == 1) { ?>
-                            <div class="alert alert-danger alert-dismissable">
+                            <div class="alert alert-danger alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 <p><i class="icon glyphicon glyphicon-exclamation-sign"></i>Anda hanya bisa mendaftar menggunakan satu jalur pada satu zonasi. Mohon berhati-hati dalam menentukan jalur pendaftaran.</p>             
                             </div>
 
                             <?php foreach($pendaftaran_dalam_zonasi->getResult() as $row) { ?>
                                 <?php if ($jalurid != $row->jalur_id) { ?>
-                                <div class="alert alert-warning alert-dismissable">
+                                <div class="alert alert-warning alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     <p><i class="icon glyphicon glyphicon-info-sign"></i>Anda sudah mendaftar menggunakan jalur <?php echo $row->jalur; ?> di dalam zonasi anda. Anda hanya bisa mendaftar dengan jalur <?php echo $namajalur; ?> ke sekolah di luar jalur zonasi anda.</p>             
                                 </div>
@@ -88,7 +88,7 @@
 
                             <?php foreach($pendaftaran_luar_zonasi->getResult() as $row) { ?>
                                 <?php if ($jalurid != $row->jalur_id) { ?>
-                                <div class="alert alert-info alert-dismissable">
+                                <div class="alert alert-info alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     <p><i class="icon glyphicon glyphicon-info-sign"></i>Anda sudah mendaftar menggunakan jalur <?php echo $row->jalur; ?> di zonasi Kec. <?php echo $row->nama; ?>. Anda tidak bisa mendaftar dengan jalur <?php echo $namajalur; ?> ke sekolah di zonasi ini.</p>             
                                 </div>
@@ -97,7 +97,7 @@
                         <?php } ?>
 
                         <?php if ($daftarpendaftaran->num_rows()>0) { ?>
-                            <div class="alert alert-info alert-dismissable">
+                            <div class="alert alert-info alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 <p>Anda sudah melakukan pendaftaran di sekolah berikut:
                                 <ul>

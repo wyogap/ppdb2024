@@ -1,5 +1,14 @@
+{if $is_public|default: FALSE} 
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="{$site_url}home/rekapitulasi">Rekapitulasi Pendaftaran</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">{$profilsekolah.nama}</a></li>
+    </ol>
+</div>
+{/if}
+
 {if !$final_ranking|default: FALSE}
-<div class="alert alert-info alert-dismissable">
+<div class="alert alert-info alert-dismissible">
     <i class="icon glyphicon glyphicon-info-sign"></i>
     Perhitungan peringkat dilakukan oleh system secara otomotis pada: <b><span id="last_execution_date">{$last_execution_date}</span></b>. 
     {if $cek_waktupendaftaran==1 && !empty($next_execution_date)}

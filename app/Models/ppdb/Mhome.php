@@ -18,7 +18,7 @@ Class Mhome
 
 	function carisiswa($nama){
 		$query = "select a.peserta_didik_id,a.nama,a.jenis_kelamin,b.nama AS sekolah
-				  from dbo_peserta_didik a
+				  from tcg_peserta_didik a
 				  join ref_sekolah b on a.sekolah_id = b.sekolah_id
 				  join tcg_pendaftaran c on a.peserta_didik_id = c.peserta_didik_id and c.is_deleted=0
 				  where a.is_deleted=0 and (a.nama like ?)
@@ -161,15 +161,15 @@ Class Mhome
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 		}
 
-		$builder = $this->db->table('tcg_nilai_mutu_sekolah a');
+		$builder = $this->db->table('cfg_nilai_mutu_sekolah a');
 		$builder->select('a.*, b.nama');
 		$builder->join('ref_sekolah b', 'a.sekolah_id=b.sekolah_id', 'left outer');
         $builder->where('tahun_ajaran_id', $tahun_ajaran_id);
-		return $builder->get();
+		return $builder->get()->getResultArray();
 	}    
 
 	function tcg_cek_registrasi($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung){
-		$builder = $this->db->table('dbo_peserta_didik a');
+		$builder = $this->db->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.is_deleted'=>0));
@@ -183,7 +183,7 @@ Class Mhome
 	}
 
 	function tcg_cek_nisn($nisn){
-		$builder = $this->db->table('dbo_peserta_didik a');
+		$builder = $this->db->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
@@ -197,7 +197,7 @@ Class Mhome
 	}
 
 	function tcg_cek_nik($nik){
-		$builder = $this->db->table('dbo_peserta_didik a');
+		$builder = $this->db->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nik'=>$nik,'a.is_deleted'=>0));
@@ -247,20 +247,22 @@ Class Mhome
 		$builder->select('a.user_id,a.role_id as peran_id,a.sekolah_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
                             b.bentuk,CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah,c.tanggal_lahir,c.asal_data,c.nisn,c.kebutuhan_khusus,c.tutup_akses');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('dbo_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
+		$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
 		$builder->where(array('a.is_deleted'=>0));
-		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
+		$builder->groupStart()->orWhere('a.user_name', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
-		return $builder->get();
+        //echo $builder->getCompiledSelect(); exit;
+
+		return $builder->get()->getRowArray();
 	}
 
 	function tcg_login($username, $password){
-		$builder = $this->db->table('dbo_pengguna a');
+		$builder = $this->db->table('dbo_users a');
 		$builder->select('count(*) as jumlah');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('dbo_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
+		$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
 		$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
-		$builder->groupStart()->orWhere('a.username', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
+		$builder->groupStart()->orWhere('a.user_name', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
 		$login=0;
 		foreach($builder->get()->getResult() as $row):
@@ -276,7 +278,7 @@ Class Mhome
 
 	function tcg_cek_ikutppdb($sekolah_id, $tahun_ajaran_id) {
 		// TODO: buka akses kalau nggak ikut ppdb tahap 2
-		$builder = $this->db->table('dbo_kuota_sekolah a');
+		$builder = $this->db->table('cfg_kuota_sekolah a');
 		$builder->select('a.ikut_ppdb');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 
@@ -330,6 +332,7 @@ Class Mhome
 		return $retval;
 	}
 
+    //dipakai untuk registrasi siswa
 	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
 		$user_id = $this->session->get("user_id");
 
@@ -337,6 +340,7 @@ Class Mhome
 		return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
 	}
 
+    //dipakai untuk registrasi sisw
 	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status) {
 		$uuid = $this->uuid();
 
@@ -369,13 +373,13 @@ Class Mhome
 
 	function tcg_job_peringkatpendaftaran() {
 		$query = "select next_execution, last_execution_end from dbo_jobs where name='proses_peringkat_pendaftaran'";
-		return $this->db->query($query);
+		return $this->db->query($query)->getRowArray();
 	}
 
 	function tcg_rekapitulasi_sekolah() {
 		$sql = "select * from rpt_rekapitulasi_sekolah_publik where tahun_ajaran_id=? and putaran=? order by nama asc";
 
-		return $this->db->query($sql, array($this->tahun_ajaran_id, $this->putaran));	
+		return $this->db->query($sql, array($this->tahun_ajaran_id, $this->putaran))->getResultArray();	
 	}    
 
 	function uuid(){

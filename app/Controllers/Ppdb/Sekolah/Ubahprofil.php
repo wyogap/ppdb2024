@@ -79,7 +79,7 @@ class Ubahprofil extends PpdbController {
 		}
 
 		if ($peran_id==ROLEID_SEKOLAH && $sekolah_id != $this->session->get('sekolah_id')) {
-			$this->print_json_error('not-authorized');
+			print_json_error('not-authorized');
 		}
 
 		$kode_wilayah = $_POST["kode_wilayah"] ?? null; 
@@ -123,7 +123,7 @@ class Ubahprofil extends PpdbController {
 
 			if (count($valuepair) > 0) {
 				if (!$this->Msekolah->tcg_ubah_profil($sekolah_id, $valuepair)) {
-					$this->print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
+					print_json_error("Terjadi permasalahan sehingga data gagal tersimpan, silahkan ulangi kembali.");
 					break;
 				}
 			}
@@ -132,7 +132,7 @@ class Ubahprofil extends PpdbController {
 
 		$profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 
-		$this->print_json_output($profil);
+		print_json_output($profil);
 	}
 	
 	// function pendaftaran() {

@@ -82,11 +82,6 @@
             kelengkapan_data = 0;
         }
 
-        //update flag pendaftaran dikunci
-        if (!cek_batasanusia || (!cek_waktupendaftaran && !cek_waktusosialisasi) || !kelengkapan_data || global_tutup_akses || siswa_tutup_akses) {
-            pendaftarandikunci = 1;
-        }
-
         //sisa slot pendaftaran
         jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
         daftarpendaftaran.forEach(function(p) {

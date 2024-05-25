@@ -3,7 +3,30 @@
 
     $(document).ready(function() {
         $.extend($.fn.dataTable.defaults, {
-            responsive: true
+            responsive: true,
+			"language": {
+				"processing":   "Sedang proses...",
+				"lengthMenu":   "Tampilan _MENU_ baris",
+				"zeroRecords":  "Tidak ditemukan data yang sesuai",
+				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
+				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
+				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
+				"infoPostFix":  "",
+				"loadingRecords": "Loading...",
+				"emptyTable":   "Tidak ditemukan data yang sesuai",
+				"search":       "Cari:",
+				"url":          "",
+				"paginate": {
+                    "first":    "Awal",
+                    "previous": "Balik",
+                    "next":     "Lanjut",
+                    "last":     "Akhir"
+				},
+				aria: {
+                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
+                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
+				}
+			},	
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -16,10 +39,10 @@
         dt = $('#tnegeri').DataTable({
             "responsive": true,
             "processing": true,
-            "pageLength": 50,
+            "pageLength": 25,
             "lengthMenu": [
-                [50, 100, 200, -1],
-                [50, 100, 200, "All"]
+                [25, 50, 100, -1],
+                [25, 50, 100, "All"]
             ],
             "paging": true,
             "pagingType": "numbers",
@@ -34,23 +57,6 @@
                     className: 'btn-sm btn-custom-action btn-primary'
 				},
             ],
-            "language": {
-                "sProcessing": "Sedang proses...",
-                "sLengthMenu": "Tampilan _MENU_ entri",
-                "sZeroRecords": "Tidak ditemukan data yang sesuai",
-                "sInfo": "Tampilan _START_ - _END_ dari _TOTAL_ entri",
-                "sInfoEmpty": "Tampilan 0 hingga 0 dari 0 entri",
-                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-                "sInfoPostFix": "",
-                "sSearch": "Cari:",
-                "sUrl": "",
-                "oPaginate": {
-                    "sFirst": "Awal",
-                    "sPrevious": "Balik",
-                    "sNext": "Lanjut",
-                    "sLast": "Akhir"
-                }
-            },
             ajax: "{$site_url}ppdb/sekolah/verifikasi/berkasdisekolah?tahun_ajaran={$tahun_ajaran_id}",
             columns: [
                 {
