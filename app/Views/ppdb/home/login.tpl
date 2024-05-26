@@ -225,7 +225,7 @@
 							<h6 class="login-title"><span>ATAU</span></h6>
 							{if $cek_registrasi|default: FALSE}
 							<div class="text-center mb-4">
-								<button type="submit" class="btn btn-secondary btn-block">Registrasi Siswa Luar Daerah</button>
+								<a href="{$site_url}home/registrasi" class="btn btn-secondary btn-block">Registrasi Siswa Luar Daerah</a>
 							</div>
                             {else}
                             <p class="text-center">Registrasi untuk siswa dari <b class="text-red">Luar Daerah</b> belum dibuka.</p>

@@ -112,10 +112,15 @@ class Siswa extends PpdbController {
         // $dokumen[DOCID_PRESTASI] = array();
         // $dokumen[DOCID_PRESTASI]['verifikasi'] = 1;
 
-        if ($upload_dokumen) {
+        // if ($upload_dokumen) {
+            $dok_surat_pernyataan = null;
+
             $dokumen = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
             foreach($dokumen as $row) {
                 $row['catatan'] = nl2br(trim($row['catatan']));
+                if ($row['daftar_kelengkapan_id'] == DOCID_SUKET_KEBENARAN_DOK) {
+                    $dok_surat_pernyataan = $row;
+                }
             }
 
             //verifikasi dokumen tambahan -> the metadata is already included in $dokumen
@@ -133,10 +138,12 @@ class Siswa extends PpdbController {
                 }
             }
 
+            // var_dump($dok_surat_pernyataan); exit;
+
             //verifikasi suket kebenaran dok
-            $pernyataan_verifikasi = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['verifikasi'];
-            $pernyataan_file = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['path_surat_pernyataan'];
-            $pernyataan_tanggal = $dokumen[DOCID_SUKET_KEBENARAN_DOK]['tanggal_surat_pernyataan'];
+            $pernyataan_verifikasi = $dok_surat_pernyataan['verifikasi'];
+            $pernyataan_file = $dok_surat_pernyataan['path'];
+            $pernyataan_tanggal = $dok_surat_pernyataan['tanggal_berkas'];
         
             //verifikasi dokumen
             if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
@@ -149,7 +156,7 @@ class Siswa extends PpdbController {
             else if (!empty($dokumen[DOCID_SUKET_BDT]) && $dokumen[DOCID_SUKET_BDT]['verifikasi'] == 2) { $verifikasi_dok = 0; }
             else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
             else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
-        }
+        // }
 
         //Output
         $data = array();
@@ -157,10 +164,10 @@ class Siswa extends PpdbController {
         //tab yang aktif
         //belum waktu_pendaftaran
         if ($cek_waktusosialisasi) {
-            $data['aktif'] = "profil";
+            $data['aktif'] = "kelengkapan";
         }
         else if (!$cek_waktupendaftaran && !$cek_waktudaftarulang) {
-            $data['aktif'] = "profil";
+            $data['aktif'] = "kelengkapan";
         }
         //waktu_daftar_ulang and pendaftaran_aktif_diterima, go to daftar-ulang
         else if ($cek_waktudaftarulang && $cek_pendaftaran_diterima) {
@@ -168,11 +175,11 @@ class Siswa extends PpdbController {
         }
         //kelengkapan_data!=1 atau verifikasi_dok!=1, go to kelengkapan-data
         else if (!$kelengkapan_data || !$verifikasi_dok) {
-            $data['aktif'] = 'profil';
+            $data['aktif'] = 'kelengkapan';
         }
         //pendaftaran_aktif, go to hasil-pendaftaran
         else if ($cek_pendaftaran_aktif) {
-            $data['aktif'] = 'hasilpendaftaran';
+            $data['aktif'] = 'hasil';
         }
         //data-lengkap and dok-terverifikasi and no pendaftaran_aktif, go to pendaftaran
         else if ($cek_waktupendaftaran && $kelengkapan_data && $verifikasi_dok && !$cek_pendaftaran_aktif) {
@@ -180,7 +187,7 @@ class Siswa extends PpdbController {
         }
         //default
         else {
-            $data['aktif'] = 'profil';
+            $data['aktif'] = 'kelengkapan';
         }
 
         //upload dok?
@@ -333,9 +340,7 @@ class Siswa extends PpdbController {
             $data['satu_zonasi_satu_jalur'] = 1;
             $data['profilsiswa']['tutup_akses'] = 0;
 
-            // foreach($data['profilflag'] as $key => $value) {
-            //     $data['profilflag'][$key] = 1;
-            // }
+            $data['aktif'] = 'pendaftaran';
         }
         //end debugging
 
@@ -623,10 +628,10 @@ class Siswa extends PpdbController {
 
         //audit trail
         if ($toggle) {
-            //$this->audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
+            //audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
         }
         else {
-            $this->audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
+            audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
         }
 
         print_json_output($detail);
@@ -651,7 +656,7 @@ class Siswa extends PpdbController {
 
         //audit trail
         $nama_dok = $this->Msiswa->tcg_nama_dokumen($doc_id);
-        $this->audit_siswa($peserta_didik_id, "UPLOAD DOK", "Upload dokumen " .$nama_dok, "doc_id,upload_id", "" .$doc_id. "," .$fileObj['id']. "", null);
+        audit_siswa($peserta_didik_id, "UPLOAD DOK", "Upload dokumen " .$nama_dok, "doc_id,upload_id", "" .$doc_id. "," .$fileObj['id']. "", null);
 
         $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
 
@@ -670,7 +675,7 @@ class Siswa extends PpdbController {
 
         //audit trail
         $nama_dok = $this->Msiswa->tcg_nama_dokumen($doc_id);
-        $this->audit_siswa($peserta_didik_id, "HAPUS DOK", "Hapus dokumen " .$nama_dok, "doc_id", $doc_id, null);
+        audit_siswa($peserta_didik_id, "HAPUS DOK", "Hapus dokumen " .$nama_dok, "doc_id", $doc_id, null);
 
         print_json_output(array());  
     }
@@ -864,7 +869,7 @@ class Siswa extends PpdbController {
         }
 
         //audit trail
-        $this->audit_pendaftaran($pendaftaran_id, $audit_action_type, $audit_action_desc, $audit_keys, $data, $pendaftaran_lama);
+        audit_pendaftaran($pendaftaran_id, $audit_action_type, $audit_action_desc, $audit_keys, $data, $pendaftaran_lama);
 
         //get list of existing pendaftaran
         $data = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
@@ -997,11 +1002,11 @@ class Siswa extends PpdbController {
 
             $flag = $pendaftaran['pendaftaran'];
             if ($flag == 1) {
-                $this->audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+                audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
                                             null, null, null);
             }
             else {
-                $this->audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran OTOMATIS an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+                audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran OTOMATIS an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
                                             null, null, null);
             }
         }
@@ -1037,7 +1042,7 @@ class Siswa extends PpdbController {
         $sekolah = $pendaftaran['sekolah'];
         $pilihan = $pendaftaran['label_jenis_pilihan'];
         $jalur = $pendaftaran['jalur'];
-        $this->audit_pendaftaran($pendaftaran_id, "HAPUS PENDAFTARAN", "Hapus pendaftaran di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
+        audit_pendaftaran($pendaftaran_id, "HAPUS PENDAFTARAN", "Hapus pendaftaran di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
                                     null, null, null);
 
         //get list of existing pendaftaran

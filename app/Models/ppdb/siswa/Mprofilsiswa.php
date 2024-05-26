@@ -568,7 +568,7 @@ Class Mprofilsiswa
 		// daftar SEMUA dokumen pendukung
         $builder = $this->db->table("tcg_dokumen_pendukung a");
         $builder->select("a.dokumen_id, a.daftar_kelengkapan_id, b.nama, a.filename, a.path, a.web_path, a.thumbnail_path, a.verifikasi, a.catatan");
-        $builder->select("b.dokumen_fisik, b.placeholder, a.berkas_fisik");
+        $builder->select("b.dokumen_fisik, b.placeholder, a.berkas_fisik, a.tambahan, coalesce(a.tanggal_berkas, a.created_on) as tanggal_berkas");
         $builder->join("ref_daftar_kelengkapan b", "a.daftar_kelengkapan_id=b.daftar_kelengkapan_id and b.is_deleted=0");
         $builder->where("a.peserta_didik_id", $peserta_didik_id);
         $builder->where("a.is_deleted=0");

@@ -110,6 +110,10 @@ class Auth extends AuthController
         //dont show standard footer text
         $data['show_footer'] = 0;
 
+        if (__DEBUGGING__) {
+            $data['cek_registrasi'] = 1;
+        }
+
 		$this->smarty->render('ppdb/home/login.tpl',$data);
     }
 

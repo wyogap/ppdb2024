@@ -857,9 +857,8 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            {foreach $dokumen_tambahan as $fields}
-                            {* nilai SKHUN *}
-                            {if ($fields.daftar_kelengkapan_id == 3)}{continue}{/if}
+                            {foreach $dokumen as $fields}
+                            {if ($fields.tambahan != 1)}{continue}{/if}
                             <tr>
                                 <td><span id="row-span-dokumen-{$fields.daftar_kelengkapan_id}"><i class="glyphicon glyphicon-edit"></i> </span><b>{$fields.nama}</b></td>
                                 <td>:</td>

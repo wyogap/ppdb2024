@@ -92,7 +92,7 @@
                     (<b>{{item.npsn}}</b>) <b>{{item.sekolah}}</b>
                     
                     {{#allow_edit}}
-                    <div style="min-height: 38px; margin-top: 8px;">
+                    <div style="min-height: 44px; margin-top: 8px;">
                         {{#item.ubah_pilihan}}
                         <button onclick=ubah_pilihan({{idx}}) class="btn btn-sm btn-ubah-pilihan {{^item.allow_ubah_pilihan}}disabled{{/item.allow_ubah_pilihan}}" style="margin-top: 4px;">
                             <i class="glyphicon glyphicon-edit"></i> Ubah Pilihan

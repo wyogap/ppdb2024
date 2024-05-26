@@ -1,10 +1,15 @@
-{if $show_footer|default: TRUE}
+
+<div class="loading" id="loader" style="display: none;">
+    <div class="loading-circle"></div>
+</div>
+
+<!-- {if $show_footer|default: TRUE}
 <footer class="main-footer footer mb-2">
 	<div class="container text-center">
             <strong>Copyright &copy; 2020 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.
 	</div>
 </footer>
-{/if}
+{/if} -->
 
 <style>
     .DZ-theme-btn.DZ-bt-scroll-top {

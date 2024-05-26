@@ -243,9 +243,9 @@
             <!-- container starts -->
             <div class="container-fluid">
 
-                <div class="loading" id="loader">
+                <!-- <div class="loading" id="loader">
                 <div class="loading-circle"></div>
-                </div>
+                </div> -->
 
                 {if $content_template|default: FALSE} 
                     {include file="./$content_template"}

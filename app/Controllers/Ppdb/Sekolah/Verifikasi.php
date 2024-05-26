@@ -453,7 +453,7 @@ class Verifikasi extends PpdbController {
                 print_json_error("Tidak berhasil mengubah data siswa.");
 
             //audit trail
-            $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($data), $data, $oldvalues);
+            audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($data), $data, $oldvalues);
 
             //RIWAYAT VERIFIKASI
             //perbaikan data
@@ -555,7 +555,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
 
                         //audit trail
-                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Dokumen " .$nama_dok. " tidak ada / belum diterima"
+                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Dokumen " .$nama_dok. " tidak ada / belum diterima"
                                             , array('daftar_kelengkapan_id'), array($key), null);
 
                         //riwayat verifikasi
@@ -566,7 +566,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
 
                         //audit trail
-                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " SUDAH BENAR"
+                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " SUDAH BENAR"
                                             , array('daftar_kelengkapan_id'), array($key), null);
 
                         //riwayat verifikasi
@@ -578,7 +578,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,$catatan);
 
                         //audit trail
-                        $this->audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " BELUM BENAR"
+                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " BELUM BENAR"
                                             , array('daftar_kelengkapan_id','catatan'), array($key, $catatan), null);
 
                         //riwayat verifikasi
@@ -617,7 +617,7 @@ class Verifikasi extends PpdbController {
             //audit trail
             $nama_siswa = $oldvalues['nama'];
             $nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
-            $this->audit_siswa($peserta_didik_id, "LOKASI BERKAS", "Ubah lokasi berkas an. " .$nama_siswa. " ke " .$nama_sekolah
+            audit_siswa($peserta_didik_id, "LOKASI BERKAS", "Ubah lokasi berkas an. " .$nama_siswa. " ke " .$nama_sekolah
                                 , array('peserta_didik_id','sekolah_id'), array($key, $catatan), null);
 
         }
@@ -669,7 +669,7 @@ class Verifikasi extends PpdbController {
 
     //     //audit trail
     //     if ($toggle) {
-    //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
+    //         audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
     //     }
     //     else {
     //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi data siswa", $keys, $data, $oldvalues);

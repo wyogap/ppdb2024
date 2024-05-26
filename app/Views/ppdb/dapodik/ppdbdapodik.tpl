@@ -166,7 +166,7 @@
                     </li>
                 </ul>
 				<div class="copyright">
-                    <p><strong>Copyright &copy; 2019 <a class="text-white" href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.</p>
+                    <p><strong>Copyright &copy; 2020 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.</p>
 				</div>
 			</div>
         </div>
@@ -249,15 +249,24 @@
                     </div>
                 {/if}
 
-                <div class="loading" id="loader">
+                <!-- <div class="loading" id="loader">
                     <div class="loading-circle"></div>
-                </div>
+                </div> -->
 
                 {if $content_template|default: FALSE} 
                     {include file="./$content_template"}
                 {/if}
             </div>
             <!-- container ends -->
+                 
+            {if $show_footer|default: TRUE}
+            <footer class="main-footer footer mb-2">
+                <div class="container text-center">
+                        <strong>Copyright &copy; 2020 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.
+                </div>
+            </footer>
+            {/if}
+
         </div>
         <!--**********************************
                 Content body end

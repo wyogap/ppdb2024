@@ -23,7 +23,7 @@
                 'kelengkapan_data' : kelengkapan_data,
                 'item'      : pendaftaran,
                 //'batasan'   : batasanperubahan,
-                //'idx'       : idx
+                'idx'       : idx
             });
 
             parent.append(dom);
@@ -151,7 +151,7 @@
                         },
                     }
                 });      
-        });
+        })
     }
 
     function ubah_jalur(idx) {
@@ -345,6 +345,8 @@
             }
         }
 
+        $("#loader").show();
+
         //build json
         let json = {};
         json["pendaftaran_id"] = pendaftaran_id;
@@ -376,9 +378,13 @@
                 toastr.success("Berhasil menghapus pendaftaran di " +sekolah+ " (" +jalur+ ")");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil menghapus pendaftaran. " + textStatus)
+                toastr.error("Tidak berhasil menghapus pendaftaran. " + textStatus);
+                $("#loader").hide();
                 return;
             }
+        })
+        .done(function(json) {
+            $("#loader").hide();
         });
 
     }
@@ -393,6 +399,8 @@
                 break;
             }
         }
+
+        $("#loader").show();
 
         //build json
         let json = {};
@@ -434,9 +442,13 @@
                 toastr.success("Berhasil mengubah urutan pilihan di " +sekolah+ " (" +pilihan+ ") menjadi " +pilihan_baru);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil mengubah urutan pilihan. " + textStatus)
+                toastr.error("Tidak berhasil mengubah urutan pilihan. " + textStatus);
+                $("#loader").hide();
                 return;
             }
+        })
+        .done(function(json) {
+            $("#loader").hide();
         });
     }
 
@@ -450,6 +462,8 @@
                 break;
             }
         }
+
+        $("#loader").show();
 
         //build json
         let json = {};
@@ -491,9 +505,13 @@
                 toastr.success("Berhasil mengubah jalur pendaftaran di " +sekolah+ " (" +jalur+ ") menjadi " +jalur_baru);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil mengubah jalur pendaftaran. " + textStatus)
+                toastr.error("Tidak berhasil mengubah jalur pendaftaran. " + textStatus);
+                $("#loader").hide();
                 return;
             }
+        })
+        .done(function(json) {
+            $("#loader").hide();
         });
     }
 
@@ -507,6 +525,8 @@
                 break;
             }
         }
+
+        $("#loader").show();
 
         //build json
         let json = {};
@@ -548,9 +568,13 @@
                 toastr.success("Berhasil mengubah pilihan sekolah dari " +sekolah+ " (" +jalur+ ") menjadi " +sekolah+ " (" +jalur_baru+ ")");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil mengubah pilihan sekolah. " + textStatus)
+                toastr.error("Tidak berhasil mengubah pilihan sekolah. " + textStatus);
+                $("#loader").hide();
                 return;
             }
+        })
+        .done(function(json) {
+            $("#loader").hide();
         });
     }
     {/if}
