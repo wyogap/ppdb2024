@@ -321,6 +321,9 @@ class Siswa extends PpdbController {
 
         ## END DAFTAR ULANG
 
+        $data['use_leaflet'] = 1;
+        $data['use_datatable'] = 1;
+
         //debugging
         if (__DEBUGGING__) {
             $data['cek_waktupendaftaran'] = 1;

@@ -75,17 +75,17 @@
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon">
-                                            <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                            <span class="ms-2">Mode Gelap / Mode Terang </span>
+                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon" id="toggle-dark">
+                                            <i class="fas fa-moon"></i> <span class="ms-2">Mode Gelap</span>
+                                        </button>
+                                        <button onclick=toggle_dark_mode() class="dropdown-item ai-icon" id="toggle-light">
+                                            <i class="fas fa-sun"></i> <span class="ms-2">Mode Terang </span>
                                         </button>
                                         <button onclick=ganti_password() class="dropdown-item ai-icon">
-                                            <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                            <span class="ms-2">Ganti PIN/Password </span>
+                                            <i class="fas fa-user"></i> <span class="ms-2">Ganti PIN/Password </span>
                                         </button>
                                         <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
-                                            <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                            <span class="ms-2">Logout </span>
+                                            <i class="fas fa-sign-out-alt"></i> <span class="ms-2">Logout </span>
                                         </a>
                                     </div>
                             </li>

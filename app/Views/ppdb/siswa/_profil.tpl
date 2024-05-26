@@ -74,8 +74,6 @@
         });
 
         //all datatable must be responsive
-        $.extend( $.fn.dataTable.defaults, { responsive: true } );
-
         dtriwayat = $('#triwayat').DataTable({
             "responsive": true,
             "paging": false,

@@ -86,9 +86,11 @@
     var dezSettingsOptions = {};
 
     (function($) {
-        let dark_theme = getCookie('dark_theme');
+        let dark_theme = getCookie('tcg-dark-theme');
+        //alert(document.cookie);
         if (dark_theme === undefined) {
             dark_theme = 0;
+            setCookie("tcg-dark-theme", dark_theme, 30);
         } 
 
         //update the theme setting. must be before dlabnav-init.js
@@ -105,10 +107,19 @@
             containerLayout: "boxed",
         };
         
+        if (dark_theme == 0) {
+            $("#toggle-light").hide();
+            $("#toggle-dark").show();
+        }
+        else {
+            $("#toggle-light").show();
+            $("#toggle-dark").hide();
+        }
+
     })(jQuery);
 
     function toggle_dark_mode() {
-        let dark_theme = getCookie('dark_theme');
+        let dark_theme = getCookie('tcg-dark-theme');
         if (dark_theme === undefined) {
             dark_theme = 0;
         } 
@@ -116,7 +127,7 @@
         if (dark_theme == 1)    dark_theme = 0;
         else                    dark_theme = 1;
 
-        setCookie("dark_theme", dark_theme, 30);
+        setCookie("tcg-dark-theme", dark_theme, 30);
 
         dezSettingsOptions = {
             typography: "cairo",
@@ -132,6 +143,15 @@
         };
         
         new dezSettings(dezSettingsOptions); 
+        
+        if (dark_theme == 0) {
+            $("#toggle-light").hide();
+            $("#toggle-dark").show();
+        }
+        else {
+            $("#toggle-light").show();
+            $("#toggle-dark").hide();
+        }
     }
 
     function setCookie(c_name, value, exdays) {
@@ -496,7 +516,7 @@
 
 {* Popup to change password *}
 <script>
-    var userid = {$user_id};
+    var userid = {$user_id|default: 0};
     
     function ganti_password() {
         $.confirm({

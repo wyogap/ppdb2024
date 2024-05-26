@@ -46,6 +46,8 @@ class Home extends PpdbController
 		$pendaftaran = $msiswa->tcg_daftarpendaftaran($peserta_didik_id);
         $pendaftaran = update_daftarpendaftaran($pendaftaran);
 
+        //var_dump($pendaftaran); exit;
+
         //profil siswa | profil status
         $kelengkapan_data = 1;
         if ($profil['konfirmasi_profil'] != 1 || $profil['verifikasi_profil'] == 2) { $kelengkapan_data = 0; }
@@ -67,7 +69,7 @@ class Home extends PpdbController
 
         // //content template
         $data['content_template'] = '../siswa/daftarpendaftaran.tpl';
-        //$data['js_template'] = '../sekolah/_peringkat.tpl';
+        $data['js_template'] = '../siswa/_daftarpendaftaran.tpl';
 
 		$data['page'] = 'detailpendaftaran';
  		$data['page_title'] = 'Detail Pendaftaran';
@@ -300,7 +302,7 @@ class Home extends PpdbController
 
         } while (false);
 
-		$mdropdown = new \App\Models\Ppdb\Mdropdown();
+		$mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
