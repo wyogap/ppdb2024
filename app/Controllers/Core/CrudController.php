@@ -42,6 +42,7 @@ abstract class CrudController extends BaseController {
     protected $is_json;
     protected $navigation;
 
+    protected $controller = null;
     protected $method = "";
     protected $params = array();
 
@@ -62,13 +63,13 @@ abstract class CrudController extends BaseController {
         //URI params
         $segments = $this->request->getUri()->getSegments();
         $total = count($segments);
-        $controller = strtolower(basename(get_class($this)));
+        $this->controller = strtolower(basename(get_class($this)));
 
         $this->method = "";
         $this->params = array();
         for($i=0; $i<$total; $i++) {
             $segment = strtolower($segments[$i]);
-            if ($segment == $controller) {
+            if ($segment == $this->controller) {
                 if ($i+1<$total) {
                     $this->method=$segments[$i+1];
                 }
@@ -225,6 +226,7 @@ abstract class CrudController extends BaseController {
 		else {
 			$controller = get_controller_path();
 		}
+        
 		$page_data['controller'] = $controller;
 
 		$page_data['page_name']              = $page['name'];

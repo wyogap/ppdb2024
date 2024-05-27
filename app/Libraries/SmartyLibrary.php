@@ -128,7 +128,7 @@ class SmartyLibrary extends Smarty {
 
         //failback in case controller is not set
         if (empty($data['controller'])) {
-            $data['controller'] = $router->controllerName();
+            $data['controller'] = strtolower(basename($router->controllerName()));
         }
 
         // //assign form validation

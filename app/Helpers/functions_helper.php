@@ -886,6 +886,10 @@
                 $path .= $segment;
             }
 
+            // var_dump($path);
+            // var_dump($controller);
+            // exit;
+
             //if default controller, use the name
             if (!$found) {
                 if (!empty($path))  $path .= "/";
