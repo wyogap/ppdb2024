@@ -3,23 +3,27 @@
 <script id="daftar-dokumen" type="text/template">
     <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
         {{#dokumen}}
-        <tr>
-            <td><span id="row-span-dokumen-{$fields.daftar_kelengkapan_id}}"><i class="glyphicon glyphicon-edit"></i> </span><b>{{nama}</span></b></td>
+        <tr tcg-doc-id="{{daftar_kelengkapan_id}}">
+            <td><span id="row-span-dokumen-{{daftar_kelengkapan_id}}"><i class="glyphicon glyphicon-edit"></i> </span><b>{{nama}}</span></b></td>
             <td>:</td>
             <td style="width: 50%;">
-                {if !($flag_upload_dokumen)}
+                {{#is_tambahan}}
                 Dicocokkan di sekolah tujuan
-                {else}
+                {{#flag_upload_dokumen}}
                     <img id="dokumen-{{daftar_kelengkapan_id}}" class="img-view-thumbnail" tcg-doc-id="{{daftar_kelengkapan_id}}"
-                            src="{$fields['thumbnail_path']}}" 
-                            img-path="{$fields['web_path']}}" 
-                            img-title="{$fields['nama']}}"
-                            img-id="{$fields['dokumen_id']}}" 
+                            src="{{thumbnail_path}}" 
+                            img-path="{{web_path}}" 
+                            img-title="{{nama}}"
+                            img-id="{{dokumen_id}}" 
                             style="display:none; "/>  
                     <button id="unggah-dokumen-{{daftar_kelengkapan_id}}" tcg-doc-id="{{daftar_kelengkapan_id}}" class="img-view-button" 
                         data-editor-field="dokumen_{{daftar_kelengkapan_id}}" data-editor-value="{{dokumen_id}}" >Unggah</button>
                     <div id="msg-dokumen-{{daftar_kelengkapan_id}}" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
-                {/if}
+                {{/flag_upload_dokumen}}
+                {{/is_tambahan}}
+                {{^is_tambahan}}
+                {{status}}
+                {{/is_tambahan}}
             </td>
         </tr>
         {{/dokumen}}
@@ -31,6 +35,7 @@
 
     var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi'];
     var flags = ['nilai-un', 'prestasi', 'kip', 'bdt', 'inklusi'];
+    //var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
 
     var verifikasi = {};
     var profilflag = {};
@@ -381,8 +386,22 @@
 
                             //hide tombol revert
                             elements.filter(".btn-kembalikan").hide();   
-                            
+                        
+                            //reset tampilan
+                            perbaikan[tag] = 0;
+                            let card = $("#" +tag);
+                            let status = parseInt(card.find(".status-verifikasi").val());
+                            if (status == 0) {
+                                card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
+                            }
+                            else if (status == 2) {
+                                card.find(".accordion-header-text .status").html('*Belum Benar*');
+                            }
+                            else {
+                                card.find(".accordion-header-text .status").html('');
+                            }
                             elements.filter(".catatan").removeClass("border-red");
+                            layerGroup.clearLayers();
                         }
                     },
                 }
@@ -522,17 +541,17 @@
         });
 
         $(".ctx-simpan").on("click", function(e) {
-            if (simpan_verifikasi())    close_verifikasi();
+            simpan_verifikasi();
         });
     });
 
-    function show_profile(profil) {
+    function show_profile(profil, dokumen) {
  
         //additional fields
         profil['jenis_kelamin_label'] = (profil['jenis_kelamin'] == 'L') ? 'Laki-laki' : 'Perempuan';
         profil['desa_kelurahan_label'] = (profil['desa_kelurahan'] != '') ? profil['desa_kelurahan'] : 'Desa/Kelurahan masih kosong';
         profil['punya_kebutuhan_khusus'] = (profil['kebutuhan_khusus'] == 'Tidak ada') ? '0' : '1';
-        profil['punya_dokumen_pendukung'] = (profil['dokumen'] != null && profil['dokumen'].length>0);
+        profil['punya_dokumen_pendukung'] = (dokumen != null && dokumen.length>0);
 
         keys = Object.keys(profil);
         
@@ -546,10 +565,10 @@
         });
 
         profilflag = {};
-        profilflag['nilai-un'] = profil['punya_nilai_un'];
-        profilflag['prestasi'] = profil['punya_prestasi'];
-        profilflag['kip'] = profil['punya_kip'];
-        profilflag['bdt'] = profil['masuk_bdt'];
+        profilflag['nilai-un'] = parseInt(profil['punya_nilai_un']);
+        profilflag['prestasi'] = parseInt(profil['punya_prestasi']);
+        profilflag['kip'] = parseInt(profil['punya_kip']);
+        profilflag['bdt'] = parseInt(profil['masuk_bdt']);
         profilflag['inklusi'] = profil['kebutuhan_khusus'] == 'Tidak ada' ? 0 : 1;
 
         //set dom field value
@@ -588,15 +607,23 @@
         });
 
         //dokumen pendukung
-        let template = $('#daftar-dokumen').html();
-        Mustache.parse(template);
+        if (dokumen != null && dokumen.length > 0) {
+            let template = $('#daftar-dokumen').html();
+            Mustache.parse(template);
 
-        let dom = Mustache.render(template, {
-            'dokumen': dokumen,
-        });
+            let dom = Mustache.render(template, {
+                'dokumen': dokumen,
+                'flag_upload_dokumen': {$flag_upload_dokumen|default: 0}
+            });
+ 
+            let parent = $("#daftar-dokumen-wrapper");
+            parent.html(dom);
 
-        let parent = $("#daftar-dokumen-wrapper");
-        parent.html(dom);
+            $("#dokumen").show();
+        }
+        else {
+            $("#dokumen").hide();
+        }
 
         //current value
         elements = $("[tcg-edit-action='submit']");
@@ -755,7 +782,7 @@
                 //reset the content
                 //json.data.dokumen
                 //json.data.prestasi
-                show_profile(json.data.profil);
+                show_profile(json.data.profil, json.data.dokumen);
             
                 loader.hide();
 
@@ -810,7 +837,6 @@
 
     function simpan_verifikasi() {
 
-        json = {};
         updated = {};
         tosubmit = true;
 
@@ -828,6 +854,7 @@
 
                 val = el.val();
                 oldval = profil[field];
+                if (oldval === undefined)   oldval = '';
                 if (el.attr('type') == 'number') {
                     val = parseFloat(val);
                     if (isNaN(val)) val = 0;
@@ -835,10 +862,11 @@
                     if (isNaN(oldval)) oldval = 0;
                 }
 
+                console.log("field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
+
                 //only get updated value
                 if (val != oldval) {
                     updated[field] = val;
-                    console.log("field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
                 }
             });
 
@@ -868,15 +896,32 @@
             card.find(".accordion-header").addClass("collapsed");
         });
 
-        if (!tosubmit)  return false;
+        if (!tosubmit)  {
+            toastr.error("Catatan perubahan harus diisi.");
+            return false;
+        }
 
-        json[ profil['peserta_didik_id'] ] = updated;
-        $.ajax({
+        if (Object.keys(updated).length == 0) {
+            toastr.info("Tidak ada perubahan data verifikasi an. " +profil['nama']);
+            close_verifikasi();
+            return true;
+        }
+
+        json = {};
+        // json[ profil['peserta_didik_id'] ]['test'] = 1;
+        json['peserta_didik_id'] = profil['peserta_didik_id'];
+        json['data'] = {};
+        json['data']['profil'] = updated;
+        json['data']['dokumen'] = null;
+
+        //console.log(json);
+
+        status = $.ajax({
             type: 'POST',
-            url: "{$site_url}ppdb/sekolah/simpanverifikasi",
+            url: "{$site_url}ppdb/sekolah/verifikasi/simpan",
             dataType: 'json',
             data: json,
-            async: true,
+            async: false,
             cache: false,
             //if we use formData, set processData = false. if we use json, set processData = true!
             //contentType: true,
@@ -884,17 +929,28 @@
             timeout: 60000,
             success: function(json) {
                 if (json.error !== undefined && json.error != "" && json.error != null) {
-                    return;
+                    toastr.error("Tidak berhasil menyimpan data verifikasi siswa: " +json.error);
+                    return false;
                 }
-                //TODO: get the return value and re-set the field
+                toastr.success("Data verifikasi siswa an. " +profil['nama']+ " berhasil disimpan.");
+
+                //refresh the list
+                verifikasi_siswa = 0;
+                verifikasi_refresh();
+
+                //close the window
+                close_verifikasi();
+                return true;
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 //TODO
-                return;
+                toastr.error("Tidak berhasil menyimpan data verifikasi siswa: " +textStatus);
+                verifikasi_siswa = 0;
+                return false;
             }
         });
 
-        return true;
+        return false;
     }
 </script>
 
@@ -903,6 +959,7 @@
     //Peta
     var map = null;
     var map_enable_edit = false;
+    var layerGroup = null;
 
     $(document).ready(function() {
         map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],16);
@@ -927,14 +984,27 @@
 		new L.control.fullscreen({ position:'bottomleft' }).addTo(map);
 		new L.Control.Zoom({ position:'bottomright' }).addTo(map);
 
-        var layerGroup = L.layerGroup().addTo(map);
+        new L.Control.EasyButton( '<span class="map-button" style="font-size: 30px;">&curren;</span>', function(){
+            map.setView([{$map_lintang},{$map_bujur}],10);
+        }, { position: 'topleft' }).addTo(map);
+
+        var greenMarker = new L.Icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        layerGroup = L.layerGroup().addTo(map);
         function onMapClick(e) {
             if (!map_enable_edit)   return;
 
             layerGroup.clearLayers();
             var lintang = e.latlng.lat;
             var bujur = e.latlng.lng;
-            new L.marker(e.latlng).addTo(layerGroup).bindPopup("Lokasi :<br>"+lintang+" , "+bujur).openPopup();
+            new L.marker(e.latlng, { icon: greenMarker }).addTo(layerGroup).bindPopup("Koordinat Baru :<br>"+lintang+" , "+bujur).openPopup();
             document.getElementById("lintang-input").value=lintang;
             document.getElementById("bujur-input").value=bujur;
         }
@@ -946,12 +1016,12 @@
         //     layerGroup.clearLayers();
         // });
 
-        //TODO: include the js
-        // new L.Control.EasyButton( '<span class="map-button">&curren;</span>', function(){
-        //     map.setView([{$map_lintang},{$map_bujur}],10);;
-        // }, { position: 'topleft' }).addTo(map);
+        //streetmap.addTo(map);
 
-        streetmap.addTo(map);
+        //refresh the size of the map
+        $("body").on("shown.bs.collapse", "#lokasi-content", function() {
+            map.invalidateSize(false);
+        });
     });
 
 </script>

@@ -147,7 +147,7 @@
                     className: 'dt-body-center',
                     orderable: false,
                     "render": function(data, type, row, meta) {
-                        return "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa_kls6, \"" +row['peserta_didik_id']+ "\");' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></button>";
+                        return "<button onclick=ubah_data(" +row['peserta_didik_id']+ ") class='btn btn-primary btn-xs'>Ubah Data</button>";
                     }
                 },
             ],
@@ -161,8 +161,6 @@
 
     });
 
-    function ubah_data(row_id, dt, key) {
-        //TODO
-    }
-    
 </script>
+
+{include file="./_ubahdata.tpl"}

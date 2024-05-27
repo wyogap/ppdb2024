@@ -25,7 +25,7 @@
                     <thead>
                         <tr>
                             <th class="text-center" data-priority="1">#</th>
-                            <th class="text-center">No. Pendaftaran</th>
+                            <th class="text-center none" data-priorty="-1">No. Pendaftaran</th>
                             <th class="text-center">NISN</th>
                             <th class="text-center" data-priority="2">Nama</th>
                             <th class="text-center">Jenis Kelamin</th>
@@ -35,7 +35,9 @@
                             <th class="text-center" data-priority="4">Tanggal Daftar Ulang</th>
                             <th class="none">Nilai Kelulusan</th>
                             <th class="none">Nilai USBN</th>
+                            {if $cek_waktudaftarulang}
                             <th class="text-center" data-priority="1"></th>
+                            {/if}
                         </tr>
                     </thead>
                     <tbody>
@@ -52,16 +54,19 @@
                             <td class="text-center">{$row2.tanggal_daftar_ulang}</td>
                             <td class="text-center">{$row2.nilai_kelulusan}</td>
                             <td class="text-center">{$row2.nilai_usbn}</td>
+                            {if $cek_waktudaftarulang}
                             <td class="text-left">
-                                <span class="text-nowrap" style="display: flex;">
-                                <a href="{$site_url}ppdb/sekolah/daftarulang/siswa?pendaftaran_id={$row2.pendaftaran_id}" class="btn btn-primary shadow btn-xs sharp me-1 mb-1"
-                                data-bs-toggle="tooltip" title="Daftar Ulang" data-bs-placement="top"><i class='fa fa-check'></i></a><br>
+                                <span class="text-nowrap" style="display: flex;">   
                                 {if ($row2.status_daftar_ulang==1)}
-                                    <a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id={$row2.peserta_didik_id}" 
-                                        class="btn btn-secondary shadow btn-xs sharp me-1" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom"><i class='fa fa-print'></i></a>
+                                    <a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank" 
+                                        class="btn btn-secondary btn-xs" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom">Bukti DU</a>
+                                {else}        
+                                    <a href="{$site_url}ppdb/sekolah/daftarulang/siswa?pendaftaran_id={$row2.pendaftaran_id}" target="_blank" 
+                                        class="btn btn-primary btn-xs" data-bs-toggle="tooltip" title="Daftar Ulang" data-bs-placement="top">Daftar Ulang</a><br>
                                 {/if}
                                 </span>
                             </td>
+                            {/if}
                         </tr>
                         {/foreach}
 

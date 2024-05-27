@@ -287,9 +287,27 @@ Class Mprofilsekolah
 
 
         if (!empty($jenjang)) $builder->where("b.bentuk", $jenjang);
-        if (!empty($asaldata)) $builder->where("a.asal_data", $jenjang);
-        if (!empty($inklusi)) $builder->where("a.kebutuhan_khusus!='Tidak ada'");
-        if (!empty($afirmasi)) $builder->where(array("a.punya_kip=>1", "a.masuk_bdt=>1"));
+        if (!empty($asaldata)) $builder->where("a.asal_data", $asaldata);
+        if ($inklusi != null && $inklusi != '') {
+            if ($inklusi == 1) {
+                $builder->where("a.kebutuhan_khusus!='Tidak ada'");
+            }
+            else {
+                $builder->where("a.kebutuhan_khusus='Tidak ada'");
+            }
+        }
+        if ($afirmasi != null && $afirmasi != '') {
+            if ($afirmasi == 1) {
+                $builder->groupStart();
+                $builder->where("a.punya_kip",1);
+                $builder->orWhere("a.masuk_bdt",1);
+                $builder->groupEnd();
+            }
+            else {
+                $builder->where("a.punya_kip",0);
+                $builder->where("a.masuk_bdt",0);
+            }
+        }
 
         $arr = $builder->get($limit, $offset)->getResultArray();
         if ($arr == null)       return $arr;

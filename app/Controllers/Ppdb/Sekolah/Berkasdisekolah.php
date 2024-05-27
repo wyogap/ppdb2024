@@ -54,6 +54,8 @@ class Berkasdisekolah extends PpdbController {
 
 		$data['sekolah_id'] = $sekolah_id;
 		$data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
+	
+        $data['use_datatable'] = 1;
 
         //content template
         $data['content_template'] = 'berkasdisekolah.tpl';

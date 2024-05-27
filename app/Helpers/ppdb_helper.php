@@ -29,10 +29,10 @@ if ( ! function_exists('audit_siswa'))
         exit;
     }
 
-    function print_json_output($data) {
+    function print_json_output($data, $enforce = 0) {
         $json = array();
         $json["status"] = 1;
-        if (!empty($data)) {
+        if (!empty($data) || $enforce) {
             $json['data'] = $data;
         }
 

@@ -43,6 +43,8 @@ class Kandidatswasta extends PpdbController {
 		if (empty($tahun_ajaran_id))
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 	
+        $data['use_datatable'] = 1;
+
         //content template
         $data['content_template'] = 'kandidatswasta.tpl';
 

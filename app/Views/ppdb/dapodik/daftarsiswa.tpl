@@ -1,3 +1,5 @@
+<div id="daftarsiswa-wrapper">
+
 <div class="row page-titles">
     <ol class="breadcrumb">
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
@@ -38,3 +40,7 @@
 
     </div>
 </div>
+
+</div>
+
+{include file="./ubahdata.tpl"}

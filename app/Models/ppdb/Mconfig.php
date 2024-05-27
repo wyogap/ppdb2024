@@ -18,7 +18,7 @@ Class Mconfig
 		$query = "
 		select a.jenjang_id as value, a.nama as label
 		from ref_jenjang a
-		order by a.jenjang_id asc";
+		order by a.urutan asc";
 
 		return $this->db->query($query)->getResultArray();
 	}

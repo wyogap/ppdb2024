@@ -39,7 +39,8 @@ class Pengajuanakun extends PpdbController {
 
 	function index()
 	{
-
+        $data['use_datatable'] = 1;
+        
         //content template
         $data['content_template'] = 'pengajuanakun.tpl';
 

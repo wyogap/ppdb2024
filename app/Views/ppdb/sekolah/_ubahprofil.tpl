@@ -25,6 +25,31 @@
 
 		new L.control.fullscreen({ position:'bottomleft' }).addTo(map_profil);
 		new L.Control.Zoom({ position:'bottomright' }).addTo(map_profil);
+
+        new L.Control.EasyButton( '<span class="map-button" style="font-size: 30px;">&curren;</span>', function(){
+            map_profil.setView([{$profilsekolah.lintang},{$profilsekolah.bujur}],10);
+        }, { position: 'topleft' }).addTo(map_profil);
+
+        var greenMarker = new L.Icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var layerGroup = L.layerGroup().addTo(map_profil);
+        function onMapClick(e) {
+            layerGroup.clearLayers();
+            let lintang = e.latlng.lat;
+            let bujur = e.latlng.lng;
+            new L.marker(e.latlng, { icon: greenMarker }).addTo(layerGroup).bindPopup("Koordinat Baru:<br>"+lintang+" , "+bujur).openPopup();
+            document.getElementById("lintang").value=lintang;
+            document.getElementById("bujur").value=bujur;
+        }
+        map_profil.on('click', onMapClick);
+
     });
 
     function simpan_profil() {

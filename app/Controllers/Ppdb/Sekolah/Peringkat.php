@@ -70,7 +70,7 @@ class Peringkat extends PpdbController {
 		$data['last_execution_date'] = '';
 		$data['next_execution_date'] = '';
         $mhome = new Mhome();
-		$job = $mhome->tcg_job_peringkatpendaftaran()->getRowArray();
+		$job = $mhome->tcg_job_peringkatpendaftaran();
 		if ($job != null) {
 			$data['last_execution_date'] = $job['last_execution_end'];
 			$data['next_execution_date'] = $job['next_execution'];
@@ -90,10 +90,13 @@ class Peringkat extends PpdbController {
         }
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        
+        $data['use_datatable'] = 1;
 
         //content template
         $data['content_template'] = 'peringkat.tpl';
 
+		$data['page'] = 'peringkat';
 		$data['page_title'] = 'Peringkat';
  
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);

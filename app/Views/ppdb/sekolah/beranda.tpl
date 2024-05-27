@@ -68,18 +68,12 @@
 	<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 		<div class="card box-solid">
 			<div class="card-header with-border">
-				<h3 class="box-title text-info"><b>Daftar Kuota</b></h3>
+				<h3 class="box-title"><b>Daftar Kuota</b></h3>
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						<table class="table table-striped" style="margin-top: -8px;">
-                            <thead>
-							<tr>
-								<th class="text-center">Jalur</th>
-								<th class="text-center">Kuota</th>
-							</tr>
-                            </thead>
+						<table class="table table-striped">
                             <tbody>
                             {assign var="totalkuota" value=0}
                             {foreach $daftarkuota as $row}
@@ -105,7 +99,7 @@
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="card box-solid">
 			<div class="card-header with-border">
-				<h3 class="box-title text-info"><b>Lokasi Sekolah</b></h3>
+				<h3 class="box-title"><b>Lokasi Sekolah</b></h3>
 			</div>
 			<div class="card-body" style="padding: 0px;">
 				<div class="row">

@@ -60,6 +60,7 @@
 <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.html5.min.js"></script>
+<script src="{$base_url}assets/datatables/JSZip-2.5.0/jszip.min.js" defer></script>
 
 {if $use_datatable_editor|default: FALSE}
 <script src="{$base_url}assets/datatables/Editor-1.9.2/js/dataTables.editor.min.js"></script>

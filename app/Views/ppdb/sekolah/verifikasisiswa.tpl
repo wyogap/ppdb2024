@@ -516,61 +516,42 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr tcg-visible-tag='punya_prestasi'>
+                            <tr tcg-visible-tag='prestasi'>
                                 <td style="width: 45%;"><b>Jenjang Prestasi</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <select class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='prestasi_skoring_id' 
-                                        tcg-field-type='input' tcg-field-submit=1 style="display: none;">
+                                    <select class="form-control" 
+                                        tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='input' tcg-field-submit=1 style="display: none;">
                                     <option value="0">Tidak ada</option>
                                     {foreach $daftarskoring as $skor}
                                     <option value="{$skor.value}">{$skor.label}</option>
                                     {/foreach}
                                     </select>
-                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='prestasi_skoring_id'
-                                    tcg-field-type='label'></span>
+                                    <span tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='label'></span>
                                 </td>
                             </tr>
-                            <tr tcg-visible-tag='punya_prestasi'>
+                            <tr tcg-visible-tag='prestasi'>
                                 <td style="width: 45%;"><b>Beri Uraian Tentang Prestasi Tersebut</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <textarea class="form-control" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show' tcg-field='uraian_prestasi' 
-                                        tcg-field-type='input' tcg-field-submit=1
+                                    <textarea class="form-control" 
+                                        tcg-tag='prestasi' tcg-field='uraian_prestasi' tcg-field-type='input' tcg-field-submit=1
                                         style="display: none; width: 100%; height: 100px;"></textarea>
-                                    <span tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide' tcg-field='uraian_prestasi'
-                                        tcg-field-type='label'></span>
+                                    <span tcg-tag='prestasi' tcg-field='uraian_prestasi' tcg-field-type='label'></span>
                                </td>
                             </tr>
+                        </table>
+                        <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='prestasi'>
+                            <tr id="row-dokumen-header">
+                                <td colspan="3"><b>Dokumen Pendukung</b></td>
+                            </tr>
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='prestasi' visible_tag='' docid=$smarty.const.DOCID_PRESTASI 
+                                label='Bukti Pendukung Prestasi yang Dilegalisir' dok=null}
                         </table>
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                        <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr id="prestasi-konfirmasi-row">
-                                <td colspan="1">
-                                    <b>Apakah data prestasi di atas sudah benar? </b>
-                                    <select class="form-control input-default status-verifikasi" 
-                                        tcg-tag='prestasi'
-                                        tcg-field='verifikasi_prestasi' tcg-field-type='status'>
-                                        <option value="0">Belum Diverifikasi</option>
-                                    <option value="1">SUDAH Benar</option>
-                                    <option value="2">BELUM Benar</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-perbaikan" tcg-tag='prestasi'>Perbaiki Data</button>
-                                    <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='prestasi'>Simpan Data</button>
-                                    <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='prestasi'>Batalkan</button>
-                                </td>
-                            </tr>
-                            <tr id="prestasi-catatan-row" class="catatan" tcg-tag='prestasi'>
-                                <td colspan="1">
-                                    <span  id="prestasi-error-msg">
-                                        <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='prestasi'
-                                        tcg-field='catatan_prestasi' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="prestasi" tag_label="Prestasi"}
                 </div>
             </div>
         </div>
@@ -602,11 +583,11 @@
                                 <td style="width: 45%;"><b>Nomor Kartu Indonesia Pintar</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                    <input class="form-control" id="nomor-kip-input" type="text"
+                                    <input class="form-control" type="text"
                                         tcg-tag='afirmasi' 
                                         tcg-field='nomor_kip' tcg-field-type='input' tcg-field-submit=1
                                         style="display: none;"></input>
-                                    <span id="nomor-kip" tcg-tag='afirmasi' tcg-field='nomor_kip' tcg-field-type='label'></span>
+                                    <span tcg-tag='afirmasi' tcg-field='nomor_kip' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr tcg-visible-tag='kip'>
@@ -707,7 +688,7 @@
                                 <td colspan="1">
                                     <span  id="afirmasi-error-msg">
                                         <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='afirmasi'
-                                        tcg-field='catatan_prestasi' tcg-field-type='note' tcg-field-submit=1></textarea>
+                                        tcg-field='catatan_afirmasi' tcg-field-type='note' tcg-field-submit=1></textarea>
                                     </span>
                                 </td>
                             </tr>

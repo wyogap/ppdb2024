@@ -178,10 +178,10 @@
                 "type": "POST",
                 "data": {
                     search: val,
-                    jenjang: $("#f_jenjang").val(),
-                    asaldata: $("#f_asaldata").val(),
-                    inklusi: $("#f_inklusi").val(),
-                    afirmasi: $("#f_afirmasi").val()
+                    f_jenjang: $("#f_jenjang").val(),
+                    f_asaldata: $("#f_asaldata").val(),
+                    f_inklusi: $("#f_inklusi").val(),
+                    f_afirmasi: $("#f_afirmasi").val()
                 },
                 beforeSend: function(request) {
                     request.setRequestHeader("Content-Type",
@@ -193,7 +193,7 @@
                         toastr.error("Gagal mengambil data via ajax");
                         data = [];
                     } else if (typeof response.error !== 'undefined' && response.error !== null && response.error != "") {
-                        toastr.error(response.error);
+                        toastr.error("Gagal mengambil data via ajax: " .response.error);
                         data = [];
                     } else {
                         data = response.data;
@@ -209,7 +209,7 @@
                             && jqXhr.responseJSON.error != undefined && jqXhr.responseJSON.error == 'not-login')
                         ) {
                         //login ulang
-                        window.location.href = "{$site_url}" +'auth';
+                        window.location.href = "{$site_url}auth";
                     }
                     //send toastr message
                     toastr.error("Gagal mengambil data via ajax");

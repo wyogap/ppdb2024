@@ -4,6 +4,7 @@ namespace App\Controllers\Ppdb\Dapodik;
 
 use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
+use App\Models\Ppdb\Siswa\Mprofilsiswa;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -11,6 +12,7 @@ use Psr\Log\LoggerInterface;
 class Daftarsiswa extends PpdbController {
 
     protected $Msekolah;
+    protected $Msiswa;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -22,6 +24,7 @@ class Daftarsiswa extends PpdbController {
 
         //load model
         $this->Msekolah = new Mprofilsekolah();
+        $this->Msiswa = new Mprofilsiswa();
         
         //role-based permission
         //static::$ROLE_ID = ROLEID_DAPODIK;
@@ -44,6 +47,11 @@ class Daftarsiswa extends PpdbController {
         $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        $data['kabupaten'] = $this->Mconfig->tcg_kabupaten();
+
+        $data['use_datatable'] = 1;
+        $data['use_select2'] = 1;
+        $data['use_leaflet'] = 1;
 
         //content template
         $data['content_template'] = 'daftarsiswa.tpl';
@@ -64,6 +72,47 @@ class Daftarsiswa extends PpdbController {
 			echo json_encode($data);	
 		}
 
+	}
+
+    function simpan() {
+        $data = $this->request->getPost("data");
+        if (empty($data))   
+            print_json_error("Invalid data");
+
+        $peserta_didik_id = $this->request->getPost('peserta_didik_id');
+
+		//only can verify within the specified timeframe
+		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+
+        //debugging
+        if (__DEBUGGING__) {
+            $cek_waktusosialisasi = 1;
+        }
+
+        if ($cek_waktusosialisasi != 1) {
+            print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
+        }
+
+
+    }
+
+    function profilsiswa() 
+	{
+		$pengguna_id = $this->session->get('user_id');
+
+		$peserta_didik_id = $this->request->getPostGet("peserta_didik_id"); 
+
+        $data = array();
+
+		$profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+        if ($profil == null) {
+            print_json_error("Profil tidak ditemukan.");
+            return;
+        }
+        
+        $data['profil'] = $profil;
+
+        print_json_output($data);
 	}
 
 	// function json() {

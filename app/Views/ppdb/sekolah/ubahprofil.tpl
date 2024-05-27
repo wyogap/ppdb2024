@@ -33,7 +33,7 @@
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div id="peta-profil" style="width: 100%; height: 400px; z-index: 1;"></div>
 						</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-info" style="margin-top: 10px; margin-bottom: 10px;">NB : Silahkan klik di peta <b>(<i class="glyphicon glyphicon-map-marker"></i>)</b> untuk perubahan data koordinat lokasi sekolah.</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-info" style="margin-top: 10px; margin-bottom: 10px;">NB : Silahkan klik di peta <b>(<i class="fa fa-map-marker"></i>)</b> untuk perubahan data koordinat lokasi sekolah.</div>
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<div class="form-group has-feedback">
 								<label for="lintang">Lintang</label>

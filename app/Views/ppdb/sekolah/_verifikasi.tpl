@@ -30,38 +30,9 @@
 {/literal}
 
 <script>
-    $.extend( $.fn.dataTable.defaults, { 
-        responsive: true, 
-        "language": {
-				"processing":   "Sedang proses...",
-				"lengthMenu":   "Tampilan _MENU_ baris",
-				"zeroRecords":  "Tidak ditemukan data yang sesuai",
-				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
-				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
-				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
-				"infoPostFix":  "",
-				"loadingRecords": "Loading...",
-				"emptyTable":   "Tidak ditemukan data yang sesuai",
-				"search":       "Cari:",
-				"url":          "",
-				"paginate": {
-                    "first":    "Awal",
-                    "previous": "Balik",
-                    "next":     "Lanjut",
-                    "last":     "Akhir"
-				},
-				aria: {
-                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
-                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
-				}
-			},	
-    } );
-
-    $('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
-        $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
-    } );
 
     var dt_belum, dt_sedang, dt_sudah, dt_berkas;
+    var verifikasi_siswa = 0;
 
     $(document).ready(function() {
         dt_belum = $('#tabelbelum').DataTable({
@@ -145,6 +116,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
+                {if $cek_waktuverifikasi}
                 {
                     data: null,
                     className: "text-center",
@@ -164,9 +136,22 @@
                         return data;
                     }
                 },
+                {/if}
             ],
             order: [ [5, 'asc'] ],
             initComplete: function() {
+                // //check for error
+                // if (json.error != null && json.error != "") {
+                //     if (json.error == 'not-login' || json.errorno == -1) {
+                //         window.location.replace("{$site_url}auth");
+                //         return;
+                //     }
+                //     else {
+                //         toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                //         return;
+                //     }
+                // }
+
                 len = this.api().rows().count();
                 if (len == 0) {
                     $('#label-belum').html("Belum Diverifikasi");
@@ -258,6 +243,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
+                {if $cek_waktuverifikasi}
                 {
                     data: null,
                     className: "text-center",
@@ -277,9 +263,22 @@
                         return data;
                     }
                 },
+                {/if}
             ],
             order: [ [5, 'asc'] ],
             initComplete: function() {
+                // //check for error
+                // if (json.error != null && json.error != "") {
+                //     if (json.error == 'not-login' || json.errorno == -1) {
+                //         window.location.replace("{$site_url}auth");
+                //         return;
+                //     }
+                //     else {
+                //         toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                //         return;
+                //     }
+                // }
+
                 len = this.api().rows().count();
                 if (len == 0) {
                     $('#label-sedang').html("Belum Lengkap");
@@ -371,6 +370,7 @@
                     className: "text-left",
                     orderable: 'true',
                 },
+                {if $cek_waktuverifikasi}
                 {
                     data: null,
                     className: "text-center",
@@ -390,9 +390,22 @@
                         return data;
                     }
                 },
+                {/if}
             ],
             order: [ [0, 'asc'] ],
             initComplete: function() {
+                // //check for error
+                // if (json.error != null && json.error != "") {
+                //     if (json.error == 'not-login' || json.errorno == -1) {
+                //         window.location.replace("{$site_url}auth");
+                //         return;
+                //     }
+                //     else {
+                //         toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                //         return;
+                //     }
+                // }
+
                 len = this.api().rows().count();
                 if (len == 0) {
                     $('#label-sudah').html("Sudah Lengkap");
@@ -469,6 +482,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
+                {if $cek_waktuverifikasi}
                 {
                     data: null,
                     className: "text-center",
@@ -489,9 +503,22 @@
                         return data;
                     }
                 },
+                {/if}
             ],
             order: [ [0, 'asc'] ],
             initComplete: function() {
+                // //check for error
+                // if (json.error != null && json.error != "") {
+                //     if (json.error == 'not-login' || json.errorno == -1) {
+                //         window.location.replace("{$site_url}auth");
+                //         return;
+                //     }
+                //     else {
+                //         toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                //         return;
+                //     }
+                // }
+
                 len = this.api().rows().count();
                 if (len == 0) {
                     $('#label-berkas').html("Berkas Di Sekolah");
@@ -503,82 +530,109 @@
         });
 
         //reload every 5 mins
-        setInterval(function(){
-            dt_belum.ajax.reload( function ( json ) {
-                var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
-                if (len == 0) {
-                    $('#label-belum').html("Belum Diverifikasi");
-                }
-                else {
-                    $('#label-belum').html("Belum Diverifikasi (" +len+ ")");
-                }
-            }, true );
+        setInterval(verifikasi_refresh, 5*60000);
 
-            dt_sedang.ajax.reload( function ( json ) {
-                var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
-                if (len == 0) {
-                    $('#label-sedang').html("Belum Lengkap");
-                }
-                else {
-                    $('#label-sedang').html("Belum Lengkap (" +len+ ")");
-                }
-            }, true );
-
-            dt_sudah.ajax.reload( function ( json ) {
-                var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
-                if (len == 0) {
-                    $('#label-sudah').html("Sudah Lengkap");
-                }
-                else {
-                    $('#label-sudah').html("Sudah Lengkap (" +len+ ")");
-                }
-            }, true );
-
-            dt_berkas.ajax.reload( function ( json ) {
-                var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
-                if (len == 0) {
-                    $('#label-berkas').html("Berkas Di Sekolah");
-                }
-                else {
-                    $('#label-berkas').html("Berkas Di Sekolah (" +len+ ")");
-                }
-            }, true );
-
-            //console.log("reload completed!");
-        }, 5*60000);
-
-        var len = dt_belum.rows().count();
-        if (len == 0) {
-            $('#label-belum').html("Belum Diverifikasi");
-        }
-        else {
-            $('#label-belum').html("Belum Diverifikasi (" +len+ ")");
-        }
-
-        // len = dt_sedang.rows().count();
-        // if (len == 0) {
-        //     $('#label-sedang').html("Belum Lengkap");
-        // }
-        // else {
-        //     $('#label-sedang').html("Belum Lengkap (" +len+ ")");
-        // }
-
-        // len = dt_sudah.rows().count();
-        // if (len == 0) {
-        //     $('#label-sudah').html("Sudah Lengkap");
-        // }
-        // else {
-        //     $('#label-sudah').html("Sudah Lengkap (" +len+ ")");
-        // }
-
-        // len = dt_berkas.rows().count();
-        // if (len == 0) {
-        //     $('#label-berkas').html("Berkas Di Sekolah");
-        // }
-        // else {
-        //     $('#label-berkas').html("Berkas Di Sekolah (" +len+ ")");
-        // }
     });
+
+    var verifikasi_refresh = debounce(function () {
+        //sedang verifikasi siswa. no need to refresh
+        if (verifikasi_siswa) {
+            return;
+        }
+
+        dt_belum.ajax.reload( function ( json ) {
+            //check for error
+            if (json.error != null && json.error != "") {
+                if (json.error == 'not-login' || json.errorno == -1) {
+                    window.location.replace("{$site_url}auth");
+                    return;
+                }
+                else {
+                    toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                    return;
+                }
+            }
+
+            //update data
+            var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
+            if (len == 0) {
+                $('#label-belum').html("Belum Diverifikasi");
+            }
+            else {
+                $('#label-belum').html("Belum Diverifikasi (" +len+ ")");
+            }
+        }, true );
+
+        dt_sedang.ajax.reload( function ( json ) {
+            //check for error
+            if (json.error != null && json.error != "") {
+                if (json.error == 'not-login' || json.errorno == -1) {
+                    window.location.replace("{$site_url}auth");
+                    return;
+                }
+                else {
+                    toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                    return;
+                }
+            }
+
+            //update data
+            var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
+            if (len == 0) {
+                $('#label-sedang').html("Belum Lengkap");
+            }
+            else {
+                $('#label-sedang').html("Belum Lengkap (" +len+ ")");
+            }
+        }, true );
+
+        dt_sudah.ajax.reload( function ( json ) {
+            //check for error
+            if (json.error != null && json.error != "") {
+                if (json.error == 'not-login' || json.errorno == -1) {
+                    window.location.replace("{$site_url}auth");
+                    return;
+                }
+                else {
+                    toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                    return;
+                }
+            }
+
+            //update data
+            var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
+            if (len == 0) {
+                $('#label-sudah').html("Sudah Lengkap");
+            }
+            else {
+                $('#label-sudah').html("Sudah Lengkap (" +len+ ")");
+            }
+        }, true );
+
+        dt_berkas.ajax.reload( function ( json ) {
+            //check for error
+            if (json.error != null && json.error != "") {
+                if (json.error == 'not-login' || json.errorno == -1) {
+                    window.location.replace("{$site_url}auth");
+                    return;
+                }
+                else {
+                    toastr.error("Tidak berhasil mendapatkan data terbaru. " +json.error);
+                    return;
+                }
+            }
+
+            //update data
+            var len = (typeof json.data == 'undefined') ? 0 : json.data.length;
+            if (len == 0) {
+                $('#label-berkas').html("Berkas Di Sekolah");
+            }
+            else {
+                $('#label-berkas').html("Berkas Di Sekolah (" +len+ ")");
+            }
+        }, true );
+    }, 1000);
+
 
     function cabut_berkas(rowid) {
         let data = dt_berkas.rows(rowid).data();

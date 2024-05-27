@@ -61,6 +61,8 @@ class Ubahprofil extends PpdbController {
 		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 		$data['redirect'] = $redirect;
 
+        $data['use_leaflet'] = 1;
+
         //content template
         $data['content_template'] = 'ubahprofil.tpl';
 

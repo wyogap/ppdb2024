@@ -59,7 +59,7 @@ class Daftarulang extends PpdbController {
             }
             $data["pendaftarditerima"] = $pendaftarditerima;
 
-			$data['waktudaftarulang'] = $this->Mconfig->tcg_cek_waktudaftarulang();
+			$data['cek_waktudaftarulang'] = $this->Mconfig->tcg_cek_waktudaftarulang();
 			$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 			// $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 			//$data['daftartahunajaran'] = $this->Mconfig->tcg_tahunajaran();
@@ -72,6 +72,13 @@ class Daftarulang extends PpdbController {
 			$data['info'] = $this->session->getFlashdata('info');
 		}
         while (false);
+
+        $data['use_datatable'] = 1;
+
+        //debugging
+        if (__DEBUGGING__) {
+            $data['cek_waktudaftarulang'] = 1;
+        }
 
         //content template
         $data['content_template'] = 'daftarulang.tpl';
@@ -246,16 +253,12 @@ class Daftarulang extends PpdbController {
         $config['white'] = array(70,130,180); // array, default is array(0,0,0)
         $qrcode->initialize($config);
 
-        $data['profilsiswa'] = $this->Msekolah->tcg_profilsiswa_daftarulang($peserta_didik_id);
+        $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+        $data['profilsiswa'] = $msiswa->tcg_profilsiswa_detil($peserta_didik_id);
 
-		$username = "";
+		$username = $data['profilsiswa']['username'];
 		$peran_id = 1;
-		$nisn = "";
-		foreach($data['profilsiswa']->getResult() as $row) {
-			$nisn = $row->nisn;
-			$username = $row->username;
-			$peran_id = 1;
-		}
+		$nisn = $data['profilsiswa']['nisn'];
 
 		$params['data'] = $peserta_didik_id.",".$username.",".$peran_id.",".$nisn; //data yang akan di jadikan QR CODE
         $params['level'] = 'M'; //H=High
@@ -264,29 +267,11 @@ class Daftarulang extends PpdbController {
         $qrcode->generate($params); // fungsi untuk generate QR CODE
 		
 		$data['peserta_didik_id'] = $peserta_didik_id;
-		$data['pendaftaran'] = $this->Msekolah->tcg_daftarpendaftaran($peserta_didik_id, $tahun_ajaran_id);
-		$data['dokumenpendukung'] = $this->Msekolah->tcg_dokumen_pendukung($peserta_didik_id);
+		$data['pendaftaran'] = $msiswa->tcg_daftarpendaftaran($peserta_didik_id);
+		$data['dokumenpendukung'] = $msiswa->tcg_dokumenpendukung($peserta_didik_id);
 	
-		$data['tahun_ajaran_aktif'] = $this->session->get('tahun_ajaran_aktif');
-
-		$data['punya_nilai_un'] = 0;
-		$data['punya_prestasi'] = 0;
-		$data['punya_kip'] = 0;
-		$data['masuk_bdt'] = 0;
-		$data['kebutuhan_khusus'] = "Tidak ada";
-		$data['lokasi_berkas'] = "";
-
-		foreach($data['profilsiswa']->getResult() as $row) {
-			$data['punya_nilai_un'] = $row->punya_nilai_un;
-			$data['punya_prestasi'] = $row->punya_prestasi;
-			$data['punya_kip'] = $row->punya_kip;
-			$data['masuk_bdt'] = $row->masuk_bdt;
-			$data['kebutuhan_khusus'] = $row->kebutuhan_khusus;
-			$data['lokasi_berkas'] = $row->lokasi_berkas;
-		}
-
         $view = \Config\Services::renderer();
-        $html = $view->render('sekolah/daftarulang/buktidaftarulang',$data);
+        $html = $view->setData($data)->render('ppdb/sekolah/_buktidaftarulang',$data);
 		
 		$dompdf = new Dompdf();
         $dompdf->loadHtml($html);

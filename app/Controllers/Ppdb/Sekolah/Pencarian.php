@@ -43,6 +43,8 @@ class Pencarian extends PpdbController {
         $data['daftarjenjang'] = $mdropdown->tcg_lookup_jenjang();
         $data['daftarasaldata'] = $mdropdown->tcg_lookup_asaldata();
 
+        $data['use_datatable'] = 1;
+        
         //content template
         $data['content_template'] = 'pencarian.tpl';
 

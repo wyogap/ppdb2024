@@ -59,6 +59,10 @@ class Penerimaan extends PpdbController {
 
         }
 
+        $data['use_select2'] = 1;
+        $data['use_datatable'] = 1;
+        $data['use_datatable_editor'] = 1;
+
         //content template
         $data['content_template'] = 'penerimaan.tpl';
 
