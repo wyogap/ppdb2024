@@ -4,12 +4,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
 		//Peta
-		var map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],16);
+		var map = L.map('peta',{ zoomControl:false }).setView([{$profil.lintang},{$profil.bujur}],16);
 		L.tileLayer(
 			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
 		).addTo(map);
 
-		L.marker([{$map_lintang},{$map_bujur}]).addTo(map)
+		L.marker([{$profil.lintang},{$profil.bujur}]).addTo(map)
             .bindPopup("{$profil.alamat_jalan}, {$profil.desa_kelurahan}, {$profil.kecamatan}");
 
 		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
