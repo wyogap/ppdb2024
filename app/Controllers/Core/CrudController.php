@@ -58,12 +58,15 @@ abstract class CrudController extends BaseController {
         $this->Mpermission = new Mpermission();
 
         //helper
-        $helpers[] = 'functions';
+        helper('functions');
 
         //URI params
         $segments = $this->request->getUri()->getSegments();
         $total = count($segments);
-        $this->controller = strtolower(basename(get_class($this)));
+        $this->controller = strtolower(mb_basename(get_class($this)));
+        
+        // var_dump($segments); 
+        // var_dump($this->controller); 
 
         $this->method = "";
         $this->params = array();
@@ -74,7 +77,7 @@ abstract class CrudController extends BaseController {
                     $this->method=$segments[$i+1];
                 }
                 else {
-                    $this->method='index';
+                    $this->method='';
                 }
                 for($j=$i+2; $j<$total; $j++) {
                     $this->params[] = $segments[$j];
@@ -95,9 +98,9 @@ abstract class CrudController extends BaseController {
 
     }
 	
-	public function _remap($method, $param = null)
+	public function _remap($method)
 	{
-        $params = $this->get_params($method);
+        //$params = $this->get_params($method);
 
         //must be authenticated? 
 		$isLoggedIn = !empty($this->session->get('user_id'));
@@ -125,16 +128,16 @@ abstract class CrudController extends BaseController {
             }
 		}
 
-		if (method_exists($this, $method))
-		{
-			return call_user_func_array(array($this, $method), $params);
+		if (empty($method)) {
+			return $this->index($this->params);
 		}
 
-		if (empty($method)) {
-			return $this->index($params);
+		if (method_exists($this, $method))
+		{
+			return call_user_func_array(array($this, $method), $this->params);
 		}
  
-        return $this->table($method, $params);
+        return $this->table($method, $this->params);
 	}
 
 	protected function table($name = '', $params = array())
@@ -161,7 +164,13 @@ abstract class CrudController extends BaseController {
 			theme_404_with_navigation($this->navigation);
 			return;
 		}
+        
+        //update relative path for custom template
+		if (!empty($page['header_view'])) 		$page['header_view'] = $this->smarty->get_template_path($page['header_view']);
+		if (!empty($page['footer_view'])) 		$page['footer_view'] = $this->smarty->get_template_path($page['footer_view']);
+		if (!empty($page['custom_view'])) 		$page['custom_view'] = $this->smarty->get_template_path($page['custom_view']);
 
+        //call appropriate function
         if ($page['page_type']=='form' && !empty($page['crud_table_id'])&& (!isset($params) || count($params) == 0)) {
             if ($this->Mpermission->can_edit($page['name'])) {
                 //edit
@@ -240,9 +249,8 @@ abstract class CrudController extends BaseController {
 
 		$page_data['page_header'] 			 = $page['page_header'];
 		$page_data['page_footer'] 			 = $page['page_footer'];
-
-		if (!empty($page['header_view'])) 		$page_data['header_view'] = $this->smarty->get_template_path($page['header_view']);
-		if (!empty($page['footer_view'])) 		$page_data['footer_view'] = $this->smarty->get_template_path($page['footer_view']);
+        $page_data['header_view']            = $page['header_view'];
+        $page_data['footer_view']            = $page['footer_view'];
 		
 		//easy access
 		$page_data['page']			 = $page; 
@@ -1453,7 +1461,7 @@ abstract class CrudController extends BaseController {
         $this->json_response($data, self::HTTP_OK);
     }
 
-    protected function json_response($data = null, $http_code = null, $continue = false)
+    protected function json_response($data = null, $http_code = self::HTTP_OK, $continue = false)
     {
         if (!isset($this->response)) {
             //most probably called from constructor, when initialization is not yet completed
@@ -1511,29 +1519,5 @@ abstract class CrudController extends BaseController {
         }
         ob_end_flush();
     }    
-
-    protected function get_params($method) {
-        //TODO: find the proper function if any
-        $uri = $this->request->getUri();
-
-        $segments = $uri->getSegments();
-        $total = $uri->getTotalSegments();
-
-        $app = new App();
-        $indexPage = $app->indexPage;
-        $controller = strtolower(basename(get_class($this)));
-        
-        $params = array();
-        for($i=0; $i<$total; $i++) {
-            if ($segments[$i] == $method && $segments[$i-1] == $controller && !empty($segments[$i+1])) {
-                for($j=$i+1; $j<$total; $j++) {
-                    $params[] = $segments[$j];
-                }
-                break;
-            }
-        }
-
-        return $params;
-    }
 
 }

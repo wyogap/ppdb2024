@@ -2750,12 +2750,6 @@ class Mcrud_tablemeta implements ICrudModel
         $model = new $path();
         return $model;
 
-		// $ci	=&	get_instance();
-		// $ci->load->model($path);
-
-		// $name = basename($path);
-
-		// return $ci->$name;
 	}
 
     protected function get_dynamic_model($path) {
@@ -2768,19 +2762,6 @@ class Mcrud_tablemeta implements ICrudModel
 
         return $model;
 
-        // $model_name = 'Mcrud_tablemeta';
-        // $template = str_ireplace('Mcrud_tablemeta/', '', $path);
-
-		// $ci	=&	get_instance();
-		// $ci->load->model($model_name);
-
-		// $name = basename($model_name);
-
-        // if (!$ci->$name->init($template, false)) {
-        //     return null;
-        // }
-
-		// return $ci->$name;
 	}
 
     protected function get_lookup_options_from_query($query) {

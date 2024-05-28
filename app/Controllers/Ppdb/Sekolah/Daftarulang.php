@@ -59,7 +59,13 @@ class Daftarulang extends PpdbController {
             }
             $data["pendaftarditerima"] = $pendaftarditerima;
 
-			$data['cek_waktudaftarulang'] = $this->Mconfig->tcg_cek_waktudaftarulang();
+			$data['waktudaftarulang'] = $this->Mconfig->tcg_waktudaftarulang();
+            if (empty($data['waktudaftarulang'])) {
+                $data['cek_waktudaftarulang'] = 0;
+            }
+            else {
+                $data['cek_waktudaftarulang'] = ($data['waktudaftarulang']['aktif'] == 1) ? 1 : 0;
+            }
 			$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 			// $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 			//$data['daftartahunajaran'] = $this->Mconfig->tcg_tahunajaran();

@@ -78,7 +78,7 @@ class SmartyLibrary extends Smarty {
 
         //failback in case controller is not set
         if (empty($data['controller'])) {
-            $data['controller'] = strtolower(basename($router->controllerName()));
+            $data['controller'] = strtolower(mb_basename($router->controllerName()));
         }
 
         //TODO
@@ -128,7 +128,7 @@ class SmartyLibrary extends Smarty {
 
         //failback in case controller is not set
         if (empty($data['controller'])) {
-            $data['controller'] = strtolower(basename($router->controllerName()));
+            $data['controller'] = strtolower(mb_basename($router->controllerName()));
         }
 
         // //assign form validation
@@ -165,7 +165,7 @@ class SmartyLibrary extends Smarty {
         //the actual template is the inner template
         if (substr( $template, 0, 1 ) == '/') {
             //start with '/' means it is not themeable template
-            $inner_template = substr( $template, 1 );
+            $inner_template = APPPATH ."Views" .$template;
         } 
         else {
             //important: now themes folder only contains theme specific files
@@ -190,13 +190,13 @@ class SmartyLibrary extends Smarty {
             $theme = $this->theme;
         }
 
-        $theme_prefix = "themes/$theme";
+        $theme_prefix = APPPATH ."Views/core/themes/$theme";
 
         //the actual template is the inner template
         $template_path = "";
         if (substr( $template, 0, 1 ) == '/') {
             //start with '/' means it is not themeable template
-            $template_path = substr( $template, 1 );
+            $template_path = APPPATH ."Views". $template;
         } 
         else {
             $template_path = $theme_prefix .'/'. $template;

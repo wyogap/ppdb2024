@@ -624,12 +624,6 @@ class Mtable
         $model = new $path();
         return $model;
 
-		// $ci	=&	get_instance();
-		// $ci->load->model($path);
-
-		// $name = basename($path);
-
-		// return $ci->$name;
 	}
 }
 

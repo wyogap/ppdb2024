@@ -116,7 +116,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                 {
                     data: null,
                     className: "text-center",
@@ -127,13 +127,7 @@
                             return data;
                         }
 
-                        //return row['kelengkapan_berkas'];
-
-                        {if ($cek_waktuverifikasi|default: FALSE)}
                         return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
-                        {/if}
-
-                        return data;
                     }
                 },
                 {/if}
@@ -243,7 +237,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                 {
                     data: null,
                     className: "text-center",
@@ -254,13 +248,7 @@
                             return data;
                         }
 
-                        //return row['kelengkapan_berkas'];
-
-                        {if ($cek_waktuverifikasi|default: FALSE)}
                         return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
-                        {/if}
-
-                        return data;
                     }
                 },
                 {/if}
@@ -370,7 +358,7 @@
                     className: "text-left",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                 {
                     data: null,
                     className: "text-center",
@@ -381,13 +369,7 @@
                             return data;
                         }
 
-                        //return row['kelengkapan_berkas'];
-
-                        {if ($cek_waktuverifikasi|default: FALSE)}
                         return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi Ulang</a>';
-                        {/if}
-
-                        return data;
                     }
                 },
                 {/if}
@@ -482,7 +464,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                 {
                     data: null,
                     className: "text-center",
@@ -493,14 +475,8 @@
                             return data;
                         }
 
-                        //return row['kelengkapan_berkas'];
-
-                        {if ($cek_waktuverifikasi|default: FALSE)}
                         str = '<a onclick=cabut_berkas(' +meta['row']+ ') href="#" class="btn btn-xs btn-danger">Cabut Berkas</a>';
                         return str;
-                        {/if}
-
-                        return data;
                     }
                 },
                 {/if}

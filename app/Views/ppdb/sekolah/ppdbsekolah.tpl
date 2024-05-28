@@ -13,7 +13,7 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="index.html" class="brand-logo">
+            <a href="{$site_url}" class="brand-logo">
                 <img src="{$site_url}assets/image/home-2.png">
             </a>
             <div class="nav-control">

@@ -58,7 +58,7 @@ class S3Uploader
            $bucket = S3Uploader::$BUCKET;
            //$file_Path = FCPATH . 'images/icon/pdf_'. time().'_'. rand(). '.png';
            $file_Path = $upload;
-           $key = basename($file_Path);
+           $key = mb_basename($file_Path);
   
            try {
                $result = $s3Client->putObject([

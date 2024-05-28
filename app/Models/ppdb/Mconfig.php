@@ -39,7 +39,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_SOSIALISASI,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -66,7 +68,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_REGISTRASI,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -93,7 +97,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -120,7 +126,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_VERIFIKASI,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -147,7 +155,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_DAFTARULANG,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -175,7 +185,9 @@ Class Mconfig
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_SUSULAN,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
@@ -199,12 +211,13 @@ Class Mconfig
 
 	function tcg_waktupendaftaran_sd(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		$putaran = PUTARAN_SD;
 
 		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() then 0 when a.tanggal_selesai > now() then 2 else 1 end as aktif');
-		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
+		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>PUTARAN_SD,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
 	}
 

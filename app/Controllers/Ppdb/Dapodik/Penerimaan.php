@@ -52,7 +52,19 @@ class Penerimaan extends PpdbController {
 		//$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
 
         $data['waktupendaftaran_sd'] = $this->Mconfig->tcg_waktupendaftaran_sd();
-        $data['cek_waktupendaftaran_sd'] = $this->Mconfig->tcg_cek_waktupendaftaran_sd();
+        if (empty($data['waktupendaftaran_sd'])) {
+            $data['cek_waktupendaftaran_sd'] = 0;
+        }
+        else {
+            $data['cek_waktupendaftaran_sd'] = ($data['waktupendaftaran_sd']['aktif'] == 1) ? 1 : 0;
+        }
+        $data['waktusosialisasi'] = $this->Mconfig->tcg_waktusosialisasi();
+        if (empty($data['waktusosialisasi'])) {
+            $data['cek_waktusosialisasi'] = 0;
+        }
+        else {
+            $data['cek_waktusosialisasi'] = ($data['waktusosialisasi']['aktif'] == 1) ? 1 : 0;
+        }
 
         //debugging
         if (__DEBUGGING__) {

@@ -40,12 +40,22 @@ class Admin extends CrudController {
 		$navigation = $mnavigation->get_navigation($this->session->get('role_id'));
 		$page_data['navigation']	 = $navigation;
 
+        if (!empty($this->session->get('page_role'))) {
+			$controller = $this->session->get('page_role');
+		}
+		else {
+			$controller = get_controller_path();
+		}
+		$page_data['controller'] = $controller;
+
+        $page_data['nama_wilayah'] = $this->session->get('nama_wilayah_aktif');
+
 		$page_data['use_datatable'] = 1;
 		$page_data['use_geo'] = 1;
 		$page_data['use_select2'] = 1;
 		
 		// $this->smarty->render_theme('sistem/home.tpl', $page_data);
-		$this->smarty->render_theme('/welcome_message.tpl', $page_data);
+		$this->smarty->render_theme('/ppdb/admin/welcome.tpl', $page_data);
 	}
 
 	public function api() {

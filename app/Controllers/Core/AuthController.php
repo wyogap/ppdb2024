@@ -45,6 +45,7 @@ abstract class AuthController extends BaseController
 
         //helper
         helper('gettext');
+        helper('functions');
     }
 
     /**

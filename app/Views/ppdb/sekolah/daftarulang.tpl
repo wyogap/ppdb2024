@@ -1,3 +1,10 @@
+{if $cek_waktudaftarulang!=1}
+<div class="alert alert-secondary" role='alert'>
+    Periode Daftar Ulang adalah dari tanggal <b><span class='tgl-indo'>{$waktudaftarulang.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
+        <span class='tgl-indo'>{$waktudaftarulang.tanggal_selesai_aktif}</span></b>.      
+</div>
+{/if}
+
 <div class="custom-tab-1" id="tabs">
     <ul class="nav nav-tabs nav-justified" id="tabNames" style="margin-bottom: 16px;">
         {assign var="idx" value=0}

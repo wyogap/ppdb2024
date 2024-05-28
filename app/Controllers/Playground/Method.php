@@ -62,7 +62,7 @@ class Method extends PpdbController {
     protected function get_params() {
         $segments = $this->request->getUri()->getSegments();
         $total = count($segments);
-        $controller = strtolower(basename(get_class($this)));
+        $controller = strtolower(mb_basename(get_class($this)));
 
         $method = "";
         $params = array();

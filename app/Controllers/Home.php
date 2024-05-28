@@ -232,6 +232,7 @@ class Home extends PpdbController
 		$data['sekolah_id'] = $_POST["sekolah_id"] ?? "";
 		$data['bentuk_sekolah'] = $_POST["bentuk"] ?? "";
 		$data['nama_sekolah'] = $_POST["nama_sekolah"] ?? "";
+		$data['npsn_sekolah'] = $_POST["npsn_sekolah"] ?? "";
 
 		$data['nik'] = $_POST["nik"] ?? "";
 		$data['nisn'] = $_POST["nisn"] ?? "";
@@ -276,7 +277,7 @@ class Home extends PpdbController
 			}
 
 			if (empty($data['sekolah_id']) && !empty($data['nama_sekolah'])) {
-				$npsn_sekolah = "00000000";
+				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
 				$status_sekolah = 'S';
 				//create sekolah id first
 				$data['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($data['nama_sekolah'],$data['kode_kabupaten_sekolah'],$data['bentuk_sekolah'],$npsn_sekolah,$status_sekolah);
@@ -286,17 +287,17 @@ class Home extends PpdbController
 				}
 			}
 
-            $peserta_didik_id = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
+            $user = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
                                                                     $data['tempat_lahir'], $data['tanggal_lahir'], $data['nama_ibu_kandung'], $data['kebutuhan_khusus'], 
                                                                     $data['alamat'], $data['kode_wilayah'], $data['lintang'], $data['bujur'], $data['nomor_kontak']);
-            if ($peserta_didik_id == "") {						
+            if ($user == null) {						
                 $this->session->setFlashdata('error', "Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
                 break;
             }
 
-            $data['info'] = "<div class='alert alert-info'>Registrasi berhasil. Silahkan tunggu pemberitahuan persetujuan akun melalui nomor kontak yang anda berikan. Apabila setelah 1x24 jam anda belum menerima pemberitahuan persetujuan, silahkan menghubungi nomor bantuan yang ada di halaman utama.</div>
-            <div class='alert alert-info'>Anda bisa melakukan masuk ke sistem PPDB Online menggunakan nomor NISN/NIK anda. </div>
-            <div class='alert alert-info'>Segera masuk dan ganti PIN anda sekarang juga. <br>Gunakan akun berikut untuk masuk ke sistem: <br><ul><li>Nama Pengguna: " .$data['nisn']. "</li><li>PIN: " .$data['nisn']. "</li></ol></div>";
+            $data['info'] = "<div class='alert alert-secondary' role='alert'>Registrasi berhasil. Silahkan tunggu pemberitahuan persetujuan akun melalui nomor kontak yang anda berikan. Apabila setelah 1x24 jam anda belum menerima pemberitahuan persetujuan, silahkan menghubungi nomor bantuan yang ada di halaman utama.</div>
+            <div class='alert alert-secondary' role='alert'>Anda bisa melakukan masuk ke sistem PPDB Online menggunakan nomor NISN anda. </div>
+            <div class='alert alert-secondary' role='alert'>Segera masuk dan ganti PIN anda sekarang juga. <br>Gunakan akun berikut untuk masuk ke sistem: <br><ul><li>Nama Pengguna: " .$data['nisn']. "</li><li>PIN: " .$data['nisn']. "</li></ol></div>";
 
             $data["sukses"] = 1;
 

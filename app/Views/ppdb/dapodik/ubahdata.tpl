@@ -83,8 +83,8 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <div class="form-group has-feedback">
-                                        <label for="nama_ibu">Nama Ibu Kandung</label>
-                                        <input id="nama_ibu" tcg-field-type="input" name="nama_ibu" type="text" class="form-control" 
+                                        <label for="nama_ibu_kandung">Nama Ibu Kandung</label>
+                                        <input id="nama_ibu_kandung" tcg-field-type="input" name="nama_ibu_kandung" type="text" class="form-control" 
                                             aria-describedby="basic-addon1" data-validation="required">
                                     </div>
                                 </div>
@@ -118,17 +118,9 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <div class="form-group has-feedback">
-                                        <label for="kode_desa">Desa/Kelurahan</label>
-                                        <select id="kode_desa" tcg-field-type="input" name="kode_desa" class="form-control select2" data-validation="required">
+                                        <label for="kode_wilayah">Desa/Kelurahan</label>
+                                        <select id="kode_wilayah" tcg-field-type="input" name="kode_wilayah" class="form-control select2" data-validation="required">
                                             <option value="">-- Pilih Desa/Kelurahan --</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <div class="form-group has-feedback">
-                                        <label for="kode_wilayah">Padukuhan</label>
-                                        <select id="kode_wilayah" tcg-field-type="input" name="kode_wilayah" class="form-control select2">
-                                            <option value="">-- Pilih Padukuhan --</option>
                                         </select>
                                     </div>
                                 </div>

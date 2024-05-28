@@ -42,10 +42,32 @@ class Siswa extends PpdbController {
         $waktudaftarulang = $this->Mconfig->tcg_waktudaftarulang();
         $waktupendaftaran = $this->Mconfig->tcg_waktupendaftaran();
         $waktusosialisasi = $this->Mconfig->tcg_waktusosialisasi();
-        $cek_waktudaftarulang = ($waktudaftarulang['aktif'] == 1);
-        $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1);
-        $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1);
+        
+        //flag: waktu daftar ulang
+        if (empty($waktudaftarulang)) {
+            $cek_waktudaftarulang = 0;
+        }
+        else {
+            $cek_waktudaftarulang = ($waktudaftarulang['aktif'] == 1) ? 1 : 0;
+        }
 
+        //flag: waktu pendaftaran
+        if (empty($waktupendaftaran)) {
+            $cek_waktupendaftaran = 0;
+        }
+        else {
+            $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1) ? 1 : 0;
+        }
+
+        //flag: waktu sosialisasi
+        if (empty($waktusosialisasi)) {
+            $cek_waktusosialisasi = 0;
+        }
+        else {
+            $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1) ? 1 : 0;
+        }
+
+        //profil siswa
         $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         if (empty($profil)) {
             //invalid session. just re-login
@@ -217,19 +239,6 @@ class Siswa extends PpdbController {
         $data['pernyataan_file'] = $pernyataan_file;
         $data['pernyataan_tanggal'] = $pernyataan_tanggal;
                   
-		// $kebutuhan_khusus = 1;
-		// if (empty($profil['kebutuhan_khusus']) || $profil['kebutuhan_khusus']=="0" || $profil['kebutuhan_khusus']=='Tidak ada') {
-		// 	$kebutuhan_khusus = 0;
-		// }
-
-		// $afirmasi = 1;
-		// if ((empty($profil['punya_kip']) || $profil['punya_kip']=="0") && (empty($profil['masuk_bdt']) || $profil['masuk_bdt']=="0")) {
-		// 	$afirmasi = 0;
-		// }
-
-		// $data['kebutuhan_khusus'] = $kebutuhan_khusus;
-		// $data['afirmasi'] = $afirmasi;
-
 		$data['waktupendaftaran'] = $waktupendaftaran;
 		$data['cek_waktupendaftaran'] = $cek_waktupendaftaran;
 		$data['waktudaftarulang'] = $waktudaftarulang;
@@ -248,40 +257,6 @@ class Siswa extends PpdbController {
 
         $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
 
-        //data tambahan
-        # PROFIL
-        // $data['konfirmasiprofil'] = array (
-        //     "nomer-hp" => (empty($profil['nomor_kontak']) || strlen($profil['nomor_kontak']) < 7 || strlen($profil['nomor_kontak']) > 14) ? 0 : 1,
-        //     'profil' => (empty($profil['konfirmasi_profil'])) ? 0 : 1,
-        //     'lokasi' => (empty($profil['konfirmasi_lokasi'])) ? 0 : 1,
-        //     'nilai' => (empty($profil['konfirmasi_nilai'])) ? 0 : 1,
-        //     'prestasi' => (empty($profil['konfirmasi_prestasi'])) ? 0 : 1,
-        //     'afirmasi' => (empty($profil['konfirmasi_afirmasi'])) ? 0 : 1,
-        //     'inklusi' => (empty($profil['konfirmasi_inklusi'])) ? 0 : 1,
-        //     'surat-pernyataan' => (empty($pernyataan_file)) ? 0 : 1
-        // );
-
-        // $data['verifikasiprofil'] = array (
-        //     'nomer-hp' => 1,
-        //     'profil' => (empty($profil['verifikasi_profil'])) ? 0 : $profil['verifikasi_profil'],
-        //     'lokasi' => (empty($profil['verifikasi_lokasi'])) ? 0 : $profil['verifikasi_lokasi'],
-        //     'nilai' => (empty($profil['verifikasi_nilai'])) ? 0 : $profil['verifikasi_nilai'],
-        //     'prestasi' => (empty($profil['verifikasi_prestasi'])) ? 0 : $profil['verifikasi_prestasi'],
-        //     'afirmasi' => (empty($profil['verifikasi_afirmasi'])) ? 0 : $profil['verifikasi_afirmasi'],
-        //     'inklusi' => (empty($profil['verifikasi_inklusi'])) ? 0 : $profil['verifikasi_inklusi'],
-        //     'surat-pernyataan' => $pernyataan_verifikasi
-        // );
-    
-        // $data['profilflag'] = array (
-        //     'nilai-un' => (empty($profil['punya_nilai_un'])) ? 0 : 1,
-        //     'prestasi' => (empty($profil['punya_prestasi'])) ? 0 : 1,
-        //     'kip' => (empty($profil['punya_kip'])) ? 0 : 1,
-        //     'bdt' => (empty($profil['masuk_bdt'])) ? 0 : 1,
-        //     'inklusi' => ($profil['kebutuhan_khusus'] == 'Tidak ada') ? 0 : 1
-        // );
-
-        //$data['berkas_fisik'] = $this->Msiswa->tcg_berkas_fisik($peserta_didik_id)->getResultArray(); 
-
         # PENDAFTARAN
         $data['global_tutup_akses'] = ($this->session->get("tutup_akses") ?? 0);
         // $data['pendaftarandikunci'] = (!$cek_waktupendaftaran && !$cek_waktusosialisasi) || $global_tutup_akses;
@@ -290,7 +265,7 @@ class Siswa extends PpdbController {
         $data['batasansiswa'] = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
 
         $data['batasanusia'] = $this->Mconfig->tcg_batasanusia("SMP");
-        $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] || $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']);
+        $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] && $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']) ? 1 : 0;
 
         $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'));
         
@@ -311,7 +286,6 @@ class Siswa extends PpdbController {
             }
         }
             
-        //$data['statusprofil'] = $this->Msiswa->tcg_profilsiswa_status($peserta_didik_id);
         if ($data['satu_zonasi_satu_jalur'] == 1) {
             $data['pendaftaran_dalam_zonasi'] = $this->Msiswa->tcg_jalur_pendaftaran_dalam_zonasi($peserta_didik_id, $tahun_ajaran_id);
         }
@@ -321,12 +295,6 @@ class Siswa extends PpdbController {
         $pendaftaran = update_daftarpendaftaran($pendaftaran, $data['batasanperubahan'], $data['batasansiswa']);     
 
         $data['daftarpendaftaran'] = $pendaftaran;
-
-        ## END DAFTAR PENDAFTARAN
-
-        ## DAFTAR ULANG
-
-        ## END DAFTAR ULANG
 
         $data['use_leaflet'] = 1;
         $data['use_datatable'] = 1;

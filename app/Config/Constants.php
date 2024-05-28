@@ -103,6 +103,7 @@ define('EVENT_PRIORITY_HIGH', 10);
 */
 defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2024_prosespendaftaran');
 defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2024_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
+defined('SQL_REGISTRASI')                   OR define('SQL_REGISTRASI', 'ppdb2024_registrasi');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
 //defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
 defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2024_hapuspendaftaran');        //hapur satu pendaftaran
 defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor_2022');

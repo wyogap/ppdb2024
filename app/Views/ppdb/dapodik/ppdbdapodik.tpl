@@ -58,7 +58,7 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="index.html" class="brand-logo">
+            <a href="{$site_url}" class="brand-logo">
                 <img src="{$site_url}assets/image/home-2.png">
             </a>
             <div class="nav-control">
@@ -159,7 +159,7 @@
 						</a>
                     </li>
                     <li data-bs-toggle="tooltip" data-bs-placement="right" title="Penerimaan">
-                        <a id="menu-hasil" class="ai-icon nav-link" href="{$site_url}ppdb/dapodik/penerimaan" aria-expanded="false" >
+                        <a id="menu-hasil" class="ai-icon" href="{$site_url}ppdb/dapodik/penerimaan" aria-expanded="false" >
 							<i class="flaticon-012-checkmark"></i>
 							<span class="nav-text">Penerimaan</span>
 						</a>

@@ -2,6 +2,8 @@
 
 namespace App\Models\Ppdb;
 
+use function PHPUnit\Framework\returnSelf;
+
 Class Mhome 
 {
     protected $db;
@@ -213,7 +215,8 @@ Class Mhome
 	function tcg_registrasiuser($sekolah_id, $nik, $nisn, $nomor_ujian, $nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung, $kebutuhan_khusus, $alamat, $kode_wilayah, $lintang, $bujur, $nomor_kontak){
 
 		$sekolah_id = secure($sekolah_id); 
-		$nik = secure($nik); 
+		$nik = secure($nik);
+        $username = $nisn; 
 		$nisn = secure($nisn); 
 		$nomor_ujian = secure($nomor_ujian); 
 		$nama = secure($nama); 
@@ -228,14 +231,12 @@ Class Mhome
 		$bujur = secure($bujur); 
 		$nomor_kontak = secure($nomor_kontak);
 
-		$sql = "CALL usp_registrasi_2020 ($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak)";
+		$sql = "CALL " .SQL_REGISTRASI. " ($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak)";
+        $query = $this->db->query($sql);
+        if ($query == null)     return null;
 
-		$peserta_didik_id="";
-		foreach($this->db->query($sql)->getResult() as $row):
-			$peserta_didik_id=$row->peserta_didik_id;
-		endforeach;
-
-		return $peserta_didik_id;
+        $user = $this->tcg_detailuser($username);
+		return $user;
 	}
 
 	function tcg_detailuser($username){

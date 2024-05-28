@@ -1,3 +1,15 @@
+{if $cek_waktuverifikasi!=1 && $cek_waktusosialisasi!=1}
+<div class="alert alert-secondary" role='alert'>
+    Periode Verifikasi adalah dari tanggal <b><span class='tgl-indo'>{$waktuverifikasi.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
+        <span class='tgl-indo'>{$waktuverifikasi.tanggal_selesai_aktif}</span></b>.      
+</div>
+{/if}
+
+{if $cek_waktusosialisasi == 1}
+<div class="alert alert-secondary" role="alert">
+    <b>PERIODE SOSIALISASI. SETELAH PERIODE SOSIALISASI, SEMUA DATA PENDAFTARAN AKAN DIHAPUS. </b>        
+</div>
+{/if}
 
 <div class="custom-tab-1" id="tabs">
     <ul class="nav nav-tabs nav-justified" id="tabNames" style="margin-bottom: 16px;">
@@ -20,7 +32,7 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pendaftaran</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -40,7 +52,7 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pendaftaran</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -62,7 +74,7 @@
                             <!-- <th class="text-center">Tanggal Pendaftaran</th> -->
                             <th class="text-center" data-priority="3">Tanggal Verifikasi</th>
                             <th class="text-center" data-priority="4">Lokasi Berkas</th>
-                            {if $cek_waktuverifikasi}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -80,7 +92,7 @@
                             <th class="text-center" data-priority="4">Asal Sekolah</th>
                             <th class="text-center">Kelengkapan Berkas</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                        </tr>

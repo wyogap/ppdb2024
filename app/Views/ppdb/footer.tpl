@@ -42,7 +42,7 @@
     }
 </style>
 
-<a href="#top" class="DZ-bt-scroll-top DZ-theme-btn">
+<a href="#top" class="DZ-bt-scroll-top DZ-theme-btn" style='display: none;'>
     <img src="{$base_url}images/icons8-arrow-up-50.png" enable-background="new 0 0 512 512" height="40" viewBox="0 0 512 512" width="40">
 </a>  
 

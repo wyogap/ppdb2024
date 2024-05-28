@@ -864,7 +864,7 @@
 
             $app = new App();
             $indexPage = $app->indexPage;
-            $controller = strtolower(basename($router->controllerName()));
+            $controller = strtolower(mb_basename($router->controllerName()));
             
             $path = ""; $found = false;
             for($i=0; $i<$total; $i++) {
@@ -899,4 +899,20 @@
             return $path;
         }
     }
+
+	if ( ! function_exists('mb_basename'))
+	{
+        function mb_basename($path) {
+            //in unix, dir separator is /
+            //in windows, dir separator is both \ and /
+            return basename(str_replace('\\', '/', $path));
+            // if (preg_match('@^.*[\\\\/]([^\\\\/]+)$@s', $path, $matches)) {
+            //     return $matches[1];
+            // } else if (preg_match('@^([^\\\\/]+)$@s', $path, $matches)) {
+            //     return $matches[1];
+            // }
+            // return '';
+        }
+    }
+
 ?>

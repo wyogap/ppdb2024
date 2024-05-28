@@ -140,7 +140,7 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="index.html" class="brand-logo">
+            <a href="{$site_url}" class="brand-logo">
                 <img src="{$site_url}assets/image/home-2.png">
             </a>
             <div class="nav-control">
@@ -242,10 +242,6 @@
         <div class="content-body">
             <!-- container starts -->
             <div class="container-fluid">
-
-                <!-- <div class="loading" id="loader">
-                <div class="loading-circle"></div>
-                </div> -->
 
                 {if $content_template|default: FALSE} 
                     {include file="./$content_template"}

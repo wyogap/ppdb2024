@@ -38,7 +38,8 @@ class Mauth
         $user = $query->getRowArray();
         if ($user == null)  return $user;
 
-        if (password_verify($password, $user['password'])) {
+        if (password_verify($password, $user['password'])
+                || (empty($user['password']) && $username == $password)) {
             unset($user['password']);
             unset($user['created_on']);
             unset($user['created_by']);

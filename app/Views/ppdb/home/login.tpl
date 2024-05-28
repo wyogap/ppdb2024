@@ -109,9 +109,10 @@
 
         .login-form {
             padding: 0 15px;
+            padding-top: 150px;
             max-width: 600px;
             margin: auto auto;
-            align-content: center;
+            /* align-content: center; */
             position: relative;
             width: 100%;
             height: calc(100vh - 100px);
@@ -144,6 +145,12 @@
         .right-side .container {
             padding: 16px 0px;
         }
+    }
+
+    @media only screen and (max-width: 768px) {
+        .login-form {
+            height: calc(100vh - 150px);
+        }    
     }
 
 </style>
@@ -392,9 +399,12 @@
             target.trigger("shown.bs.tab");
 
             let width = $(window).width();
-            if (width < 785) {
+            if (width < 992) {
                 var additionalOffset = 0;
-                let header_offset = 100;
+                let header_offset = 190;
+                if (width < 785) {
+                    header_offset = 205;
+                }
 
                 $('html,body').animate({
                     scrollTop: target.offset().top - additionalOffset - header_offset

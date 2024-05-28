@@ -1,20 +1,20 @@
 <script>
-	//Dropdown Select
-	$(function () {
-		$(".select2").select2();
-	});
-
-	//Datepicker
-	$("#tanggal_lahir").datepicker({ 
-		format: 'yyyy-mm-dd'
-	});
-
     var map;
     var layerGroup;
     var profil;
 
 	//Event On Change Dropdown
 	$(document).ready(function () {
+        //Dropdown Select
+        $(function () {
+            $(".select2").select2();
+        });
+
+        //Datepicker
+        $("#tanggal_lahir").datepicker({ 
+            format: 'yyyy-mm-dd'
+        });
+
 		$('select[name="kode_kabupaten"]').on('change', function() {
 			var data = { "kode_wilayah":$("#kode_kabupaten").val() };
 			$.ajax({
@@ -27,6 +27,7 @@
 				}
 			});
 		});
+
 		$('select[name="kode_kecamatan"]').on('change', function() {
 			var data = { "kode_wilayah":$("#kode_kecamatan").val() };
 			$.ajax({
@@ -34,23 +35,24 @@
 				url : "{$site_url}home/dddesa",
 				data: data,
 				success: function(msg){
-					$('#kode_desa').html(msg);
-                    $('#kode_desa').val(profil['kode_desa']).trigger("change");
-				}
-			});
-		});
-		$('select[name="kode_desa"]').on('change', function() {
-			var data = { "kode_wilayah":$("#kode_desa").val() };
-			$.ajax({
-				type: "POST",
-				url : "{$site_url}home/ddpadukuhan",
-				data: data,
-				success: function(msg){
 					$('#kode_wilayah').html(msg);
                     $('#kode_wilayah').val(profil['kode_wilayah']).trigger("change");
 				}
 			});
 		});
+
+		// $('select[name="kode_desa"]').on('change', function() {
+		// 	var data = { "kode_wilayah":$("#kode_desa").val() };
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url : "{$site_url}home/ddpadukuhan",
+		// 		data: data,
+		// 		success: function(msg){
+		// 			$('#kode_wilayah').html(msg);
+        //             $('#kode_wilayah').val(profil['kode_wilayah']).trigger("change");
+		// 		}
+		// 	});
+		// });
 
 		$('#lintang').on('change', onChangeCoordinate);
 		$('#bujur').on('change', onChangeCoordinate);
@@ -238,7 +240,8 @@
 
     function simpan_profil() {
 
-        updated = {};
+        var cnt = 0;
+        var updated = {};
 
         elements = $("[tcg-field-type='input']");
         elements.each(function(idx) {
@@ -246,9 +249,25 @@
             key = el.attr('name');
             val = el.val();
 
-            updated[key] = val;            
+            //ignore some fields
+            if (key == 'kode_kecamatan' || key == 'kode_kabupaten') {
+                return;
+            }
+
+            //check for changed value
+            oldval = profil[key];
+            if (val != oldval && !(val == '' && oldval === undefined)) {
+                updated[key] = val;       
+                cnt++;     
+            }
         });
         
+        if (cnt == 0) {
+            toastr.info("Tidak ada data yang berubah.");
+            close_profil();
+            return;
+        }
+
         json = {};
         json['peserta_didik_id'] = profil['peserta_didik_id'];
         json['data'] = {};

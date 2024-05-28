@@ -52,7 +52,20 @@ class Verifikasi extends PpdbController {
 		do {   
 			$data['sekolah_id'] = $sekolah_id;
 
-            $data['cek_waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
+            $data['waktuverifikasi'] = $this->Mconfig->tcg_waktuverifikasi();
+            if (empty($data['waktuverifikasi'])) {
+                $data['cek_waktuverifikasi'] = 0;
+            }
+            else {
+                $data['cek_waktuverifikasi'] = ($data['waktuverifikasi']['aktif'] == 1) ? 1 : 0;
+            }
+            $data['waktusosialisasi'] = $this->Mconfig->tcg_waktusosialisasi();
+            if (empty($data['waktusosialisasi'])) {
+                $data['cek_waktusosialisasi'] = 0;
+            }
+            else {
+                $data['cek_waktusosialisasi'] = ($data['waktusosialisasi']['aktif'] == 1) ? 1 : 0;
+            }
             $data['flag_upload_dokumen'] = $this->setting->get('upload_dokumen');
 
             $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();

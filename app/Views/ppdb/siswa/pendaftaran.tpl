@@ -61,7 +61,7 @@
 </div>
 {/if}
 
-<div class="row" id='jalur-pendaftaran' {if $cek_batasanusia && ($cek_waktupendaftaran || $cek_waktusosialisasi)}style="display: none;"{/if}>
+<div class="row" id='jalur-pendaftaran'>
 </div>
 
 <div class="row" id="peta-sebaran-wrapper">

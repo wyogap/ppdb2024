@@ -35,28 +35,29 @@
         </ol>
     </div>
 
+    {if !empty($info)}{$info}{/if}
+
     {if !empty($info_message)}
     <div class="alert alert-info alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         {$error_message}                    
     </div>
     {/if}
 
     {if !empty($error_message)}
     <div class="alert alert-danger alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         {$error_message}                    
     </div>
     {/if}
 
     {if !empty($success_message)}
     <div class="alert alert-success alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         {$success_message}                 
     </div>
     {/if}
 
-    {if empty($sukses)}
+    {if $sukses}
+    <a href="{$site_url}" class="btn btn-primary">Kembali ke Halaman Utama</a>
+    {else}
     <form role="form" enctype="multipart/form-data" id="registrasi" action="{$base_url}home/doregistrasi" method="post">
         <div class="card box-solid">
             <div class="card-header with-border">

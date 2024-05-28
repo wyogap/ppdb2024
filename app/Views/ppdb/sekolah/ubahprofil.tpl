@@ -1,7 +1,7 @@
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="card box-solid">
 				<div class="card-header with-border">
-					<h3 class="box-title text-info"><b>Perubahan Data</b></h3>
+					<h3 class="box-title"><b>Perubahan Data</b></h3>
 				</div>
 				<div class="card-body">
 					<div class="row" style='margin-bottom: 18px;'>

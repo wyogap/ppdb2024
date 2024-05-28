@@ -93,7 +93,33 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
         }
 
+        //TODO
+        $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+        if ($oldvalues == null) {
+            print_json_error("Invalid userid");
+        }
 
+        $updatedprofil = $data['profil'];
+        //only save changed data
+        $updated = array();
+        foreach($updatedprofil as $key => $val) {
+            //echo $val ." - ". $siswa[$key];
+            $updated[$key] = $updatedprofil[$key];
+        }
+
+        if (empty($updated)) {
+            print_json_error("Tidak ada data yang berubah");
+        }
+
+        $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
+
+        if ($detail == null)
+            print_json_error("Tidak berhasil mengubah data siswa.");
+
+        //audit trail
+        audit_siswa($peserta_didik_id, "UBAH DATA", "Ubah data oleh Admin Dapodik", array_keys($updated), $updated, $oldvalues);
+
+        print_json_output($detail);
     }
 
     function profilsiswa() 

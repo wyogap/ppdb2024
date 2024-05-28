@@ -310,7 +310,7 @@
             kelengkapan_data = 0;
         }
 
-        siswa_tutup_akses = profil['tutup_akses'];
+        siswa_tutup_akses = parseInt(profil['tutup_akses']);
 
         //update flag pendaftaran dikunci
         if (!kelengkapan_data || siswa_tutup_akses) {

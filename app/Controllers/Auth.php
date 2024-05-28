@@ -68,7 +68,7 @@ class Auth extends AuthController
 
 		$data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
         foreach($data['tahapan_aktif'] as $tahapan) {
-            if ($tahapan->tahapan_id == 0 || $tahapan->tahapan_id == 99) {
+            if ($tahapan['tahapan_id'] == 0 || $tahapan['tahapan_id'] == 99) {
                 $data['cek_registrasi'] = 0;
                 break;
             }
@@ -83,13 +83,15 @@ class Auth extends AuthController
 
         $petunjuk = $mconfig->tcg_petunjuk_pelaksanaan();
         $data['petunjuk_pelaksanaan'] = array();
-        // $data['petunjuk_pelaksanaan'][] = array("id"=>1, "title"=>"JADWAL PELAKSANAAN", "text"=>$petunjuk['jadwal_pelaksanaan']);
-        $data['petunjuk_pelaksanaan'][] = array("id"=>2, "title"=>"PERSYARATAN", "text"=>$petunjuk['persyaratan']);
-        $data['petunjuk_pelaksanaan'][] = array("id"=>3, "title"=>"TATA CARA PENDAFTARAN", "text"=>$petunjuk['tata_cara_pendaftaran']);
-        $data['petunjuk_pelaksanaan'][] = array("id"=>4, "title"=>"JALUR PENDAFTARAN", "text"=>$petunjuk['jalur_pendaftaran']);
-        $data['petunjuk_pelaksanaan'][] = array("id"=>5, "title"=>"PROSES SELEKSI", "text"=>$petunjuk['proses_seleksi']);
-        $data['petunjuk_pelaksanaan'][] = array("id"=>6, "title"=>"KONVERSI NILAI", "text"=>$petunjuk['konversi_nilai']);
-
+        if (!empty($petunjuk)) {
+            // $data['petunjuk_pelaksanaan'][] = array("id"=>1, "title"=>"JADWAL PELAKSANAAN", "text"=>$petunjuk['jadwal_pelaksanaan']);
+            $data['petunjuk_pelaksanaan'][] = array("id"=>2, "title"=>"PERSYARATAN", "text"=>$petunjuk['persyaratan']);
+            $data['petunjuk_pelaksanaan'][] = array("id"=>3, "title"=>"TATA CARA PENDAFTARAN", "text"=>$petunjuk['tata_cara_pendaftaran']);
+            $data['petunjuk_pelaksanaan'][] = array("id"=>4, "title"=>"JALUR PENDAFTARAN", "text"=>$petunjuk['jalur_pendaftaran']);
+            $data['petunjuk_pelaksanaan'][] = array("id"=>5, "title"=>"PROSES SELEKSI", "text"=>$petunjuk['proses_seleksi']);
+            $data['petunjuk_pelaksanaan'][] = array("id"=>6, "title"=>"KONVERSI NILAI", "text"=>$petunjuk['konversi_nilai']);
+        }
+        
         // if ($data['cek_captcha']) {
         //     $sitekey="6LfUN-oUAAAAAAEiaEPyE-S-d3NRbzXZVoNo51-x";
         //     if(strpos(base_url(), 'localhost')) {

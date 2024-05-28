@@ -168,6 +168,7 @@
         if (profil['kebutuhan_khusus'] != 'Tidak ada') {
             kebutuhan_khusus = 1;
         }
+
     }
 
     function pilih_sekolah(idx) {

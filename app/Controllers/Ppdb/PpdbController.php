@@ -50,6 +50,7 @@ class PpdbController extends BaseController {
 
         //load library
         helper("ppdb");
+        helper('functions');
         
         //load model
         $this->Mconfig = new Mconfig();
@@ -57,7 +58,7 @@ class PpdbController extends BaseController {
         //URI params
         $segments = $this->request->getUri()->getSegments();
         $total = count($segments);
-        $controller = strtolower(basename(get_class($this)));
+        $controller = strtolower(mb_basename(get_class($this)));
 
         $this->method = "";
         $this->params = array();
