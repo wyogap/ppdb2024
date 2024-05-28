@@ -277,6 +277,7 @@ class Home extends PpdbController
 			}
 
 			if (empty($data['sekolah_id']) && !empty($data['nama_sekolah'])) {
+                //TODO: check for existing sekolah with the same npsn
 				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
 				$status_sekolah = 'S';
 				//create sekolah id first

@@ -55,7 +55,7 @@
     </div>
     {/if}
 
-    {if $sukses}
+    {if $sukses|default: 0}
     <a href="{$site_url}" class="btn btn-primary">Kembali ke Halaman Utama</a>
     {else}
     <form role="form" enctype="multipart/form-data" id="registrasi" action="{$base_url}home/doregistrasi" method="post">

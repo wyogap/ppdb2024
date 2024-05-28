@@ -351,7 +351,6 @@ Class Mhome
         if ($wilayah == null)   return '';
 
 		$valuepair = array (
-			"sekolah_id" => $uuid,
 			"nama" => $nama_sekolah,
 			"kode_wilayah" => $kode_wilayah,
             "kecamatan" => $wilayah['nama_kec'],
@@ -362,14 +361,13 @@ Class Mhome
 			"npsn" => $npsn,
 			"alamat_jalan" => "",
 			"status" => $status,
-			"updater_id" => "REGISTRASI"
+			"created_by" => "1"
 		);
 
 		$builder = $this->db->table('ref_sekolah');
-        if (!$builder->insert($valuepair)) return "";
+        if (!$builder->insert($valuepair)) return null;
 
-
-        return $uuid;
+        return $this->db->insertID();
 	}
 
 	function tcg_job_peringkatpendaftaran() {
