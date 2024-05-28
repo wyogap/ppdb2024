@@ -65,6 +65,7 @@ class Auth extends AuthController
         $data['nama_putaran']=$nama_putaran;
 
 		$data['cek_registrasi'] = $mconfig->tcg_cek_wakturegistrasi();
+		$data['cek_sosialisasi'] = $mconfig->tcg_cek_waktusosialisasi();
 
 		$data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
         foreach($data['tahapan_aktif'] as $tahapan) {

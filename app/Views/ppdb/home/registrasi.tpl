@@ -35,6 +35,12 @@
         </ol>
     </div>
 
+    {if $cek_sosialisasi}
+    <div class="alert alert-secondary" role="alert">
+        <b>PERIODE SOSIALISASI. SETELAH PERIODE SOSIALISASI, SEMUA DATA PENDAFTARAN AKAN DIHAPUS. </b>        
+    </div>
+    {/if}
+
     {if !empty($info)}{$info}{/if}
 
     {if !empty($info_message)}
