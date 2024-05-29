@@ -2,3 +2,8 @@
 /vendor
 /app/cache
 /app/app/cache/smarty_templates_cache
+/public/assets/fontawesome
+/public/assets/highcharts
+/writable/debugbar
+/public/qrcodes
+/writable/qrcode

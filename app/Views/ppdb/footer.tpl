@@ -85,6 +85,13 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script> 
 {/if}
 
+{if $use_highchart|default: FALSE} 
+{if $smarty.const.USE_CDN|default: 1}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/highcharts.js"></script>
+{else} 
+<script src="{$site_url}assets/highcharts/highcharts.js"></script>
+{/if}
+{/if}
 <script src="{$base_url}assets/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 
 <!-- Set up theme -->

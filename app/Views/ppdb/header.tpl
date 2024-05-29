@@ -40,9 +40,13 @@
     <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css" type="text/css" >   
     {/if} 
     {/if}
-     
-    <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     
+    {if $smarty.const.USE_CDN|default: 1}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
+    {else}
+    <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
+    {/if}
+
     <!-- <link href="{$base_url}assets/flaticon/flaticon.css" rel="stylesheet" type="text/css" />
     <link href="{$base_url}assets/flaticon/flaticon.css" rel="stylesheet" type="text/css" /> -->
 
