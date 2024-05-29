@@ -1,6 +1,10 @@
 
 <!-- bootstrap. bundle includes popper.js -->
+{if $smarty.const.USE_CDN|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+{else}
 <script src="{$base_url}assets/bootstrap-4.6.2/js/bootstrap.bundle.min.js"></script>
+{/if}
 
 <script src="{$base_url}assets/bootstrap-datepicker/js/bootstrap-datepicker.min.js" defer></script>
 
@@ -15,9 +19,9 @@
 <script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
 <script src="{$base_url}assets/leaflet/oms/oms.min.js" defer></script>
 {else}
-<script src="{$base_url}assets/leaflet/leaflet/leaflet.js"></script>
-<script src="{$base_url}assets/leaflet/fullscreen/leaflet.fullscreen.js"></script>
-<script src="{$base_url}assets/leaflet/easybutton/easy-button.js"></script>
+<script src="{$base_url}cdn/leaflet/leaflet/leaflet.js"></script>
+<script src="{$base_url}cdn/leaflet/fullscreen/leaflet.fullscreen.js"></script>
+<script src="{$base_url}cdn/leaflet/easybutton/easy-button.js"></script>
 <script src="{$base_url}assets/leaflet/esri/esri-leaflet.js" defer></script>
 <script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js"></script>
 <script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
@@ -52,11 +56,11 @@
 <script src="{$base_url}assets/datatables/RowReorder-1.2.6/js/dataTables.rowReorder.min.js" defer></script>
 <script src="{$base_url}assets/datatables/RowReorder-1.2.6/js/rowReorder.bootstrap4.min.js" defer></script>
 
-<script src="{$base_url}assets/datatables/SearchBuilder-1.3.0/js/dataTables.searchBuilder.min.js" defer></script>
+<!-- <script src="{$base_url}assets/datatables/SearchBuilder-1.3.0/js/dataTables.searchBuilder.min.js" defer></script>
 <script src="{$base_url}assets/datatables/SearchBuilder-1.3.0/js/searchBuilder.bootstrap4.min.js" defer></script>
 
 <script src="{$base_url}assets/datatables/SearchPanes-1.4.0/js/dataTables.searchPanes.min.js" defer></script>
-<script src="{$base_url}assets/datatables/SearchPanes-1.4.0/js/searchPanes.bootstrap4.min.js" defer></script>
+<script src="{$base_url}assets/datatables/SearchPanes-1.4.0/js/searchPanes.bootstrap4.min.js" defer></script> -->
 
 {if !empty($use_editor)}
 <!-- <script src="{$base_url}assets/datatables/editor.min.js" defer></script> -->
@@ -107,7 +111,7 @@
 {if $smarty.const.USE_CDN|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/29.1.0/ckeditor.min.js"></script>
 {else}
-<script src="{$base_url}assets/ckeditor5/ckeditor.js"></script>
+<script src="{$base_url}cdn/ckeditor5/ckeditor.js"></script>
 <!-- <script src="{$base_url}assets/ckeditor/adapters/jquery.js" defer></script> -->
 {/if}
 <script src="{$base_url}assets/datatables/tcg/dt-editor-editor.js" defer></script>
@@ -115,10 +119,10 @@
 {/if}
 {/if}
 
-{if !empty($use_calendar)}
 <!-- full calendar -->
+<!-- {if !empty($use_calendar)}
 <script src="{$base_url}assets/fullcalendar/core/main.min.js" defer></script>
-{/if} 
+{/if}  -->
 
 <!-- mustache templating -->
 <script src="{$base_url}assets/mustache/mustache.min.js" defer></script>
@@ -128,8 +132,12 @@
 <script src="{$base_url}assets/toastr/toastr.min.js"></script>
 
 <!-- fontawesome -->
-<script src="{$base_url}assets/fontawesome/js/fontawesome.min.js" defer charset="utf-8"></script>
+{if $smarty.const.USE_CDN|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" defer charset="utf-8"></script>
+{else}
+<script src="{$base_url}cdn/fontawesome/js/fontawesome.min.js" defer charset="utf-8"></script>
 <!-- <script src="{$base_url}assets/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js" defer charset="utf-8"></script> -->
+{/if}
 
 <!-- jquery plugins -->
 <!-- <script src="{$base_url}assets/jquery-jvectormap/jquery-jvectormap.min.js" defer></script> -->

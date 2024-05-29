@@ -3,7 +3,11 @@
 <!-- <link rel="shortcut icon" href="http://localhost/academy/uploads/system/favicon.png"> -->
 
 <!-- bootstrap -->
+{if $smarty.const.USE_CDN|default: 1} 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+{else}
 <link href="{$base_url}assets/bootstrap-4.6.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+{/if}
 
 <link href="{$base_url}assets/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
 
@@ -15,9 +19,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.css">
 <link href="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.css" rel="stylesheet" />
 {else}
-<link href="{$base_url}assets/leaflet/leaflet/leaflet.css" rel="stylesheet" />
-<link href="{$base_url}assets/leaflet/fullscreen/leaflet.fullscreen.css" rel="stylesheet" />
-<link href="{$base_url}assets/leaflet/easybutton/easy-button.css" rel="stylesheet" />
+<link href="{$base_url}cdn/leaflet/leaflet/leaflet.css" rel="stylesheet" />
+<link href="{$base_url}cdn/leaflet/fullscreen/leaflet.fullscreen.css" rel="stylesheet" />
+<link href="{$base_url}cdn/leaflet/easybutton/easy-button.css" rel="stylesheet" />
 <link href="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.css" rel="stylesheet" />
 {/if}
 {/if}
@@ -39,8 +43,8 @@
 <link href="{$base_url}assets/datatables/KeyTable-2.5.1/css/keyTable.bootstrap4.css" rel="stylesheet" type="text/css" >
 
 <link href="{$base_url}assets/datatables/RowReorder-1.2.6/css/rowReorder.bootstrap4.css" rel="stylesheet" type="text/css" >
-<link href="{$base_url}assets/datatables/SearchBuilder-1.3.0/css/searchBuilder.bootstrap4.css" rel="stylesheet" type="text/css" >
-<link href="{$base_url}assets/datatables/SearchPanes-1.4.0/css/searchPanes.bootstrap4.css" rel="stylesheet" type="text/css" >
+<!-- <link href="{$base_url}assets/datatables/SearchBuilder-1.3.0/css/searchBuilder.bootstrap4.css" rel="stylesheet" type="text/css" >
+<link href="{$base_url}assets/datatables/SearchPanes-1.4.0/css/searchPanes.bootstrap4.css" rel="stylesheet" type="text/css" > -->
 
 {if !empty($use_editor)}
 <!-- <link href="{$base_url}assets/datatables/editor.min.css" rel="stylesheet" type="text/css" /> -->
@@ -92,18 +96,23 @@
 {/if}
 {/if}
 
-{if !empty($use_calendar)}
 <!-- full calendar -->
+<!-- {if !empty($use_calendar)}
 <link href="{$base_url}assets/fullcalendar/core/main.min.css" rel="stylesheet" type="text/css" />
-{/if} 
+{/if}  -->
 
 <!-- toastr toast popup -->
 <link href="{$base_url}assets/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
 <link href="{$base_url}assets/toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 
 <!-- icons -->
-<link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
+{if $smarty.const.USE_CDN|default: 1} 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
+{else}
+<link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
 <!-- <link href="{$base_url}assets/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" rel="stylesheet" type="text/css" /> -->
+{/if}
+
 <link href="{$base_url}assets/dripicons/icons.min.css" rel="stylesheet" type="text/css" />
 
 <!-- many of the 3rd-party library (including datatables) require older version of materialdesign icon -->

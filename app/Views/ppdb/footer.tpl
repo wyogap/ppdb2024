@@ -54,6 +54,12 @@
 <script src="{$base_url}assets/select2/js/select2.min.js"></script>
 {/if}
 
+{if $smarty.const.USE_CDN|default: 1}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+{else}
+<script src="{$base_url}cdn/fontawesome/js/all.min.css"></script>
+{/if}
+
 {if $use_datatable|default: FALSE}
 <script src="{$base_url}assets/datatables/DataTables-1.11.4/js/jquery.dataTables.min.js"></script>
 <script src="{$base_url}assets/datatables/Select-1.3.4/js/dataTables.select.min.js"></script>

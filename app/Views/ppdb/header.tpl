@@ -24,6 +24,12 @@
     <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
     {/if}
 
+    {if $smarty.const.USE_CDN|default: 1}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
+    {else}
+    <link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
+    {/if}
+
     {if $use_leaflet|default: FALSE}
     {if $smarty.const.USE_CDN|default: 1} 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.css"/>
@@ -45,12 +51,6 @@
     {if $use_datatable_editor|default: FALSE}
     <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css" type="text/css" >   
     {/if} 
-    {/if}
-    
-    {if $smarty.const.USE_CDN|default: 1}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
-    {else}
-    <link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     {/if}
 
     <!-- <link href="{$base_url}assets/flaticon/flaticon.css" rel="stylesheet" type="text/css" />
