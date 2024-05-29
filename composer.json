@@ -15,21 +15,11 @@
         "ext-mbstring": "*",
         "laminas/laminas-escaper": "^2.13",
         "psr/log": "^3.0",
-		"dompdf/dompdf": "^2.0.0",
+	"dompdf/dompdf": "^2.0.0",
         "phpoffice/phpspreadsheet": "^1.17",
         "smarty/smarty": "^4.1",
         "aws/aws-sdk-php": "^3.227",
         "geekcom/phpjasper": "^3.4.0"
-    },
-    "require-dev": {
-        "codeigniter/coding-standard": "^1.7",
-        "fakerphp/faker": "^1.9",
-        "friendsofphp/php-cs-fixer": "^3.47.1",
-        "kint-php/kint": "^5.0.4",
-        "mikey179/vfsstream": "^1.6",
-        "nexusphp/cs-config": "^3.6",
-        "phpunit/phpunit": "^10.5.16",
-        "predis/predis": "^1.1 || ^2.0"
     },
     "suggest": {
         "ext-curl": "If you use CURLRequest class",
