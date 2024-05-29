@@ -47,7 +47,7 @@
 </a>  
 
 <!-- Required vendors -->
-<script src="{$base_url}/themes/dompet/vendor/global/global.min.js"></script>
+<script src="{$base_url}/themes/dompet/js/global.min.js"></script>
 <script src="{$base_url}/themes/dompet/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
 
 {if $use_select2|default: FALSE}
@@ -55,8 +55,8 @@
 {/if}
 
 {if $use_datatable|default: FALSE}
-<script src="{$base_url}assets/datatables/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="{$base_url}assets/datatables/Select-1.3.1/js/dataTables.select.min.js"></script>
+<script src="{$base_url}assets/datatables/DataTables-1.11.4/js/jquery.dataTables.min.js"></script>
+<script src="{$base_url}assets/datatables/Select-1.3.4/js/dataTables.select.min.js"></script>
 <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.html5.min.js"></script>

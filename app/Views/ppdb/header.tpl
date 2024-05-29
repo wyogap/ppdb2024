@@ -31,8 +31,8 @@
     {/if}
 
     {if $use_datatable|default: FALSE} 
-    <link rel="stylesheet" href="{$base_url}assets/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="{$base_url}assets/datatables/Select-1.3.1/css/select.dataTables.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/datatables/DataTables-1.11.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/datatables/Select-1.3.4/css/select.dataTables.min.css">
     <link rel="stylesheet" href="{$base_url}assets/datatables/Responsive-2.2.3/css/responsive.dataTables.min.css">
 	<link rel="stylesheet" href="{$base_url}assets/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css">
 
@@ -42,6 +42,9 @@
     {/if}
      
     <link href="{$base_url}assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- <link href="{$base_url}assets/flaticon/flaticon.css" rel="stylesheet" type="text/css" />
+    <link href="{$base_url}assets/flaticon/flaticon.css" rel="stylesheet" type="text/css" /> -->
 
     <!-- toastr toast popup -->
     <link href="{$base_url}assets/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
