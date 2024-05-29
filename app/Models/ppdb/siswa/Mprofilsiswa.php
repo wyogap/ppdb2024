@@ -509,7 +509,7 @@ Class Mprofilsiswa
         
         $pengguna_id = $this->session->get('user_id');
         
-		$query = "CALL " .SQL_HAPUS_PENDAFTARAN. " (?, ?, ?, ?, ?)";
+		$query = "CALL " .SQL_HAPUS_PENDAFTARAN. " (?, ?, ?, ?)";
 		$status = $this->db->query($query, array($peserta_didik_id, $pendaftaran_id, $keterangan, $pengguna_id));
         if ($status == null)    return 0;
         

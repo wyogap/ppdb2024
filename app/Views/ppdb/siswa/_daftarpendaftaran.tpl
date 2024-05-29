@@ -2,6 +2,8 @@
     function update_hasil_layout() {
         if (daftarpendaftaran == null || daftarpendaftaran.length == 0) {
             $('#daftar-pendaftaran-notif').show();
+            let parent = $("#daftar-pendaftaran");
+            parent.html(''); 
             return;
         }
 
@@ -13,7 +15,6 @@
 
         //add pendaftaran one-by-one
         daftarpendaftaran.forEach(function(pendaftaran, idx) {
-
             // render template
             let template = $('#detail-pendaftaran').html();
             Mustache.parse(template);
@@ -370,8 +371,13 @@
                 sekolah = item['sekolah'];
                 jalur = item['jalur'];
 
-                //get the return value and re-set the field
-                daftarpendaftaran = json.data;
+                //get the return value and re-set the field 
+                if (json.data === undefined || json.data == null) {
+                    daftarpendaftaran = [];
+                }
+                else {
+                    daftarpendaftaran = json.data;
+                }
                 update_hasil_layout();
                 update_pendaftaran_layout();
 

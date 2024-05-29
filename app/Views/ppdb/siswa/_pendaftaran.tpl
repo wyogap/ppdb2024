@@ -84,11 +84,13 @@
 
         //sisa slot pendaftaran
         jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
-        daftarpendaftaran.forEach(function(p) {
-            if (p['pendaftaran'] != 1)  return;
-            if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
-            else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
-        });
+        if (daftarpendaftaran != null) {
+            daftarpendaftaran.forEach(function(p) {
+                if (p['pendaftaran'] != 1)  return;
+                if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
+                else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
+            });
+        }
 
         let slotnegeri = maxpilihannegeri - jumlahpendaftarannegeri;
         let slotswasta = maxpilihanswasta - jumlahpendaftaranswasta;
@@ -328,41 +330,48 @@
         json['jenis_pilihan'] = jenis_pilihan;
         json['sekolah_id'] = sekolah_id;
 
-        $.ajax({
-                type: 'POST',
-                url: "{$site_url}ppdb/siswa/daftar",
-                dataType: 'json',
-                data: json,
-                async: true,
-                cache: false,
-                //if we use formData, set processData = false. if we use json, set processData = true!
-                //contentType: true,
-                //processData: true,      
-                timeout: 60000,
-                success: function(json) {
-                    if (json.error !== undefined && json.error != "" && json.error != null) {
-                        toastr.error('Tidak berhasil menyimpan data profil. ' +json.error);
-                        return;
-                    }
-                    //tambahkan ke daftar pendaftaran
-                    nama_sekolah = ''; jalur = '';
-                    for (p of json.data) {
-                        if (p['pendaftaran'] == 1) {
-                            nama_sekolah = p['sekolah'];
-                            jalur = p['jalur'];
-                        }
-                        daftarpendaftaran.push(p);
-                    };
-                    update_pendaftaran_layout();
-                    update_hasil_layout();
+        $("#loader").show();
 
-                    toastr.success("Berhasil melakukan pendaftaran di " +nama_sekolah+ " (" +jalur+ ")");
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    toastr.error('Tidak berhasil menyimpan data profil. ' +textStatus);
+        $.ajax({
+            type: 'POST',
+            url: "{$site_url}ppdb/siswa/daftar",
+            dataType: 'json',
+            data: json,
+            async: true,
+            cache: false,
+            //if we use formData, set processData = false. if we use json, set processData = true!
+            //contentType: true,
+            //processData: true,      
+            timeout: 60000,
+            success: function(json) {
+                if (json.error !== undefined && json.error != "" && json.error != null) {
+                    toastr.error('Tidak berhasil menyimpan data profil. ' +json.error);
                     return;
                 }
-            });
+                //tambahkan ke daftar pendaftaran
+                nama_sekolah = ''; jalur = '';
+                for (p of json.data) {
+                    if (p['pendaftaran'] == 1) {
+                        nama_sekolah = p['sekolah'];
+                        jalur = p['jalur'];
+                    }
+                    daftarpendaftaran.push(p);
+                };
+                update_pendaftaran_layout();
+                update_hasil_layout();
+
+                toastr.success("Berhasil melakukan pendaftaran di " +nama_sekolah+ " (" +jalur+ ")");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error('Tidak berhasil menyimpan data profil. ' +textStatus);
+                $("#loader").hide();
+                return;
+            }
+        })
+        .done(function(json) {
+            $("#loader").hide();
+        });
+;
 
 
     }

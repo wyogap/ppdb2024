@@ -163,9 +163,16 @@ class Siswa extends PpdbController {
             // var_dump($dok_surat_pernyataan); exit;
 
             //verifikasi suket kebenaran dok
-            $pernyataan_verifikasi = $dok_surat_pernyataan['verifikasi'];
-            $pernyataan_file = $dok_surat_pernyataan['path'];
-            $pernyataan_tanggal = $dok_surat_pernyataan['tanggal_berkas'];
+            if (!empty($dok_surat_pernyataan)) {
+                $pernyataan_verifikasi = $dok_surat_pernyataan['verifikasi'];
+                $pernyataan_file = $dok_surat_pernyataan['path'];
+                $pernyataan_tanggal = $dok_surat_pernyataan['tanggal_berkas'];    
+            }
+            else {
+                $pernyataan_verifikasi = 1;
+                $pernyataan_file = 1;
+                $pernyataan_tanggal = '';    
+            }
         
             //verifikasi dokumen
             if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
