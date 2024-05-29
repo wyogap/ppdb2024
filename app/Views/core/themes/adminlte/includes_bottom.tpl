@@ -4,16 +4,26 @@
 
 <script src="{$base_url}assets/bootstrap-datepicker/js/bootstrap-datepicker.min.js" defer></script>
 
-{if !empty($use_geo)}
+{if $use_geo|default: FALSE}
 <!-- leaflet -->
-<script src="{$base_url}assets/leaflet/leaflet/leaflet.js" defer></script>
+{if $smarty.const.USE_CDN|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
 <script src="{$base_url}assets/leaflet/esri/esri-leaflet.js" defer></script>
-<script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js" defer></script>
-<script src="{$base_url}assets/leaflet/fullscreen/Leaflet.fullscreen.min.js" defer></script>
-<script src="{$base_url}assets/leaflet/easybutton/easy-button.js" defer></script>
+<script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js"></script>
 <script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
 <script src="{$base_url}assets/leaflet/oms/oms.min.js" defer></script>
-{/if} 
+{else}
+<script src="{$base_url}assets/leaflet/leaflet/leaflet.js"></script>
+<script src="{$base_url}assets/leaflet/fullscreen/leaflet.fullscreen.js"></script>
+<script src="{$base_url}assets/leaflet/easybutton/easy-button.js"></script>
+<script src="{$base_url}assets/leaflet/esri/esri-leaflet.js" defer></script>
+<script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js"></script>
+<script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
+<script src="{$base_url}assets/leaflet/oms/oms.min.js" defer></script>
+{/if}
+{/if}
 
 {if !empty($use_select2)}
 <!-- select2 -->
@@ -94,10 +104,12 @@
 
 {if !empty($use_wysiwyg)}
 <!-- WYSIWYG editor -->
+{if $smarty.const.USE_CDN|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/29.1.0/ckeditor.min.js"></script>
+{else}
 <script src="{$base_url}assets/ckeditor5/ckeditor.js"></script>
 <!-- <script src="{$base_url}assets/ckeditor/adapters/jquery.js" defer></script> -->
-<!-- <script src="{$base_url}assets/backend/js/vendor/summernote-bs4.min.js"></script>
-<script src="{$base_url}assets/backend/js/pages/demo.summernote.js"></script> -->
+{/if}
 <script src="{$base_url}assets/datatables/tcg/dt-editor-editor.js" defer></script>
 {/if} 
 {/if}

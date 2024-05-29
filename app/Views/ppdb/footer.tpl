@@ -80,16 +80,22 @@
 <script src="{$base_url}assets/moment/moment-with-locales.min.js" defer></script>
 
 {if $use_leaflet|default: FALSE}
-<script src="{$site_url}assets/leaflet/leaflet.js"></script>
-<script src="{$site_url}assets/leafletfullscreen/leaflet.fullscreen.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script> 
+{if $smarty.const.USE_CDN|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
+{else}
+<script src="{$site_url}cdn/leaflet/leaflet.js"></script>
+<script src="{$site_url}cdn/leafletfullscreen/leaflet.fullscreen.js"></script>
+<script src="{$base_url}cdn/leaflet/easybutton/easy-button.js"></script>
+{/if}
 {/if}
 
 {if $use_highchart|default: FALSE} 
 {if $smarty.const.USE_CDN|default: 1}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/highcharts.js"></script>
 {else} 
-<script src="{$site_url}assets/highcharts/highcharts.js"></script>
+<script src="{$site_url}cdn/highcharts/highcharts.js"></script>
 {/if}
 {/if}
 <script src="{$base_url}assets/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>

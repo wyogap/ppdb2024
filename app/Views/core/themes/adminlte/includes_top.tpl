@@ -7,12 +7,19 @@
 
 <link href="{$base_url}assets/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
 
-{if !empty($use_geo)}
+{if $use_geo|default: FALSE}
 <!-- leaflet -->
-<link href="{$base_url}assets/leaflet/leaflet/leaflet.css" rel="stylesheet" />
+{if $smarty.const.USE_CDN|default: 1} 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.css">
 <link href="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.css" rel="stylesheet" />
+{else}
+<link href="{$base_url}assets/leaflet/leaflet/leaflet.css" rel="stylesheet" />
 <link href="{$base_url}assets/leaflet/fullscreen/leaflet.fullscreen.css" rel="stylesheet" />
 <link href="{$base_url}assets/leaflet/easybutton/easy-button.css" rel="stylesheet" />
+<link href="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.css" rel="stylesheet" />
+{/if}
 {/if}
 
 {if !empty($use_select2)}
