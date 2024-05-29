@@ -154,6 +154,18 @@ class Auth extends AuthController
             $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
             $siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
             
+            if (empty($siswa)) {
+                $error = 'Akun anda tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
+                if ($json == 1) {
+                    $data = array('status'=>'0', 'error'=>$error);
+                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+                }
+                else {
+                    $this->session->setFlashdata('error', $error);	
+                }
+                return false;
+            }
+            
             //akses ditutup
             if ($siswa['tutup_akses'] == '1') {
                 $error = __('Akses login anda untuk sementara ditolak');
@@ -186,6 +198,18 @@ class Auth extends AuthController
 
             $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
             $sekolah = $msekolah->tcg_profilsekolah($sekolah_id);
+            
+            if (empty($sekolah)) {
+                $error = 'Akun anda tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
+                if ($json == 1) {
+                    $data = array('status'=>'0', 'error'=>$error);
+                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+                }
+                else {
+                    $this->session->setFlashdata('error', $error);	
+                }
+                return false;
+            }
 
             if ($sekolah['ikut_ppdb'] != '1') {
                 $error = __('Sekolah anda tidak ikut PPDB Online');
@@ -200,7 +224,25 @@ class Auth extends AuthController
             }
             
         }
+        else if ($role_id == ROLEID_DAPODIK) {
+            $sekolah_id = $result['sekolah_id'];
 
+            $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
+            $sekolah = $msekolah->tcg_profilsekolah($sekolah_id);
+            
+            if (empty($sekolah)) {
+                $error = 'Akun anda tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
+                if ($json == 1) {
+                    $data = array('status'=>'0', 'error'=>$error);
+                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+                }
+                else {
+                    $this->session->setFlashdata('error', $error);	
+                }
+                return false;
+            }
+        }
+        
         return true;
     }
 

@@ -40,9 +40,10 @@
         } );
 
 		$('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
-		$.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
+		    $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
 		} );
 
+        {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 		editor_siswa = new $.fn.dataTable.Editor( {
 			ajax: "{$site_url}ppdb/dapodik/penerimaan/json",
 			table: "#tditerima",
@@ -64,6 +65,8 @@
 				label: "NISN:",
 				name: "nisn",
 				type: "text",
+                def: "NA",
+                fieldInfo: "Apabila belum mempunya NISN, diisi dengan: NA"
 			}, {
 				label: "NIK:",
 				name: "nik",
@@ -163,7 +166,7 @@
  
                     if (!hasError) {
                         //TODO: validasi lebih lanjut
-						if (field.val().length != 10) {
+						if (field.val() != 'NA' && field.val().length != 10) {
 							hasError = true;
                         	field.error('NISN harus 10 digit.');
 						}
@@ -182,7 +185,7 @@
                         //TODO: validasi lebih lanjut
 						if (field.val().length != 16) {
 							hasError = true;
-                        	field.error('NPSN harus 16 digit.');
+                        	field.error('NIK harus 16 digit.');
 						}
                     }
                 }
@@ -265,6 +268,7 @@
             }
 
         });        
+        {/if}
 
 		dt_siswa = $('#tditerima').DataTable({
 			"responsive": true,
@@ -275,10 +279,10 @@
 			"dom": 'Bfrtpil',
 			select: true,
 			buttons: [
-                {if $cek_waktupendaftaran_sd==1}
+                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{ 
 					extend: "create", 
-                    text: "Siswa Baru Belum Sekolah",
+                    text: "Siswa Baru (Luar Daerah/Belum Sekolah)",
                     editor: editor_siswa,
 					formButtons: [
 						{ text: 'Simpan', className: 'btn-primary', action: function () { this.submit(); } },
@@ -286,17 +290,17 @@
 					]
 				},
                 {/if}
-				{
-					extend: 'excelHtml5',
-					text: 'Ekspor',
-					className: 'btn-sm btn-primary',
-					exportOptions: {
-						orthogonal: "export",
-						modifier: {
-							//selected: true
-						},
-					},
-				},
+				// {
+				// 	extend: 'excelHtml5',
+				// 	text: 'Ekspor',
+				// 	className: 'btn-sm btn-primary',
+				// 	exportOptions: {
+				// 		orthogonal: "export",
+				// 		modifier: {
+				// 			//selected: true
+				// 		},
+				// 	},
+				// },
 			],
 			"ajax": {
                 "type" : "POST",
@@ -328,7 +332,7 @@
 				{ data: "nama_ibu_kandung", className: 'dt-body-center' },
 				{ data: "npsn_sekolah_asal", className: 'dt-body-center' },
 				{ data: "asal_sekolah", className: 'dt-body-left' },
-                {if $cek_waktupendaftaran_sd==1}
+                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -586,7 +590,7 @@
 				{ data: "tanggal_lahir", className: 'dt-body-center text-nowrap' },
 				{ data: "sekolah", className: 'dt-body-left' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
-                {if $cek_waktupendaftaran_sd==1}
+                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -609,14 +613,62 @@
 			"deferLoading": 0
 		});
 
+        populate_daftar_sekolah();
 	});
+
+    function populate_daftar_sekolah() {
+
+        //get daftar sekolah from server
+		$.ajax({
+			type: "POST",
+			url: "{$site_url}ppdb/dapodik/penerimaan/json?action=sekolah",
+			async: true,
+			cache: false,
+			contentType: false,
+			processData: false,
+			timeout: 60000,
+			dataType: 'json',
+			success: function(json) {
+				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+					toastr.error("Tidak berhasil mendapatkan daftar sekolah. " +json.error);
+					return;
+				}
+
+                if (json.data == null || json.length == 0) {
+                    return;
+                }
+
+                //repopulate the list
+                let select = $("#sekolah_id");
+
+                select.empty();
+
+                let opt = $("<option>").val('').text("-- Asal Sekolah --");
+                select.append(opt);
+
+                json.data.forEach(function(item, index, arr) {
+                    opt = $("<option>").val(item.sekolah_id).text("(" +item.npsn+ ") " +item.nama);
+                    select.append(opt);
+                });
+
+                //rebuild the select2?
+
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +textStatus);
+
+				return;
+			}
+		});
+
+    }
 
 	function cari_peserta_didik() {
 		nama_baru = $("#nama").val();
 		nisn_baru = $("#nisn").val();
 		sekolah_baru = $("#sekolah_id").val();
 
-		if ('' == nama_baru && '' == nisn_baru && '' == sekolah_id_baru) {
+		if ('' == nama_baru && '' == nisn_baru && '' == sekolah_baru) {
 			return;
 		}
 
@@ -629,7 +681,7 @@
 		$("#loader").show();
 
 		//reload
-		dt_search.ajax.url("{$site_url}ppdb/dapodik/penerimaan/json?action=search&nama=" + nama_baru + "&nisn=" + nisn_baru );
+		dt_search.ajax.url("{$site_url}ppdb/dapodik/penerimaan/json?action=search&nama=" + nama_baru + "&nisn=" + nisn_baru +"&sekolah_id=" + sekolah_baru);
 		dt_search.ajax.reload(function(json) {
 			//hide loader
 			$("#loader").hide();

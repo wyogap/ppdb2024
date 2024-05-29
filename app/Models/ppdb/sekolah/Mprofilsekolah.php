@@ -447,7 +447,7 @@ Class Mprofilsekolah
 		return $this->db->query($sql, array($peserta_didik_id))->getRowArray();
 	}
 
-	function tcg_calon_pesertadidik_sd($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan, $limit){
+	function tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $limit){
 		$filter = 0;
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir,
 					  b.kode_wilayah_desa, b.nama_desa, b.kode_wilayah_kec, b.nama_kec, c.nama as sekolah,
@@ -459,43 +459,45 @@ Class Mprofilsekolah
 				  left join ref_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
 				  ";
 
-		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA')";
+		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA', 'PAUD')";
 		if (!empty($nama)) {
 			$filter = 1;
 			$where .= " AND a.nama like '%" . $nama . "%'";
-		}
-		if (!empty($jenis_kelamin)) {
-			$filter = 1;
-			$where .= " AND a.jenis_kelamin='" . $jenis_kelamin . "'";
 		}
 		if (!empty($nisn)) {
 			$filter = 1;
 			$where .= " AND a.nisn='" . $nisn . "'";
 		}
-		if (!empty($nik)) {
-			$filter = 1;
-			$where .= " AND a.nik='" . $nik . "'";
-		}
-		if (!empty($kode_kecamatan)) {
-			$filter = 1;
-			$where .= " AND a.kode_kecamatan=" . $kode_kecamatan;
-		}
-		if (!empty($kode_desa)) {
-			$filter = 1;
-			$where .= " AND a.kode_desa=" . $kode_desa;
-		}
 		if (!empty($sekolah_id)) {
 			$filter = 1;
 			$where .= " AND a.sekolah_id='" . $sekolah_id . "'";
 		}
+		// if (!empty($jenis_kelamin)) {
+		// 	$filter = 1;
+		// 	$where .= " AND a.jenis_kelamin='" . $jenis_kelamin . "'";
+		// }
+		// if (!empty($nik)) {
+		// 	$filter = 1;
+		// 	$where .= " AND a.nik='" . $nik . "'";
+		// }
+		// if (!empty($kode_kecamatan)) {
+		// 	$filter = 1;
+		// 	$where .= " AND a.kode_kecamatan=" . $kode_kecamatan;
+		// }
+		// if (!empty($kode_desa)) {
+		// 	$filter = 1;
+		// 	$where .= " AND a.kode_desa=" . $kode_desa;
+		// }
 
-		if ($filter == 0) {
-			//no aktif filter! dont show anything
-			$where .= " AND 1=0";
-		}
+		// if ($filter == 0) {
+		// 	//no aktif filter! dont show anything
+		// 	$where .= " AND 1=0";
+		// }
 
 		$query .= " WHERE " . $where;
         $query .= " limit " . $limit;
+
+        //echo $query; exit;
 
 		return $this->db->query($query)->getResultArray();	
 	}

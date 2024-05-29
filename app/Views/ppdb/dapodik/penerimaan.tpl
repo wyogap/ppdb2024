@@ -98,9 +98,9 @@
                             <td class="text-center">Jenis Kelamin</td>
                             <td class="text-center" data-priority="3">NISN</td>
                             <td class="text-center">NIK</td>
-                            <td class="text-center" data-priority="4">Tanggal Lahir</td>
+                            <td class="text-center" data-priority="5">Tanggal Lahir</td>
                             <td class="text-center">Asal Sekolah</td>
-                            <td class="text-center">Diterima Di</td>
+                            <td class="text-center" data-priority="4">Diterima Di</td>
                             {if $cek_waktupendaftaran_sd==1}
                             <td class="text-center" data-priority="2"></td>
                             {/if}

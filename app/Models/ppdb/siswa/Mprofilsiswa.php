@@ -796,6 +796,11 @@ Class Mprofilsiswa
     }
 
     function tcg_cek_nisn($nisn) {
+        if (strtoupper($nisn) == 'NA') {
+            //special case: siswa yang belum punya nisn
+            return 0;
+        }
+
         $sql = "select count(*) as jumlah from tcg_peserta_didik where is_deleted=0 and nisn=?";
 
         $result = $this->db->query($sql, array($nisn))->getRowArray();

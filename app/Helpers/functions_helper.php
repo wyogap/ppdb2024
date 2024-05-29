@@ -723,7 +723,7 @@
 
 			$page_data['navigation']	 = $navigation;
 
-			$template = "core/errors/404.tpl";
+			$template = "/core/errors/404.tpl";
 
             $smarty = new SmartyLibrary();
             $smarty->render_theme($template, $page_data);
@@ -755,7 +755,7 @@
 
 			$page_data['navigation']	 = $navigation;
 
-			$template = "core/errors/403.tpl";
+			$template = "/core/errors/403.tpl";
 
             $smarty = new SmartyLibrary();
 			$smarty->render_theme($template, $page_data);

@@ -216,11 +216,11 @@ class Penerimaan extends PpdbController {
             $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
 
             if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
-                print_json_error('Minimal tanggal lahir: ', $batasan_usia['minimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+                print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
             }
 
             if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
-                print_json_error('Maksimal tanggal lahir: ', $batasan_usia['maksimal_tanggal_lahir'], '. Tanggal lahir siswa: ', $siswa['tanggal_lahir']);
+                print_json_error('Maksimal tanggal lahir: ' .$batasan_usia['maksimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
             }            
 
 			$status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
@@ -244,15 +244,21 @@ class Penerimaan extends PpdbController {
         else if ($action=='search') {
 			$nama = $this->request->getPostGet("nama"); 
 			$nisn= $this->request->getPostGet("nisn"); 
+			$sekolah_id= $this->request->getPostGet("sekolah_id"); 
             $limit = 1000;
 
-			if (empty($nama) && empty($nisn)) {
+			if (empty($nama) && empty($nisn) && empty($sekolah_id)) {
 				//no search
-				print_json_error("Tidak ada yang perlu dicari.");
+				print_json_output(array(), 1);
+                return;
 			}
 
-            $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, null, null, null, null, null, $limit);
-            print_json_output($daftar);
+            $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $limit);
+            if ($daftar == null) {
+                $daftar = array();
+            }
+
+            print_json_output($daftar, 1);
         }
 		else {
 			$data['error'] = "not-implemented"; 
