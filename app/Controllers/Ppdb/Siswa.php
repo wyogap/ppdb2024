@@ -5,6 +5,7 @@ namespace App\Controllers\Ppdb;
 use App\Controllers\Ppdb\PpdbController;
 use App\Libraries\QRCodeLibrary;
 use App\Libraries\Uploader;
+use App\Models\Ppdb\Mconfig;
 use App\Models\Ppdb\Siswa\Mprofilsiswa;
 use App\Models\Ppdb\Mdropdown;
 use CodeIgniter\HTTP\RequestInterface;
@@ -14,15 +15,15 @@ use Psr\Log\LoggerInterface;
 
 class Siswa extends PpdbController {
 
+    //only accessible to superadmin
+    protected static $ROLE_ID = ROLEID_SISWA;      
+
     protected $Msiswa;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        //load library
-        //$this->smarty = new SmartyLibrary();
 
         //load model
         $this->Msiswa = new Mprofilsiswa();
@@ -443,134 +444,134 @@ class Siswa extends PpdbController {
 		}
 	}
     
-    //daftar prestasi (view/edit/add/delete)
-    function prestasi() {
-        $peserta_didik_id = $this->session->get("user_id");
-		$tahun_ajaran_id = $this->tahun_ajaran_id;
+    // //daftar prestasi (view/edit/add/delete)
+    // function prestasi() {
+    //     $peserta_didik_id = $this->session->get("user_id");
+	// 	$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-        $flag_upload_dokumen = $this->setting->get('upload_dokumen');
-        $mdropdown = new Mdropdown();
+    //     $flag_upload_dokumen = $this->setting->get('upload_dokumen');
+    //     $mdropdown = new Mconfig();
 
-        $action = $_POST["action"] ?? null; 
-		if (empty($action) || $action=='view') {
-            $data['data'] = $this->Msiswa->tcg_daftar_prestasi($peserta_didik_id)->getResultArray();
-            //var_dump($data['data']);
-            foreach($data['data'] as $idx=>$row) {
-                if (!empty($row['catatan'])) {
-                    $data['data'][$idx]['catatan'] = nl2br(trim($row['catatan']));
-                }
-                else {
-                    $data['data'][$idx]['catatan'] = "";
-                }
-            }
+    //     $action = $_POST["action"] ?? null; 
+	// 	if (empty($action) || $action=='view') {
+    //         $data['data'] = $this->Msiswa->tcg_daftar_prestasi($peserta_didik_id)->getResultArray();
+    //         //var_dump($data['data']);
+    //         foreach($data['data'] as $idx=>$row) {
+    //             if (!empty($row['catatan'])) {
+    //                 $data['data'][$idx]['catatan'] = nl2br(trim($row['catatan']));
+    //             }
+    //             else {
+    //                 $data['data'][$idx]['catatan'] = "";
+    //             }
+    //         }
 
-            $data['options']['skoring_id'] = $mdropdown->tcg_select_prestasi($tahun_ajaran_id)->getResultArray();
+    //         $data['options']['skoring_id'] = $mdropdown->tcg_select_prestasi($tahun_ajaran_id)->getResultArray();
 
-            $files = $this->Msiswa->tcg_daftar_prestasi_files($peserta_didik_id)->getResultArray();
-            $data['files']['files'] = array();
-            foreach($files as $row) {
-                $id = $row['id'];
-                $data['files']['files'][$id] = $row;
-                $data['files']['files'][$id]['file_path'] = base_url(). $row['path'];
-                $data['files']['files'][$id]['web_path'] = base_url(). $row['web_path'];
-                $data['files']['files'][$id]['thumbnail_path'] = base_url(). $row['thumbnail_path'];
-            }
+    //         $files = $this->Msiswa->tcg_daftar_prestasi_files($peserta_didik_id)->getResultArray();
+    //         $data['files']['files'] = array();
+    //         foreach($files as $row) {
+    //             $id = $row['id'];
+    //             $data['files']['files'][$id] = $row;
+    //             $data['files']['files'][$id]['file_path'] = base_url(). $row['path'];
+    //             $data['files']['files'][$id]['web_path'] = base_url(). $row['web_path'];
+    //             $data['files']['files'][$id]['thumbnail_path'] = base_url(). $row['thumbnail_path'];
+    //         }
 
-            echo json_encode($data);
-        }
-		else if ($action=='edit'){
-			$values = $_POST["data"] ?? null; 
-            if ($values == null) {
-                $data['data'] = array();
-                $data['error'] = "no-data";
-                echo json_encode($data);
-                return;
-            }
+    //         echo json_encode($data);
+    //     }
+	// 	else if ($action=='edit'){
+	// 		$values = $_POST["data"] ?? null; 
+    //         if ($values == null) {
+    //             $data['data'] = array();
+    //             $data['error'] = "no-data";
+    //             echo json_encode($data);
+    //             return;
+    //         }
 
-            $error_msg = "";
-			foreach ($values as $key => $valuepair) {
-                if (empty($valuepair['dokumen_pendukung'])) {
-                    continue;
-                };
-                $doc_id = $valuepair['dokumen_pendukung'];
+    //         $error_msg = "";
+	// 		foreach ($values as $key => $valuepair) {
+    //             if (empty($valuepair['dokumen_pendukung'])) {
+    //                 continue;
+    //             };
+    //             $doc_id = $valuepair['dokumen_pendukung'];
 
-                $status = $this->Msiswa->tcg_ubah_dokumen_prestasi($key, $doc_id);
-                if ($status == 1) {
-                    $data['data'] = $this->Msiswa->tcg_prestasi_detil($peserta_didik_id, $key)->getResultArray(); 
-                }
-                else {
-                    $data['data'] = "error";
-                }
-			}
+    //             $status = $this->Msiswa->tcg_ubah_dokumen_prestasi($key, $doc_id);
+    //             if ($status == 1) {
+    //                 $data['data'] = $this->Msiswa->tcg_prestasi_detil($peserta_didik_id, $key)->getResultArray(); 
+    //             }
+    //             else {
+    //                 $data['data'] = "error";
+    //             }
+	// 		}
 
-            echo json_encode($data);	
-        }
-        else if ($action=='remove') {
-			$values = $_POST["data"] ?? null; 
-            if ($values == null) {
-                $data['data'] = array();
-                $data['error'] = "no-data";
-                echo json_encode($data);
-                return;
-            }
+    //         echo json_encode($data);	
+    //     }
+    //     else if ($action=='remove') {
+	// 		$values = $_POST["data"] ?? null; 
+    //         if ($values == null) {
+    //             $data['data'] = array();
+    //             $data['error'] = "no-data";
+    //             echo json_encode($data);
+    //             return;
+    //         }
 
-            $error_msg = "";
-			foreach ($values as $key => $valuepair) {
-                $data['data'] = $this->Msiswa->tcg_hapus_prestasi($peserta_didik_id, $key);
-			}
+    //         $error_msg = "";
+	// 		foreach ($values as $key => $valuepair) {
+    //             $data['data'] = $this->Msiswa->tcg_hapus_prestasi($peserta_didik_id, $key);
+	// 		}
 
-            $data['data'] = array(); 
-			echo json_encode($data);	
-        }
-        else if ($action=='create') {
-            $values = $_POST["data"] ?? null; 
-            if ($values == null) {
-                $data['data'] = array();
-                $data['error'] = "no-data";
-                echo json_encode($data);
-                return;
-            }
+    //         $data['data'] = array(); 
+	// 		echo json_encode($data);	
+    //     }
+    //     else if ($action=='create') {
+    //         $values = $_POST["data"] ?? null; 
+    //         if ($values == null) {
+    //             $data['data'] = array();
+    //             $data['error'] = "no-data";
+    //             echo json_encode($data);
+    //             return;
+    //         }
 
-            if (empty($values[0]['skoring_id']) || empty($values[0]['uraian'])) {
-                $data['error'] = "Data wajib belum diisi";
-                echo json_encode($data);
-                return;
-            }
+    //         if (empty($values[0]['skoring_id']) || empty($values[0]['uraian'])) {
+    //             $data['error'] = "Data wajib belum diisi";
+    //             echo json_encode($data);
+    //             return;
+    //         }
 
-            if ($flag_upload_dokumen && empty($values[0]['dokumen_pendukung'])) {
-                $data['error'] = "Data wajib belum diisi";
-                echo json_encode($data);
-                return;
-            }
+    //         if ($flag_upload_dokumen && empty($values[0]['dokumen_pendukung'])) {
+    //             $data['error'] = "Data wajib belum diisi";
+    //             echo json_encode($data);
+    //             return;
+    //         }
 
-            $key = $this->Msiswa->tcg_prestasi_baru($peserta_didik_id, $values[0]);
-            if ($key == 0) {
-                $data['error'] = $this->Msiswa->error();
-            } else {
-                $data['data'] = $this->Msiswa->tcg_prestasi_detil($peserta_didik_id, $key)->getResultArray(); 
-            }
+    //         $key = $this->Msiswa->tcg_prestasi_baru($peserta_didik_id, $values[0]);
+    //         if ($key == 0) {
+    //             $data['error'] = $this->Msiswa->error();
+    //         } else {
+    //             $data['data'] = $this->Msiswa->tcg_prestasi_detil($peserta_didik_id, $key)->getResultArray(); 
+    //         }
 
-            echo json_encode($data);
-        }
-        else if ($action == "upload") {
+    //         echo json_encode($data);
+    //     }
+    //     else if ($action == "upload") {
 
-            $kelengkapan_id = 8;
+    //         $kelengkapan_id = 8;
 
-            $uploader = new Uploader();
-            $fileObj = $uploader->upload($_FILES['upload']);
+    //         $uploader = new Uploader();
+    //         $fileObj = $uploader->upload($_FILES['upload']);
 
-            $data = array();
-            if(!empty($fileObj['error'])) {
-                $data['error'] = $fileObj['error'];
-            } else {
-                $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
-            }
+    //         $data = array();
+    //         if(!empty($fileObj['error'])) {
+    //             $data['error'] = $fileObj['error'];
+    //         } else {
+    //             $data = array("data"=>array(),"files"=>array("files"=>array($fileObj['id']=>$fileObj)),"upload"=>array("id"=>$fileObj['id']));
+    //         }
 
-            echo json_encode($data);
-            return;
-        }   
+    //         echo json_encode($data);
+    //         return;
+    //     }   
 
-    } 
+    // } 
 
     function updateprofil() {
         $data = $this->request->getPost("data");

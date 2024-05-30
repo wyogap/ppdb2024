@@ -11,25 +11,15 @@ use Psr\Log\LoggerInterface;
 
 class Verifikasi extends PpdbController {
 
+    protected static $ROLE_ID = ROLEID_SEKOLAH;      
+
     protected Mprofilsekolah $Msekolah;
     protected Mprofilsiswa $Msiswa;
-
-	// public function __construct()
-	// {
-	// 	parent::__construct();
-	// 	//return redirect()->to("Cinfo");
-	// 	if($this->session->get('isLogged')==FALSE||$this->session->get('peran_id')!=1) {
-	// 		return redirect()->to("akun/login");
-	// 	}
-	// }
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        //load library
-        //$this->smarty = new SmartyLibrary();
 
         //load model
         $this->Msekolah = new Mprofilsekolah();

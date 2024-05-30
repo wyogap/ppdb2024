@@ -9,6 +9,9 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class Peringkat extends PpdbController {
+
+    protected static $ROLE_ID = ROLEID_SEKOLAH;      
+
     protected $Msekolah;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -16,16 +19,8 @@ class Peringkat extends PpdbController {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        //load library
-        //$this->smarty = new SmartyLibrary();
-
         //load model
         $this->Msekolah = new Mprofilsekolah();
-        
-        //TODO: disable first for testing
-        // if($this->session->get('is_logged_in')==FALSE || $this->session->get('peran_id')!=ROLEID_SISWA) {
-		// 	redirect(site_url() .'auth');
-		// }
 
     }
 

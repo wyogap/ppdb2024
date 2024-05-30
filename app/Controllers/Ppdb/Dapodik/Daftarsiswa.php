@@ -11,6 +11,8 @@ use Psr\Log\LoggerInterface;
 
 class Daftarsiswa extends PpdbController {
 
+    protected static $ROLE_ID = ROLEID_DAPODIK;              
+
     protected $Msekolah;
     protected $Msiswa;
 
@@ -25,18 +27,7 @@ class Daftarsiswa extends PpdbController {
         //load model
         $this->Msekolah = new Mprofilsekolah();
         $this->Msiswa = new Mprofilsiswa();
-        
-        //role-based permission
-        //static::$ROLE_ID = ROLEID_DAPODIK;
     }
-    
-    // public function __construct()
-	// {
-	// 	parent::__construct();
-	// 	if($this->session->get('isLogged')==FALSE||$this->session->get('peran_id')!=5) {
-	// 		return redirect()->to("akun/login");
-	// 	}
-	// }
 
 	function index()
 	{
@@ -55,7 +46,9 @@ class Daftarsiswa extends PpdbController {
 
         //content template
         $data['content_template'] = 'daftarsiswa.tpl';
+        $data['js_template'] = '_daftarsiswa.tpl';
 
+        $data['page'] = 'daftarsiswa';
 		$data['page_title'] = 'Daftar Siswa';
         $this->smarty->render('ppdb/dapodik/ppdbdapodik.tpl', $data);
 	}
@@ -141,54 +134,5 @@ class Daftarsiswa extends PpdbController {
         print_json_output($data);
 	}
 
-	// function json() {
-		
-	// 	$action = $_POST["action"] ?? null;
-	// 	if (empty($action) || $action=='view') {
-	// 		$data['error'] = "not-implemented"; 
-	// 		echo json_encode($data);	
-	// 	}
-	// 	else if ($action=='edit'){
-	// 		$data['error'] = "not-implemented"; 
-	// 		echo json_encode($data);	
-    //     }
-    //     else if ($action=='remove') {
-	// 		$data['error'] = "not-implemented"; 
-	// 		echo json_encode($data);	
-    //     }
-    //     else if ($action=='create') {
-	// 		$data['error'] = "not-implemented"; 
-	// 		echo json_encode($data);	
-    //     }
-	// 	else {
-	// 		$data['error'] = "not-implemented"; 
-	// 		echo json_encode($data);	
-	// 	}
-
-	// }
-	
-	// function pendaftaran() {
-	// 	$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-	// 	if (empty($tahun_ajaran_id)) {
-	// 		$tahun_ajaran_id = $this->tahun_ajaran_id;
-	// 	}
-
-	// 	$this->load->model(array('Mdinas','Mconfig'));
-	// 	$daftar = $this->Mdinas->tcg_daftar_pendaftaran($tahun_ajaran_id);
-
-	// 	//manual echo json file to avoid memory exhausted
-	// 	echo '{"data":[';
-	// 	$first = true;
-	// 	while ($row = $daftar->unbuffered_row())
-	// 	{
-	// 		if ($first) {
-	// 			echo json_encode($row);
-	// 			$first = false;
-	// 		} else {
-	// 			echo ",". json_encode($row);
-	// 		}
-	// 	}
-	// 	echo ']}';
-	// }
 }
 ?>

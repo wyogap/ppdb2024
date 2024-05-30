@@ -248,6 +248,16 @@
                 {/if}
             </div>
             <!-- container ends -->
+
+            {if $show_footer|default: TRUE}
+            <footer class="main-footer footer mb-2">
+                <div class="container text-center">
+                        <strong>Copyright &copy; 2020 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.
+                </div>
+            </footer>
+            {/if}
+
+
         </div>
         <!--**********************************
                 Content body end
@@ -276,7 +286,7 @@
 {/if}
 
 {if $page=='detailpendaftaran'} 
-<script>
+<script type="text/javascript">
     var daftarpendaftaran = {$daftarpendaftaran|json_encode};
     var kelengkapan_data = {$kelengkapan_data};
     var profildikunci = 1;
@@ -288,3 +298,12 @@
 
 </script>
 {/if}
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        //TODO: fix it in dompet lib
+        $(".content-body").css("min-height", "100vh");
+    })
+
+</script>

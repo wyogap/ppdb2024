@@ -11,13 +11,13 @@ use Psr\Log\LoggerInterface;
 
 class Dinas extends CrudController {
 
+    //only accessible to superadmin
+    protected static $ROLE_ID = ROLEID_DINAS;      
+
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        //only accessible to superadmin
-        static::$ROLE_ID = ROLEID_DINAS;
     }
     
 	public function index($params = array())

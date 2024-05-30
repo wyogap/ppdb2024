@@ -261,9 +261,11 @@ class PpdbController extends BaseController {
 			}
 		}
 
-        //must be role_id?
+        //must be role_id? 
         $role_id = $this->session->get("role_id");
 		if (!empty(static::$ROLE_ID) && 
+                //bukan admin
+                (ROLEID_ADMIN != $role_id && ROLEID_SYSADMIN != $role_id) &&
                 //current role is not static::$ROLE_ID
                 ((!is_array(static::$ROLE_ID) && static::$ROLE_ID != $role_id) || 
                 //static::$ROLE_ID can be an array
@@ -271,7 +273,7 @@ class PpdbController extends BaseController {
 			if ($this->is_json) {
 				print_json_error("not-authorized");
 			} else {
-                return view('ppdb/home/notauthorized');		//not-authorized
+                return $this->notauthorized();		//not-authorized
             }
 		}
 
@@ -289,8 +291,32 @@ class PpdbController extends BaseController {
 
 	protected function index()
 	{
-		return view('ppdb/home/notauthorized');
+		return $this->notfound();
 	}
 
+
+    protected function notauthorized()
+    {
+        // //content template
+        $data['content_template'] = 'error-403.tpl';
+
+		$data['page'] = 'error403';
+ 		$data['page_title'] = 'Terlarang';
+ 
+        $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
+        
+    }
+
+    protected function notfound()
+    {
+        // //content template
+        $data['content_template'] = 'error-404.tpl';
+
+		$data['page'] = 'error404';
+ 		$data['page_title'] = 'Tidak Ditemukan';
+ 
+        $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
+        
+    }
 
 }

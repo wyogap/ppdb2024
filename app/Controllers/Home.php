@@ -381,15 +381,4 @@ class Home extends PpdbController
 		return view('ppdb/home/_dropdownpadukuhan',$data);
 	}
 
-	// function tanggalRA()
-	// {
-	// 	$this->load->model(array('Mconfig'));
-	// 	$this->load->view('dropdown/tanggalRA');
-	// }
-	// function tanggalMI()
-	// {
-	// 	$this->load->model(array('Mconfig'));
-	// 	$this->load->view('dropdown/tanggalMI');
-	// }    
-
 }

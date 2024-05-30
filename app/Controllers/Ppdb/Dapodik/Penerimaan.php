@@ -12,6 +12,8 @@ use Psr\Log\LoggerInterface;
 
 class Penerimaan extends PpdbController {
 
+    protected static $ROLE_ID = ROLEID_DAPODIK;              
+
     protected $Msekolah;
     protected $Msiswa;
 
@@ -31,19 +33,13 @@ class Penerimaan extends PpdbController {
         //static::$ROLE_ID = ROLEID_DAPODIK;
     }
     
-    // public function __construct()
-	// {
-	// 	parent::__construct();
-	// 	if($this->session->get('isLogged')==FALSE||$this->session->get('peran_id')!=5) {
-	// 		return redirect()->to("akun/login");
-	// 	}
-	// }
-
 	function index()
 	{
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+        $sekolah_id = $this->session->get("sekolah_id");
+        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        if (empty($profil) || !$profil['ikut_ppdb']) {
+            return $this->notauthorized();
+        }
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
@@ -77,26 +73,13 @@ class Penerimaan extends PpdbController {
 
         //content template
         $data['content_template'] = 'penerimaan.tpl';
+        $data['js_template'] = '_penerimaan.tpl';
 
+        $data['page'] = 'penerimaan';
 		$data['page_title'] = "Penerimaan Siswa Baru";
         $this->smarty->render('ppdb/dapodik/ppdbdapodik.tpl', $data);
 
 	}
-
-	// function cari() {
-	// 	$nama = $_POST["data"] ?? null; (("nama");
-	// 	$nisn= $_POST["data"] ?? null; (("nisn");
-	// 	$nik= $_POST["data"] ?? null; (("nik");
-	// 	$sekolah_id= $_POST["data"] ?? null; (("sekolah_id");
-	// 	$jenis_kelamin= $_POST["data"] ?? null; (("jenis_kelamin");
-	// 	$kode_desa= $_POST["data"] ?? null; (("kode_desa");
-	// 	$kode_kecamatan= $_POST["data"] ?? null; (("kode_kecamatan");
-
-	// 	$this->load->model(array('Mdinas','Mdropdown'));
-
-	// 	$data['daftar'] = $this->Mdinas->tcg_cari_pesertadidik($nama, $nisn, $nik, $sekolah_id, $jenis_kelamin, $kode_desa, $kode_kecamatan);
-	// 	view('admin/pesertadidik/daftarpencarian',$data);
-	// }
 
 	function json() {
 		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
@@ -265,6 +248,6 @@ class Penerimaan extends PpdbController {
 			echo json_encode($data);	
 		}
 	}
-
+       
 }
 ?>
