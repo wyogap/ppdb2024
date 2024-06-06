@@ -34,7 +34,7 @@
         });
 
         $("[tcg-edit-action='submit']").on("change", function(evt) {
-            simpan_profil();
+            simpan_profil(this);
         })
 
         $("[tcg-edit-action='toggle']").on("change", function(evt) {
@@ -324,8 +324,8 @@
         }
     }
 
-    function simpan_profil() {
-        let select = $(this);
+    function simpan_profil(el) {
+        let select = $(el);
         let flagval = parseInt(select.val());
         let submittag = select.attr('tcg-submit-tag');
 

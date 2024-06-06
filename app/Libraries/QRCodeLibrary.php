@@ -1,7 +1,7 @@
 <?php
 namespace App\Libraries;
 
-include_once APPPATH ."libraries/qrcode/phpqrcode.php";
+include_once APPPATH ."Libraries/qrcode/phpqrcode.php";
 
 use Config\Paths;
 use QRcode;

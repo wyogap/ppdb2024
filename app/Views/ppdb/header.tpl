@@ -24,14 +24,14 @@
     <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
     {/if}
 
-    {if $smarty.const.USE_CDN|default: 1}
+    {if $smarty.const.__USE_CDN__|default: 1}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
     {else}
     <link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     {/if}
 
     {if $use_leaflet|default: FALSE}
-    {if $smarty.const.USE_CDN|default: 1} 
+    {if $smarty.const.__USE_CDN__|default: 1} 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.css"/>
@@ -43,7 +43,7 @@
     {/if}
 
     {if $use_datatable|default: FALSE} 
-    <link rel="stylesheet" href="{$base_url}assets/datatables/DataTables-1.11.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{$base_url}assets/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{$base_url}assets/datatables/Select-1.3.4/css/select.dataTables.min.css">
     <link rel="stylesheet" href="{$base_url}assets/datatables/Responsive-2.2.3/css/responsive.dataTables.min.css">
 	<link rel="stylesheet" href="{$base_url}assets/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css">

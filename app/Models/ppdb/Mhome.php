@@ -171,10 +171,14 @@ Class Mhome
 	}    
 
 	function tcg_cek_registrasi($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung){
+        if (empty($tanggal_lahir))  $tanggal_lahir = null;
+
 		$builder = $this->db->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.is_deleted'=>0));
+
+        //echo $builder->getCompiledSelect(); exit;
 
 		$sudah_registrasi=0;
 		foreach($builder->get()->getResult() as $row):
@@ -189,6 +193,8 @@ Class Mhome
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
+
+        // echo $builder->getCompiledSelect(); exit;
 
 		$sudah_registrasi=0;
 		foreach($builder->get()->getResult() as $row):
@@ -214,26 +220,29 @@ Class Mhome
 
 	function tcg_registrasiuser($sekolah_id, $nik, $nisn, $nomor_ujian, $nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung, $kebutuhan_khusus, $alamat, $kode_wilayah, $lintang, $bujur, $nomor_kontak){
 
-		$sekolah_id = secure($sekolah_id); 
-		$nik = secure($nik);
         $username = $nisn; 
-		$nisn = secure($nisn); 
-		$nomor_ujian = secure($nomor_ujian); 
-		$nama = secure($nama); 
-		$jenis_kelamin = secure($jenis_kelamin); 
-		$tempat_lahir = secure($tempat_lahir);
-		$tanggal_lahir = secure($tanggal_lahir); 
-		$nama_ibu_kandung = secure($nama_ibu_kandung); 
-		$kebutuhan_khusus = secure($kebutuhan_khusus); 
-		$alamat = secure($alamat);
-		$kode_wilayah = secure($kode_wilayah);
-		$lintang = secure($lintang); 
-		$bujur = secure($bujur); 
-		$nomor_kontak = secure($nomor_kontak);
+		// $sekolah_id = secure($sekolah_id); 
+		// $nik = secure($nik);
+		// $nisn = secure($nisn); 
+		// $nomor_ujian = secure($nomor_ujian); 
+		// $nama = secure($nama); 
+		// $jenis_kelamin = secure($jenis_kelamin); 
+		// $tempat_lahir = secure($tempat_lahir);
+		// $tanggal_lahir = secure($tanggal_lahir); 
+		// $nama_ibu_kandung = secure($nama_ibu_kandung); 
+		// $kebutuhan_khusus = secure($kebutuhan_khusus); 
+		// $alamat = secure($alamat);
+		// $kode_wilayah = secure($kode_wilayah);
+		// $lintang = (empty($lintang)) ? 'null' : secure($lintang);
+		// $bujur = (empty($bujur)) ? 'null' : secure($bujur);
+		// $nomor_kontak = secure($nomor_kontak);
 
-		$sql = "CALL " .SQL_REGISTRASI. " ($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak)";
-        $query = $this->db->query($sql);
+		$sql = "CALL ppdb_2024." .SQL_REGISTRASI. " (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        $query = $this->db->query($sql, array($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak));
         if ($query == null)     return null;
+
+        //audittrail -> di sp
 
         $user = $this->tcg_detailuser($username);
 		return $user;
@@ -245,8 +254,9 @@ Class Mhome
 
 		//$peran_id = $this->input->post("peran_id",TRUE);
 		$builder = $this->db->table('dbo_users a');
-		$builder->select('a.user_id,a.role_id as peran_id,a.sekolah_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
-                            b.bentuk,CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah,c.tanggal_lahir,c.asal_data,c.nisn,c.kebutuhan_khusus,c.tutup_akses');
+		$builder->select('a.user_id,a.role_id as peran_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
+                            a.peserta_didik_id, c.nisn, a.sekolah_id, c.tanggal_lahir, c.asal_data, c.kebutuhan_khusus, c.tutup_akses, CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah, 
+                            b.nama as sekolah, b.bentuk');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 		$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
 		$builder->where(array('a.is_deleted'=>0));
@@ -257,89 +267,89 @@ Class Mhome
 		return $builder->get()->getRowArray();
 	}
 
-	function tcg_login($username, $password){
-		$builder = $this->db->table('dbo_users a');
-		$builder->select('count(*) as jumlah');
-		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-		$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
-		$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
-		$builder->groupStart()->orWhere('a.user_name', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
+	// function tcg_login($username, $password){
+	// 	$builder = $this->db->table('dbo_users a');
+	// 	$builder->select('count(*) as jumlah');
+	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
+	// 	$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
+	// 	$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
+	// 	$builder->groupStart()->orWhere('a.user_name', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
 
-		$login=0;
-		foreach($builder->get()->getResult() as $row):
-			$login=$row->jumlah;
-		endforeach;
+	// 	$login=0;
+	// 	foreach($builder->get()->getResult() as $row):
+	// 		$login=$row->jumlah;
+	// 	endforeach;
 
-		if ($login > 0) {
-			$this->tcg_audit_trail("","",'login','Login','','');
-		}
+	// 	if ($login > 0) {
+	// 		$this->tcg_audit_trail("","",'login','Login','','');
+	// 	}
 
-		return $login;
-	}
+	// 	return $login;
+	// }
 
-	function tcg_cek_ikutppdb($sekolah_id, $tahun_ajaran_id) {
-		// TODO: buka akses kalau nggak ikut ppdb tahap 2
-		$builder = $this->db->table('cfg_kuota_sekolah a');
-		$builder->select('a.ikut_ppdb');
-		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
+	// function tcg_cek_ikutppdb($sekolah_id, $tahun_ajaran_id) {
+	// 	// TODO: buka akses kalau nggak ikut ppdb tahap 2
+	// 	$builder = $this->db->table('cfg_kuota_sekolah a');
+	// 	$builder->select('a.ikut_ppdb');
+	// 	$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 
-		$ikut_ppdb=0;
-		foreach($builder->get()->getResult() as $row):
-			$ikut_ppdb=$row->ikut_ppdb;
-		endforeach;
+	// 	$ikut_ppdb=0;
+	// 	foreach($builder->get()->getResult() as $row):
+	// 		$ikut_ppdb=$row->ikut_ppdb;
+	// 	endforeach;
 
-		return $ikut_ppdb;
-	}
+	// 	return $ikut_ppdb;
+	// }
 
-	function tcg_ubahpassword($password)
-	{
-		$user_id = $this->session->get("user_id");
+	// function tcg_ubahpassword($password)
+	// {
+	// 	$user_id = $this->session->get("user_id");
 
-		$data = array(
-			'password' => md5($password),
-			'ganti_password' => 1,
-			'updated_on' => date("Y/m/d")
-		);
+	// 	$data = array(
+	// 		'password' => md5($password),
+	// 		'ganti_password' => 1,
+	// 		'updated_on' => date("Y/m/d")
+	// 	);
 
-		$builder = $this->db->table('dbo_users');
-        $builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
-		$retval = $builder($data);
+	// 	$builder = $this->db->table('dbo_users');
+    //     $builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
+	// 	$retval = $builder($data);
 
-		if ($retval > 0) {
-			//put in audit trail
-			$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
-		}
+	// 	if ($retval > 0) {
+	// 		//put in audit trail
+	// 		$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
+	// 	}
 
-		return $retval;
-	}
+	// 	return $retval;
+	// }
 
-	function tcg_resetpassword($user_id, $password)
-	{
-		$data = array(
-			'password' => md5($password),
-			'ganti_password' => 0,
-			'updated_on' => date("Y/m/d")
-		);
+	// function tcg_resetpassword($user_id, $password)
+	// {
+	// 	$data = array(
+	// 		'password' => md5($password),
+	// 		'ganti_password' => 0,
+	// 		'updated_on' => date("Y/m/d")
+	// 	);
         
-		$builder = $this->db->table('dbo_pengguna');
-		$builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
-		$retval = $builder->update($data);
+	// 	$builder = $this->db->table('dbo_pengguna');
+	// 	$builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
+	// 	$retval = $builder->update($data);
 
-		if ($retval > 0) {
-			//put in audit trail
-			$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
-		}
+	// 	if ($retval > 0) {
+	// 		//put in audit trail
+	// 		$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
+	// 	}
 
-		return $retval;
-	}
+	// 	return $retval;
+	// }
 
-    //dipakai untuk registrasi siswa
-	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-		$user_id = $this->session->get("user_id");
+    // //dipakai untuk registrasi siswa
+	// function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
+	// 	$user_id = $this->session->get("user_id");
 
-		$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-		return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
-	}
+	// 	$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
+	// 	return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
+	// }
 
     //dipakai untuk registrasi sisw
 	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status) {
@@ -380,6 +390,30 @@ Class Mhome
 
 		return $this->db->query($sql, array($this->tahun_ajaran_id, $this->putaran))->getResultArray();	
 	}    
+
+    function tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa) {
+        $sql = "select kode_wilayah from ref_wilayah where nama_prov=? and nama_kab=? and nama_kec=? and nama_desa=? and is_deleted=0";
+
+        $result = $this->db->query($sql, array($nama_prov, $nama_kab, $nama_kec, $nama_desa))->getRowArray();
+        if ($result == null) return null;
+
+        return $result['kode_wilayah'];
+    }
+
+	function tcg_profilsekolah_from_npsn($npsn, $putaran=0){
+        if ($putaran == 0) {
+            $putaran = $this->session->get('putaran_aktif');
+        }
+
+		$builder = $this->db->table('ref_sekolah a');
+		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
+        $builder->select('a.dapodik_id');
+        $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');
+		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$this->tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
+		$builder->where(array('a.npsn'=>$npsn, 'a.is_deleted'=>0));
+
+		return $builder->get()->getRowArray();
+	}
 
 	function uuid(){
         $data = random_bytes(16);

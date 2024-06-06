@@ -332,7 +332,7 @@
                                 <td colspan="3"><b>Nilai Kelulusan</b></td>
                             </tr>
                             <tr>
-                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor</b></td>
+                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-rapor-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_semester}" 
@@ -341,7 +341,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah</b></td>
+                                <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-lulus-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_kelulusan}"
@@ -365,7 +365,7 @@
                                 </td>
                             </tr>
                             <tr id="row-un-bin" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_bin'>
-                                <td style="width: 45%;"><b>Bahasa Indonesia</b></td>
+                                <td style="width: 45%;"><b>Bahasa Indonesia (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-bin-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_bin}"
@@ -374,7 +374,7 @@
                                 </td>
                             </tr>
                             <tr id="row-un-mat" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_mat'>
-                                <td><b>Matematika</b></td>
+                                <td><b>Matematika (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-mat-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_mat}"
@@ -383,7 +383,7 @@
                                 </td>
                             </tr>
                             <tr id="row-un-ipa" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_ipa'>
-                                <td><b>IPA</b></td>
+                                <td><b>IPA (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nilai-ipa-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_ipa}"

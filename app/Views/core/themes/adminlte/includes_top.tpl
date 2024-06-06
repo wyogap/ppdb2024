@@ -3,17 +3,17 @@
 <!-- <link rel="shortcut icon" href="http://localhost/academy/uploads/system/favicon.png"> -->
 
 <!-- bootstrap -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 {else}
-<link href="{$base_url}assets/bootstrap-4.6.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="{$base_url}cdn/bootstrap-4.6.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 {/if}
 
 <link href="{$base_url}assets/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
 
 {if $use_geo|default: FALSE}
 <!-- leaflet -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.css">
@@ -39,7 +39,7 @@
 <link href="{$base_url}assets/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
 <link href="{$base_url}assets/datatables/Responsive-2.2.3/css/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
 <link href="{$base_url}assets/datatables/Buttons-1.6.1/css/buttons.bootstrap4.css" rel="stylesheet" type="text/css" />
-<link href="{$base_url}assets/datatables/Select-1.3.1/css/select.bootstrap4.css" rel="stylesheet" type="text/css" />
+<link href="{$base_url}assets/datatables/Select-1.3.4/css/select.bootstrap4.css" rel="stylesheet" type="text/css" />
 <link href="{$base_url}assets/datatables/KeyTable-2.5.1/css/keyTable.bootstrap4.css" rel="stylesheet" type="text/css" >
 
 <link href="{$base_url}assets/datatables/RowReorder-1.2.6/css/rowReorder.bootstrap4.css" rel="stylesheet" type="text/css" >
@@ -106,7 +106,7 @@
 <link href="{$base_url}assets/toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 
 <!-- icons -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
 {else}
 <link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
@@ -127,7 +127,7 @@
 <link href="{$base_url}assets/utilities.css" rel="stylesheet" type="text/css" />
 
 <!-- jquery plugins -->
-<link href="{$base_url}assets/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" type="text/css" />
+<!-- <link href="{$base_url}assets/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" type="text/css" /> -->
 <link href="{$base_url}assets/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
 
 <!-- jquery js. must be loaded first before other js -->

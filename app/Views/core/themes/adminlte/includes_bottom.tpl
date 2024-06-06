@@ -1,16 +1,16 @@
 
 <!-- bootstrap. bundle includes popper.js -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 {else}
-<script src="{$base_url}assets/bootstrap-4.6.2/js/bootstrap.bundle.min.js"></script>
+<script src="{$base_url}cdn/bootstrap-4.6.2/js/bootstrap.bundle.min.js"></script>
 {/if}
 
 <script src="{$base_url}assets/bootstrap-datepicker/js/bootstrap-datepicker.min.js" defer></script>
 
 {if $use_geo|default: FALSE}
 <!-- leaflet -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
@@ -42,8 +42,8 @@
 <script src="{$base_url}assets/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" defer></script>
 <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/dataTables.responsive.min.js" defer></script>
 <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/responsive.bootstrap4.min.js" defer></script>
-<script src="{$base_url}assets/datatables/Select-1.3.1/js/dataTables.select.min.js" defer></script>
-<script src="{$base_url}assets/datatables/Select-1.3.1/js/select.bootstrap4.min.js" defer></script>
+<script src="{$base_url}assets/datatables/Select-1.3.4/js/dataTables.select.min.js" defer></script>
+<script src="{$base_url}assets/datatables/Select-1.3.4/js/select.bootstrap4.min.js" defer></script>
 
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js" defer></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/buttons.bootstrap4.min.js" defer></script>
@@ -108,7 +108,7 @@
 
 {if !empty($use_wysiwyg)}
 <!-- WYSIWYG editor -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/29.1.0/ckeditor.min.js"></script>
 {else}
 <script src="{$base_url}cdn/ckeditor5/ckeditor.js"></script>
@@ -132,7 +132,7 @@
 <script src="{$base_url}assets/toastr/toastr.min.js"></script>
 
 <!-- fontawesome -->
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" defer charset="utf-8"></script>
 {else}
 <script src="{$base_url}cdn/fontawesome/js/fontawesome.min.js" defer charset="utf-8"></script>

@@ -147,7 +147,12 @@
                     className: 'dt-body-center',
                     orderable: false,
                     "render": function(data, type, row, meta) {
-                        return "<button onclick=ubah_data(" +row['peserta_didik_id']+ ") class='btn btn-primary btn-xs'>Ubah Data</button>";
+                        {if $cek_waktusosialisasi == 1}
+                        return "<button onclick=ubah_data(" +row['peserta_didik_id']+ ") class='btn btn-primary btn-xs text-nowrap mb-1'>Ubah Data</button>"
+                                +"<br><button onclick=reset_password(" +row['peserta_didik_id']+ "," +meta['row']+ ") class='btn btn-danger btn-xs text-nowrap'>Reset PIN</button>";
+                        {else}
+                        return "<button onclick=reset_password(" +row['peserta_didik_id']+ "," +meta['row']+ ") class='btn btn-danger btn-xs text-nowrap'>Reset PIN</button>";
+                        {/if}
                     }
                 },
             ],
@@ -161,6 +166,97 @@
 
     });
 
+</script>
+
+{* Popup to reset password *}
+<script type="text/javascript">
+    function reset_password(peserta_didik_id, rowid) {
+        let data = dt_siswa_kls6.rows(rowid).data();
+        if (data.length == 0) return;
+
+        data = data[0];
+        nama = data['nama'];
+
+        $.confirm({
+            title: 'Reset PIN/Password an. ' +nama,
+            content: "<div style='overflow: hidden;'>"
+                        +"<input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
+                        +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
+                        +"<span id='error-msg'>&nbsp</span></div>",
+            closeIcon: true,
+            columnClass: 'medium',
+            //type: 'purple',
+            typeAnimated: true,
+            buttons: {
+                cancel: {
+                    text: 'Batal',
+                    action: function(){
+                        //do nothing
+                    }
+                },
+                confirm: {
+                    text: 'Ganti',
+                    btnClass: 'btn-primary',
+                    action: function(){
+                        let el1 = this.$content.find('#password');
+                        let el2 = this.$content.find('#password2');
+                        if (el1.val().length < 6) {
+                            let msg = this.$content.find('#error-msg');
+                            msg.html("PIN/Password harus minimal 6 huruf.");
+                            el1.addClass('border-red');
+                            return false;
+                        }
+                        else if (el1.val() != el2.val()) {
+                            let msg = this.$content.find('#error-msg');
+                            msg.html("PIN/Password baru tidak sama.");
+                            el2.addClass('border-red');
+                            return false;
+                        }
+
+                        send_reset_password(peserta_didik_id, nama, el1.val());
+                    }
+                },
+            },
+
+        });      
+    }
+
+    function send_reset_password(peserta_didik_id, nama, pwd1) {
+        json = {};
+        data = {};
+        data['pwd1'] = pwd1;
+        data['pwd2'] = pwd1;
+        
+        json['data'] = {};
+        json['data'][peserta_didik_id] = data;
+
+        $.ajax({
+            type: 'POST',
+            url: "{$site_url}ppdb/dapodik/daftarsiswa/resetpassword",
+            dataType: 'json',
+            data: json,
+            async: true,
+            cache: false,
+            //if we use formData, set processData = false. if we use json, set processData = true!
+            //contentType: true,
+            //processData: true,      
+            timeout: 60000,
+            success: function(json) {
+                if (json.error !== undefined && json.error != "" && json.error != null) {
+                    toastr.error('Tidak berhasil mengubah PIN/Password an. ' +nama+ ": " +json.error);
+                    return;
+                }
+
+                //tambahkan ke daftar pendaftaran
+                toastr.success("PIN/Password an. " +nama+ " berhasil diubah.");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error('Tidak berhasil mengubah PIN/Password an. ' +nama+ ": " +textStatus);
+                return;
+            }
+        });
+
+    }
 </script>
 
 {include file="./_ubahdata.tpl"}

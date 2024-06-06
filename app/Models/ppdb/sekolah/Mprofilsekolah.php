@@ -5,6 +5,7 @@ Class Mprofilsekolah
 {
     protected $db;
     protected $session;
+    protected $audittrail;
     
     protected $tahun_ajaran_id;
     protected $error_message;
@@ -13,6 +14,8 @@ Class Mprofilsekolah
         $this->db = \Config\Database::connect();
         $this->session = \Config\Services::session();
         $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
+
+        $this->audittrail = new \App\Libraries\AuditTrail();
 
         helper("functions");
     }
@@ -23,8 +26,10 @@ Class Mprofilsekolah
 
     // --
 
-	function tcg_profilsekolah($sekolah_id){
-		$putaran = $this->session->get('putaran_aktif');
+	function tcg_profilsekolah($sekolah_id, $putaran=0){
+        if ($putaran == 0) {
+            $putaran = $this->session->get('putaran_aktif');
+        }
 
 		$builder = $this->db->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
@@ -52,7 +57,7 @@ Class Mprofilsekolah
             return 0;
         }
 
-        //TODO: audit trail!
+        //audit trail -> di sp
 
         return 1;
     }
@@ -90,7 +95,8 @@ Class Mprofilsekolah
 		$status = $builder->update($data);
         if ($status == null)    return 0;
 
-        //TODO: audit trail
+        //audit trail
+        $this->audittrail->trail("dbo_user", $user_id, "UPDATE", "Approve akun");
 
         return 1;
 	}
@@ -194,7 +200,6 @@ Class Mprofilsekolah
 
 	function tcg_pendaftarditerima($sekolah_id, $penerapan_id){
 
-        //TODO: check if IN filter is working
         $filters = array("a.penerapan_id"=>$penerapan_id);
         $results = $this->tcg_daftarpendaftaran($sekolah_id, $filters);
 
@@ -359,6 +364,20 @@ Class Mprofilsekolah
 		return $peserta_didik_id;
 	}
 	
+	function tcg_userid_from_pesertadidikid($peserta_didik_id) {
+
+		$builder = $this->db->table('dbo_users');
+		$builder->select('user_id');
+		$builder->where(array('peserta_didik_id'=>$peserta_didik_id,'is_deleted'=>0));
+
+		$user_id = "";
+		foreach($builder->get()->getResult() as $row):
+			$user_id = $row->user_id;
+		endforeach;
+
+		return $user_id;
+	}
+	
     function tcg_ubah_profil($key, $valuepair) {
 		//inject last update
 		$valuepair['updated_on'] = date("Y/m/d H:i:s");
@@ -369,29 +388,29 @@ Class Mprofilsekolah
         if (!$status)   return 0;
 
         //put in audit trail
-        $this->tcg_audit_trail("ref_sekolah",$key,'update','Update profil sekolah',implode(';', array_keys($valuepair)),implode(';',$valuepair));
+        $this->audittrail->trail("ref_sekolah",$key,'UPDATE','Update profil sekolah',array_keys($valuepair),$valuepair);
 
         return 1;
     }
 
-	function tcg_audit_trail($table, $reference, $action, $description, $keys, $new_values=null, $old_values=null) {
-        $user_id = $this->session->get('user_id');
+	// function tcg_audit_trail($table, $reference, $action, $description, $keys, $new_values=null, $old_values=null) {
+    //     $user_id = $this->session->get('user_id');
         
-        $valuepair = array (
-            'module' => 'ppdb',
-            'table_name' => $table,
-            'reference_id' => $reference,
-            'action_name' => $action,
-            'long_description' => $description,
-            'col_names' => $keys,
-            'col_values' => $new_values,
-            'old_values' => $old_values,
-            'created_by' => $user_id
-        );
+    //     $valuepair = array (
+    //         'module' => 'ppdb',
+    //         'table_name' => $table,
+    //         'reference_id' => $reference,
+    //         'action_name' => $action,
+    //         'long_description' => $description,
+    //         'col_names' => $keys,
+    //         'col_values' => $new_values,
+    //         'old_values' => $old_values,
+    //         'created_by' => $user_id
+    //     );
 
-        $builder = $this->db->table('dbo_audit_trails');
-        $builder->insert($valuepair);
-	}
+    //     $builder = $this->db->table('dbo_audit_trails');
+    //     $builder->insert($valuepair);
+	// }
 
 	function tcg_buat_verifikasidinas($peserta_didik_id, $tipe_data, $kelengkapan_id, $catatan) {
 		$pengguna_id = $this->session->get('user_id');
@@ -407,14 +426,17 @@ Class Mprofilsekolah
 			'catatan_sekolah'	=> $catatan
 		);
 
-        $builder = $this->db->table('dbo_verifikasi_dinas');
+        $builder = $this->db->table('tcg_verifikasi_dinas');
 		$query = $builder->insert($valuepair);
-		if ($query) {
-			$key = $this->db->insertID();
-			return $key;
-		}
+		if (!$query) return 0;
 
-		return 0;
+        $key = $this->db->insertID();
+
+        //audit trail
+        $valuepair['verifikasi_id'] = $key;
+        $this->audittrail->trail("tcg_verifikasi_dinas",$peserta_didik_id,"INSERT", "Verifikasi dinas baru", array_keys($valuepair), $valuepair);
+
+        return $key;
 	}
 
 	function tcg_penerimaan_sd($sekolah_id) {
@@ -537,6 +559,8 @@ Class Mprofilsekolah
             return null;
         }
 
+        //audit trail -> di sp
+        
         $sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik, c.npsn as npsn_sekolah_asal, c.nama as asal_sekolah,
 					   b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin
 				  from tcg_pendaftaran a
@@ -560,6 +584,8 @@ Class Mprofilsekolah
             return 0;
         }
 
+        //audit trail -> di sp
+        
 		return 1;
 	}
 
@@ -577,6 +603,8 @@ Class Mprofilsekolah
             return 0;
         }
 
+        //audit trail -> di sp
+        
 		return 1;
 	}    
 
@@ -594,177 +622,6 @@ Class Mprofilsekolah
 		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id))->getResultArray();
 	}
 
-	// function tcg_pendaftarditerima($sekolah_id, $penerapan_id){
-
-    //     $filters = array("a.penerapan_id"=>$penerapan_id, "a.status_penerimaan_final in"=>"(1,3)");
-    //     return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
-
-	// 	// $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
-	// 	// $sql = "SELECT 
-	// 	// 			`a`.`pendaftaran_id`, `a`.`sekolah_id`, `a`.`nama_sekolah`, `a`.`asal_sekolah_id`, `a`.`asal_sekolah`, `a`.`peserta_didik_id`, 
-	// 	// 			`a`.`nama`, `a`.`penerapan_id`, `a`.`jalur_id`, `a`.`jalur`, `a`.`nomor_pendaftaran`, `a`.`jenis_pilihan`, `a`.`masuk_jenis_pilihan`, 
-	// 	// 			`a`.`peringkat`, `a`.`skor`, `a`.`nisn`, `a`.`status_penerimaan`, `a`.`status_daftar_ulang`, `a`.`lokasi_berkas`, `a`.`created_on`,
-	// 	// 			`a`.`nilai_kelulusan`, `a`.`nilai_usbn`, `a`.`jenis_kelamin`, 
-	// 	// 			case when `a`.`status_daftar_ulang` = 1 then `a`.`tanggal_daftar_ulang` else NULL end as tanggal_daftar_ulang
-	// 	// 		FROM `v_rpt_pendaftaran_diterima` `a` 
-	// 	// 		WHERE `sekolah_id`=? AND `penerapan_id`=? and tahun_ajaran_id=?
-	// 	// 		ORDER BY 
-	// 	// 			case when a.status_daftar_ulang>1 then 0 else a.status_daftar_ulang end desc, 
-	// 	// 			`a`.`peringkat`";
-
-	// 	// return $this->db->query($sql, array($sekolah_id, $penerapan_id, $tahun_ajaran_id));
-	// }
-
-	// function tcg_pendaftarditerima_per_putaran($sekolah_id, $penerapan_id, $tahun_ajaran_id, $putaran){
-	// 	if (empty($tahun_ajaran_id)) {
-	// 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	}
-
-	// 	$sql = "SELECT 
-	// 				`a`.`pendaftaran_id`, `a`.`sekolah_id`, `a`.`nama_sekolah`, `a`.`asal_sekolah_id`, `a`.`asal_sekolah`, `a`.`peserta_didik_id`, 
-	// 				`a`.`nama`, `a`.`penerapan_id`, `a`.`jalur_id`, `a`.`jalur`, `a`.`nomor_pendaftaran`, `a`.`jenis_pilihan`, `a`.`masuk_jenis_pilihan`, 
-	// 				`a`.`peringkat`, `a`.`skor`, `a`.`nisn`, `a`.`status_penerimaan`, `a`.`status_daftar_ulang`, `a`.`lokasi_berkas`, `a`.`created_on`,
-	// 				`a`.`nilai_kelulusan`, `a`.`nilai_usbn`, `a`.`jenis_kelamin`, 
-	// 				case when `a`.`status_daftar_ulang` = 1 then `a`.`tanggal_daftar_ulang` else NULL end as tanggal_daftar_ulang
-	// 			FROM `v_rpt_pendaftaran_diterima` `a` 
-	// 			WHERE `sekolah_id`=? AND `penerapan_id`=? and tahun_ajaran_id=? ";
-		
-	// 	if (!empty($putaran)) {
-	// 		$putaran = secure($putaran);
-	// 		$sql += " and putaran=$putaran ";
-	// 	}
-
-	// 	$sql += "ORDER BY 
-	// 				case when a.status_daftar_ulang>1 then 0 else a.status_daftar_ulang end desc, 
-	// 				`a`.`peringkat`";
-
-	// 	return $this->db->query($sql, array($sekolah_id,$penerapan_id,$tahun_ajaran_id));
-	// }
-
-	// function tcg_pendaftarbelumdiverifikasi($sekolah_id){
-        
-    //     $filters = array('a.kelengkapan_berkas'=>0,'a.pendaftaran'=>1);
-    //     return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
-
-	// 	// $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	// $putaran = $this->session->get('putaran_aktif');
-
-	// 	// $builder = $this->db->table('tcg_pendaftaran a');
-	// 	// $builder->select('a.pendaftaran_id,
-	// 	// 					a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,
-	// 	// 					i.keterangan as label_jenis_pilihan,
-	// 	// 					e.nama AS sekolah_asal,a.created_on,
-	// 	// 					h.nama as sedang_verifikasi');
-	// 	// $builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	// $builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	// $builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	// $builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-	// 	// $builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-	// 	// $builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
-	// 	// $builder->join('dbo_users h','h.user_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
-	// 	// $builder->join('cfg_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
-	// 	// $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
-	// 	// $builder->where(array('a.kelengkapan_berkas'=>0,'a.pendaftaran'=>1));
-	// 	// $builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-	// 	// $builder->orderBy('a.created_on desc');
-	// 	// return $builder->get();
-	// }
-
-	// function tcg_pendaftarsudahdiverifikasi($sekolah_id){
-	// 	$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	$putaran = $this->session->get('putaran_aktif');
-
-	// 	$builder = $this->db->table('tcg_pendaftaran a');
-	// 	$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,i.keterangan as label_jenis_pilihan');
-	// 	$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-	// 	$builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-	// 	$builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
-	// 	$builder->join('cfg_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
-	// 	$builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
-	// 	$builder->where(array('a.kelengkapan_berkas!='=>0,'a.pendaftaran'=>1));
-	// 	$builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-	// 	$builder->orderBy('a.created_on desc');
-	// 	return $builder->get();
-	// }
-
-	// function tcg_pendaftarbelumlengkap($sekolah_id){
-        
-    //     $filters = array('a.kelengkapan_berkas'=>2,'a.pendaftaran'=>1);
-    //     return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
-
-    //     // $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	// $putaran = $this->session->get('putaran_aktif');
-
-	// 	// $builder = $this->db->table('tcg_pendaftaran a');
-	// 	// $builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,
-	// 	// 					i.keterangan as label_jenis_pilihan,
-	// 	// 					e.nama AS sekolah_asal,a.created_on,
-    //     //                     h.nama as sedang_verifikasi,
-    //     //                     ');
-	// 	// $builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	// $builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	// $builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	// $builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-	// 	// $builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-	// 	// $builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
-	// 	// $builder->join('dbo_users h','h.user_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
-	// 	// $builder->join('cfg_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
-	// 	// // $builder->join('dbo_sekolah j','j.sekolah_id = b.lokasi_berkas','LEFT OUTER');
-	// 	// $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
-	// 	// $builder->where(array('a.kelengkapan_berkas'=>2,'a.pendaftaran'=>1));
-	// 	// $builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-	// 	// $builder->orderBy('a.created_on desc');
-	// 	// return $builder->get();
-	// }
-
-	// function tcg_pendaftarsudahlengkap($sekolah_id){
-        
-    //     $filters = array('a.kelengkapan_berkas'=>2,'a.pendaftaran'=>1);
-    //     return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
-
-    //     // $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	// $putaran = $this->session->get('putaran_aktif');
-
-	// 	// $builder = $this->db->table('tcg_pendaftaran a');
-	// 	// $builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,e.nama AS sekolah_asal,a.created_on,
-    //     //                     a.tanggal_verifikasi_berkas,a.verifikasi_berkas_oleh,h.nama as lokasi_berkas,i.keterangan as label_jenis_pilihan');
-	// 	// $builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	// $builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	// $builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	// $builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-	// 	// $builder->join('tcg_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-	// 	// $builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
-	// 	// $builder->join('ref_sekolah h','h.sekolah_id = b.lokasi_berkas','LEFT OUTER');
-	// 	// $builder->join('cfg_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
-	// 	// $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran));
-	// 	// $builder->where(array('a.kelengkapan_berkas'=>1,'a.pendaftaran'=>1));
-	// 	// $builder->groupBy(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-	// 	// $builder->orderBy('a.created_on');
-	// 	// return $builder->get();
-	// }
-
-
-
-	// function tcg_daftar_penerapan($sekolah_id) {
-	// 	$tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
-
-	// 	$sql = "select a.* from v_rpt_sekolah_summary a where a.sekolah_id=? and a.tahun_ajaran_id=?";
-
-	// 	return $this->db->query($sql, array($sekolah_id, $tahun_ajaran_id));
-
-	// }
-
-	// function tcg_detil_pendaftaran($pendaftaran_id) {
-	// 	$sql = "select a.* from tcg_pendaftaran a where a.pendaftaran_id=? and a.is_deleted=0";
-
-	// 	return $this->db->query($sql, array($pendaftaran_id));
-	// }
-    
-
 	function tcg_ubah_daftarulang($pendaftaran_id,$status,$pengguna_id) {
 		$query = "
 			update tcg_pendaftaran a
@@ -776,189 +633,16 @@ Class Mprofilsekolah
 			where a.pendaftaran_id=?";
 
 		$this->db->query($query, array($status, $pengguna_id, $pendaftaran_id));
-		return $this->db->affectedRows();
+		$affected = $this->db->affectedRows();
+
+        //audittrail
+        $peserta_didik_id = $this->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
+        $keys = array('pendaftaran_id', 'status_daftar_ulang', 'daftar_ulang_oleh');
+        $values = array('pendaftaran_id'=>$pendaftaran_id, 'status_daftar_ulang'=>$status, 'daftar_ulang_oleh'=>$pengguna_id);
+        $this->audittrail->trail("tcg_pendaftaran",$peserta_didik_id,"UPDATE","Daftar ulang", $keys, $values);
+
+        return $affected;
 	}
-
-	// function tcg_detailpendaftaran($peserta_didik_id, $pendaftaran_id){
-
-	// 	$builder = $this->db->table('tcg_pendaftaran a');
-	// 	$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,
-	// 						a.nomor_pendaftaran,a.jenis_pilihan,g.keterangan as label_jenis_pilihan, a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,a.peringkat,
-	// 						a.sekolah_id,b.npsn,b.nama AS sekolah,b.lintang AS lintang_sekolah,b.bujur AS bujur_sekolah, 
-	// 						a.peserta_didik_id,e.nisn,e.nama,f.lintang AS lintang_siswa,f.bujur AS bujur_siswa,
-	// 						f.sekolah_id as asal_sekolah_id,b.npsn as asal_sekolah_npsn,b.nama AS asal_sekolah, 
-	// 						a.status_daftar_ulang,a.tanggal_daftar_ulang, a.status_penerimaan_final,a.peringkat_final,
-	// 						a.created_on');
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-	// 	$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	$builder->join('tcg_peserta_didik e','a.peserta_didik_id = e.peserta_didik_id AND e.is_deleted = 0');
-	// 	$builder->join('ref_sekolah f','e.sekolah_id = f.sekolah_id');
-	// 	$builder->join('cfg_jenis_pilihan g','g.jenis_pilihan = a.jenis_pilihan AND g.tahun_ajaran_id=a.tahun_ajaran_id AND g.is_deleted=0');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.pendaftaran_id'=>$pendaftaran_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
-	// 	$builder->orderBy('a.created_on');
-	// 	return $builder->get();
-	// }    
-
-	// function tcg_profilsiswa_daftarulang($peserta_didik_id){
-
-	// 	$builder = $this->db->table('tcg_peserta_didik a');
-	// 	$builder->select("a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,
-	// 	a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,a.kebutuhan_khusus,
-	// 	a.rt,a.rw,a.alamat,a.kode_wilayah,
-	// 	'' as kode_padukuhan,'' AS padukuhan,
-	// 	c.kode_wilayah_desa as kode_desa, c.nama_desa AS desa_kelurahan,
-	// 	c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
-	// 	c.kode_wilayah_kab as kode_kabupaten,c.nama_kab AS kabupaten,
-	// 	c.kode_wilayah_prov,c.nama_prov AS provinsi,
-	// 	a.lintang,a.bujur,a.asal_data, 
-	// 	d.user_name as username,a.nomor_kontak,
-	// 	coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-	// 	coalesce(a.punya_kip,0) as punya_kip,
-	// 	coalesce(a.masuk_bdt,0) as masuk_bdt,
-	// 	e.nama as lokasi_berkas
-	// 	");
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
-	// 	$builder->join('dbo_users d','a.peserta_didik_id = d.pengguna_id AND d.is_deleted = 0','LEFT OUTER');
-	// 	$builder->join('ref_sekolah e','e.sekolah_id = a.lokasi_berkas','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
-
-	// 	return $builder->get();
-	// }
-
-	// function tcg_dokumen_pendukung($peserta_didik_id) {
-	// 	// daftar SEMUA dokumen pendukung
-	// 	$query = "
-	// 			  select a.dokumen_id, a.daftar_kelengkapan_id, b.nama, a.filename, a.path, a.web_path, a.thumbnail_path, a.verifikasi, a.catatan,
-	// 				b.dokumen_fisik, b.placeholder, a.berkas_fisik
-	// 			  from tcg_dokumen_pendukung a
-	// 			  join ref_daftar_kelengkapan b on a.daftar_kelengkapan_id=b.daftar_kelengkapan_id and b.is_deleted=0
-	// 			  where a.peserta_didik_id=? and a.is_deleted=0
-	// 			  order by b.urutan";
-
-	// 	return $this->db->query($query, array($peserta_didik_id));
-	// }
-
-	// function tcg_ubah_lokasiberkas($peserta_didik_id, $sekolah_id) {
-	// 	$data = array(
-	// 		'lokasi_berkas' => $sekolah_id,
-	// 		'updated_on' => date("Y/m/d H:i:s")
-	// 	);
-
-    //     $builder = $this->db->table('tcg_peserta_didik');
-	// 	$builder->where(array('peserta_didik_id'=>$peserta_didik_id,'is_deleted'=>0));
-	// 	$retval = $builder->update($data);
-
-	// 	if ($retval > 0) {
-	// 		//put in audit trail
-	// 		$this->tcg_audit_trail("tcg_peserta_didik",$peserta_didik_id,'update','Ubah lokasi berkas',implode(';', array_keys($data)),implode(';',$data));
-	// 	}
-
-	// 	return $retval;
-	// }
-
-	// function tcg_daftarulang_dokumenpendukung($peserta_didik_id, $dokumen_id, $status, $penerima_berkas_id) {
-	// 	$query = "
-	// 	update tcg_dokumen_pendukung a
-	// 	set
-	// 		a.berkas_fisik = ?,
-	// 		a.penerima_berkas_id = ?,
-	// 		a.tanggal_berkas = now(),
-	// 		a.updated_on = now()
-	// 	where a.peserta_didik_id=? and a.dokumen_id=? and a.is_deleted=0";
-
-	// 	$this->db->query($query, array($status, $penerima_berkas_id, $peserta_didik_id, $dokumen_id));
-
-	// 	$retval = $this->db->affectedRows();
-	// 	if ($retval > 0) {
-	// 		$keys = "dokumen_id;daftarulang;penerima_berkas_id";
-	// 		$values = "$dokumen_id;$status;$penerima_berkas_id";
-
-	// 		//put in audit trail
-	// 		$this->tcg_audit_trail("tcg_dokumen_pendukung",$peserta_didik_id,'update','Daftar ulang berkas',$keys,$values);
-	// 	}
-
-	// 	return $retval;
-
-	// }
-
-	// function tcg_daftarpendaftaran($peserta_didik_id, $tahun_ajaran_id = null){
-	// 	if (empty($tahun_ajaran_id)) {
-	// 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-	// 	}
-
-	// 	$builder = $this->db->table('tcg_pendaftaran a');
-	// 	$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,
-	// 						a.nomor_pendaftaran,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,
-	// 						a.peringkat,a.skor,a.kelengkapan_berkas,
-	// 						a.status_penerimaan_final,a.peringkat_final,
-	// 						a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,
-	// 						a.pendaftaran, e.keterangan as label_jenis_pilihan, f.keterangan as label_masuk_pilihan,
-	// 						a.created_on');
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
-	// 	$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 AND c.is_deleted=0');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	$builder->join('cfg_jenis_pilihan e','e.jenis_pilihan = a.jenis_pilihan AND e.tahun_ajaran_id=a.tahun_ajaran_id AND e.is_deleted=0');
-	// 	$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id AND f.is_deleted=0', 'left outer');
-	// 	//$builder->join('tcg_skoring_pendaftaran g','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0','LEFT OUTER');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
-	// 	$builder->orderBy('a.jenis_pilihan');
-	// 	return $builder->get();
-	// }
-
-	// function tcg_riwayat_verifikasi($peserta_didik_id) {
-	// 	$sql = "SELECT a.riwayat_id, a.verifikator_id, b.nama, a.verifikasi, a.catatan_kekurangan, a.created_on 
-	// 	from tcg_riwayat_verifikasi a
-	// 	join dbo_users b on b.pengguna_id=a.verifikator_id and b.is_deleted=0
-	// 	where a.is_deleted=0 and a.peserta_didik_id=?";
-
-	// 	return $this->db->query($sql, array($peserta_didik_id));
-	// }    
-
-	// function tcg_daftar_prestasi($peserta_didik_id) {
-	// 	$query = "
-	// 	select a.prestasi_id, a.skoring_id, b.nama as prestasi, a.uraian, a.dokumen_pendukung,
-	// 			c.filename as nama_dokumen, c.path, c.web_path, c.thumbnail_path, 
-	// 			c.verifikasi, c.catatan,
-	// 			c.created_on as tanggal_upload
-	// 	from tcg_prestasi a
-	// 	join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
-	// 	left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
-	// 	where a.is_deleted=0 and a.peserta_didik_id=?";
-
-	// 	return $this->db->query($query, array($peserta_didik_id));
-	// }
-
-
-	// function tcg_berkasdisekolah($sekolah_id){
-	// 	$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
-	// 	$timestamp = secure(date("Y/m/d H:i:s"));
-
-	// 	$builder = $this->db->table('tcg_pendaftaran a');
-	// 	$builder->select('a.pendaftaran_id,
-	// 						a.sekolah_id,a.peserta_didik_id,a.penerapan_id,d.nama AS jalur,a.nomor_pendaftaran,b.nisn,b.nama,a.jenis_pilihan,
-	// 						i.keterangan as label_jenis_pilihan,
-	// 						e.nama AS sekolah_asal,a.created_on,a.tanggal_verifikasi_berkas,a.verifikasi_berkas_oleh,a.kelengkapan_berkas,
-	// 						case when(sedang_verifikasi_timestamp is not null and date_add(sedang_verifikasi_timestamp, interval 15 minute)>=' .$timestamp. ') then h.nama else null end as sedang_verifikasi');
-	// 	$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1');
-	// 	$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0');
-	// 	$builder->join('ref_sekolah e','b.sekolah_id = e.sekolah_id','LEFT OUTER');
-	// 	// $builder->join('dbo_kelengkapan_pendaftaran f','a.pendaftaran_id = f.pendaftaran_id AND f.is_deleted = 0');
-	// 	// $builder->join('cfg_kelengkapan_dokumen g','f.kelengkapan_dokumen_id = g.kelengkapan_dokumen_id AND g.perlu_verifikasi = 1 AND g.is_deleted=0');
-	// 	$builder->join('dbo_users h','h.pengguna_id = b.sedang_verifikasi_oleh and h.is_deleted = 0','LEFT OUTER');
-	// 	$builder->join('cfg_jenis_pilihan i','i.jenis_pilihan=a.jenis_pilihan and i.tahun_ajaran_id=a.tahun_ajaran_id and i.putaran=a.putaran and i.is_deleted=0','LEFT OUTER');
-	// 	$builder->where(array('a.pendaftaran'=>1,'a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id,'b.lokasi_berkas'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
-	// 	// $builder->group_by(array('a.pendaftaran_id','a.sekolah_id','a.peserta_didik_id','a.penerapan_id','d.nama','a.nomor_pendaftaran','b.nisn','b.nama','a.jenis_pilihan', 'e.nama','a.created_on'));
-	// 	$builder->orderBy('a.created_on');
-	// 	return $builder->get();
-	// }
 
 	function tcg_nama_sekolah($sekolah_id){
 
@@ -973,6 +657,32 @@ Class Mprofilsekolah
 		return $sekolah;
 	}
 
+    function tcg_create_admin_sekolah() {
+        $sql = "select a.*, b.sekolah_id from tmp_usulan_admin_sekolah a join ref_sekolah b on b.npsn=a.npsn and b.is_deleted=0";
+        $result = $this->db->query($sql)->getResultArray();
 
+        //create users
+        foreach($result as $row) {
+            $email = trim($row['email']);
+            $nama = trim($row['nama']);
+            $password = trim($row['password']);
+            //delete existing entry
+            $sql = "delete from dbo_users where user_name=? and role_id=12";
+            $this->db->query($sql, array($email));
+            //create new entry
+            $user = array(
+                'user_name' => $email,
+                'email' => $email,
+                'nama' => $nama,
+                'role_id' => 12,
+                'sekolah_id' => $row['sekolah_id'],
+                'password' => password_hash($password, PASSWORD_DEFAULT)
+            );
+            $builder = $this->db->table("dbo_users");
+            $query = $builder->insert($user);
+            //logging
+            echo "User an. " .$nama. " created. <br>";
+        }
+    }
 
 }

@@ -5,7 +5,7 @@
     </ol>
 </div>
 
-{if $cek_waktupendaftaran_sd!=1}
+{if $cek_waktupendaftaran_sd!=1 && !empty($waktupendaftaran_sd)}
 <div class="alert alert-secondary" role='alert'>
     Periode pendaftaran SD adalah dari tanggal <b><span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
         <span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_selesai_aktif}</span></b>.      

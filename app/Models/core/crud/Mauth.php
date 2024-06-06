@@ -46,6 +46,9 @@ class Mauth
             unset($user['updated_on']);
             unset($user['updated_by']);
             unset($user['is_deleted']);
+
+            //audit trail
+            
             return $user;
         }
 

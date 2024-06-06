@@ -48,6 +48,11 @@ class Pengajuanakun extends PpdbController {
         $this->Msekolah->tcg_approve_akun($user_id);
         $json['status'] = 1;
 
+        //audittrail
+        $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+        $profil = $msiswa->tcg_profilsiswa_from_userid($user_id);
+        audit_siswa($profil, "PERSETUJUAN AKUN", "Akun an. " +$profil['nama']+ " disetujui.");
+        
 		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
     }
 	

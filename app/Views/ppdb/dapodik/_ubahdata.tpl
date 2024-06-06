@@ -170,7 +170,7 @@
         if (!isNaN(lintang) && lintang != 0 && !isNaN(bujur) && bujur != 0) {
             map.setView([lintang,bujur],10);
  
-            L.marker([lintang, bujur]).addTo(map)
+            L.marker([lintang, bujur]).addTo(layerGroup)
             .bindPopup(profil['desa_kelurahan']+ ", " +profil['kecamatan']+ ", " +profil['kabupaten']+ ", " +profil['provinsi']).openPopup();
         }
 
@@ -243,6 +243,10 @@
         var cnt = 0;
         var updated = {};
 
+        //show loading
+        loader = $("#loader");
+        loader.show();
+        
         elements = $("[tcg-field-type='input']");
         elements.each(function(idx) {
             el = $(this);
@@ -265,6 +269,7 @@
         if (cnt == 0) {
             toastr.info("Tidak ada data yang berubah.");
             close_profil();
+            loader.hide();
             return;
         }
 
@@ -287,11 +292,16 @@
             success: function(json) {
                 if (json.error !== undefined && json.error != "" && json.error != null) {
                     toastr.error("Tidak berhasil menyimpan data profl siswa: " +json.error);
+                    loader.hide();
                     return false;
                 }
                 toastr.success("Data profil siswa an. " +profil['nama']+ " berhasil disimpan.");
 
+                //reload
+                dt_siswa_kls6.ajax.reload();
+
                 //close the window
+                loader.hide();
                 close_profil();
                 return true;
             },
@@ -299,6 +309,7 @@
                 //TODO
                 toastr.error("Tidak berhasil menyimpan data profil siswa: " +textStatus);
                 verifikasi_siswa = 0;
+                loader.hide();
                 return false;
             }
         });

@@ -78,12 +78,22 @@ class AuditTrail {
         $str_keys = "";
         $str_values = "";
 
-        if (is_array($keys) && $values == null) {
-            unset($keys['created_on']);
-            unset($keys['created_by']);
-            unset($keys['updated_on']);
-            unset($keys['updated_by']);
-            unset($keys['is_deleted']);
+        if (is_array($keys)) {
+            if (($key = array_search(COL_CREATED_BY, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_CREATED_ON, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_UPDATED_BY, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_UPDATED_ON, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_SOFT_DELETE, $keys)) !== false){
+                unset($keys[$key]);
+            }
         }
 
         if ($values == null) {
@@ -118,39 +128,51 @@ class AuditTrail {
         $builder->insert($valuepair);
     }
 
-    function update($table, $reference, $keys, $values = null) {
+    function update($table, $reference, $keys, $values = null, $old_values = null) {
         $user_id = $this->session->get("user_id");
 
         $action = "UPDATE";
         $description = "Update row";
         $str_keys = "";
         $str_values = "";
+        $str_oldvalues = "";
 
-        if (is_array($keys) && $values == null) {
-            unset($keys['created_on']);
-            unset($keys['created_by']);
-            unset($keys['updated_on']);
-            unset($keys['updated_by']);
-            unset($keys['is_deleted']);
+        if (is_array($keys)) {
+            if (($key = array_search(COL_CREATED_BY, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_CREATED_ON, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_UPDATED_BY, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_UPDATED_ON, $keys)) !== false){
+                unset($keys[$key]);
+            }
+            if (($key = array_search(COL_SOFT_DELETE, $keys)) !== false){
+                unset($keys[$key]);
+            }
         }
 
-        if ($values == null) {
-            if (is_array($keys)) {
-                $str_values = implode(',', array_values($keys));
-                $str_keys = implode(',', array_keys($keys));
-            } else {
-                $str_values = $keys;
-                $str_keys = $keys;
-            }
+        if ($keys == null) {
+            $str_keys = null;
+            $str_values = null;
+            $str_oldvalues = null;
         }
         else {
-            if (is_array($keys)) {
-                $str_keys = implode(',', array_values($keys));
-            }
-            if (is_array($values)) {
-                $str_values = implode(',', array_values($values));
-            }
-        }
+            $str_keys = implode(', ', $keys);
+        
+            $arr1 = $arr2 = array();
+            foreach($keys as $k) {
+                $arr1[$k] = empty($values[$k]) ? '' : $values[$k];
+                if (!empty($old_values))
+                    $arr2[$k] = empty($old_values[$k]) ? '' : $old_values[$k];
+             }
+
+            $str_values = implode(', ', $arr1);
+            $str_oldvalues = implode(', ', $arr2);
+        }        
 
         $valuepair = array (
             'table_name' => $table,
@@ -159,6 +181,7 @@ class AuditTrail {
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
+            'old_values' => $str_oldvalues,
             'created_by' => $user_id
         );
 

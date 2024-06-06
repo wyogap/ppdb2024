@@ -607,7 +607,7 @@ class Siswa extends PpdbController {
             //audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
         }
         else {
-            audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
+            audit_siswa($oldvalues, "UPDATE PROFIL", "Ubah data siswa", $keys, $data, $oldvalues);
         }
 
         print_json_output($detail);
@@ -845,7 +845,7 @@ class Siswa extends PpdbController {
         }
 
         //audit trail
-        audit_pendaftaran($pendaftaran_id, $audit_action_type, $audit_action_desc, $audit_keys, $data, $pendaftaran_lama);
+        audit_pendaftaran($pendaftaran_lama, $audit_action_type, $audit_action_desc, $audit_keys, $data, $pendaftaran_lama);
 
         //get list of existing pendaftaran
         $data = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
@@ -978,12 +978,10 @@ class Siswa extends PpdbController {
 
             $flag = $pendaftaran['pendaftaran'];
             if ($flag == 1) {
-                audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
-                                            null, null, null);
+                audit_pendaftaran($pendaftaran, "PENDAFTARAN", "Pendaftaran an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")");
             }
             else {
-                audit_pendaftaran($pendaftaran_id, "PENDAFTARAN", "Pendaftaran OTOMATIS an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
-                                            null, null, null);
+                audit_pendaftaran($pendaftaran, "PENDAFTARAN", "Pendaftaran OTOMATIS an " .$nama. " di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")");
             }
         }
 
@@ -1018,8 +1016,7 @@ class Siswa extends PpdbController {
         $sekolah = $pendaftaran['sekolah'];
         $pilihan = $pendaftaran['label_jenis_pilihan'];
         $jalur = $pendaftaran['jalur'];
-        audit_pendaftaran($pendaftaran_id, "HAPUS PENDAFTARAN", "Hapus pendaftaran di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")", 
-                                    null, null, null);
+        audit_pendaftaran($pendaftaran, "HAPUS PENDAFTARAN", "Hapus pendaftaran di " .$sekolah. " jalur " .$jalur. "(" .$pilihan. ")");
 
         //get list of existing pendaftaran
         $data = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);

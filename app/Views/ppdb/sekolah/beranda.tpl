@@ -27,7 +27,7 @@
 							<tr>
 								<td><b>Nama</b></td>
 								<td>:</td>
-								<td>{$profil.nama}<span class="pull-right"><a href="http://sekolah.data.kemdikbud.go.id/index.php/chome/profil/{$profil.dapodik_id}" target="_blank" class="btn btn-xs btn-primary">Profil Sekolah Kita</a></span></td>
+								<td>{$profil.nama}<span class="pull-right"> <a href="http://sekolah.data.kemdikbud.go.id/index.php/chome/profil/{$profil.dapodik_id}" target="_blank" class="btn btn-xs btn-primary">Profil Sekolah Kita</a></span></td>
 							</tr>
 							<tr>
 								<td><b>Jenjang</b></td>

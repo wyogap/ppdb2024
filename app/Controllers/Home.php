@@ -10,6 +10,8 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+require_once ROOTPATH .'vendor/autoload.php';
+
 class Home extends PpdbController
 {
     protected static $AUTHENTICATED = false;
@@ -199,6 +201,88 @@ class Home extends PpdbController
 		}
 	}    
 
+    function cekdapodik() {
+        $nisn = $this->request->getPostGet('nisn');
+        $npsn = $this->request->getPostGet('npsn');
+
+        $jumlah = $this->Mhome->tcg_cek_nisn($nisn);
+        if($jumlah>0){
+            print_json_error("Data akun siswa dengan nisn tersebut sudah ada.", -90);
+        }
+
+        helper("dom");
+      
+        $url = 'https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=16F236D8-1153-4B69-B9EF-CC99FEDE2D65&nisn=' .$nisn. '&npsn=' .$npsn;
+
+        $client = new \GuzzleHttp\Client(['verify' => false ]);
+        $req = $client->request('GET', $url);
+        $resp = $req->getBody();
+
+        if ($resp == null) {
+            print_json_error("Tidak berhasil mendapatkan data dapodik.");
+        }
+
+        $profil = json_decode($resp);
+        $profil = (array) $profil[0];
+
+        $sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($npsn);
+
+        if (empty($sekolah)) {
+            $url = "https://referensi.data.kemdikbud.go.id/tabs.php?npsn=" .$npsn;
+
+            $retry = 0;
+            $arr = array();
+            do {
+                $client = new \GuzzleHttp\Client(['verify' => false ]);
+                $req = $client->request('GET', $url, ['http_errors' => false]);
+                $status_code = $req->getStatusCode();
+                $retry++;
+    
+                if ($status_code != 200) continue;
+    
+                $resp = (string) $req->getBody();
+                $html = str_get_html($resp);
+    
+                $tab = $html->find('.tabby-tab')[0];
+                $tr = $tab->find("tr");
+                foreach($tr as $row) {
+                    $td = $row->find("td");
+                    $field = $value = '';
+                    foreach($td as $k => $col) {
+                        if ($k == 1) $field = trim($col->innertext);
+                        if ($k == 3) $value = trim($col->innertext);
+                    }
+                    if (empty($field))  continue;
+                    $arr[$field] = $value;
+                }
+            } 
+            while ($status_code != 200 && $retry < 3);
+    
+            $sekolah = array();
+            $sekolah['npsn'] = $npsn;
+            $sekolah['dapodik_id'] = $profil['sekolah_id'];
+            $sekolah['nama'] = $arr['Nama'];
+            $sekolah['alamat'] = $arr['Alamat'];
+            $sekolah['nama_desa'] = $arr['Desa/Kelurahan'];
+            $sekolah['nama_kec'] = $arr['Kecamatan/Kota (LN)'];
+            $sekolah['nama_kab'] = $arr['Kab.-Kota/Negara (LN)'];
+            $sekolah['nama_prov'] = trim(str_replace("PROV.", "", $arr['Propinsi/Luar Negeri (LN)']));
+            $sekolah['bentuk'] = $arr['Bentuk Pendidikan'];
+            $sekolah['status'] = substr($arr['Status Sekolah'],0,1);
+            $sekolah['kode_wilayah'] = $this->Mhome->tcg_kode_wilayah($sekolah['nama_prov'], $sekolah['nama_kab'], $sekolah['nama_kec'], $sekolah['nama_desa']);
+   
+            //buat sekolah baru
+            $sekolah['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($sekolah['nama'],$sekolah['kode_wilayah'],$sekolah['bentuk'],$npsn,$sekolah['status']);
+        }
+
+        $profil['nama_sekolah'] = $sekolah['nama'];
+        $profil['sekolah_dapodik_id'] = $sekolah['dapodik_id'];
+        $profil['sekolah_id'] = $sekolah['sekolah_id'];
+        $profil['npsn_sekolah'] = $sekolah['npsn'];
+    
+        print_json_output($profil);
+    }
+
     function registrasi() {
 		$mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
@@ -277,8 +361,10 @@ class Home extends PpdbController
                 break;
 			}
 
-			if (empty($data['sekolah_id']) && !empty($data['nama_sekolah'])) {
-                //TODO: check for existing sekolah with the same npsn
+            //TODO: check for existing sekolah with the same npsn
+            $sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($data['npsn_sekolah']);
+
+			if (empty($sekolah)) {
 				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
 				$status_sekolah = 'S';
 				//create sekolah id first
@@ -288,6 +374,9 @@ class Home extends PpdbController
 					break;
 				}
 			}
+            else {
+                $data['sekolah_id'] = $sekolah['sekolah_id'];
+            }
 
             $user = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
                                                                     $data['tempat_lahir'], $data['tanggal_lahir'], $data['nama_ibu_kandung'], $data['kebutuhan_khusus'], 
@@ -297,6 +386,12 @@ class Home extends PpdbController
                 break;
             }
 
+            //audit trail
+            $data['peserta_didik_id'] = $user['peserta_didik_id'];
+            $data['user_id'] = $user['user_id'];
+            audit_siswa($user, "REGISTRASI", "Registrasi siswa an. " .$user['nama_pengguna'], array_keys($data), $data);
+
+            //pesan
             $data['info'] = "<div class='alert alert-secondary' role='alert'>Registrasi berhasil. Silahkan tunggu pemberitahuan persetujuan akun melalui nomor kontak yang anda berikan. Apabila setelah 1x24 jam anda belum menerima pemberitahuan persetujuan, silahkan menghubungi nomor bantuan yang ada di halaman utama.</div>
             <div class='alert alert-secondary' role='alert'>Anda bisa melakukan masuk ke sistem PPDB Online menggunakan nomor NISN anda. </div>
             <div class='alert alert-secondary' role='alert'>Segera masuk dan ganti PIN anda sekarang juga. <br>Gunakan akun berikut untuk masuk ke sistem: <br><ul><li>Nama Pengguna: " .$data['nisn']. "</li><li>PIN: " .$data['nisn']. "</li></ol></div>";

@@ -36,7 +36,7 @@ class Penerimaan extends PpdbController {
 	function index()
 	{
         $sekolah_id = $this->session->get("sekolah_id");
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
         if (empty($profil) || !$profil['ikut_ppdb']) {
             return $this->notauthorized();
         }
@@ -97,12 +97,10 @@ class Penerimaan extends PpdbController {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
                     print_json_error($error);
-                } else {
-                    print_json_error('Tidak berhasil mendapatkan daftar penerimaan.');
                 }
             }
 
-			print_json_output($result);
+			print_json_output($result, 1);
 		}
         else if ($action=='create'){
 			$sekolah_id = $this->session->get("sekolah_id");
@@ -142,6 +140,10 @@ class Penerimaan extends PpdbController {
                 $data = array();
                 $data[] = $detail;
 
+                //audit trail
+                audit_siswa($detail, "SISWA BARU SD", "Siswa Baru Penerimaan SD an. " +$detail['nama']);
+                audit_pendaftaran($detail, "PENDAFTARAN SD", "Pendaftaran di SD " .$detail['sekolah']. " an. " +$detail['nama']);
+
                 print_json_output($data);
 	
 			} while(false);
@@ -157,10 +159,12 @@ class Penerimaan extends PpdbController {
 
             $json = array();
             foreach($values as $k => $v) {
+                $profil = $this->Msiswa->tcg_profilsiswa($k);
                 $data = $this->Msiswa->tcg_update_siswa($k, $v);
 
                 if ($data != null) {
-                    //TODO: audit trail
+                    //audit trail
+                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " +$data['nama'], array_keys($v), $v, $profil);
                 }
 
                 $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($k);
@@ -172,6 +176,12 @@ class Penerimaan extends PpdbController {
 			$sekolah_id = $this->session->get("sekolah_id");
             $peserta_didik_id = $this->request->getPostGet('peserta_didik_id');
 
+            //pendaftaran lama
+            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+            if ($sekolah_id != $pendaftaran['sekolah_id']) {
+                print_json_error('Tidak mendaftar di sekolah ini');
+            }
+
             $status = $this->Msekolah->tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id);
             if (!$status) {
                 $error = $this->Msekolah->get_error_message();
@@ -181,6 +191,9 @@ class Penerimaan extends PpdbController {
                     print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
                 }
             }
+
+            //audit trail
+            audit_pendaftaran($pendaftaran, "HAPUS PENDAFTARAN SD", "HAPUS Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " +$pendaftaran['nama']);
 
 			print_json_output(array());
         }
@@ -216,12 +229,17 @@ class Penerimaan extends PpdbController {
                 }
             }
 
-			print_json_output(null);	
+            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+
+            //audit trail
+            audit_pendaftaran($pendaftaran, "PENDAFTARAN SD", "Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " +$pendaftaran['nama']);
+
+			print_json_output($pendaftaran);	
         }
         else if ($action=='sekolah') {
             $mdropdown = new \App\Models\Ppdb\Mconfig();
             $sekolah = $mdropdown->tcg_sekolah_tk_ra();
-
+            
             print_json_output($sekolah);
         }
         else if ($action=='search') {

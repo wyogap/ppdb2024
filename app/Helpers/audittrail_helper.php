@@ -6,7 +6,7 @@ require 'vendor/autoload.php';
 if ( ! function_exists('audittrail_trail'))
 {
 	function _audittrail_trail($db, $session, $table, $reference, $action, $description, $keys = null, $values = null) {
-        $user_id = $session->userdata("user_id");
+        $user_id = $session->get("user_id");
 
         $str_keys = "";
         $str_values = "";
@@ -54,7 +54,7 @@ if ( ! function_exists('audittrail_trail'))
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $session->userdata("user_id")
+            'created_by' => $session->get("user_id")
         );
 
         $builder = $db->table('dbo_audit_trails');
@@ -66,7 +66,7 @@ if ( ! function_exists('audittrail_trail'))
 if ( ! function_exists('audittrail_insert'))
 {
     function _audittrail_insert($db, $session, $table, $reference, $keys, $values = null) {
-        $user_id = $session->userdata("user_id");
+        $user_id = $session->get("user_id");
 
         $action = "INSERT";
         $description = "Insert row";
@@ -106,7 +106,7 @@ if ( ! function_exists('audittrail_insert'))
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $session->userdata("user_id")
+            'created_by' => $session->get("user_id")
         );
 
         $builder = $db->table('dbo_audit_trails');
@@ -118,7 +118,7 @@ if ( ! function_exists('audittrail_insert'))
 if ( ! function_exists('audittrail_update'))
 {
     function _audittrail_update($db, $session, $table, $reference, $keys, $values = null) {
-        $user_id = $session->userdata("user_id");
+        $user_id = $session->get("user_id");
 
         $action = "UPDATE";
         $description = "Update row";
@@ -158,7 +158,7 @@ if ( ! function_exists('audittrail_update'))
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $session->userdata("user_id")
+            'created_by' => $session->get("user_id")
         );
 
         $builder = $db->table('dbo_audit_trails');
@@ -170,7 +170,7 @@ if ( ! function_exists('audittrail_update'))
 if ( ! function_exists('audittrail_delete'))
 {
     function _audittrail_delete($db, $session, $table, $reference) {
-       $user_id = $session->userdata("user_id");
+       $user_id = $session->get("user_id");
 
         $action = "DELETE";
         $description = "Delete row";
@@ -184,7 +184,7 @@ if ( ! function_exists('audittrail_delete'))
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $session->userdata("user_id")
+            'created_by' => $session->get("user_id")
         );
 
         $builder = $db->table('dbo_audit_trails');
@@ -196,7 +196,7 @@ if ( ! function_exists('audittrail_delete'))
 if ( ! function_exists('audittrail_softdelete'))
 {
     function _audittrail_softdelete($db, $session, $table, $reference) {
-        $user_id = $session->userdata("user_id");
+        $user_id = $session->get("user_id");
 
         $action = "SOFT DELETE";
         $description = "Soft-delete row";
@@ -210,7 +210,7 @@ if ( ! function_exists('audittrail_softdelete'))
             'long_description' => $description,
             'col_names' => $str_keys,
             'col_values' => $str_values,
-            'created_by' => $session->userdata("user_id")
+            'created_by' => $session->get("user_id")
         );
 
         $builder = $db->table('dbo_audit_trails');

@@ -47,21 +47,21 @@
 </a>  
 
 <!-- Required vendors -->
-<script src="{$base_url}/themes/dompet/js/global.min.js"></script>
-<script src="{$base_url}/themes/dompet/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
+<script src="{$base_url}themes/dompet/js/global.min.js"></script>
+<script src="{$base_url}themes/dompet/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
 
 {if $use_select2|default: FALSE}
 <script src="{$base_url}assets/select2/js/select2.min.js"></script>
 {/if}
 
-{if $smarty.const.USE_CDN|default: 1}
+{if $smarty.const.__USE_CDN__|default: 1}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
 {else}
-<script src="{$base_url}cdn/fontawesome/js/all.min.css"></script>
+<script src="{$base_url}cdn/fontawesome/js/all.min.js"></script>
 {/if}
 
 {if $use_datatable|default: FALSE}
-<script src="{$base_url}assets/datatables/DataTables-1.11.4/js/jquery.dataTables.min.js"></script>
+<script src="{$base_url}assets/datatables/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="{$base_url}assets/datatables/Select-1.3.4/js/dataTables.select.min.js"></script>
 <script src="{$base_url}assets/datatables/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
 <script src="{$base_url}assets/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
@@ -86,7 +86,7 @@
 <script src="{$base_url}assets/moment/moment-with-locales.min.js" defer></script>
 
 {if $use_leaflet|default: FALSE}
-{if $smarty.const.USE_CDN|default: 1} 
+{if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
@@ -98,7 +98,7 @@
 {/if}
 
 {if $use_highchart|default: FALSE} 
-{if $smarty.const.USE_CDN|default: 1}
+{if $smarty.const.__USE_CDN__|default: 1}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/highcharts.js"></script>
 {else} 
 <script src="{$site_url}cdn/highcharts/highcharts.js"></script>
@@ -179,10 +179,14 @@
         }
     }
 
-    function setCookie(c_name, value, exdays) {
-        var exdate = new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+    function setCookie(c_name, value, expdays=30, path=null, domain=null, secure=null) {
+        var expdate = new Date();
+        expdate.setDate(expdate.getDate() + expdays);
+        var c_value = escape(value) + 
+            ((expdays == null) ? "" : "; expires=" + expdate.toUTCString())+
+            ((path == null) ? "; path=/" : "; path=" + path) +
+            ((domain == null) ? "" : "; domain=" + domain) +
+            ((secure == null) ? "" : "; secure");
         document.cookie = c_name + "=" + c_value;
     }
 
@@ -198,6 +202,13 @@
         }
     }
             
+    function delCookie(name, path=null, domain=null){
+        document.cookie = name + "=" +
+            ((path == null) ? "" : "; path=" + path) +
+            ((domain == null) ? "" : "; domain=" + domain) +
+            "; expires=Thu, 01-Jan-00 00:00:01 GMT";
+    }
+
 </script>
 
 <script src="{$base_url}/themes/dompet/js/custom.min.js"></script>

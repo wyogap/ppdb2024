@@ -3,6 +3,7 @@
     <style>
         .form-control-sm {
             font-size: 14px;
+            height: 40px;
         }
 
         .line-title {
@@ -26,6 +27,11 @@
             z-index: -1;
             margin: 0;
             padding: 0;
+        }
+
+        .btn-tarik-data {
+            height: 40px;
+            padding: 0.5rem 1.5rem;
         }
     </style>
 
@@ -64,8 +70,42 @@
     {if $sukses|default: 0}
     <a href="{$site_url}" class="btn btn-primary">Kembali ke Halaman Utama</a>
     {else}
-    <form role="form" enctype="multipart/form-data" id="registrasi" action="{$base_url}home/doregistrasi" method="post">
         <div class="card box-solid">
+            <div class="card-header with-border">
+                <h3 class="card-title text-primary"><i class="glyphicon glyphicon-book"></i><b>Tarik Data DAPODIK</b></h3>
+            </div>
+            <div class="card-body">
+                <p>Untuk mempermudah registrasi, ayo kita coba tarik data kamu dari sistem DAPODIK. Silahkan masukkan NISN kamu dan NPSN sekolah asal kamu di bawah. Setelah itu tekan tombol "Tarik Data DAPODIK".</p>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group has-feedback">
+                            <label for="nisn">NISN</label>
+                            <input type="text" class="form-control form-control-sm" id="cari_nisn" name="cari_nisn" placeholder="NISN" minlength="10" maxlength="10" data-validation="required">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group has-feedback">
+                            <label for="nisn">NPSN Sekolah Asal</label>
+                            <input type="text" class="form-control form-control-sm" id="cari_npsn" name="cari_npsn" placeholder="NPSN" minlength="8" maxlength="8" data-validation="required">
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="align-content: end;">
+                        <div class="form-group has-feedback">
+                            <button class="btn btn-primary btn-flat btn-tarik-data" style="margin-bottom: 16px;">Tarik Data DAPODIK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-dismissable" id="status-tarik-data" style="display: none;">
+        </div>
+
+        
+        <form role="form" enctype="multipart/form-data" id="registrasi" action="{$base_url}home/doregistrasi" method="post">
+        <div id="formulir" style="display: none">
+        <div class="card box-solid" id="asal-sekolah-2">
             <div class="card-header with-border">
                 <h3 class="card-title text-primary"><i class="glyphicon glyphicon-book"></i><b>Pengisian Asal Sekolah</b></h3>
             </div>
@@ -73,39 +113,15 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <div class="form-group has-feedback">
-                            <label for="kode_kabupaten_sekolah">Kabupaten/Kota</label>
-                            <select id="kode_kabupaten_sekolah" name="kode_kabupaten_sekolah" class="form-control select2" data-validation="required">
-                                <option value="">-- Pilih Kabupaten/Kota --</option>
-                                {foreach $kabupaten as $row}
-                                <option value="{$row['kode_wilayah']}">{$row['kabupaten']} ({$row['provinsi']})</option>
-                                {/foreach}
-                            </select>
+                            <label for="bentuk">No NPSN</label>
+                            <input type="text" class="form-control form-control-sm" id="npsn_sekolah" name="npsn_sekolah" placeholder="Masukkan NPSN Sekolah Di Sini" data-validation="required">
+                            <span>NPSN adalah nomor induk sekolah yang terdaftar di Data Pokok Pendidikan (DAPODIK) Kementerian Pendidikan</span>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <div class="form-group has-feedback">
-                            <label for="bentuk">Jenjang</label>
-                            <select id="bentuk" name="bentuk" class="form-control select2" data-validation="required">
-                                <option value="">-- Pilih Jenjang --</option>
-                                <!--<option value="RA">RA</option>!-->
-                                <option value="MI">MI</option>
-                                <option value="SD">SD</option>
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <div class="form-group has-feedback">
-                            <label for="sekolah_id">Nama Sekolah</label>
-                            <select id="sekolah_id" name="sekolah_id" class="form-control select2" style="width:100%;" data-validation="required">
-                                <option value="">-- Pilih Sekolah --</option>
-                            </select>
-                            <span id="nama-sekolah-manual" style="display: none;">
-                                <h6 class="line-title"><span>ATAU Masukkan Data Secara Manual</span></h6>
-                                <input type="text" class="form-control form-control-sm" id="nama_sekolah" name="nama_sekolah" placeholder="Masukkan Nama Sekolah Di Sini" style="margin-top: 15px;">
-                                <input type="text" class="form-control form-control-sm" id="npsn_sekolah" name="npsn_sekolah" placeholder="Masukkan NPSN Sekolah Di Sini" style="margin-top: 15px;">
-                                <span>NPSN adalah nomor induk sekolah yang terdaftar di Data Pokok Pendidikan (DAPODIK) Kementerian Pendidikan</span>
-                            </span>
+                            <label for="bentuk">Nama Sekolah</label>
+                            <input type="text" class="form-control form-control-sm" id="nama_sekolah" name="nama_sekolah" placeholder="Masukkan Nama Sekolah Di Sini" data-validation="required">
                         </div>
                     </div>
                 </div>
@@ -310,10 +326,11 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <button type="submit" class="btn btn-primary btn-flat"{if $cek_registrasi} disabled="true"{/if}>Registrasi Siswa</button>
+                        <button type="submit" class="btn btn-primary btn-flat btn-registrasi"{if $cek_registrasi} disabled="true"{/if}>Registrasi Siswa</button>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </form>
     {/if}

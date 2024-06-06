@@ -498,7 +498,7 @@ class Verifikasi extends PpdbController {
                 print_json_error("Tidak berhasil mengubah data siswa.");
 
             //audit trail
-            audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($updated), $updated, $siswa);
+            audit_siswa($siswa, "VERIFIKASI PROFIL", "Verifikasi dan perbaikan data siswa", array_keys($updated), $updated, $siswa);
 
             //RIWAYAT VERIFIKASI
             //perbaikan data
@@ -603,8 +603,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
 
                         //audit trail
-                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Dokumen " .$nama_dok. " tidak ada / belum diterima"
-                                            , array('daftar_kelengkapan_id'), array($key), null);
+                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Dokumen " .$nama_dok. " tidak ada / belum diterima");
 
                         //riwayat verifikasi
                         $str = "Dokumen " .$nama_dok. " tidak ada / belum diterima.";
@@ -614,8 +613,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,null);
 
                         //audit trail
-                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " SUDAH BENAR"
-                                            , array('daftar_kelengkapan_id'), array($key), null);
+                        audit_siswa($siswa, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " SUDAH BENAR");
 
                         //riwayat verifikasi
                         $str = "Dokumen " .$nama_dok. " diverifikasi SUDAH BENAR.";
@@ -626,8 +624,7 @@ class Verifikasi extends PpdbController {
                         $this->Msiswa->tcg_verifikasi_dokumenpendukung($peserta_didik_id,$key,$val,$catatan);
 
                         //audit trail
-                        audit_siswa($peserta_didik_id, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " BELUM BENAR"
-                                            , array('daftar_kelengkapan_id','catatan'), array($key, $catatan), null);
+                        audit_siswa($siswa, "VERIFIKASI DOKUMEN", "Verifikasi dokumen " .$nama_dok. " BELUM BENAR");
 
                         //riwayat verifikasi
                         $str = "Dokumen " .$nama_dok. " diverifikasi SUDAH BENAR.";
@@ -667,8 +664,7 @@ class Verifikasi extends PpdbController {
                 //audit trail
                 $nama_siswa = $siswa['nama'];
                 $nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
-                audit_siswa($peserta_didik_id, "LOKASI BERKAS", "Ubah lokasi berkas an. " .$nama_siswa. " ke " .$nama_sekolah
-                                    , array('peserta_didik_id','sekolah_id'), array($peserta_didik_id, $sekolah_id), null);
+                audit_siswa($siswa, "LOKASI BERKAS", "Ubah lokasi berkas an. " .$nama_siswa. " ke " .$nama_sekolah);
             }
         }
 
@@ -682,52 +678,6 @@ class Verifikasi extends PpdbController {
         print_json_output($json);
 
     }
-
-    // function ubahprofilsiswa() {
-    //     $data = $this->request->getPost("data");
-    //     if (empty($data))   
-    //         print_json_error("Invalid data");
-
-    //     $peserta_didik_id = $this->request->getPost('peserta_didik_id');
-
-    //     //oldvalues
-    //     $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
-    //     if ($oldvalues == null) {
-    //         print_json_error("Invalid userid");
-    //     }
-
-    //     //only save changed data
-    //     foreach($data as $key => $val) {
-    //         if ($val == $oldvalues[$key]) {
-    //             unset($data[$key]);
-    //         }
-    //     }
-
-    //     //start updating
-    //     $keys = array_keys($data);
-
-    //     $toggle = false;
-    //     $colname = "";
-    //     if (count($keys) == 1 && substr($keys[0],0,11) == "verifikasi_") {
-    //         $toggle = true;
-    //         $colname = $keys[0];
-    //     }
-
-    //     $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
-    //     if ($detail == null)
-    //         print_json_error("Tidak berhasil mengubah data siswa.");
-
-    //     //audit trail
-    //     if ($toggle) {
-    //         audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
-    //     }
-    //     else {
-    //         $this->audit_siswa($peserta_didik_id, "VERIFIKASI PROFIL", "Verifikasi data siswa", $keys, $data, $oldvalues);
-    //     }
-
-    //     print_json_output($detail);
-
-    // }
 	
 	function riwayat() {
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 

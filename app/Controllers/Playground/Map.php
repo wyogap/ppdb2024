@@ -18,4 +18,9 @@ class Map extends PpdbController {
         $data['page_title'] = "Map";
         $this->smarty->render("playground/map.tpl", $data);
     }
+
+    function create_admin_sekolah() {
+        $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
+        $msekolah->tcg_create_admin_sekolah();
+    }
 }

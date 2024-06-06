@@ -8,12 +8,139 @@
 if ( ! function_exists('audit_siswa'))
 {
 
-    function audit_siswa($peserta_didik_id, $action_type, $action_description, $columns, $new_values, $old_values) {
+    function audit_siswa($profil, $action_type, $action_description, $columns=null, $new_values=null, $old_values=null) {
+        $module = 'ppdb';
+        $table = 'tcg_peserta_didik';
+        $key = $profil['peserta_didik_id'];
+        $key2 = $profil['nisn'];
 
+        if ($columns == null) {
+            $column_text = null;
+            $new_values_text = null;
+            $old_values_text = null;
+        }
+        else {
+            $column_text = json_encode($columns, JSON_INVALID_UTF8_IGNORE);
+        
+            $arr1 = $arr2 = array();
+            foreach($columns as $k) {
+                $arr1[$k] = empty($new_values[$k]) ? '' : $new_values[$k];
+                if (!empty($old_values))
+                    $arr2[$k] = empty($old_values[$k]) ? '' : $old_values[$k];
+            }
+
+            $new_values_text = json_encode($arr1, JSON_INVALID_UTF8_IGNORE);
+            $old_values_text = json_encode($arr2, JSON_INVALID_UTF8_IGNORE);
+        }
+
+        $session = \Config\Services::session();
+        $db = \Config\Database::connect();
+
+        $valuepair = array (
+            'module' => $module,
+            'table_name' => $table,
+            'reference_id' => $key,
+            'reference_id2' => $key2,
+            'action_name' => $action_type,
+            'long_description' => $action_description,
+            'col_names' => $column_text,
+            'col_values' => $new_values_text,
+            'old_values' => $old_values_text,
+            'created_by' => $session->get("user_id")
+        );
+
+        $builder = $db->table('dbo_audit_trails');
+        $builder->insert($valuepair);
     }
 
-    function audit_pendaftaran($pendaftaran_id, $action_type, $action_description, $columns, $new_values, $old_values) {
+    function audit_pendaftaran($pendaftaran, $action_type, $action_description, $columns=null, $new_values=null, $old_values=null) {
+        $module = 'ppdb';
+        $table = 'tcg_pendaftaran';
+        $key = $pendaftaran['peserta_didik_id'];
+        if (!empty($pendaftaran['nisn'])) {
+            $key2 = $pendaftaran['nisn'];
+        } else {
+            $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+            $profil = $msiswa->tcg_profilsiswa($key);
+            $key2 = $profil['nisn'];
+        }
+
+        if ($columns == null) {
+            $column_text = null;
+            $new_values_text = null;
+            $old_values_text = null;
+        }
+        else {
+            $column_text = json_encode($columns, JSON_INVALID_UTF8_IGNORE);
         
+            $arr1 = $arr2 = array();
+            foreach($columns as $k) {
+                $arr1[$k] = empty($new_values[$k]) ? '' : $new_values[$k];
+                if (!empty($old_values))
+                    $arr2[$k] = empty($old_values[$k]) ? '' : $old_values[$k];
+            }
+
+            $new_values_text = json_encode($arr1, JSON_INVALID_UTF8_IGNORE);
+            $old_values_text = json_encode($arr2, JSON_INVALID_UTF8_IGNORE);
+        }
+
+        $session = \Config\Services::session();
+        $db = \Config\Database::connect();
+
+        $valuepair = array (
+            'module' => $module,
+            'table_name' => $table,
+            'reference_id' => $key,
+            'reference_id2' => $key2,
+            'action_name' => $action_type,
+            'long_description' => $action_description,
+            'col_names' => $column_text,
+            'col_values' => $new_values_text,
+            'old_values' => $old_values_text,
+            'created_by' => $session->get("user_id")
+        );
+
+        $builder = $db->table('dbo_audit_trails');
+        $builder->insert($valuepair);
+    }
+
+    function audit_trail($table, $key, $action_type, $action_description, $columns=null, $new_values=null, $old_values=null, $additional_key = null) {
+        if ($columns == null) {
+            $column_text = null;
+            $new_values_text = null;
+            $old_values_text = null;
+        }
+        else {
+            $column_text = implode(', ', $columns);
+        
+            $arr1 = $arr2 = array();
+            foreach($columns as $k) {
+                $arr1[$k] = empty($new_values[$k]) ? '' : $new_values[$k];
+                if (!empty($old_values))
+                    $arr2[$k] = empty($old_values[$k]) ? '' : $old_values[$k];
+             }
+
+            $new_values_text = implode(', ', $arr1);
+            $old_values_text = implode(', ', $arr2);
+        }        
+
+        $session = \Config\Services::session();
+        $db = \Config\Database::connect();
+
+        $valuepair = array (
+            'table_name' => $table,
+            'reference_id' => $key,
+            'reference_id2' => $additional_key,
+            'action_name' => $action_type,
+            'long_description' => $action_description,
+            'col_names' => $column_text,
+            'col_values' => $new_values_text,
+            'old_values' => $old_values_text,
+            'created_by' => $session->get("user_id")
+        );
+
+        $builder = $db->table('dbo_audit_trails');
+        $builder->insert($valuepair);
     }
 
     function print_json_error($error_message, $error_no = -1) { 

@@ -215,6 +215,11 @@ class Daftarulang extends PpdbController {
 		// }
 		$this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,$kelengkapan_berkas,$pengguna_id);
 
+        //audittrail
+        $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+        $pendaftaran = $msiswa->tcg_pendaftaran($peserta_didik_id, $pendaftaran_id);
+        audit_pendaftaran($pendaftaran, "DAFTAR ULANG", "Daftar ulang an. " +$pendaftaran['nama']+ " di " +$pendaftaran['sekolah']);
+
 		//update lokasi berkas
 		$this->Msekolah->tcg_ubah_lokasiberkas($peserta_didik_id,$sekolah_id);
 

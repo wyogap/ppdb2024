@@ -40,6 +40,8 @@ class Daftarsiswa extends PpdbController {
         $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         $data['kabupaten'] = $this->Mconfig->tcg_kabupaten();
 
+		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
+
         $data['use_datatable'] = 1;
         $data['use_select2'] = 1;
         $data['use_leaflet'] = 1;
@@ -110,7 +112,7 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Tidak berhasil mengubah data siswa.");
 
         //audit trail
-        audit_siswa($peserta_didik_id, "UBAH DATA", "Ubah data oleh Admin Dapodik", array_keys($updated), $updated, $oldvalues);
+        audit_siswa($oldvalues, "UBAH DATA", "Ubah data oleh Admin Dapodik an. " + $oldvalues['nama'], array_keys($updated), $updated, $oldvalues);
 
         print_json_output($detail);
     }
@@ -133,6 +135,38 @@ class Daftarsiswa extends PpdbController {
 
         print_json_output($data);
 	}
+
+    function resetpassword() {
+        $data = $this->request->getPost("data");
+
+        $status = array();
+        foreach($data as $k => $v) {
+            $pin1 = $v["pwd1"];
+            $pin2 = $v["pwd2"];
+            if ($pin1 != $pin2) {
+                print_json_error("Password baru tidak sama. Silahkan ulangi lagi.");
+            }
+    
+            $sekolah_id = $this->session->get("sekolah_id");
+    
+            $profil = $this->Msiswa->tcg_profilsiswa($k);
+            if ($profil['sekolah_id'] != $sekolah_id) {
+                print_json_error("Tidak diperbolehkan mengubah Password.");
+            }
+    
+            $user_id = $this->Msekolah->tcg_userid_from_pesertadidikid($k);
+    
+            $mauth = new \App\Models\Core\Crud\Mauth();
+            if($mauth->reset_password($user_id, $pin1) == 0) {
+                print_json_error("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
+            }
+            
+            //audit trail
+            audit_siswa($profil, "RESET PASSWORD", "Reset Password oleh Admin Dapodik");
+        }
+
+        print_json_output(null);
+    }
 
 }
 ?>

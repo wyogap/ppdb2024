@@ -7,6 +7,7 @@ Class Mprofilsiswa
 
     protected $db;
     protected $session;
+    protected $audittrail;
     protected $tahun_ajaran_id;
 
     protected $error_message = null;
@@ -15,6 +16,8 @@ Class Mprofilsiswa
         $this->db = \Config\Database::connect();
         $this->session = \Config\Services::session();
         $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
+
+        $this->audittrail = new \App\Libraries\AuditTrail();
 
         helper("functions");
     }
@@ -26,11 +29,16 @@ Class Mprofilsiswa
     function tcg_update_siswa($peserta_didik_id, $values) {
         $this->error_message = null;
 
+        $oldvalues = $this->tcg_profilsiswa($peserta_didik_id);
+
         $builder = $this->db->table("tcg_peserta_didik");
         $values['created_by'] = $this->session->get('user_id');
 
         $builder->where("peserta_didik_id", $peserta_didik_id);
         $builder->update($values);
+
+        //audit trail
+        $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, $oldvalues);
 
         return $this->tcg_profilsiswa_detil($peserta_didik_id);
     }
@@ -42,7 +50,7 @@ Class Mprofilsiswa
 		$builder->select("
         a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,
 		a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
-		a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,
+		a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
 		a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi,
 		a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
 		a.catatan_profil,a.catatan_lokasi,a.catatan_nilai,a.catatan_prestasi,a.catatan_afirmasi,a.catatan_inklusi,
@@ -88,6 +96,14 @@ Class Mprofilsiswa
 		$builder->select('a.*');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 		return $builder->get()->getRowArray();
+    }
+
+    function tcg_profilsiswa_from_userid($user_id) {
+        $sql = "select peserta_didik_id from dbo_users where is_deleted=0 and user_id=?";
+        $result = $this->db->query($sql, array($user_id))->getRowArray();
+        if ($result == null) return null;
+
+        return $this->tcg_profilsiswa($result['peserta_didik_id']);
     }
 
 	function tcg_jenispilihan($peserta_didik_id, $penerapan_id){
@@ -186,7 +202,7 @@ Class Mprofilsiswa
 							a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,b.status as status_sekolah,
 							a.pendaftaran, e.keterangan as label_jenis_pilihan, f.keterangan as label_masuk_pilihan,
 							a.created_on, a.status_daftar_ulang, a.pendaftaran, a.tag,
-                            g.nama as nama, c.nama as penerapan, c.parent_id as parent_penerapan_id');
+                            g.nama as nama, g.nisn, c.nama as penerapan, c.parent_id as parent_penerapan_id');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
 		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.aktif = 1 AND c.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');
@@ -283,6 +299,8 @@ Class Mprofilsiswa
             return null;
         }
 
+        //audit-trail: sudah di SP
+
         return $this->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
 	}
 
@@ -299,6 +317,8 @@ Class Mprofilsiswa
             $this->error_message = $message['message'];
             return null;
         }
+
+        //audit-trail: sudah di SP
 
         return $this->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
 	}
@@ -321,6 +341,8 @@ Class Mprofilsiswa
             $this->error_message = $message['message'];
             return null;
         }
+
+        //audit-trail: sudah di SP
 
         return $this->tcg_pendaftaran_from_tag($peserta_didik_id, $pendaftaran_id);
 	}
@@ -492,6 +514,8 @@ Class Mprofilsiswa
             return null;
         }
 
+        //audit-trail: sudah di SP
+
         return $this->tcg_pendaftaran_from_tag($peserta_didik_id, $tag);
 	}
 
@@ -519,6 +543,8 @@ Class Mprofilsiswa
             return 0;
         }
 
+        //audit-trail: sudah di SP
+
         return 1;
 	}
 
@@ -545,10 +571,19 @@ Class Mprofilsiswa
 	function tcg_hapus_dokumenpendukung($peserta_didik_id,$kelengkapan_id){
         $this->error_message = null;
         
-		$query = "update tcg_dokumen_pendukung set is_deleted=1 where peserta_didik_id=? and daftar_kelengkapan_id=? and is_deleted=0";
-		$this->db->query($query, array($peserta_didik_id, $kelengkapan_id));
+        $sql = "select dokumen_id from tcg_dokumen_pendukung where peserta_didik_id=? and daftar_kelengkapan_id=? and is_deleted=0";
+        $result = $this->db->query($sql, array($peserta_didik_id, $kelengkapan_id))->getResultArray();
+        if ($result == null || count($result)==0) return 0;
 
-		return 1;
+		$sql = "update tcg_dokumen_pendukung set is_deleted=1 where peserta_didik_id=? and daftar_kelengkapan_id=? and is_deleted=0";
+		$this->db->query($sql, array($peserta_didik_id, $kelengkapan_id));
+
+        //audit-trail
+        foreach($result as $k) {
+            $this->audittrail->delete('tcg_dokumen_pendukung', $k['dokumen_id']);
+        }
+
+		return count($result);
 	}
 
     function tcg_nama_dokumen($doc_id) {
@@ -630,11 +665,11 @@ Class Mprofilsiswa
 
         //crud audit trail
         if ($retval > 0) {
-			$keys = "dokumen_id;verifikasi;verifikator_id";
-			$values = "$dokumen_id;$verifikasi;$user_id";
+			$keys = array("peserta_didik_id","dokumen_id","verifikasi","catatan","verifikator_id");
+			$values = array("peserta_didik_id"=>$peserta_didik_id,"dokumen_id"=>$dokumen_id,"verifikasi"=>$verifikasi,"catatan"=>$catatan,"verifikator_id"=>$user_id);
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_dokumen_pendukung",$peserta_didik_id,'UPDATE','Verifikasi berkas',$keys,$values);
+			$this->audittrail->trail("tcg_dokumen_pendukung",$peserta_didik_id,"UPDATE", "Verifikasi dokumen pendukung", $keys,$values);
 		}
 
 		return $retval;
@@ -700,6 +735,9 @@ Class Mprofilsiswa
             $builder = $this->db->table('tcg_peserta_didik');
             $builder->where($filter);
 			$builder->update($valuepair);
+
+            //audittrail -> nggak perlu karena ini juga logging
+
             //return the id
             return $key;
         } else {
@@ -715,8 +753,7 @@ Class Mprofilsiswa
 		$retval = $this->db->query($query, array($peserta_didik_id, $value, $user_id));
 		if ($retval == null)    return 2;       //default : Belum lengkap
 
-        //audit trail
-        $this->tcg_audit_trail("tcg_peserta_didik",$peserta_didik_id,'UPDATE','Kelengkapan berkas',"kelengkapan_berkas", $value);
+        //audit trail -> sudah di SP
 
         return $this->tcg_status_kelengkapanberkas($peserta_didik_id);
 	}    
@@ -741,8 +778,8 @@ Class Mprofilsiswa
 		$retval = $builder->update($data);
 
 		if ($retval > 0) {
-			//put in audit trail
-			$this->tcg_audit_trail("tcg_peserta_didik",$peserta_didik_id,'UPDATE','Ubah lokasi berkas',implode(';', array_keys($data)),implode(';',$data));
+			//audit trail
+            $this->audittrail->trail("tcg_peserta_didik",$peserta_didik_id,'UPDATE','Ubah lokasi berkas', array_keys($data), $data);
 		}
 
 		return $retval;
@@ -826,13 +863,13 @@ Class Mprofilsiswa
 	// }
 
 
-	function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-		$user_id = $this->session->get("user_id");
+	// function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
+	// 	$user_id = $this->session->get("user_id");
 
-        //TODO
-		// $query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-		// return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
-	}
+    //     //TODO
+	// 	// $query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
+	// 	// return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
+	// }
 
 	function tcg_prestasi_detil($peserta_didik_id, $key) {
 		$query = "
@@ -893,11 +930,11 @@ Class Mprofilsiswa
 
 		$retval = $this->db->affectedRows();
 		if ($retval > 0) {
-			$keys = "dokumen_id;daftarulang;penerima_berkas_id";
-			$values = "$dokumen_id;$status;$penerima_berkas_id";
+			$keys = array("peserta_didik_id","dokumen_id","daftarulang","penerima_berkas_id");
+			$values = array("peserta_didik_id"=>$peserta_didik_id,"dokumen_id"=>$dokumen_id,"daftarulang"=>$status,"penerima_berkas_id">$penerima_berkas_id);
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_dokumen_pendukung",$peserta_didik_id,'update','Daftar ulang berkas',$keys,$values);
+            $this->audittrail->trail("tcg_dokumen_pendukung", $peserta_didik_id, "UPDATE", "Daftar ulang dokumen fisik", $keys, $values);
 		}
 
 		return $retval;
@@ -941,10 +978,6 @@ Class Mprofilsiswa
 		return $this->db->query($query, array($peserta_didik_id));
 	}
 
-
-
-
-
 	function tcg_verifikasi_berkas_fisik($peserta_didik_id, $dokumen_id, $value, $verifikator_id) {
 		// $peserta_didik_id = secure($peserta_didik_id);
 		// $dokumen_id = secure($dokumen_id);
@@ -983,11 +1016,11 @@ Class Mprofilsiswa
 
 		$retval = $this->db->affectedRows();
 		if ($retval > 0) {
-			$keys = "dokumen_id;berkas_fisik;penerima_berkas_id";
-			$values = "$dokumen_id;$value;$verifikator_id";
+			$keys = array("peserta_didik_id","dokumen_id","berkas_fisik","penerima_berkas_id");
+			$values = array("peserta_didik_id"=>$peserta_didik_id,"dokumen_id"=>$dokumen_id,"berkas_fisik"=>$value,"penerima_berkas_id"=>$verifikator_id);
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_dokumen_pendukung",$peserta_didik_id,'update','Verifikasi berkas fisik',$keys,$values);
+			$this->audittrail->trail("tcg_dokumen_pendukung",$peserta_didik_id,'UPDATE','Verifikasi berkas fisik',$keys,$values);
 		}
 
 		return $retval;
@@ -1008,11 +1041,11 @@ Class Mprofilsiswa
 
 		$retval = $this->db->affectedRows();
 		if ($retval > 0) {
-			$keys = "dokumen_id;verifikasi;verifikator_id";
-			$values = "$dokumen_id;$verifikasi;$verifikator_id";
+			$keys = array("peserta_didik_id","dokumen_id","verifikasi","verifikator_id");
+			$values = array("peserta_didik_id"=>$peserta_didik_id,"dokumen_id"=>$dokumen_id,"verifikasi"=>$verifikasi,"verifikator_id"=>$verifikator_id);
 
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_kelengkapan_pendaftaran",$peserta_didik_id,'update','Verifikasi berkas',$keys,$values);
+			$this->audittrail->trail("tcg_kelengkapan_pendaftaran",$peserta_didik_id,'UPDATE','Verifikasi berkas',$keys,$values);
 		}
 
 		return $retval;
@@ -1031,7 +1064,7 @@ Class Mprofilsiswa
 
 		if ($retval > 0) {
 			//put in audit trail
-			$this->tcg_audit_trail("tcg_peserta_didik",$peserta_didik_id,'update','Update status verifikasi',implode(';', array_keys($valuepair)),implode(';',$valuepair));
+			$this->audittrail->trail("tcg_peserta_didik",$peserta_didik_id,'UPDATE','Update status verifikasi',array_keys($valuepair),$valuepair);
 		}
 
 		return $retval;	
@@ -1061,6 +1094,11 @@ Class Mprofilsiswa
 
         $builder = $this->db->table('tcg_dokumen_pendukung');
 		$builder->insert($valuepair);
+
+        $dokumen_id = $this->db->insertID();
+        $valuepair["dokumen_id"] = $dokumen_id;
+
+        $this->audittrail->trail('tcg_dokumen_pendukung',$peserta_didik_id,'INSERT', "Insert dokumen hilang", array_keys($valuepair), $valuepair);
 	}
 
 	function tcg_verifikasidinas_baru($peserta_didik_id, $tipe_data, $kelengkapan_id, $catatan) {
@@ -1080,12 +1118,15 @@ Class Mprofilsiswa
 
         $builder = $this->db->table('tcg_verifikasi_dinas');
 		$query = $builder->insert($valuepair);
-		if ($query) {
-			$key = $this->db->insertID();
-			return $key;
-		}
+		if (!$query) return 0;
 
-		return 0;
+        $key = $this->db->insertID();
+
+        //audit trail
+        $valuepair['verifikasi_id'] = $key;
+        $this->audittrail->trail('tcg_verifikasi_dinas',$key,'INSERT', "Verifikasi dinas baru", array_keys($valuepair), $valuepair);
+
+        return $key;
 	}    
 
     function tcg_updatekebutuhankhusus($peserta_didik_id, $kebutuhan_khusus, $user_id) {
@@ -1122,28 +1163,28 @@ Class Mprofilsiswa
 	// 	return $builder->get();
 	// }
 
-	function tcg_profilsiswa_status($peserta_didik_id){
+	// function tcg_profilsiswa_status($peserta_didik_id){
 
-		$builder = $this->db->table('tcg_peserta_didik a');
-		$builder->select("a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
-		a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
-		a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,
-		coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-		coalesce(a.punya_kip,0) as punya_kip,
-		coalesce(a.masuk_bdt,0) as masuk_bdt,
-		a.nomor_kontak,a.surat_pernyataan_kebenaran_dokumen,
-		f.filename as nama_surat_pernyataan,
-		f.path as path_surat_pernyataan,
-		f.web_path as img_surat_pernyataan,
-		f.thumbnail_path as thumbnail_surat_pernyataan,
-		f.created_on as tanggal_surat_pernyataan
-		");
-		$builder->join('dbo_users e','a.verifikator_id = e.user_id AND e.is_deleted = 0','LEFT OUTER');
-		$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND (a.peserta_didik_id=f.peserta_didik_id or a.surat_pernyataan_kebenaran_dokumen=1) AND f.is_deleted = 0','LEFT OUTER');
-		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
+	// 	$builder = $this->db->table('tcg_peserta_didik a');
+	// 	$builder->select("a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
+	// 	a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
+	// 	a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,
+	// 	coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
+	// 	coalesce(a.punya_kip,0) as punya_kip,
+	// 	coalesce(a.masuk_bdt,0) as masuk_bdt,
+	// 	a.nomor_kontak,a.surat_pernyataan_kebenaran_dokumen,
+	// 	f.filename as nama_surat_pernyataan,
+	// 	f.path as path_surat_pernyataan,
+	// 	f.web_path as img_surat_pernyataan,
+	// 	f.thumbnail_path as thumbnail_surat_pernyataan,
+	// 	f.created_on as tanggal_surat_pernyataan
+	// 	");
+	// 	$builder->join('dbo_users e','a.verifikator_id = e.user_id AND e.is_deleted = 0','LEFT OUTER');
+	// 	$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND (a.peserta_didik_id=f.peserta_didik_id or a.surat_pernyataan_kebenaran_dokumen=1) AND f.is_deleted = 0','LEFT OUTER');
+	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
-		return $builder->get()->getRowArray();
-	}    
+	// 	return $builder->get()->getRowArray();
+	// }    
 
 
     // function tcg_kelengkapanpendaftaran_berkasfisik($pendaftaran_id){
@@ -1160,76 +1201,68 @@ Class Mprofilsiswa
 
 
 
-	function tcg_daftar_prestasi_files($peserta_didik_id) {
-		$query = "
-		select a.dokumen_pendukung as id,
-				c.filename, c.filesize, c.path, c.web_path, c.thumbnail_path, c.created_on as tanggal_upload
-		from tcg_prestasi a
-		join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
-		left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
-		where a.is_deleted=0 and a.peserta_didik_id=?";
+	// function tcg_daftar_prestasi_files($peserta_didik_id) {
+	// 	$query = "
+	// 	select a.dokumen_pendukung as id,
+	// 			c.filename, c.filesize, c.path, c.web_path, c.thumbnail_path, c.created_on as tanggal_upload
+	// 	from tcg_prestasi a
+	// 	join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+	// 	left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
+	// 	where a.is_deleted=0 and a.peserta_didik_id=?";
 
-		return $this->db->query($query, array($peserta_didik_id));
-	}
+	// 	return $this->db->query($query, array($peserta_didik_id));
+	// }
 
-	function tcg_hapus_prestasi($peserta_didik_id, $key) {
-		$file_path = "";
-		$thumbnail_path = "";
-		$dokumen_id = 0;
+	// function tcg_hapus_prestasi($peserta_didik_id, $key) {
+	// 	$file_path = "";
+	// 	$thumbnail_path = "";
+	// 	$dokumen_id = 0;
 
-		$query = $this->tcg_prestasi_detil($peserta_didik_id, $key);
-		foreach($query->getResult() as $row) {
-			$file_path = $row->web_path;
-			$thumbnail_path = $row->thumbnail_path;
-			$dokumen_id = $row->dokumen_pendukung;
-		}
+	// 	$query = $this->tcg_prestasi_detil($peserta_didik_id, $key);
+	// 	foreach($query->getResult() as $row) {
+	// 		$file_path = $row->web_path;
+	// 		$thumbnail_path = $row->thumbnail_path;
+	// 		$dokumen_id = $row->dokumen_pendukung;
+	// 	}
 
-		// //delete the file in /upload/path
-		// if (!empty($file_path) && file_exists(FCPATH. $file_path))
-		// 	unlink(FCPATH . $file_path);
+	// 	//delete entry in tcg_dokumen_pendukung
+	// 	if (!empty($dokumen_id)) {
+    //         $builder = $this->db->table('tcg_dokumen_pendukung');
+	// 		$builder->where('dokumen_id', $dokumen_id);
+	// 		$builder->delete();
+	// 	}
 
-		// //delete the file in /thumbnail/path
-		// if (!empty($thumbnail_path) && file_exists(FCPATH. $thumbnail_path)
-		// 	unlink(FCPATH . $thumbnail_path);
+	// 	//delete entry in tcg_prestasi
+    //     $builder = $this->db->table('tcg_prestasi');
+	// 	$builder->where('prestasi_id', $key);
+	// 	$builder->delete();
 
-		//delete entry in tcg_dokumen_pendukung
-		if (!empty($dokumen_id)) {
-            $builder = $this->db->table('tcg_dokumen_pendukung');
-			$builder->where('dokumen_id', $dokumen_id);
-			$builder->delete();
-		}
+	// }
 
-		//delete entry in tcg_prestasi
-        $builder = $this->db->table('tcg_prestasi');
-		$builder->where('prestasi_id', $key);
-		$builder->delete();
+	// function tcg_prestasi_baru($peserta_didik_id, $valuepair) {
+	// 	//dokumen bukti prestasi
+	// 	$kelengkapan_id = 8;
 
-	}
+	// 	//inject peserta_didik_id
+    //     $valuepair['peserta_didik_id'] = $peserta_didik_id;
 
-	function tcg_prestasi_baru($peserta_didik_id, $valuepair) {
-		//dokumen bukti prestasi
-		$kelengkapan_id = 8;
-
-		//inject peserta_didik_id
-        $valuepair['peserta_didik_id'] = $peserta_didik_id;
-
-        $builder = $this->db->table('tcg_prestasi');
-        if ($builder->insert($valuepair)) {
-            $key = $this->db->insertID();
-			//simpan dokumen pendukung
-            if (!empty($valuepair['dokumen_pendukung'])) {
-                $dokumen_pendukung = $valuepair['dokumen_pendukung'];
-                if (!empty($dokumen_pendukung) && !empty($key)) {
-                    $query = "call usp_simpan_dokumen_pendukung_2021(?,?,?,0,1,0)";
-                    $this->db->query($query, array($dokumen_pendukung,$peserta_didik_id,$kelengkapan_id));
-                }
-            }
-            //return the id
-            return $key;
-        } else {
-            return 0;
-        }
-	}
+    //     $builder = $this->db->table('tcg_prestasi');
+    //     if ($builder->insert($valuepair)) {
+    //         $key = $this->db->insertID();
+	// 		//simpan dokumen pendukung
+    //         if (!empty($valuepair['dokumen_pendukung'])) {
+    //             $dokumen_pendukung = $valuepair['dokumen_pendukung'];
+    //             if (!empty($dokumen_pendukung) && !empty($key)) {
+    //                 $query = "call usp_simpan_dokumen_pendukung_2021(?,?,?,0,1,0)";
+    //                 $this->db->query($query, array($dokumen_pendukung,$peserta_didik_id,$kelengkapan_id));
+    //             }
+    //         }
+    //         //return the id
+    //         return $key;
+    //     } else {
+    //         return 0;
+    //     }
+	// }
 
 
 }
