@@ -55,7 +55,7 @@
 {/if}
 
 {if $smarty.const.__USE_CDN__|default: 1}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/js/all.min.js"></script>
 {else}
 <script src="{$base_url}cdn/fontawesome/js/all.min.js"></script>
 {/if}

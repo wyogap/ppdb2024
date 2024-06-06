@@ -21,6 +21,7 @@
                             <th class="text-center" data-priority="2">Kelengkapan Berkas</th>
                             <th class="text-center">Tanggal Verifikasi</th>
                             <th class="text-center">Verifikasi Oleh</th>
+                            <th class="text-center" data-priority="2">#</th>
                         </tr>
                     </thead>
                 </table>

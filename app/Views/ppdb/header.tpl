@@ -25,7 +25,7 @@
     {/if}
 
     {if $smarty.const.__USE_CDN__|default: 1}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css" rel="stylesheet" type="text/css" />
     {else}
     <link href="{$base_url}cdn/fontawesome/css/all.min.css" rel="stylesheet" type="text/css" />
     {/if}

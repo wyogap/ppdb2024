@@ -64,6 +64,37 @@ class Berkasdisekolah extends PpdbController {
 
 	}
 
-	
+    function resetpassword() {
+        $data = $this->request->getPost("data");
+
+        $status = array();
+        foreach($data as $k => $v) {
+            $pin1 = $v["pwd1"];
+            $pin2 = $v["pwd2"];
+            if ($pin1 != $pin2) {
+                print_json_error("Password baru tidak sama. Silahkan ulangi lagi.");
+            }
+    
+            $sekolah_id = $this->session->get("sekolah_id");
+    
+            $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+            $profil = $msiswa->tcg_profilsiswa($k);
+            if ($profil['lokasi_berkas'] != $sekolah_id) {
+                print_json_error("Tidak diperbolehkan mengubah Password.");
+            }
+    
+            $user_id = $this->Msekolah->tcg_userid_from_pesertadidikid($k);
+    
+            $mauth = new \App\Models\Core\Crud\Mauth();
+            if($mauth->reset_password($user_id, $pin1) == 0) {
+                print_json_error("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
+            }
+            
+            //audit trail
+            audit_siswa($profil, "RESET PASSWORD", "Reset Password oleh Panitia SMP");
+        }
+
+        print_json_output(null);
+    }	
 }
 ?>

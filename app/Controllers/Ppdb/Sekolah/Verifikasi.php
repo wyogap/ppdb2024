@@ -738,7 +738,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_pendaftarbelumdiverifikasi($sekolah_id); 
-			print_json_output($data);	
+            if ($data == null) {
+                $data = array();
+            }
+			print_json_output($data, 1);	
 		}
 		else {
 			print_json_error("not-implemented");
@@ -773,7 +776,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_pendaftarsudahlengkap($sekolah_id); 
-			print_json_output($data);	
+            if ($data == null) {
+                $data = array();
+            }
+			print_json_output($data, 1);	
 		}
 		else {
 			print_json_error("not-implemented");
@@ -789,7 +795,10 @@ class Verifikasi extends PpdbController {
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
 			$data = $this->Msekolah->tcg_berkasdisekolah($sekolah_id); 
-			print_json_output($data);	
+            if ($data == null) {
+                $data = array();
+            }
+			print_json_output($data, 1);	
 		}
 		else {
 			print_json_error("not-implemented");
