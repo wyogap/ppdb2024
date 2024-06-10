@@ -88,8 +88,8 @@
 {if $use_leaflet|default: FALSE}
 {if $smarty.const.__USE_CDN__|default: 1} 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/3.0.1/Control.FullScreen.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
-<script src="{$site_url}cdn/leafletfullscreen/leaflet.fullscreen.js"></script>
 {else}
 <script src="{$site_url}cdn/leaflet/leaflet.js"></script>
 <script src="{$site_url}cdn/leafletfullscreen/leaflet.fullscreen.js"></script>

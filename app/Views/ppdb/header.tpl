@@ -33,8 +33,8 @@
     {if $use_leaflet|default: FALSE}
     {if $smarty.const.__USE_CDN__|default: 1} 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/3.0.1/Control.FullScreen.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.css"/>
-    <link rel="stylesheet" href="{$site_url}cdn/leafletfullscreen/leaflet.fullscreen.css"/>
     {else}
     <link rel="stylesheet" href="{$site_url}cdn/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="{$site_url}cdn/leafletfullscreen/leaflet.fullscreen.css"/>
