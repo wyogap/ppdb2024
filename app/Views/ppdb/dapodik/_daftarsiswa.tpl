@@ -35,7 +35,14 @@
 							//selected: true
 						},
 					},
-				},
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+ 
+                        sheet.querySelectorAll('row c[r^="C"]').forEach((el) => {
+                            el.setAttribute('s', '50');
+                        });
+                    }				
+                },
             ],
             "language": {
                 "sProcessing": "Sedang proses...",
@@ -76,7 +83,7 @@
                 {
                     data: "lintang",
                     className: 'dt-body-center',
-                    orderable: false
+                    orderable: false,
                 },
                 {
                     data: "bujur",

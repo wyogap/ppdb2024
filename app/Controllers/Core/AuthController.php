@@ -274,6 +274,7 @@ abstract class AuthController extends BaseController
         $key = array_keys($data)[0];
         $userid = $this->session->get('user_id');
         $mpermission = new Mpermission();
+
         if (!$mpermission->is_admin() && $key != $userid) {
             $json['error'] = 'not-authorized';
             echo json_encode($json, JSON_INVALID_UTF8_IGNORE);

@@ -112,7 +112,7 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Tidak berhasil mengubah data siswa.");
 
         //audit trail
-        audit_siswa($oldvalues, "UBAH DATA", "Ubah data oleh Admin Dapodik an. " + $oldvalues['nama'], array_keys($updated), $updated, $oldvalues);
+        audit_siswa($oldvalues, "UBAH DATA", "Ubah data oleh Admin Dapodik an. " .$oldvalues['nama'], array_keys($updated), $updated, $oldvalues);
 
         print_json_output($detail);
     }

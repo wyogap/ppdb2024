@@ -36,7 +36,8 @@
 
     .eye {
         position: absolute;
-        top: 45px;
+        /* top: 45px; */
+        top: 20px;
         right: 20px;
     }
     input.form-control {
@@ -201,12 +202,12 @@
                             </div>
                             {else}
 							<div class="mb-4">
-								<label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label>
+								<!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
 								<input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
                                 id="username" name="username" data-validation="required" minlength="8" maxlength="100">
 							</div>
 							<div class="mb-4 position-relative">
-								<label class="mb-1 text-dark">PIN / Password</label>
+								<!-- <label class="mb-1 text-dark">PIN / Password</label> -->
 								<input type="password" id="dlab-password" class="form-control form-control"
                                 placeholder="Masukkan PIN / Password" id="password" name="password" data-validation="required">
 								<span class="show-pass eye">								
@@ -214,17 +215,11 @@
 									<i class="fa fa-eye"></i>
 								</span>
 							</div>
-							<div class="form-row d-flex justify-content-between mt-4 mb-2">
-								<!-- <div class="mb-4">
-									<div class="form-check custom-checkbox mb-3">
-										<input type="checkbox" class="form-check-input" id="customCheckBox1" required="">
-										<label class="form-check-label mt-1" for="customCheckBox1">Remember my preference</label>
-									</div>
-								</div> -->
+							<!-- <div class="form-row d-flex justify-content-between mt-4 mb-2">
 								<div class="mb-4" style="flex-grow: 1; text-align: right;">
 									<a href="page-forgot-password.html" class="btn-link text-primary">Lupa PIN/Password?</a>
 								</div>
-							</div>
+							</div> -->
                             {/if}
 							<div class="text-center mb-4">
 								<button type="submit" class="btn btn-primary btn-block">Masuk</button>
