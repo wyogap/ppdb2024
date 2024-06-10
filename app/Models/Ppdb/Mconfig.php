@@ -310,8 +310,8 @@ Class Mconfig
 		$query = "select a.tipe, a.css, a.text, a.bisa_ditutup 
 				  from cfg_pengumuman a
 				  where a.tahun_ajaran_id=? and a.is_deleted=0
-						and (a.tanggal_mulai = '0000-00-00 00:00:00' or a.tanggal_mulai <= now() or a.tanggal_mulai is null)
-						and (a.tanggal_selesai = '0000-00-00 00:00:00' or a.tanggal_selesai >= now() or a.tanggal_selesai is null)
+						and (a.tanggal_mulai = 0 or a.tanggal_mulai <= now() or a.tanggal_mulai is null)
+						and (a.tanggal_selesai = 0 or a.tanggal_selesai >= now() or a.tanggal_selesai is null)
 				  order by a.tanggal_mulai asc";
 
 		return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
