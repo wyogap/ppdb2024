@@ -270,13 +270,13 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group has-feedback">
                                     <label for="lintang">Lintang</label>
-                                    <input type="number" readonly="false" class="form-control form-control-sm" id="lintang" name="lintang" placeholder="Lintang" data-validation="required" value="<?php echo $lintang??''; ?>">
+                                    <input type="number" readonly="false" class="form-control form-control-sm" id="lintang" name="lintang" placeholder="Lintang" data-validation="required">
                                 </div>
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group has-feedback">
                                     <label for="bujur">Bujur</label>
-                                    <input type="number" readonly="false" class="form-control form-control-sm" id="bujur" name="bujur" placeholder="Bujur" data-validation="required" value="<?php echo ($bujur??''); ?>">
+                                    <input type="number" readonly="false" class="form-control form-control-sm" id="bujur" name="bujur" placeholder="Bujur" data-validation="required">
                                 </div>
                             </div>
                         </div>

@@ -213,6 +213,10 @@
   
         show_profil();
  
+        if (nik != '' && nisn != '') {
+            //show profil
+            $("#formulir").show();
+        }
     });
 
     //Validasi

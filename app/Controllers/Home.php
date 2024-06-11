@@ -367,8 +367,10 @@ class Home extends PpdbController
 			if (empty($sekolah)) {
 				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
 				$status_sekolah = 'S';
+                $kode_wilayah_sekolah = empty($data['kode_kabupaten_sekolah']) ? "030500" : $data['kode_kabupaten_sekolah'];
+                //echo $kode_wilayah_sekolah; exit;
 				//create sekolah id first
-				$data['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($data['nama_sekolah'],$data['kode_kabupaten_sekolah'],$data['bentuk_sekolah'],$npsn_sekolah,$status_sekolah);
+				$data['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($data['nama_sekolah'],$kode_wilayah_sekolah,$data['bentuk_sekolah'],$npsn_sekolah,$status_sekolah);
 				if ($data['sekolah_id'] == "") {
                     $this->session->setFlashdata('error', "Tidak berhasil menambahkan data sekolah.");
 					break;
