@@ -23,4 +23,11 @@ class Map extends PpdbController {
         $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
         $msekolah->tcg_create_admin_sekolah();
     }
+
+    function longpassword() {
+        $pwd = password_hash('suharyonosuharyono@yahoo.com-ppdb', PASSWORD_BCRYPT);
+        echo $pwd ."<br>";
+        $status = password_verify('suharyonosuharyono@yahoo.com-ppdb', $pwd);
+        echo $status;
+    }
 }

@@ -38,6 +38,7 @@ class Mauth
         $user = $query->getRowArray();
         if ($user == null)  return $user;
 
+        //Using the PASSWORD_BCRYPT as the algorithm, will result in the password parameter being truncated to a maximum length of 72 bytes.
         if (password_verify($password, $user['password'])
                 || (empty($user['password']) && $username == $password)) {
             unset($user['password']);
@@ -127,6 +128,7 @@ class Mauth
     // This function used to create new password by reset link
     function createPasswordUser($email, $password)
     {
+        //Using the PASSWORD_BCRYPT as the algorithm, will result in the password parameter being truncated to a maximum length of 72 bytes.
 		$data = array(
 					'password'=>password_hash($password, PASSWORD_BCRYPT)
 				);
@@ -148,8 +150,9 @@ class Mauth
         );
 
         //hash password
+        //Using the PASSWORD_BCRYPT as the algorithm, will result in the password parameter being truncated to a maximum length of 72 bytes.
         $valuepair = array(
-            'password' => password_hash($password, PASSWORD_DEFAULT)
+            'password' => password_hash($password, PASSWORD_BCRYPT)
         );
 
         //set additional values
