@@ -667,22 +667,34 @@ Class Mprofilsekolah
             $email = trim($row['email']);
             $nama = trim($row['nama']);
             $password = trim($row['password']);
-            //delete existing entry
-            $sql = "delete from dbo_users where user_name=? and role_id=12";
-            $this->db->query($sql, array($email));
-            //create new entry
-            $user = array(
-                'user_name' => $email,
-                'email' => $email,
-                'nama' => $nama,
-                'role_id' => 12,
-                'sekolah_id' => $row['sekolah_id'],
-                'password' => password_hash($password, PASSWORD_DEFAULT)
-            );
-            $builder = $this->db->table("dbo_users");
-            $query = $builder->insert($user);
-            //logging
-            echo "User an. " .$nama. " created. <br>";
+            //get existing entry
+            $sql = "select * from dbo_users where user_name=? and role_id=12";
+            $result = $this->db->query($sql, array($email))->getRowArray();
+            if (empty($result)) {
+                //create new entry
+                $user = array(
+                    'user_name' => $email,
+                    'email' => $email,
+                    'nama' => $nama,
+                    'role_id' => 12,
+                    'sekolah_id' => $row['sekolah_id'],
+                    'password' => password_hash($password, PASSWORD_DEFAULT)
+                );
+                $builder = $this->db->table("dbo_users");
+                $query = $builder->insert($user);
+                //logging
+                echo "User an. " .$nama. " created. <br>";
+            }
+            else if ($result['is_deleted'] == 1) {
+                $updated = array(
+                    'is_deleted' => 1,
+                    'password' => password_hash($password, PASSWORD_DEFAULT)
+                );
+                $builder = $this->db->table("dbo_users");
+                $query = $builder->update($updated);
+                //logging
+                echo "User an. " .$nama. " updated. <br>";
+            }
         }
     }
 
