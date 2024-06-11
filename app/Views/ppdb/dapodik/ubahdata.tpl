@@ -138,6 +138,13 @@
                                             placeholder="RW">
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <div class="form-group has-feedback">
+                                        <label for="rw">Alamat</label>
+                                        <input id="alamat" tcg-field-type="input" name="alamat" type="text" class="form-control" aria-describedby="basic-addon1" 
+                                            placeholder="Alamat">
+                                    </div>
+                                </div>
                             </div>
                     </div>
                 </div>
