@@ -98,8 +98,10 @@ class Daftarsiswa extends PpdbController {
         //only save changed data
         $updated = array();
         foreach($updatedprofil as $key => $val) {
-            //echo $val ." - ". $siswa[$key];
-            $updated[$key] = $updatedprofil[$key];
+            if ($key == 'lintang' || $key == 'bujur') {
+                $val = str_replace(',', '.', $val);
+            }
+            $updated[$key] = $val;
         }
 
         if (empty($updated)) {
