@@ -483,7 +483,11 @@ class Verifikasi extends PpdbController {
                         $updated['catatan_' .$tag] = null;
                     }
                     else {
-                        $updated[$key] = $updatedprofil[$key];
+                        //internally, decimal point is '.' not ','
+                        if ($key == 'nilai_semester' || $key == 'nilai_kelulusan' || $key == 'nilai_bin' || $key == 'nilai_mat' || $key == 'nilai_ipa') {
+                            $val = str_replace(',', '.', $val);
+                        }
+                        $updated[$key] = $val;
                     }
                 }
             }

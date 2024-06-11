@@ -98,6 +98,7 @@ class Daftarsiswa extends PpdbController {
         //only save changed data
         $updated = array();
         foreach($updatedprofil as $key => $val) {
+            //internally, decimal point is '.' not ','
             if ($key == 'lintang' || $key == 'bujur') {
                 $val = str_replace(',', '.', $val);
             }

@@ -598,6 +598,14 @@ class Siswa extends PpdbController {
             }
         }
 
+        //internally, decimal point is '.' not ','
+        foreach($data as $key => $val) {
+            if ($key == 'nilai_semester' || $key == 'nilai_kelulusan' || $key == 'nilai_bin' || $key == 'nilai_mat' || $key == 'nilai_ipa') {
+                $val = str_replace(',', '.', $val);
+                $data[$key] = $val;
+            }
+        }
+
         $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
         if ($detail == null)
             print_json_error("Tidak berhasil mengubah data siswa.");
