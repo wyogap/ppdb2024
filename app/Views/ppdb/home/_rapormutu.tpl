@@ -126,18 +126,6 @@
                 { data: "skor_karakter", className: 'editable dt-body-center', 
                     width: "20%" 
                 },
-                { data: "iklim_keamanan", className: 'editable dt-body-center', 
-                    width: "20%",
-                },
-                { data: "skor_iklim_keamanan", className: 'editable dt-body-center', 
-                    width: "20%" 
-                },
-                { data: "iklim_kebhinekaan", className: 'editable dt-body-center', 
-                    width: "20%",
-                },
-                { data: "skor_iklim_kebhinekaan", className: 'editable dt-body-center', 
-                    width: "20%" 
-                },
             ],
             order: [ 0, 'asc' ],
             'rowCallback': function(row, data, index){
@@ -170,26 +158,6 @@
                     $(row).find('td:eq(8)').addClass('skor-hijau');
                 } else if (skor==4) {
                     $(row).find('td:eq(8)').addClass('skor-biru');
-                }
-                skor = parseInt(data['skor_iklim_keamanan']);
-                if (skor==1) {
-                    $(row).find('td:eq(10)').addClass('skor-merah');
-                } else if (skor==2) {
-                    $(row).find('td:eq(10)').addClass('skor-orange');
-                } else if (skor==3) {
-                    $(row).find('td:eq(10)').addClass('skor-hijau');
-                } else if (skor==4) {
-                    $(row).find('td:eq(10)').addClass('skor-biru');
-                }
-                skor = parseInt(data['skor_iklim_kebhinekaan']);
-                if (skor==1) {
-                    $(row).find('td:eq(12)').addClass('skor-merah');
-                } else if (skor==2) {
-                    $(row).find('td:eq(12)').addClass('skor-orange');
-                } else if (skor==3) {
-                    $(row).find('td:eq(12)').addClass('skor-hijau');
-                } else if (skor==4) {
-                    $(row).find('td:eq(12)').addClass('skor-biru');
                 }
             }
         });
