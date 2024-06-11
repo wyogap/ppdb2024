@@ -330,7 +330,7 @@ class Mtable
             b.column_name as `name`, 
             a.id as table_id, 
             b.ordinal_position as order_no, 
-            fn_camel_case(replace(b.column_name, '_', ' ')) as label,
+            replace(b.column_name, '_', ' ') as label,
             case when b.column_name in ('created_on', 'created_by', 'updated_on', 'updated_by', 'is_deleted') 
                 or b.column_name like '%_filename' or b.column_name like '%_path' or b.column_name like '%_thumbnail'
             then 1 else 0 end as is_deleted,
