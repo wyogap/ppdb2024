@@ -326,7 +326,7 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <button type="submit" class="btn btn-primary btn-flat btn-registrasi"{if $cek_registrasi} disabled="true"{/if}>Registrasi Siswa</button>
+                        <button type="submit" class="btn btn-primary btn-flat btn-registrasi"{if !$cek_registrasi && !$cek_sosialisasi} disabled="true"{/if}>Registrasi Siswa</button>
                     </div>
                 </div>
             </div>
