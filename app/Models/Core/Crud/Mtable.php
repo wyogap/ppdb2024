@@ -325,8 +325,7 @@ class Mtable
     }
 
     public function generate_columns($table_id_or_name) {
-        $sql = "
-        insert into dbo_crud_columns (name, table_id, order_no, label, is_deleted, data_priority, column_type, edit_type)
+        $sql = "        
         select 
             b.column_name as `name`, 
             a.id as table_id, 
@@ -344,9 +343,38 @@ class Mtable
         where (a.id=? or a.table_name=?)
             and a.is_deleted=0
             and x.id is null
-            ";
+        ";
 
-        $this->db->query($sql, array($table_id_or_name, $table_id_or_name));
+        $result = $this->db->query($sql, array($table_id_or_name, $table_id_or_name))->getResultArray();
+
+        $builder = $this->db->table('dbo_crud_columns');
+        foreach ($result as $row) {
+            $row['label'] = ucwords($row['label']);
+            $builder->insert($row);
+        }
+
+        // $sql = "
+        // insert into dbo_crud_columns (name, table_id, order_no, label, is_deleted, data_priority, column_type, edit_type)
+        // select 
+        //     b.column_name as `name`, 
+        //     a.id as table_id, 
+        //     b.ordinal_position as order_no, 
+        //     fn_camel_case(replace(b.column_name, '_', ' ')) as label,
+        //     case when b.column_name in ('created_on', 'created_by', 'updated_on', 'updated_by', 'is_deleted') 
+        //         or b.column_name like '%_filename' or b.column_name like '%_path' or b.column_name like '%_thumbnail'
+        //     then 1 else 0 end as is_deleted,
+        //     case when b.column_name = a.key_column then 1 else 100 end as data_priority,
+        //     'tcg_text' as column_type, 
+        //     'tcg_text' as edit_type
+        // from dbo_crud_tables a
+        // join INFORMATION_SCHEMA.COLUMNS b on b.table_name=a.table_name and b.table_schema=DATABASE() 
+        // left join dbo_crud_columns x on x.table_id=a.id and x.name=b.column_name
+        // where (a.id=? or a.table_name=?)
+        //     and a.is_deleted=0
+        //     and x.id is null
+        //     ";
+
+        // $this->db->query($sql, array($table_id_or_name, $table_id_or_name));
     }
 
     public function clone($table_id_or_name) {
