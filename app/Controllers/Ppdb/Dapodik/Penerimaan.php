@@ -201,6 +201,7 @@ class Penerimaan extends PpdbController {
             }
 
             //audit trail
+            $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
             audit_pendaftaran($pendaftaran, "HAPUS PENDAFTARAN SD", "HAPUS Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
 
 			print_json_output(array());
