@@ -93,7 +93,7 @@ abstract class AuthController extends BaseController
     
         }
 
-        $this->validation->setRule('username', 'Username', 'required|max_length[128]|trim');
+        $this->validation->setRule('username', 'Username', 'required|trim');
         $this->validation->setRule('password', 'Password', 'required');
         
         $validation = $this->validation->run($_POST);

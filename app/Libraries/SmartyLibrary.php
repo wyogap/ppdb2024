@@ -70,6 +70,8 @@ class SmartyLibrary extends Smarty {
         }
 
         $this->session = \Config\Services::session();
+
+        helper("functions");
     }
 
     function render($template, $data = array()) {

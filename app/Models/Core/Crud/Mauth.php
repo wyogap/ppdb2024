@@ -37,7 +37,7 @@ class Mauth
         
         $user = $query->getRowArray();
         if ($user == null)  return $user;
-
+        
         //Using the PASSWORD_BCRYPT as the algorithm, will result in the password parameter being truncated to a maximum length of 72 bytes.
         if (password_verify($password, $user['password'])
                 || (empty($user['password']) && $username == $password)) {

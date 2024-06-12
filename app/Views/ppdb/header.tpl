@@ -19,6 +19,10 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css" />
+    
+    
+
     {if $use_select2|default: FALSE}
     <link href="{$base_url}assets/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <link href="{$base_url}assets/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
