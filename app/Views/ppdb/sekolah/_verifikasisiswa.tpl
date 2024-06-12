@@ -649,7 +649,7 @@
         lintang = parseFloat(profil['lintang']);
         bujur = parseFloat(profil['bujur']);
         if (!isNaN(lintang) && lintang != 0 && !isNaN(bujur) && bujur != 0) {
-            map.setView([lintang,bujur],10);
+            map.setView([lintang,bujur],16);
  
             layerGroup.clearLayers();
             L.marker([lintang, bujur]).addTo(layerGroup)
