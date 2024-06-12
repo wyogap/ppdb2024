@@ -698,4 +698,32 @@ Class Mprofilsekolah
         }
     }
 
+    function tcg_kuota_sd($sekolah_id) {
+		$builder = $this->db->table('cfg_penerapan_sekolah a');
+        $builder->select("a.kuota");
+		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
+        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.penerapan_id", PENERAPANID_SD);
+        $builder->where("a.putaran", PUTARAN_SD);
+
+        $result = $builder->get()->getRowArray();
+        if ($result == null)    return 0;
+
+        return $result['kuota'];
+    }
+
+    function tcg_totalpendaftaran_sd($sekolah_id) {
+		$builder = $this->db->table('tcg_pendaftaran a');
+        $builder->select("count(a.pendaftaran_id) as cnt");
+		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
+        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.penerapan_id", PENERAPANID_SD);
+        $builder->where("a.putaran", PUTARAN_SD);
+
+        $result = $builder->get()->getRowArray();
+        if ($result == null)    return 0;
+
+        return $result['cnt'];
+    }
+    
 }

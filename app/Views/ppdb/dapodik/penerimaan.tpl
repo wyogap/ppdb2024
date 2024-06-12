@@ -18,6 +18,10 @@
 </div>
 {/if}
 
+<div class="alert alert-secondary" role="alert">
+    Anda memiliki kuota <b>{$kuota}</b> penerimaan siswa baru.         
+</div>
+
 {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center justify-content-center" id="loading2" style="position: absolute; margin-top: 24px; margin-left: -12px;">
     <div class="loader" role="status">

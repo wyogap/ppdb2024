@@ -62,6 +62,8 @@ class Penerimaan extends PpdbController {
             $data['cek_waktusosialisasi'] = ($data['waktusosialisasi']['aktif'] == 1) ? 1 : 0;
         }
 
+        $data['kuota'] = $this->Msekolah->tcg_kuota_sd($sekolah_id);
+
         //debugging
         if (__DEBUGGING__) {
 
@@ -110,7 +112,13 @@ class Penerimaan extends PpdbController {
                 print_json_error("Data siswa baru tidak valid/kosong.");
             }
 
-			$siswa = $values[0];
+            $kuota = $this->Msekolah->tcg_kuota_sd($sekolah_id);
+            $totalpendaftaran = $this->Msekolah->tcg_totalpendaftaran_sd($sekolah_id);
+            if ($totalpendaftaran>=$kuota) {
+                print_json_error("Kuota penerimaan sudah terpenuhi (" .$kuota. ")");
+            }
+
+            $siswa = $values[0];
             $detail = null;
 			do {
 				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
@@ -200,6 +208,12 @@ class Penerimaan extends PpdbController {
 		else if ($action=='accept'){
 			$sekolah_id = $this->session->get("sekolah_id");
 			$peserta_didik_id= $this->request->getPostGet("peserta_didik_id"); 
+
+            $kuota = $this->Msekolah->tcg_kuota_sd($sekolah_id);
+            $totalpendaftaran = $this->Msekolah->tcg_totalpendaftaran_sd($sekolah_id);
+            if ($totalpendaftaran>=$kuota) {
+                print_json_error("Kuota penerimaan sudah terpenuhi (" .$kuota. ")");
+            }
 
             //sudah diterima
             $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);

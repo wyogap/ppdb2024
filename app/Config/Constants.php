@@ -165,7 +165,7 @@ defined('TAHAPANID_DAFTARULANG')            OR define('TAHAPANID_DAFTARULANG', '
 defined('TAHAPANID_SUSULAN')                OR define('TAHAPANID_SUSULAN', '7');
 
 defined('PUTARAN_SD')               OR define('PUTARAN_SD', '4');
-defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '0');
+defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '301');
 defined('JENJANGID_SD')             OR define('JENJANGID_SD', '2');
 defined('JENJANGID_SMP')            OR define('JENJANGID_SMP', '3');
 
