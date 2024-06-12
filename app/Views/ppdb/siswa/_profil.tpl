@@ -82,7 +82,18 @@
             ],
             ajax: "{$site_url}ppdb/siswa/riwayat",
             columns: [
-                { data: "created_on", className: 'dt-body-center readonly-column', orderable: true },
+                { data: "created_on", className: 'dt-body-center readonly-column', orderable: true, 
+                    render: function ( data, type, row ) {
+                        if (typeof data === 'undefined' || data == null || data == "0000-00-00 00:00:00") {
+                            data = "";
+                        }
+
+                        if (type == "display" && data != "") {
+                            return moment.utc(data).local().format('YYYY-MM-DD HH:mm:ss');
+                        }
+                        return data;
+                    },
+                },
                 { data: "nama", className: 'dt-body-left readonly-column', orderable: false },
                 { data: "verifikasi", className: 'dt-body-center', orderable: false, 
                     "render": function (val, type, row) {

@@ -57,10 +57,13 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700");
 @import url("./../icons/flaticon/flaticon.css");
 @import url("./../icons/flaticon_1/flaticon_1.css");
-@import url(./../vendor/animate/animate.min.css);
-@import url(./../vendor/aos/css/aos.min.css);
-@import url(./../vendor/perfect-scrollbar/css/perfect-scrollbar.css);
-@import url(./../vendor/metismenu/css/metisMenu.min.css);
+@import url("./../vendor/animate/animate.min.css");
+@import url("./../vendor/aos/css/aos.min.css");
+@import url("./../vendor/perfect-scrollbar/css/perfect-scrollbar.css");
+@import url("./../vendor/metismenu/css/metisMenu.min.css");
+@import url("./../icons/material-design-iconic-font/css/materialdesignicons.min.css");
+@import url("./../icons/themify-icons/css/themify-icons.css");
+@import url("./../icons/bootstrap-icons/font/bootstrap-icons.css");
 :root {
   --primary: #5bcfc5;
   --secondary: #709fba;
