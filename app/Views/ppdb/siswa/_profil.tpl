@@ -199,7 +199,17 @@
             });
 
             let card = $("#" +key);
-            if (value) {
+            if (verifikasi[key] == 2) {
+                card.addClass("status-danger");
+                catatan = profil["catatan_" +key];
+                if (catatan != null && catatan.trim() != '') {
+                    card.find(".accordion-header-text .status").html('*Sedang Proses Verifikasi* : ' +catatan);
+                }
+                else {
+                    card.find(".accordion-header-text .status").html('*Sedang Proses Verifikasi*');
+                }
+            }
+            else if (value) {
                 card.removeClass("status-danger");
                 card.find(".accordion-header-text .status").html('');
             }
@@ -208,6 +218,12 @@
                 card.find(".accordion-header-text .status").html('*Belum Benar*');
             }
 
+            //if need update for verification, show edit button
+            if (verifikasi[key] == 2) {
+                item = $("#" +key);
+                item.find("[tcg-visible-tag='dikunci']").show();
+                item.find("#" +key+ "-konfirmasi").val(0);
+            }
         });
         
         //special case: nomor-hp
