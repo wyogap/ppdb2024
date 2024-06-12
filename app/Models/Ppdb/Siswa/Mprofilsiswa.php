@@ -716,6 +716,8 @@ Class Mprofilsiswa
 			'catatan_kekurangan' => $catatan
 		);
 
+        var_dump($valuepair);
+        
         $builder = $this->db->table('tcg_riwayat_verifikasi');
         if ($builder->insert($valuepair)) {
             $key = $this->db->insertID();
