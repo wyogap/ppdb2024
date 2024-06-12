@@ -659,7 +659,6 @@ class Verifikasi extends PpdbController {
             }
 
             $key = $this->Msiswa->tcg_tambah_riwayatverifikasi($peserta_didik_id, $status_verifikasi, $catatan_verifikasi);
-            echo $key;
             
             //set lokasi berkas ke sekolah ini (perlu konfirmasi secara explisit oleh user?)
             $sekolah_id = $this->session->get('sekolah_id');
