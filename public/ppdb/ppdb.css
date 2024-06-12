@@ -12,6 +12,7 @@
 .form-control {
     border-color: var(--bs-light);
     margin-bottom: 16px;
+    max-height: 41px !important;   /* to be consistent with select2 */
 }
 
 [data-theme-version="dark"] .form-control {
