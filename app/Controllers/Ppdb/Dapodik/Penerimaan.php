@@ -247,6 +247,7 @@ class Penerimaan extends PpdbController {
             $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
 
             //audit trail
+            $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
             audit_pendaftaran($pendaftaran, "PENDAFTARAN SD", "Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
 
 			print_json_output($pendaftaran);	
