@@ -644,6 +644,18 @@
         //update riwayat
         dtriwayat.ajax.url("{$site_url}ppdb/sekolah/verifikasi/riwayat?peserta_didik_id=" +profil['peserta_didik_id']);
         dtriwayat.ajax.reload();
+
+        //update marker
+        lintang = parseFloat(profil['lintang']);
+        bujur = parseFloat(profil['bujur']);
+        if (!isNaN(lintang) && lintang != 0 && !isNaN(bujur) && bujur != 0) {
+            map.setView([lintang,bujur],10);
+ 
+            layerGroup.clearLayers();
+            L.marker([lintang, bujur]).addTo(layerGroup)
+            .bindPopup(profil['desa_kelurahan']+ ", " +profil['kecamatan']+ ", " +profil['kabupaten']+ ", " +profil['provinsi']).openPopup();
+        }
+
     }
 
     function update_profile_layout() {
@@ -967,9 +979,6 @@
 			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
 		).addTo(map);
 
-		L.marker([{$map_lintang},{$map_bujur}]).addTo(map)
-            .bindPopup("");
-
 		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
 			satelitemap  = L.tileLayer('{$map_satelitemap}', { id: 'mapbox.streets', attribution: '' });
 
@@ -1010,6 +1019,10 @@
         }
 
         map.on('click', onMapClick);
+
+		// L.marker([{$map_lintang},{$map_bujur}]).addTo(layerGroup)
+        //     .bindPopup("");
+
 
         // var searchControl = L.esri.Geocoding.geosearch().addTo(map);
         // searchControl.on('layerGroup', function(data){
