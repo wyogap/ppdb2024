@@ -585,9 +585,9 @@
                                 <td style="width: 50%;">
                                     <input class="form-control" type="text"
                                         tcg-tag='afirmasi' 
-                                        tcg-field='nomor_kip' tcg-field-type='input' tcg-field-submit=1
+                                        tcg-field='no_kip' tcg-field-type='input' tcg-field-submit=1
                                         style="display: none;"></input>
-                                    <span tcg-tag='afirmasi' tcg-field='nomor_kip' tcg-field-type='label'></span>
+                                    <span tcg-tag='afirmasi' tcg-field='no_kip' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr tcg-visible-tag='kip'>
@@ -611,9 +611,9 @@
                                 <td style="width: 50%;">
                                     <span><input class="form-control" id="nomor-bdt-input" type="text"
                                         tcg-tag='afirmasi'
-                                        tcg-field='nomor_bdt' tcg-field-type='input' tcg-field-submit=1
+                                        tcg-field='no_bdt' tcg-field-type='input' tcg-field-submit=1
                                         style="display: none;"></input></span>
-                                    <span id="nomor-bdt" tcg-tag='afirmasi' tcg-field='nomor_bdt' tcg-field-type='label'></span>
+                                    <span id="nomor-bdt" tcg-tag='afirmasi' tcg-field='no_bdt' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                         </table>
