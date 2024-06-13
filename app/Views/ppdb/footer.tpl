@@ -120,7 +120,6 @@
 
         {if $enforce_no_dark_theme|default: FALSE}
             dark_theme = 0;
-            setCookie("tcg-dark-theme", dark_theme, 30);
         {/if}
 
         //update the theme setting. must be before dlabnav-init.js
@@ -161,7 +160,6 @@
 
         {if $enforce_no_dark_theme|default: FALSE}
             dark_theme = 0;
-            setCookie("tcg-dark-theme", dark_theme, 30);
             toastr.info("Halaman ini tidak memperbolehkan mode gelap.");
         {/if}
 
