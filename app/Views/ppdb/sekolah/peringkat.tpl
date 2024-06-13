@@ -10,9 +10,9 @@
 {if !$final_ranking|default: FALSE}
 <div class="alert alert-info alert-dismissible">
     <i class="icon glyphicon glyphicon-info-sign"></i>
-    Perhitungan peringkat dilakukan oleh system secara otomotis pada: <b><span id="last_execution_date">{$last_execution_date}</span></b>. 
+    Perhitungan peringkat dilakukan oleh system secara otomotis pada: <b><span id="last_execution_date" class='local-datetime'>{$last_execution_date}</span></b>. 
     {if $cek_waktupendaftaran==1 && !empty($next_execution_date)}
-        Perhitungan selanjutnya pada: <b><span id="next_execution_date">{$next_execution_date}</span></b>
+        Perhitungan selanjutnya pada: <b><span id="next_execution_date" class='local-datetime'>{$next_execution_date}</span></b>
     {/if}
 </div>	
 {/if}

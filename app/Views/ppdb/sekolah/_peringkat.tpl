@@ -111,7 +111,13 @@
                     }
                 },
                 ],
-              });
+            });
+
+            els = $('.local-datetime');
+            els.each(function(idx, dom) {
+                el = $(dom);
+                el.html( moment.utc( el.html() ).local().format('YYYY-MM-DD HH:mm:ss') );
+            });
         });
 
         /* Recalculates the size of the resposive DataTable */
