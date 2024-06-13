@@ -158,10 +158,10 @@
                         <td><b>Peringkat</b></td>
                         <td>:</td>
                         <td>
-                            <span>{{item.label_peringkat}}</span>
+                            <span>{{item.label_peringkat}}</span> 
                             <span class="pull-right"><a href="{{item.url_perankingan}}" target="_blank" 
-                                data-bs-toggle="tooltip" title="Lihat Peringkat Sekolah" data-placement="top" >
-                                <i class="fa fas fa-external-link" style="font-size: 18px;"></i></a>
+                                data-bs-toggle="tooltip" title="Lihat Peringkat Sekolah" data-placement="top" class="btn btn-xs btn-primary">
+                                Perangkingan</a>
                             </span>
                         </td>
                     </tr>
