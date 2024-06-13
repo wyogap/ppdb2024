@@ -194,7 +194,13 @@
                         </div>
                         {/if}
 
-						<form role="form" enctype="multipart/form-data" id="proses" action="{$base_url}auth/login" method="post">
+                        {if $rekapitulasi|DEFAULT: FALSE}
+                        <div class="alert alert-secondary mb-4" role="alert">
+                            <span>Rekapitulasi Sekolah / Perangkingan: <a href="{$site_url}home/rekapitulasi" class="btn btn-xs btn-primary">Klik Di Sini</a></span>
+                        </div>
+                        {/if} 
+                        
+                        <form role="form" enctype="multipart/form-data" id="proses" action="{$base_url}auth/login" method="post">
                             {if $user_id}
                             <div class="header-profile mb-5">
                                 <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
@@ -261,16 +267,32 @@
                             {if empty($row.text)}{continue}{/if}
 
                             {*Get alert type*}
-                            {assign var='alert_type' value='alert-primary'}
-                            {if $row.tipe==0}{$alert_type='alert-primary'}              {*info*}
-                            {elseif $row.tipe==1}{$alert_type='alert-secondary'}        {*success*}
-                            {elseif $row.tipe==2}{$alert_type='alert-danger'}           {*error/danger*}
+                            {if $row.tipe==0}             
+                                {*info*}
+                                <div class="alert alert-primary{if $row.bisa_ditutup==1} alert-dismissible{/if}" role="alert">
+                                    <span class="{$row.css}">{$row.text}</span>
+                                    {if $row.bisa_ditutup==1}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>{/if}
+                                </div>
+                            {elseif $row.tipe==1}    
+                                {*success*}
+                                <div class="alert alert-secondary{if $row.bisa_ditutup==1} alert-dismissible{/if}" role="alert">
+                                    <span class="{$row.css}">{$row.text}</span>
+                                    {if $row.bisa_ditutup==1}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>{/if}
+                                </div>
+                            {elseif $row.tipe==2}           
+                                {*error/danger*}
+                                <div class="alert alert-danger{if $row.bisa_ditutup==1} alert-dismissible{/if}" role="alert">
+                                    <span class="{$row.css}">{$row.text}</span>
+                                    {if $row.bisa_ditutup==1}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>{/if}
+                                </div>
+                            {else}
+                                {*default*}
+                                <div class="alert alert-primary{if $row.bisa_ditutup==1} alert-dismissible{/if}" role="alert">
+                                    <span class="{$row.css}">{$row.text}</span>
+                                    {if $row.bisa_ditutup==1}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>{/if}
+                                </div>
                             {/if}
                             
-                            <div class="alert {$alert_type}{if $row.bisa_ditutup==1} alert-dismissible{/if}" role="alert">
-                                <span class="{$row.css}">{$row.text}</span>
-                                {if $row.bisa_ditutup==1}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>{/if}
-                            </div>
                             {/foreach}
 
                             {*Pengumuman tahapan*}

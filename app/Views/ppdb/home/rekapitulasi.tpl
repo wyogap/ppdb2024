@@ -4,7 +4,10 @@
     </ol>
 </div>
  
- 
+<div class="page-titles" style="margin-top: -16px;">
+    <div>Untuk melihat perangkingan sekolah, silahkan cari sekolah yang dituju lalu klik di tombol <span class="btn btn-xs btn-primary">Peringkat</span> di sebelah kanan.</div>
+</div>
+
 <div class="card box-solid">
     <!-- <div class="box-header with-border">
         <i class="glyphicon glyphicon-search"></i>

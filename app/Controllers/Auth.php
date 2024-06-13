@@ -114,6 +114,9 @@ class Auth extends AuthController
         $data['show_footer'] = 0;
         $data['enforce_no_dark_theme'] = 1;
 
+        $rekapitulasi = intval($this->setting->get('rekapitulasi', '0'));
+        $data['rekapitulasi'] = $rekapitulasi;
+
         if (__DEBUGGING__) {
             $data['cek_registrasi'] = 1;
         }
