@@ -452,8 +452,14 @@
                             return data;
                         }
 
-                        if (data != 1) {
+                        if (data == 0) {
+                            return "Belum Diverifikasi";
+                        }
+                        else if (data == 2) {
                             return "Belum Lengkap";
+                        }
+                        else if (data == 1) {
+                            return "Sudah Lengkap";
                         }
 
                         return "Sudah Lengkap";

@@ -69,7 +69,8 @@
     }
 
     .accordion-primary-solid .accordion-header.collapsed {
-        color: #fff;
+        background: var(--primary);
+        color: white;
     }
 
     .accordion-primary-solid .accordion-body-text {
@@ -199,7 +200,7 @@
                             <span>Rekapitulasi Sekolah / Perangkingan: <a href="{$site_url}home/rekapitulasi" class="btn btn-xs btn-primary">Klik Di Sini</a></span>
                         </div>
                         {/if} 
-                        
+
                         <form role="form" enctype="multipart/form-data" id="proses" action="{$base_url}auth/login" method="post">
                             {if $user_id}
                             <div class="header-profile mb-5">
@@ -326,8 +327,8 @@
                                                         {if $t.tahapan_id==0 || $t.tahapan_id==99} {continue} {/if} 
                                                         <tr class="" style="padding-top: 10px; padding-bottom: 10px">
                                                             <td  class="">{$t.tahapan}</td><td></td>
-                                                            {if ($t.tanggal_mulai == $t.tanggal_selesai)}<td class="" colspan=3>{$t.tanggal_mulai}</td>
-                                                            {else}<td class="">{$t.tanggal_mulai}</td><td width="20px">s.d.</td><td class="">{$t.tanggal_selesai}</td>
+                                                            {if ($t.tanggal_mulai == $t.tanggal_selesai)}<td class="local-datetime" colspan=3>{$t.tanggal_mulai}</td>
+                                                            {else}<td class="local-datetime">{$t.tanggal_mulai}</td><td width="20px">s.d.</td><td class="">{$t.tanggal_selesai}</td>
                                                             {/if}
                                                         </tr>
                                                         {/foreach}
@@ -434,6 +435,13 @@
             }
 
         } );
+
+        els = $('.local-datetime');
+        els.each(function(idx, dom) {
+            el = $(dom);
+            el.html( moment.utc( el.html() ).local().format('YYYY-MM-DD HH:mm:ss') );
+        });
+
     });
 
 </script>
