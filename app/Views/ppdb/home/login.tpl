@@ -103,6 +103,11 @@
         font-size: 16px;
     }
 
+    [data-theme-version="dark"] .app-title p {
+        color: white;
+        font-size: 16px;
+    }
+
     @media only screen and (max-width: 992px) {
         .authincation {
             background: var(--headerbg);
