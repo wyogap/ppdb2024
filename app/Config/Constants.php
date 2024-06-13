@@ -106,7 +106,7 @@ defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2
 defined('SQL_REGISTRASI')                   OR define('SQL_REGISTRASI', 'ppdb2024_registrasi');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
 //defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
 defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2024_hapuspendaftaran');        //hapur satu pendaftaran
-defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor_2022');
+defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor');
 
 defined('SQL_UBAH_JENISPILIHAN')            OR define('SQL_UBAH_JENISPILIHAN', 'ppdb2024_ubah_jenispilihan');
 defined('SQL_UBAH_PILIHANSEKOLAH')          OR define('SQL_UBAH_PILIHANSEKOLAH', 'ppdb2024_ubah_pilihansekolah');

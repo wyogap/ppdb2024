@@ -12,6 +12,9 @@
 .form-control {
     border-color: var(--bs-light);
     margin-bottom: 16px;
+}
+
+input.form-control {
     max-height: 41px !important;   /* to be consistent with select2 */
 }
 

@@ -37,6 +37,17 @@ Class Mprofilsiswa
         $builder->where("peserta_didik_id", $peserta_didik_id);
         $builder->update($values);
 
+        //update skoring
+        if (!empty($values['lintang']) || !empty($values['bujur'])) {
+            $sql = "select pendaftaran_id from tcg_pendaftaran where is_deleted=0 and cabut_berkas=0 and peserta_didik_id=?";
+            $pendaftaran = $this->db->query($sql, array($peserta_didik_id))->getResultArray();
+            //var_dump($pendaftaran); exit;
+            foreach($pendaftaran as $row) {
+                $sql = "call " .SQL_HITUNGSKOR. " (?)";
+                $this->db->query($sql, array( $row['pendaftaran_id'] ));
+            }
+        }
+
         //audit trail
         $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, $oldvalues);
 
