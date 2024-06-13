@@ -328,7 +328,7 @@
                                                         <tr class="" style="padding-top: 10px; padding-bottom: 10px">
                                                             <td  class="">{$t.tahapan}</td><td></td>
                                                             {if ($t.tanggal_mulai == $t.tanggal_selesai)}<td class="local-datetime" colspan=3>{$t.tanggal_mulai}</td>
-                                                            {else}<td class="local-datetime">{$t.tanggal_mulai}</td><td width="20px">s.d.</td><td class="">{$t.tanggal_selesai}</td>
+                                                            {else}<td class="local-datetime">{$t.tanggal_mulai}</td><td width="20px">s.d.</td><td class="local-datetime">{$t.tanggal_selesai}</td>
                                                             {/if}
                                                         </tr>
                                                         {/foreach}
