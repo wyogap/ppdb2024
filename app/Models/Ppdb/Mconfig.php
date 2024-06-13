@@ -473,7 +473,7 @@ Class Mconfig
 
 		$sql = "select sekolah_id,nama,npsn 
 		from ref_sekolah 
-		where expired_date is null and kode_wilayah_kab=? and bentuk in ('TK', 'RA', 'KB')
+		where expired_date is null and kode_wilayah_kab=? and bentuk in ('TK', 'RA', 'KB', 'SPS')
 		order by kode_wilayah, nama";
 
 		return $this->db->query($sql, array($kode_wilayah))->getResultArray();
