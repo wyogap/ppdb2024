@@ -112,6 +112,7 @@ class Auth extends AuthController
 
         //dont show standard footer text
         $data['show_footer'] = 0;
+        $data['enforce_no_dark_theme'] = 1;
 
         if (__DEBUGGING__) {
             $data['cek_registrasi'] = 1;
