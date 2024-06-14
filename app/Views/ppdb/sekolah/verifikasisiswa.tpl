@@ -896,7 +896,7 @@
         background: linear-gradient(45deg, #1ebbf0 8%, #39dfaa 100%); */
     }
 
-    .ctx .btn {
+    .ctx .btn, .ctx2 .btn {
         /* background-color: #fff; */
         /* color: #6f6f6f; */
         /* bottom: 10px; */
@@ -919,14 +919,35 @@
         bottom: 20px;
         right: 70px;
     }
+
+    .ctx2 {
+        position: fixed;
+        bottom: 20px;
+        right: 240px;
+    }
+    
+    @media only screen and (max-width: 600px) {
+        .ctx2 {
+            position: fixed;
+            bottom: 80px;
+            right: 70px;
+        }
+    }
+
 </style>
+<div class="ctx2">
+    <button class="btn btn-secondary ctx-handphone" disabled>
+        082138171939
+    </button>
+</div>
+
 <div class="ctx">
-<a href="#top" class="btn btn-danger ctx-simpan">
-    Simpan
-</a>  
-<a href="#top" class="btn btn-primary ctx-batal">
-    Batal
-</a>
+    <a href="#" class="btn btn-danger ctx-simpan">
+        Simpan
+    </a>  
+    <a href="#" class="btn btn-primary ctx-batal">
+        Batal
+    </a>
 </div>
 
 

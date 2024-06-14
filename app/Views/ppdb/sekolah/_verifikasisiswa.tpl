@@ -727,6 +727,9 @@
         dtriwayat.ajax.url("{$site_url}ppdb/sekolah/verifikasi/riwayat?peserta_didik_id=" +profil['peserta_didik_id']);
         dtriwayat.ajax.reload();
 
+        //show nomor kontak
+        $(".ctx-handphone").html( profil['nomor_kontak'] );
+        
         //update marker
         lintang = parseFloat(profil['lintang']);
         bujur = parseFloat(profil['bujur']);
