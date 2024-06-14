@@ -72,7 +72,7 @@ Class Mprofilsiswa
 		a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa,
 		a.nilai_semester, a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2,
 		a.nilai_kelulusan, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label,
-		i.nama as lokasi_berkas, a.tutup_akses
+		i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
         $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
