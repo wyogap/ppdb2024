@@ -611,9 +611,9 @@ Class Mprofilsekolah
 	function tcg_daftar_siswa($sekolah_id) {
 
 		//pass updated_on as UTC and convert on client side using moment.js
-		$query = "SELECT a.sekolah_id, b.nama as sekolah, 
+		$query = "SELECT a.sekolah_id, b.nama as sekolah, c.nama_desa as desa_kelurahan, 
 						a.peserta_didik_id, a.nama, a.jenis_kelamin, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir, a.nama_ibu_kandung, a.nama_ayah,
-						a.kode_wilayah, a.rt, a.rw, a.alamat, a.nama_dusun, c.nama_desa as desa_kelurahan, a.lintang, a.bujur, 
+						a.kode_wilayah, a.rt, a.rw, a.alamat, a.nama_dusun, a.lintang, a.bujur, a.akses_ubah_data,
 						a.updated_on
 					FROM tcg_peserta_didik a
 					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
