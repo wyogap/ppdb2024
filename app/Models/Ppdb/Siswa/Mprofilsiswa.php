@@ -78,7 +78,7 @@ Class Mprofilsiswa
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
 		                    c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
 		                    c.kode_wilayah_kab as kode_kabupaten,c.nama_kab AS kabupaten,
-		                    c.kode_wilayah_prov,c.nama_prov AS provinsi");
+		                    c.kode_wilayah_prov as kode_provinsi,c.nama_prov AS provinsi");
         $builder->select("d.user_name as username,d.konfirmasi_akun, d.ganti_password");
         $builder->select("case when (a.kebutuhan_khusus is null or trim(a.kebutuhan_khusus) = '' or a.kebutuhan_khusus = '0') then 'Tidak ada' 
                             else a.kebutuhan_khusus end as kebutuhan_khusus", false);

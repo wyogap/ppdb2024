@@ -483,6 +483,33 @@
                         perbaikan[tag] = 1;
                     }
                 }
+                else if (type == 'select') {
+                    let field = el.attr('tcg-field');
+                    if (field == null || field == '') return;
+
+                    //get value and label
+                    let val = 0, str = '';
+                    val = el.val();
+                    str = el.children(':selected').text();
+
+                    //copy label not the value
+                    lbl = elements.filter("span[tcg-field='" +field+ "']");
+                    lbl.html(str); 
+
+                    //save to default value
+                    this.defaultValue = this.value;
+                    
+                    //check for updated value
+                    oldval = profil[field];
+                    if (el.attr('type') == 'number') {
+                        oldval = parseFloat(oldval);
+                        if (isNaN(oldval)) oldval = 0;
+                    }
+
+                    if (val != oldval) {
+                        perbaikan[tag] = 1;
+                    }
+                }
             });
 
             //show perbaikan save
@@ -554,6 +581,46 @@
         $(".ctx-simpan").on("click", function(e) {
             simpan_verifikasi();
         });
+
+        $('#kode_provinsi').on('change', function() {
+			var data = { "kode_wilayah":$("#kode_provinsi").val() };
+			$.ajax({
+				type: "POST",
+				url : "{$site_url}home/ddkabupaten",
+				data: data,
+				success: function(msg){
+					$('#kode_kabupaten').html(msg);
+                    $('#kode_kabupaten').val(profil['kode_kabupaten']).trigger("change");
+				}
+			});
+		});
+
+        $('#kode_kabupaten').on('change', function() {
+			var data = { "kode_wilayah":$("#kode_kabupaten").val() };
+			$.ajax({
+				type: "POST",
+				url : "{$site_url}home/ddkecamatan",
+				data: data,
+				success: function(msg){
+					$('#kode_kecamatan').html(msg);
+                    $('#kode_kecamatan').val(profil['kode_kecamatan']).trigger("change");
+				}
+			});
+		});
+
+		$('#kode_kecamatan').on('change', function() {
+			var data = { "kode_wilayah":$("#kode_kecamatan").val() };
+			$.ajax({
+				type: "POST",
+				url : "{$site_url}home/dddesa",
+				data: data,
+				success: function(msg){
+					$('#kode_wilayah').html(msg);
+                    $('#kode_wilayah').val(profil['kode_wilayah']).trigger("change");
+				}
+			});
+		});
+
     });
 
     function show_profile(profil, dokumen) {
@@ -598,6 +665,7 @@
                         profil[key] = value;
                     }
                     el.val(value);
+                    el.attr("defaultValue", value);
                 }
                 else if (type == 'label') {
                     el.html(value);
@@ -616,6 +684,9 @@
                 }
             });
         });
+
+        //trigger the changes
+        $("#kode_provinsi").trigger("change");
 
         //dokumen pendukung
         if (dokumen != null && dokumen.length > 0) {
@@ -873,7 +944,7 @@
                 if (field == null || field == '') return;
 
                 let tosubmit = el.attr("tcg-field-submit");
-                if (!tosubmit) return;
+                if (!tosubmit || tosubmit == 0) return;
 
                 val = el.val();
                 oldval = profil[field];
@@ -885,7 +956,7 @@
                     if (isNaN(oldval)) oldval = 0;
                 }
 
-                console.log("field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
+                console.log("tosubmit:" +tosubmit+ "; field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
 
                 //only get updated value
                 if (val != oldval) {

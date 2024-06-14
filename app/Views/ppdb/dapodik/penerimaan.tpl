@@ -1,5 +1,8 @@
 <div class="row page-titles">
     <ol class="breadcrumb">
+        {if $impersonasi_sekolah|default: FALSE} 
+        <li class="breadcrumb-item active">[{$profilsekolah['nama']}]</li>
+        {/if}
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
         <li class="breadcrumb-item"><a href="javascript:void(0)">Penerimaan Siswa Baru</a></li>
     </ol>

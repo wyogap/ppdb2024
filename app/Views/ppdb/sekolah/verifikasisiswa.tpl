@@ -97,30 +97,66 @@
                             <tr>
                                 <td colspan="3"><b>Alamat (Sesuai Kartu Keluarga)</b></td>
                             </tr>
-                            <tr tcg-field='padukuhan' tcg-field-type='toggle' tcg-field-false='hide' tcg-field-true='show'>
-                                <td><b>Padukuhan</b></td>
-                                <td>:</td>
-                                <td><span tcg-field='padukuhan' tcg-field-type='label'></span></td>
-                            </tr>
                             <tr>
-                                <td><b>Desa/Kelurahan</b></td>
+                                <td style="width:45%;"><b>Provinsi</b></td>
                                 <td>:</td>
-                                <td><span tcg-field='desa_kelurahan_label' tcg-field-type='label'></span></td>
-                            </tr>
-                            <tr>
-                                <td><b>Kecamatan</b></td>
-                                <td>:</td>
-                                <td><span tcg-field='kecamatan' tcg-field-type='label'></span></td>
+                                <!-- <td style="width:50%;"><span tcg-field='provinsi' tcg-field-type='label'></span></td> -->
+                                <td style="width: 50%;">
+                                    <select class="form-control" id="kode_provinsi"
+                                        tcg-tag='profil' tcg-field='kode_provinsi' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
+                                        <option value="">-- Pilih Provinsi --</option>
+                                        {foreach $provinsi as $prov}
+                                            <option value="{$prov.kode_wilayah}">{$prov.provinsi}</option>
+                                        {/foreach}
+                                    </select>
+                                    <span tcg-tag='profil' tcg-field='provinsi' tcg-field-type='label'></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td><b>Kabupaten/Kota</b></td>
                                 <td>:</td>
-                                <td><span tcg-field='kabupaten' tcg-field-type='label'></span></td>
+                                <!-- <td><span tcg-field='kabupaten' tcg-field-type='label'></span></td> -->
+                                <td style="width: 50%;">
+                                    <select class="form-control" id="kode_kabupaten" 
+                                        tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
+                                        <option value="">-- Pilih Kabupaten/Kota --</option>
+                                    </select>
+                                    <span tcg-tag='profil' tcg-field='kabupaten' tcg-field-type='label'></span>
+                                </td>
                             </tr>
                             <tr>
-                                <td><b>Provinsi</b></td>
+                                <td><b>Kecamatan</b></td>
                                 <td>:</td>
-                                <td><span tcg-field='provinsi' tcg-field-type='label'></span></td>
+                                <!-- <td><span tcg-field='kecamatan' tcg-field-type='label'></span></td> -->
+                                <td style="width: 50%;">
+                                    <select class="form-control" id="kode_kecamatan"  
+                                        tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
+                                        <option value="">-- Pilih Kecamatan --</option>
+                                    </select>
+                                    <span tcg-tag='profil' tcg-field='kecamatan' tcg-field-type='label'></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Desa/Kelurahan</b></td>
+                                <td>:</td>
+                                <!-- <td><span tcg-field='desa_kelurahan_label' tcg-field-type='label'></span></td> -->
+                                <td style="width: 50%;">
+                                    <select class="form-control" id="kode_wilayah"  
+                                        tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;">
+                                        <option value="">-- Pilih Desa/Kelurahan --</option>
+                                    </select>
+                                    <span tcg-tag='profil' tcg-field='desa_kelurahan_label' tcg-field-type='label'></span>
+                                </td>
+                            </tr>
+                            <tr tcg-field='padukuhan' tcg-field-type='toggle' tcg-field-false='hide' tcg-field-true='show'>
+                                <td><b>Padukuhan</b></td>
+                                <td>:</td>
+                                <!-- <td><span tcg-field='padukuhan' tcg-field-type='label'></span></td> -->
+                                <td style="width: 50%;">
+                                    <input class="form-control" 
+                                        tcg-tag='profil' tcg-field='padukuhan' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;"></input>
+                                    <span tcg-tag='profil' tcg-field='padukuhan' tcg-field-type='label'></span>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -188,6 +224,10 @@
                                 <option value="1">SUDAH Benar</option>
                                 <option value="2">BELUM Benar</option>
                                 </select>
+                                <button class="btn btn-secondary btn-perbaikan" tcg-tag='profil'>Perbaiki Data</button>
+                                <button class="btn btn-primary btn-kembalikan" tcg-tag='profil'>Kembalikan Data Awal</button>
+                                <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='profil'>Simpan Data</button>
+                                <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='profil'>Batalkan</button>
                             </td>
                         </tr>
                         <tr id="profil-catatan-row" class="catatan" tcg-tag='profil'>

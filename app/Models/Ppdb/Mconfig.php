@@ -395,11 +395,22 @@ Class Mconfig
         return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
     }
 
-    function tcg_kabupaten(){
+    function tcg_provinsi(){
+		$builder = $this->db->table('ref_wilayah a');
+		$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS provinsi');
+		$builder->where(array('a.id_level_wilayah'=>1,'a.expired_date'=>NULL));
+		$builder->orderBy('a.nama');
+		return $builder->get()->getResultArray();
+	}
+
+    function tcg_kabupaten($kode_wilayah = null){
 		$builder = $this->db->table('ref_wilayah a');
 		$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS kabupaten,b.nama AS provinsi');
 		$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.is_deleted=0 AND b.id_level_wilayah = 1');
 		$builder->where(array('a.id_level_wilayah'=>2,'a.expired_date'=>NULL));
+        if (!empty($kode_wilayah)) {
+            $builder->where('a.mst_kode_wilayah', $kode_wilayah);
+        }
 		$builder->orderBy('b.nama','a.nama');
 		return $builder->get()->getResultArray();
 	}

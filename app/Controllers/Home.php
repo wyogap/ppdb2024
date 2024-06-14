@@ -455,6 +455,14 @@ class Home extends PpdbController
 		return view('ppdb/home/_dropdownsekolah',$data);
 	}
 
+	function ddkabupaten()
+	{
+        $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
+		$mdropdown = new \App\Models\Ppdb\Mconfig();
+		$data['kabupaten'] = $mdropdown->tcg_kabupaten($kode_wilayah);
+		return view('ppdb/home/_dropdownkabupaten',$data);
+	}
+
 	function ddkecamatan()
 	{
         $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 

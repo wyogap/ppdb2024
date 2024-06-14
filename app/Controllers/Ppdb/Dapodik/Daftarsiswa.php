@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 
 class Daftarsiswa extends PpdbController {
 
-    protected static $ROLE_ID = ROLEID_DAPODIK;              
+    protected static $ROLE_ID = array(ROLEID_DAPODIK, ROLEID_DINAS, ROLEID_ADMIN, ROLEID_SYSADMIN);              
 
     protected $Msekolah;
     protected $Msiswa;
@@ -33,12 +33,27 @@ class Daftarsiswa extends PpdbController {
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
 
+        $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
+        $roleid = $this->session->get("role_id");
+        if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
+            $this->session->set("sekolah_id", $impersonasi_sekolah_id);
+            $this->session->set("impersonasi_sekolah", 1);
+            $sekolah_id = $impersonasi_sekolah_id;
+        }
+
+        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
+        if (empty($profil)) {
+            return $this->notauthorized();
+        }
+        $data['profilsekolah'] = $profil;
+
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
         $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
 
-        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         $data['kabupaten'] = $this->Mconfig->tcg_kabupaten();
+
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
 
 		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
 
@@ -78,6 +93,11 @@ class Daftarsiswa extends PpdbController {
         $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         if ($profil == null) {
             print_json_error("Invalid userid");
+        }
+
+        $sekolah_id = $this->session->get("sekolah_id");
+        if ($sekolah_id != $profil['sekolah_id']) {
+            print_json_error("Bukan sekolah asal siswa");
         }
 
 		//only can verify within the specified timeframe
