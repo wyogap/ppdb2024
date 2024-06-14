@@ -78,6 +78,13 @@ class Peringkat extends PpdbController {
 			$data['show_profile_sekolah'] = 1;
 
 		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
+		$data['cek_waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
+        if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1) {
+            $data['final_ranking'] = 1;
+        }
+        else {
+            $data['final_ranking'] = 0;
+        }
 
 		$data['inklusi']=0;
         if ($data['profilsekolah'] != null) {

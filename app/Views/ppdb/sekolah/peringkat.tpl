@@ -168,7 +168,7 @@
                                 {elseif ($row2.status_penerimaan==0)}
                                 <td class="text-center bg-gray">Belum Diperingkat</td>
                                 {elseif ($row2.status_penerimaan==2)}
-                                <td class="text-center bg-red">Tidak Diterima</td>
+                                <td class="text-center bg-red">Tidak Masuk Kuota</td>
                                 {elseif ($row2.status_penerimaan==3)}
                                 <td class="text-center bg-yellow">{$row2.peringkat_final}</td>
                                 {else}
