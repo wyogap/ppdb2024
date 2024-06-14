@@ -75,23 +75,20 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Invalid data");
 
         $peserta_didik_id = $this->request->getPost('peserta_didik_id');
+        $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+        if ($profil == null) {
+            print_json_error("Invalid userid");
+        }
 
 		//only can verify within the specified timeframe
 		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
-
         //debugging
         if (__DEBUGGING__) {
             $cek_waktusosialisasi = 1;
         }
 
-        if ($cek_waktusosialisasi != 1) {
+        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1) {
             print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
-        }
-
-        //TODO
-        $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
-        if ($oldvalues == null) {
-            print_json_error("Invalid userid");
         }
 
         $updatedprofil = $data['profil'];
@@ -115,7 +112,7 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Tidak berhasil mengubah data siswa.");
 
         //audit trail
-        audit_siswa($oldvalues, "UBAH DATA", "Ubah data oleh Admin Dapodik an. " .$oldvalues['nama'], array_keys($updated), $updated, $oldvalues);
+        audit_siswa($profil, "UBAH DATA", "Ubah data oleh Admin Dapodik an. " .$profil['nama'], array_keys($updated), $updated, $profil);
 
         print_json_output($detail);
     }
