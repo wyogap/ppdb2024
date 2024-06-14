@@ -284,7 +284,6 @@ Class Mprofilsekolah
             join cfg_jenis_pilihan b on b.jenis_pilihan=a.masuk_jenis_pilihan and b.tahun_ajaran_id=a.tahun_ajaran_id 
                 and b.putaran=a.putaran and b.is_deleted=0
             where a.is_deleted=0 and a.masuk_jenis_pilihan!=0 
-            group by a.tahun_ajaran_id, a.peserta_didik_id
         ) a where a.rn=1
         ";
 
