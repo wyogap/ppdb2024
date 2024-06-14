@@ -104,10 +104,10 @@
                                 {elseif $row.status_penerimaan_final==0}bg-gray
                                 {else}bg-gray{/if}
                             ">
-                                {if $row.status_penerimaan_final==1 || $row.status_penerimaan_final==3}Diterima
+                                {if $row.status_penerimaan_final==1 || $row.status_penerimaan_final==3}Masuk Kuota
                                 {elseif $row.status_penerimaan_final==4}{$row.label_masuk_pilihan}
                                 {elseif $row.status_penerimaan_final==2 && $row.status_penerimaan!=2 && $row.masuk_jenis_pilihan!=0 && $row.masuk_jenis_pilihan!=$row.jenis_pilihan}{$row.label_masuk_pilihan}
-                                {elseif $row.status_penerimaan_final==2}Tidak Diterima
+                                {elseif $row.status_penerimaan_final==2}Tidak Masuk Kuota
                                 {elseif $row.kelengkapan_berkas==2}Berkas Belum Lengkap
                                 {else}Belum Diperingkat
                                 {/if}
