@@ -608,18 +608,24 @@ Class Mprofilsekolah
 	}    
 
 	function tcg_daftar_siswa($sekolah_id) {
+        $putaran = $this->session->get('putaran_aktif');
 
 		//pass updated_on as UTC and convert on client side using moment.js
 		$query = "SELECT a.sekolah_id, b.nama as sekolah, c.nama_desa as desa_kelurahan, 
 						a.peserta_didik_id, a.nama, a.jenis_kelamin, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir, a.nama_ibu_kandung, a.nama_ayah,
 						a.kode_wilayah, a.rt, a.rw, a.alamat, a.nama_dusun, a.lintang, a.bujur, a.akses_ubah_data,
-						a.updated_on
+						a.updated_on, coalesce(d.cnt,0) as jml_pendaftaran
 					FROM tcg_peserta_didik a
 					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
                     left join ref_wilayah c on c.kode_wilayah=a.kode_wilayah and c.is_deleted=0
+                    left join (
+                        select peserta_didik_id, count(*) as cnt from tcg_pendaftaran 
+                        where is_deleted=0 and cabut_berkas=0 and penerapan_id!=301 and tahun_ajaran_id=? and putaran=?
+                        group by peserta_didik_id    
+                    ) d on d.peserta_didik_id=a.peserta_didik_id
 					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.asal_data!=" .ASALDATA_PENERIMAANSD;
 
-		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id))->getResultArray();
+		return $this->db->query($query, array($this->tahun_ajaran_id, $putaran, $sekolah_id, $this->tahun_ajaran_id))->getResultArray();
 	}
 
 	function tcg_ubah_daftarulang($pendaftaran_id,$status,$pengguna_id) {
