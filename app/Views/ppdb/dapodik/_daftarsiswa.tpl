@@ -157,7 +157,7 @@
                     orderable: false,
                     "render": function(data, type, row, meta) {
                         let str = '';
-                        if (cek_waktusosialisasi == 1 || impersonasi_sekolah == 1 || row['akses_ubah_data'] == 1 || row['jml_pendaftaran'] != 0) {
+                        if (cek_waktusosialisasi == 1 || impersonasi_sekolah == 1 || row['akses_ubah_data'] == 1 || row['jml_pendaftaran'] == 0) {
                             str = "<button onclick=ubah_data(" +row['peserta_didik_id']+ ") class='btn btn-primary btn-xs text-nowrap mb-1'>Ubah Data</button><br>";
                         }
                         str += "<button onclick=reset_password(" +row['peserta_didik_id']+ "," +meta['row']+ ") class='btn btn-danger btn-xs text-nowrap'>Reset PIN</button>";
