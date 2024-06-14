@@ -107,7 +107,8 @@ class Daftarsiswa extends PpdbController {
             $cek_waktusosialisasi = 1;
         }
 
-        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1) {
+        $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1 && $impersonasi_sekolah != 1) {
             print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
         }
 
