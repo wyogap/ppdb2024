@@ -342,7 +342,7 @@
 							return "";
 						}
 
-                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></i></button>";
+                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
 						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
 
 						return str;

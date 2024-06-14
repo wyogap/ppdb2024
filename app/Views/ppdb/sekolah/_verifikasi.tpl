@@ -67,7 +67,7 @@
                             return data;
                         }
 
-                        return row['nama']+ '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '"> <i class="fa fas fa-external-link"></i></a>';
+                        return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
                 {
@@ -188,7 +188,7 @@
                             return data;
                         }
 
-                        return row['nama']+ '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '"> <i class="fa fas fa-external-link"></i></a>';
+                        return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
                 {
@@ -309,7 +309,7 @@
                             return data;
                         }
 
-                        return row['nama']+ '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '"> <i class="fa fas fa-external-link"></i></a>';
+                        return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
                 {
@@ -430,7 +430,7 @@
                             return data;
                         }
 
-                        return row['nama']+ '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '"> <i class="fa fas fa-external-link"></i></a>';
+                        return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
                 {

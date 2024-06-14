@@ -98,7 +98,7 @@
                     render: function(data, type, row, meta) {
                         if (data == null) return data;
                         if (type == 'display') {
-                            data = data+ ' <a href="{$site_url}home/detailpendaftaran?peserta_didik_id=' + row['peserta_didik_id'] + '" target="_blank"><i class="fa fas fa-external-link"></i></a>';
+                            data = '<a href="{$site_url}home/detailpendaftaran?peserta_didik_id=' + row['peserta_didik_id'] + '" target="_blank">' +data+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                         }
                         return data;
                     }

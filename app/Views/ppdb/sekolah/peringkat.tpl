@@ -65,7 +65,7 @@
                         <td class="text-center">{$row.idx}</td>
                         <td class="text-center">{$row.nomor_pendaftaran}</td>
                         <td class="text-center">{$row.nisn}</td>
-                        <td>{$row.nama}<a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row.peserta_didik_id}" target="_blank"> <i class="fa fas fa-external-link"></i></a></td>
+                        <td><a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row.peserta_didik_id}" target="_blank">{$row.nama} <i class="fa fas fa-external-link-alt"></i></a></td>
                         <td>{$row.sekolah_asal}</td>
                         <td class="text-center">{$row.jalur}</td>
                         <td class="text-center">{$row.label_jenis_pilihan}</td>
@@ -178,7 +178,7 @@
                             <td class="text-center">{$row2.nomor_pendaftaran}</td>
                             <td class="text-center">{$row2.nisn}</td>
                             <td>    
-                            {$row2.nama}<a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank"> <i class="fa fas fa-external-link"></i></a>
+                            <a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank">{$row2.nama} <i class="fa fas fa-external-link-alt"></i></a>
                             </td>
                             <td class="text-center hala">{$row2.label_jenis_pilihan}</td>
                             <td class="text-center">{$row2.created_on}</td>
