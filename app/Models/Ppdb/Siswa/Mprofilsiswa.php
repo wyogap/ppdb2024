@@ -38,7 +38,8 @@ Class Mprofilsiswa
         $builder->update($values);
 
         //update skoring
-        if (!empty($values['lintang']) || !empty($values['bujur'])) {
+        if (!empty($values['lintang']) || !empty($values['bujur']) || !empty($values['kode_wilayah']) || !empty($values['tanggal_lahir']) 
+                || !empty($values['nilai_semester']) || !empty($values['nilai_kelulusan']) || !empty($values['nilai_un']) || !empty($values['prestasi_skoring_id'])) {
             $sql = "select pendaftaran_id from tcg_pendaftaran where is_deleted=0 and cabut_berkas=0 and peserta_didik_id=?";
             $pendaftaran = $this->db->query($sql, array($peserta_didik_id))->getResultArray();
             //var_dump($pendaftaran); exit;
