@@ -7,6 +7,10 @@
     padding-bottom: 0px !important;
 }
 
+.btn {
+    padding: 0.625rem 1rem;
+}
+
 /** FORM CONTROL */
 
 .form-control {
