@@ -169,6 +169,10 @@ defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '301');
 defined('JENJANGID_SD')             OR define('JENJANGID_SD', '2');
 defined('JENJANGID_SMP')            OR define('JENJANGID_SMP', '3');
 
+defined('ASALDATA_REGISTRASI')      OR define('ASALDATA_REGISTRASI', '1');
+defined('ASALDATA_DAPODIK')         OR define('ASALDATA_DAPODIK', '2');
+defined('ASALDATA_PENERIMAANSD')    OR define('ASALDATA_PENERIMAANSD', '4');
+
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
 

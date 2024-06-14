@@ -468,7 +468,7 @@ Class Mprofilsekolah
 		return $this->db->query($sql, array($peserta_didik_id))->getRowArray();
 	}
 
-	function tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $limit){
+	function tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $nik, $limit=1000){
 		$filter = 0;
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir,
 					  b.kode_wilayah_desa, b.nama_desa, b.kode_wilayah_kec, b.nama_kec, c.nama as sekolah,
@@ -493,13 +493,13 @@ Class Mprofilsekolah
 			$filter = 1;
 			$where .= " AND a.sekolah_id='" . $sekolah_id . "'";
 		}
+		if (!empty($nik)) {
+			$filter = 1;
+			$where .= " AND a.nik='" . $nik . "'";
+		}
 		// if (!empty($jenis_kelamin)) {
 		// 	$filter = 1;
 		// 	$where .= " AND a.jenis_kelamin='" . $jenis_kelamin . "'";
-		// }
-		// if (!empty($nik)) {
-		// 	$filter = 1;
-		// 	$where .= " AND a.nik='" . $nik . "'";
 		// }
 		// if (!empty($kode_kecamatan)) {
 		// 	$filter = 1;
@@ -617,7 +617,7 @@ Class Mprofilsekolah
 					FROM tcg_peserta_didik a
 					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
                     left join ref_wilayah c on c.kode_wilayah=a.kode_wilayah and c.is_deleted=0
-					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.penerimaan_sd=0";
+					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.asal_data=" .ASALDATA_PENERIMAANSD;
 
 		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id))->getResultArray();
 	}

@@ -272,16 +272,16 @@ class Penerimaan extends PpdbController {
         else if ($action=='search') {
 			$nama = $this->request->getPostGet("nama"); 
 			$nisn= $this->request->getPostGet("nisn"); 
+			$nik= $this->request->getPostGet("nik");
 			$sekolah_id= $this->request->getPostGet("sekolah_id"); 
-            $limit = 1000;
 
-			if (empty($nama) && empty($nisn) && empty($sekolah_id)) {
+			if (empty($nama) && empty($nisn) && empty($sekolah_id) && empty($nik)) {
 				//no search
 				print_json_output(array(), 1);
                 return;
 			}
 
-            $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $limit);
+            $daftar = $this->Msekolah->tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $nik);
             if ($daftar == null) {
                 $daftar = array();
             }

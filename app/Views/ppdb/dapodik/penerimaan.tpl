@@ -69,24 +69,29 @@
     <div class="card-body">
 
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="col-12 col-md-3">
                 <div class="form-group has-feedback">
                     <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama" minlength="3" maxlength="100">
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="col-12 col-md-3">
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" id="nisn" name="nisn" placeholder="NISN" minlength="3" maxlength="64">
+                    <input type="text" class="form-control" id="nisn" name="nisn" placeholder="NISN" minlength="3" maxlength="10">
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="col-12 col-md-3">
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" id="nik" name="nik" placeholder="NIK" minlength="3" maxlength="16">
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
                 <div class="form-group has-feedback">
                     <select id="sekolah_id" name="sekolah_id" class="form-control select2" style="width:100%;">
                         <option value="">-- Asal Sekolah --</option>
                     </select>
                 </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-12 col-md-12">
                 <a id='btn_search' href="javascript:void(0)" onclick="cari_peserta_didik(); return false;" class="btn btn-sm btn-primary btn-flat" style=" float: right;">Cari Peserta Didik</a>
             </div>
         </div>

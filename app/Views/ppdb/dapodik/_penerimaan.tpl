@@ -550,6 +550,12 @@
         }
     });
 
+    $("#nik").keyup(function (e) {
+        if (e.which == 13) {
+            cari_peserta_didik();
+        }
+    });
+
     // $("#sekolah_id").on('change', function (e) {
     //     cari_peserta_didik();
     // });
@@ -667,9 +673,10 @@
 	function cari_peserta_didik() {
 		nama_baru = $("#nama").val();
 		nisn_baru = $("#nisn").val();
+		nik_baru = $("#nik").val();
 		sekolah_baru = $("#sekolah_id").val();
 
-		if ('' == nama_baru && '' == nisn_baru && '' == sekolah_baru) {
+		if ('' == nama_baru && '' == nisn_baru && '' == nik_baru && '' == sekolah_baru) {
 			return;
 		}
 
@@ -682,7 +689,7 @@
 		$("#loader").show();
 
 		//reload
-		dt_search.ajax.url("{$site_url}ppdb/dapodik/penerimaan/json?action=search&nama=" + nama_baru + "&nisn=" + nisn_baru +"&sekolah_id=" + sekolah_baru);
+		dt_search.ajax.url("{$site_url}ppdb/dapodik/penerimaan/json?action=search&nama=" +nama_baru+ "&nisn=" +nisn_baru+ "&nik=" +nik_baru+ "&sekolah_id=" +sekolah_baru);
 		dt_search.ajax.reload(function(json) {
 			//hide loader
 			$("#loader").hide();
