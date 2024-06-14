@@ -617,7 +617,7 @@ Class Mprofilsekolah
 						a.updated_on
 					FROM tcg_peserta_didik a
 					join ref_sekolah b on a.sekolah_id=b.sekolah_id and a.is_deleted=0
-                    join ref_wilayah c on c.kode_wilayah=a.kode_wilayah and c.is_deleted=0
+                    left join ref_wilayah c on c.kode_wilayah=a.kode_wilayah and c.is_deleted=0
 					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.penerimaan_sd=0";
 
 		return $this->db->query($query, array($sekolah_id, $this->tahun_ajaran_id))->getResultArray();
