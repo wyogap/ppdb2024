@@ -43,8 +43,8 @@
                 <div class="input-group adv-search"><input type="text" name="search" id="search" class="form-control" placeholder="Pencarian">
                     <div class="input-group-btn cust-input-grp">
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-primary btn-search"><i class="fa fa-search"></i></button>
-                            <a class="btn btn-secondary adv-search-btn" href="#"><span class="d-none d-md-inline">Filter </span><span class="caret"></span></a>
+                            <button type="submit" class="btn btn-sm btn-primary btn-search" style="max-height: 41px;"><i class="fa fa-search"></i></button>
+                            <a class="btn btn-sm btn-secondary adv-search-btn" href="#" style="max-height: 41px;"><span class="d-none d-md-inline">Filter </span><span class="caret"></span></a>
                         </div>
                     </div>
                 </div>
