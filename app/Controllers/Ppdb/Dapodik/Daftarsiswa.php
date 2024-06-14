@@ -107,8 +107,11 @@ class Daftarsiswa extends PpdbController {
             $cek_waktusosialisasi = 1;
         }
 
+        //hanya yang belum melakukan pendaftaran (kecuali dalam waktu sosialisasi)
+        $jml_pendaftaran = $this->Msiswa->tcg_cek_pendaftaran($peserta_didik_id);
+        
         $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
-        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1 && $impersonasi_sekolah != 1) {
+        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1 && $impersonasi_sekolah != 1 && $jml_pendaftaran > 0) {
             print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
         }
 
