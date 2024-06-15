@@ -480,7 +480,7 @@ Class Mprofilsekolah
 				  left join ref_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
 				  ";
 
-		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA', 'PAUD', 'KB', 'SPS')";
+		$where = "a.is_deleted=0 and a.jenjang in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB')";
 		if (!empty($nama)) {
 			$filter = 1;
 			$where .= " AND a.nama like '%" . $nama . "%'";
