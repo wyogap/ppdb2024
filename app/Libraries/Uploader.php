@@ -20,7 +20,7 @@ class Uploader {
         public $max_size_mb = 4;              //in MB
         public $max_dimension = 1200;
         public $thumb_dimension = 100;
-        public $upload_dir = "upload/";
+        public $upload_dir = WRITEPATH ."/uploads/";
 
         public $file_types = array("jpg", "jpeg", "png", "gif", "pdf", "xlsx", "xls", "csv", 'doc', 'docx', 'ppt', 'pptx');
         //public $file_types = array();
@@ -97,7 +97,7 @@ class Uploader {
     
                 $filename = $upload['name'];
                 $new_filename = $this->generate_file_name($filename);
-                $path = FCPATH . $upload_dir;
+                $path = $upload_dir;
                 $thumb_filename = "";
     
                 if ($ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "gif") {
