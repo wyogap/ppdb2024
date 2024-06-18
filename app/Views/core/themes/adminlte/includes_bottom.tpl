@@ -140,9 +140,15 @@
 {/if}
 
 {if !empty($use_highchart)}
+{if $smarty.const.__USE_CDN__|default: 1} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/highcharts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/highcharts-more.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/5.0.12/themes/grid-light.js"></script>
+{else}
 <script src="{$base_url}cdn/highcharts/code/highcharts.js"></script>
 <script src="{$base_url}cdn/highcharts/code/highcharts-more.js"></script>
 <script src="{$base_url}cdn/highcharts/code/themes/grid-light.js"></script>
+{/if}
 {/if}
 
 <!-- jquery plugins -->
