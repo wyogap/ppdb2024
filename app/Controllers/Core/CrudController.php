@@ -141,7 +141,10 @@ abstract class CrudController extends BaseController {
 		{
 			return call_user_func_array(array($this, $method), $this->params);
 		}
- 
+
+        //navigation
+        $this->navigation = $this->get_navigation();
+        
         return $this->table($method, $this->params);
 	}
 
