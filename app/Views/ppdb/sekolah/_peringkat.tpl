@@ -37,7 +37,7 @@
             })
 
             {foreach $daftarpenerapan as $row}
-            $('#t{$row.penerapan_id}').dataTable({
+            dt_{$row.penerapan_id} = $('#t{$row.penerapan_id}').DataTable({
                 "responsive": true,
                 "processing": true,
                 "pageLength": 25,
@@ -77,9 +77,20 @@
                 ],
                 "order": [[ 7, 'desc' ]]
             });
+
+            // dt_{$row.penerapan_id}.on('order.dt search.dt', function () {
+            //     let i = 1;
+        
+            //     dt_{$row.penerapan_id}.cells(null, 0, { search: 'applied', order: 'applied' })
+            //         .every(function (cell) {
+            //             this.data(i++);
+            //         });
+            // })
+            // .draw();
+
             {/foreach}
 
-            $('#tdaftarpendaftar').dataTable({
+            dt_daftarpendaftar = $('#tdaftarpendaftar').DataTable({
                 "responsive": true,
                 "pageLength": 25,
                 "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
@@ -111,6 +122,7 @@
                     }
                 },
                 ],
+                "order": [[ 8, 'asc' ]]
             });
 
             els = $('.local-datetime');

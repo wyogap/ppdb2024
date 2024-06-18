@@ -130,7 +130,7 @@ Class Mprofilsekolah
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_daftarpendaftaran($sekolah_id, $filters = null){
+	function tcg_daftarpendaftaran($sekolah_id, $filters = null, $orderby = null){
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->db->table('tcg_pendaftaran a');
@@ -166,21 +166,21 @@ Class Mprofilsekolah
         // $sql = $builder->getCompiledSelect();
         // echo $sql; exit;
 
-		$builder->orderBy('a.created_on');
+        if (empty($orderby)) {
+            $builder->orderBy('a.created_on');
+        }
+        else {
+            $builder->orderBy($orderby);
+        }
 
 		return $builder->get()->getResultArray();
  	}
 
-	// function tcg_pendaftaran($sekolah_id, $peserta_didik_id) {
-	// 	$sql = "select a.* from tcg_pendaftaran a where a.sekolah_id=? and a.peserta_didik_id=? and a.is_deleted=0";
-
-	// 	return $this->db->query($sql, array($sekolah_id, $peserta_didik_id));
-	// }
-
 	function tcg_pendaftaran_penerapanid($sekolah_id, $penerapan_id){
 
         $filters = array("a.penerapan_id"=>$penerapan_id);
-        return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        $orderby = "a.skor desc";
+        return $this->tcg_daftarpendaftaran($sekolah_id, $filters, $orderby);
 	}
 
 	function tcg_kandidatswasta($sekolah_id) {

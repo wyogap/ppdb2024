@@ -59,13 +59,13 @@
                     <tr>
                         <th class="text-center" data-priority="1">No</th>
                         <th class="text-center">Nomor Pendaftaran</th>
-                        <th class="text-center" data-priority="4">NISN</th>
+                        <th class="text-center" data-priority="5">NISN</th>
                         <th class="text-center" data-priority="2">Nama</th>
                         <th class="text-center">Sekolah Asal</th>
-                        <th class="text-center" data-priority="5">Jalur</th>
+                        <th class="text-center" data-priority="6">Jalur</th>
                         <th class="text-center">Jenis Pilihan</th>
                         <th class="text-center">Skor</th>
-                        <th class="text-center">Tanggal Pembukuan</th>
+                        <th class="text-center" data-priority="4">Tanggal Pembukuan</th>
                         <th class="text-center" data-priority="3">Status</th>
                     </tr>
                 </thead>
@@ -145,7 +145,7 @@
                             <th class="text-center" data-priority="2">Nama</th>
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pembukuan</th>
-                            <th class="text-center">Skor</th>
+                            <th class="text-center" data-priority="3">Skor</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -190,7 +190,7 @@
                             <td>    
                             <a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank">{$row2.nama} <i class="fa fas fa-external-link-alt"></i></a>
                             </td>
-                            <td class="text-center hala">{$row2.label_jenis_pilihan}</td>
+                            <td class="text-center">{$row2.label_jenis_pilihan}</td>
                             <td class="text-center">{$row2.created_on}</td>
                             <td class="text-end">{$row2.skor}</td>
                         </tr>
