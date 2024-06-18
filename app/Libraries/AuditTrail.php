@@ -20,16 +20,18 @@ class AuditTrail {
         $str_keys = "";
         $str_values = "";
 
-        unset($values[COL_CREATED_ON]);
-        unset($values[COL_CREATED_BY]);
-        unset($values[COL_UPDATED_ON]);
-        unset($values[COL_UPDATED_BY]);
-        unset($values[COL_SOFT_DELETE]);
-
-        $keys = array_keys($values);
-
-        $str_keys = implode(',', array_values($keys));
-        $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+        if ($values != null) {
+            unset($values[COL_CREATED_ON]);
+            unset($values[COL_CREATED_BY]);
+            unset($values[COL_UPDATED_ON]);
+            unset($values[COL_UPDATED_BY]);
+            unset($values[COL_SOFT_DELETE]);
+    
+            $keys = array_keys($values);
+    
+            $str_keys = implode(',', array_values($keys));
+            $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+        }
 
         $valuepair = array (
             'table_name' => $table,
@@ -53,16 +55,18 @@ class AuditTrail {
         $str_keys = "";
         $str_values = "";
 
-        unset($values[COL_CREATED_ON]);
-        unset($values[COL_CREATED_BY]);
-        unset($values[COL_UPDATED_ON]);
-        unset($values[COL_UPDATED_BY]);
-        unset($values[COL_SOFT_DELETE]);
-
-        $keys = array_keys($values);
-
-        $str_keys = implode(',', array_values($keys));
-        $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+        if ($values != null) {
+            unset($values[COL_CREATED_ON]);
+            unset($values[COL_CREATED_BY]);
+            unset($values[COL_UPDATED_ON]);
+            unset($values[COL_UPDATED_BY]);
+            unset($values[COL_SOFT_DELETE]);
+    
+            $keys = array_keys($values);
+    
+            $str_keys = implode(',', array_values($keys));
+            $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+        }
 
         $valuepair = array (
             'table_name' => $table,
@@ -87,16 +91,18 @@ class AuditTrail {
         $str_values = "";
         $str_oldvalues = "";
 
-        unset($values[COL_CREATED_ON]);
-        unset($values[COL_CREATED_BY]);
-        unset($values[COL_UPDATED_ON]);
-        unset($values[COL_UPDATED_BY]);
-        unset($values[COL_SOFT_DELETE]);
+        if ($values != null) {
+            unset($values[COL_CREATED_ON]);
+            unset($values[COL_CREATED_BY]);
+            unset($values[COL_UPDATED_ON]);
+            unset($values[COL_UPDATED_BY]);
+            unset($values[COL_SOFT_DELETE]);
 
-        $keys = array_keys($values);
+            $keys = array_keys($values);
 
-        $str_keys = implode(',', array_values($keys));
-        $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+            $str_keys = implode(',', array_values($keys));
+            $str_values = json_encode($values, JSON_INVALID_UTF8_IGNORE);
+        }
 
         if ($old_values != null) {
             $updated = array();

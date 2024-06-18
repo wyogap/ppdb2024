@@ -18,9 +18,9 @@
     margin-bottom: 16px;
 }
 
-input.form-control {
+input.form-control, select.form-control {
     max-height: 41px !important;   /* to be consistent with select2 */
-}
+}   
 
 [data-theme-version="dark"] .form-control {
     border-color: var(--bs-dark);
