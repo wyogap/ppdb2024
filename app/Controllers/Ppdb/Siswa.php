@@ -606,6 +606,33 @@ class Siswa extends PpdbController {
             }
         }
 
+        //reset verifikasi status if necessary
+        $keys = array_keys($data);
+        if(array_search('kode_wilayah', $keys) !== FALSE) {
+            $data['verifikasi_profil'] = 0;
+        }
+
+        if(array_search('lintang', $keys) !== FALSE || array_search('bujur', $keys) !== FALSE) {
+            $data['verifikasi_lokasi'] = 0;
+        }
+        
+        if(array_search('nilai_semester', $keys) !== FALSE || array_search('nilai_kelulusan', $keys) !== FALSE || array_search('punya_nilai_un', $keys) !== FALSE || array_search('nilai_un', $keys) !== FALSE) {
+            $data['verifikasi_nilai'] = 0;
+        }
+        
+        if(array_search('punya_prestasi', $keys) !== FALSE || array_search('prestasi_skoring_id', $keys) !== FALSE) {
+            $data['verifikasi_prestasi'] = 0;
+        }
+        
+        if(array_search('punya_kip', $keys) !== FALSE || array_search('masuk_bdt', $keys) !== FALSE) {
+            $data['verifikasi_afirmasi'] = 0;
+        }
+        
+        if(array_search('kebutuhan_khusus', $keys) !== FALSE) {
+            $data['verifikasi_inklusi'] = 0;
+        }
+        
+        //update profil siswa
         $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $data);
         if ($detail == null)
             print_json_error("Tidak berhasil mengubah data siswa.");

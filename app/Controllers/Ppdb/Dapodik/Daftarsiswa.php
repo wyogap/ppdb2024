@@ -121,6 +121,33 @@ class Daftarsiswa extends PpdbController {
             print_json_error("Tidak ada data yang berubah");
         }
 
+        //reset verifikasi status if necessary
+        $keys = array_keys($updated);
+        if(array_search('kode_wilayah', $keys) !== FALSE) {
+            $updated['verifikasi_profil'] = 0;
+        }
+
+        if(array_search('lintang', $keys) !== FALSE || array_search('bujur', $keys) !== FALSE) {
+            $updated['verifikasi_lokasi'] = 0;
+        }
+        
+        if(array_search('nilai_semester', $keys) !== FALSE || array_search('nilai_kelulusan', $keys) !== FALSE || array_search('punya_nilai_un', $keys) !== FALSE || array_search('nilai_un', $keys) !== FALSE) {
+            $updated['verifikasi_nilai'] = 0;
+        }
+        
+        if(array_search('prestasi_skoring_id', $keys) !== FALSE || array_search('punya_prestasi', $keys) !== FALSE) {
+            $updated['verifikasi_prestasi'] = 0;
+        }
+        
+        if(array_search('punya_kip', $keys) !== FALSE || array_search('masuk_bdt', $keys) !== FALSE) {
+            $updated['verifikasi_afirmasi'] = 0;
+        }
+        
+        if(array_search('kebutuhan_khusus', $keys) !== FALSE) {
+            $updated['verifikasi_inklusi'] = 0;
+        }
+
+        //update data siswa
         $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
 
         if ($detail == null)
