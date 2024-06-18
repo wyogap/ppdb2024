@@ -1013,6 +1013,9 @@ class Siswa extends PpdbController {
 
         //pendaftaran lama
         $pendaftaran = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
+        if ($pendaftaran == null) {
+            print_json_error("Pendaftaran tidak ditemukan.");
+        }
 
         //hapus
         $status = $this->Msiswa->tcg_hapus_pendaftaran($peserta_didik_id, $pendaftaran_id, $keterangan);

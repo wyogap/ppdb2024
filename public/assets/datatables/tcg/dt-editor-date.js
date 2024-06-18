@@ -61,14 +61,14 @@
       },
     
       get: function ( conf ) {
-        return conf._input_control.val();
+        return moment.local(conf._input_control.val()).utc().format(conf.attr.format.toUpperCase());
       },
     
       set: function ( conf, val ) {
         //TODO: set value not working yet!
         if (typeof val === 'undefined' || val == null)		val = "";
         
-        let m = moment(val);
+        let m = moment.utc(val).local();
         val = m.isValid() ? m.format(conf.attr.format.toUpperCase()) : "";
         conf._input_control.val(val).trigger("input");
 

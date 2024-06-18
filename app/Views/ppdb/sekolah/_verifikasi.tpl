@@ -70,11 +70,11 @@
                         return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
-                {
-                    data: "nomor_pendaftaran",
-                    className: "text-center",
-                    orderable: 'true',
-                },
+                // {
+                //     data: "nomor_pendaftaran",
+                //     className: "text-center",
+                //     orderable: 'true',
+                // },
                 {
                     data: "nisn",
                     className: "text-center",
@@ -110,6 +110,11 @@
 
                         return data;
                     },
+                },
+                {
+                    data: "lokasi_berkas",
+                    className: "text-left",
+                    orderable: 'true',
                 },
                 {
                     data: "sedang_verifikasi",
@@ -191,11 +196,11 @@
                         return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
-                {
-                    data: "nomor_pendaftaran",
-                    className: "text-center",
-                    orderable: 'true',
-                },
+                // {
+                //     data: "nomor_pendaftaran",
+                //     className: "text-center",
+                //     orderable: 'true',
+                // },
                 {
                     data: "nisn",
                     className: "text-center",
@@ -231,6 +236,11 @@
 
                         return data;
                     },
+                },
+                {
+                    data: "lokasi_berkas",
+                    className: "text-left",
+                    orderable: 'true',
                 },
                 {
                     data: "sedang_verifikasi",
@@ -312,11 +322,11 @@
                         return '<a target="_blank" href="{$base_url}home/detailpendaftaran?peserta_didik_id=' +row['peserta_didik_id']+ '">' +row['nama']+ ' <i class="fa fas fa-external-link-alt"></i></a>';
                     }
                 },
-                {
-                    data: "nomor_pendaftaran",
-                    className: "text-center",
-                    orderable: 'true',
-                },
+                // {
+                //     data: "nomor_pendaftaran",
+                //     className: "text-center",
+                //     orderable: 'true',
+                // },
                 {
                     data: "nisn",
                     className: "text-center",
@@ -338,7 +348,7 @@
                     orderable: 'true',
                 },
                 {
-                    data: "tanggal_verifikasi_berkas",
+                    data: "tanggal_verifikasi",
                     className: "text-center",
                     orderable: 'true',
                     render: function ( data, type, row ) {

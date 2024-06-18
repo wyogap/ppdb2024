@@ -135,7 +135,7 @@ Class Mprofilsekolah
 
 		$builder = $this->db->table('tcg_pendaftaran a');
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,a.nomor_pendaftaran,a.kelengkapan_berkas,a.created_on');
-        $builder->select('b.jenis_kelamin, b.tanggal_lahir, b.tanggal_verifikasi, k.nama as verifikasi_oleh');
+        $builder->select('b.jenis_kelamin, b.tanggal_lahir, b.terakhir_verifikasi_timestamp as tanggal_verifikasi, k.nama as verifikasi_oleh');
 		$builder->select('b.nisn,b.nama,a.jenis_pilihan,b.lintang,b.bujur,a.status_penerimaan,a.masuk_jenis_pilihan,a.status_penerimaan_final,a.skor,a.peringkat,a.peringkat_final');
 		$builder->select('b.nilai_kelulusan,coalesce(b.nilai_un,0) as nilai_usbn, a.status_daftar_ulang');
         $builder->select('e.nama AS sekolah_asal,f.nama AS lokasi_berkas,g.keterangan as label_masuk_pilihan,h.keterangan as label_jenis_pilihan,i.nama as sedang_verifikasi');
@@ -149,9 +149,13 @@ Class Mprofilsekolah
 		$builder->join('cfg_jenis_pilihan g','a.masuk_jenis_pilihan = g.jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran AND g.is_deleted=0','LEFT OUTER');
 		$builder->join('cfg_jenis_pilihan h','a.jenis_pilihan = h.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran AND h.is_deleted=0','LEFT OUTER');
         $builder->join('dbo_users i','i.user_id = b.sedang_verifikasi_oleh and i.is_deleted = 0','LEFT OUTER');		
-        $builder->join('dbo_users k','k.user_id = b.verifikator_id and k.is_deleted = 0','LEFT OUTER');		
-        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0,'a.sekolah_id'=>$sekolah_id));
+        $builder->join('dbo_users k','k.user_id = b.terakhir_verifikasi_oleh and k.is_deleted = 0','LEFT OUTER');		
+        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0));
         $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+
+        if (!empty($sekolah_id)) {
+            $builder->where('a.sekolah_id', $sekolah_id);
+        }
 
         //additional filters
         if ($filters!=null) {
@@ -233,7 +237,18 @@ Class Mprofilsekolah
 	function tcg_berkasdisekolah($sekolah_id){
         
         $filters = array('b.lokasi_berkas'=>$sekolah_id,'a.pendaftaran'=>1);
-        return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        $result = $this->tcg_daftarpendaftaran(null, $filters);
+
+        //filter unique peserta_didik
+        $lookup = array();
+        $arr = array();
+        foreach($result as $row) {
+            if (array_search($row['peserta_didik_id'], $lookup) !== FALSE)  continue;
+            $arr[] = $row;
+            $lookup[] = $row['peserta_didik_id'];
+        }
+
+        return $arr;
 	}  
 
     function tcg_cari_siswa($query, $jenjang = null, $asaldata = null, $inklusi = null, $afirmasi = null, $search_columns = null) {
