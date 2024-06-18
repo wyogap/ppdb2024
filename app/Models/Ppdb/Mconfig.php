@@ -276,6 +276,18 @@ Class Mconfig
 		return $builder->get()->getRowArray();
 	}
 
+	function tcg_jenjangppdb() {
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+
+        //Tidak per putaran!!!
+		$builder = $this->db->table('cfg_putaran a');
+		$builder->select('distinct c.jenjang_id, c.nama', false);
+		$builder->join('ref_jenjang c','a.jenjang_id = c.jenjang_id AND c.is_deleted=0');
+		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
+
+		return $builder->get()->getResultArray();
+	}
+
 	function tcg_putaran() {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
@@ -284,6 +296,16 @@ Class Mconfig
 		$builder->select('a.*');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 
+		return $builder->get()->getResultArray();
+	}
+
+	function tcg_penerapan(){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+
+		$builder = $this->db->table('cfg_penerapan a');
+		$builder->select('a.penerapan_id,a.jalur_id,c.nama AS jalur,a.nama,a.putaran');
+		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
+		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 		return $builder->get()->getResultArray();
 	}
 
@@ -415,10 +437,13 @@ Class Mconfig
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_kecamatan($kode_wilayah){
+	function tcg_kecamatan($kode_wilayah = null){
 		if (empty($kode_wilayah))
 			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
  
+        //make sure level kabupaten
+        $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
+
         $builder = $this->db->table('ref_wilayah');
         $builder->select('CONVERT(kode_wilayah,CHAR(6)) AS kode_wilayah,nama');
 		$builder->where(array('id_level_wilayah'=>3,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah));

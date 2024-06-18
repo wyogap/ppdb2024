@@ -14,18 +14,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.2/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.4.0/Control.FullScreen.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.EasyButton/2.1.0/easy-button.min.js"></script>
-<script src="{$base_url}assets/leaflet/esri/esri-leaflet.js" defer></script>
-<script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js"></script>
-<script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
-<script src="{$base_url}assets/leaflet/oms/oms.min.js" defer></script>
+<script src="{$base_url}cdn/leaflet/esri/esri-leaflet.js" defer></script>
+<!-- <script src="{$base_url}cdn/leaflet/esri/esri-leaflet-geocoder.js"></script> -->
+<script src="{$base_url}cdn/leaflet/markercluster/leaflet.markercluster.js" defer></script>
+<script src="{$base_url}cdn/leaflet/oms/oms.min.js" defer></script>
 {else}
 <script src="{$base_url}cdn/leaflet/leaflet/leaflet.js"></script>
 <script src="{$base_url}cdn/leaflet/fullscreen/leaflet.fullscreen.js"></script>
 <script src="{$base_url}cdn/leaflet/easybutton/easy-button.js"></script>
-<script src="{$base_url}assets/leaflet/esri/esri-leaflet.js" defer></script>
-<script src="{$base_url}assets/leaflet/esri/esri-leaflet-geocoder.js"></script>
-<script src="{$base_url}assets/leaflet/markercluster/leaflet.markercluster.js" defer></script>
-<script src="{$base_url}assets/leaflet/oms/oms.min.js" defer></script>
+<script src="{$base_url}cdn/leaflet/esri/esri-leaflet.js" defer></script>
+<!-- <script src="{$base_url}cdn/leaflet/esri/esri-leaflet-geocoder.js"></script> -->
+<script src="{$base_url}cdn/leaflet/markercluster/leaflet.markercluster.js" defer></script>
+<script src="{$base_url}cdn/leaflet/oms/oms.min.js" defer></script>
 {/if}
 {/if}
 
@@ -137,6 +137,12 @@
 {else}
 <script src="{$base_url}cdn/fontawesome/js/fontawesome.min.js" defer charset="utf-8"></script>
 <!-- <script src="{$base_url}assets/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js" defer charset="utf-8"></script> -->
+{/if}
+
+{if !empty($use_highchart)}
+<script src="{$base_url}cdn/highcharts/code/highcharts.js"></script>
+<script src="{$base_url}cdn/highcharts/code/highcharts-more.js"></script>
+<script src="{$base_url}cdn/highcharts/code/themes/grid-light.js"></script>
 {/if}
 
 <!-- jquery plugins -->

@@ -29,6 +29,15 @@ class Kandidatswasta extends PpdbController {
 		if (empty($tahun_ajaran_id))
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 	
+        $sekolah_id = $this->session->get('sekolah_id');
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
+
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
         $data['use_datatable'] = 1;
 
         //content template

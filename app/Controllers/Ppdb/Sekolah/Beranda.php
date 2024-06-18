@@ -29,20 +29,14 @@ class Beranda extends PpdbController {
 	function index()
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
 
-        $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
-        $roleid = $this->session->get("role_id");
-        if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
-            $this->session->set("sekolah_id", $impersonasi_sekolah_id);
-            $this->session->set("impersonasi_sekolah", 1);
-            $sekolah_id = $impersonasi_sekolah_id;
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
-
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-        if (empty($profil) || !$profil['ikut_ppdb']) {
-            return $this->notauthorized();
-        }
-        $data['profil'] = $profil;
         
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();

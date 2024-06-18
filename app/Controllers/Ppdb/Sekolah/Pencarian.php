@@ -25,9 +25,19 @@ class Pencarian extends PpdbController {
 
 	function index()
 	{
+        $sekolah_id = $this->session->get('sekolah_id');
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
+
         $mdropdown = new \App\Models\Ppdb\Mconfig();
         $data['daftarjenjang'] = $mdropdown->tcg_lookup_jenjang();
         $data['daftarasaldata'] = $mdropdown->tcg_lookup_asaldata();
+
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
 
         $data['use_datatable'] = 1;
         

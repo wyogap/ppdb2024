@@ -27,7 +27,10 @@ class Daftarulang extends PpdbController {
 
 	function index()
 	{
-		$sekolah_id = $this->session->get('sekolah_id');
+        $sekolah_id = $this->session->get('sekolah_id');
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
 
 		do {
             $pendaftaran_id = $_GET["pendaftaran_id"] ?? null;
@@ -52,11 +55,8 @@ class Daftarulang extends PpdbController {
             else {
                 $data['cek_waktudaftarulang'] = ($data['waktudaftarulang']['aktif'] == 1) ? 1 : 0;
             }
-			$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-			// $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
-			//$data['daftartahunajaran'] = $this->Mconfig->tcg_tahunajaran();
-	
-			$data['inklusi']=$data['profilsekolah']['inklusi'];
+        
+			//$data['inklusi']=$data['profil']['inklusi'];
 			
 			$data['tahun_ajaran_aktif'] = $this->session->get('tahun_ajaran_aktif');
 			$data['putaran_aktif'] = $this->session->get('putaran_aktif');
@@ -65,6 +65,11 @@ class Daftarulang extends PpdbController {
 		}
         while (false);
 
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
+        
         $data['use_datatable'] = 1;
 
         //debugging

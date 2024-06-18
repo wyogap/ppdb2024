@@ -26,26 +26,23 @@ class Ubahprofil extends PpdbController {
 
 	function index()
 	{
-		$peran_id = $this->session->get('peran_id');
-		$sekolah_id = $_GET["sekolah_id"] ?? null; 
-		if (empty($sekolah_id) || $peran_id==2) {
-			$sekolah_id = $this->session->get('sekolah_id');
+		$sekolah_id = $this->session->get('sekolah_id');
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
 		}
 
-		if (empty($sekolah_id)) {
-			view('home/notauthorized');
-			return;
-		}
+		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 
-		$redirect = $_GET["redirect"] ?? null; 
-		if (empty($redirect)) {
-			$redirect = "Clogin";
-		}
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+
+		// $redirect = $_GET["redirect"] ?? null; 
+		// if (empty($redirect)) {
+		// 	$redirect = "Clogin";
+		// }
 
 		$mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['kabupaten'] = $mdropdown->tcg_kabupaten();
-		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-		$data['redirect'] = $redirect;
+		// $data['redirect'] = $redirect;
 
         $data['use_leaflet'] = 1;
 

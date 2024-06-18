@@ -37,14 +37,6 @@ class Penerimaan extends PpdbController {
 	{
         $sekolah_id = $this->session->get("sekolah_id");
 
-        $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
-        $roleid = $this->session->get("role_id");
-        if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
-            $this->session->set("sekolah_id", $impersonasi_sekolah_id);
-            $this->session->set("impersonasi_sekolah", 1);
-            $sekolah_id = $impersonasi_sekolah_id;
-        }
-
         $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
         if (empty($profil) || !$profil['ikut_ppdb']) {
             return $this->notauthorized();

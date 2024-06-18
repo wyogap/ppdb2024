@@ -113,16 +113,21 @@ abstract class CrudController extends BaseController {
 			}
 		}
 
-		//navigation
-		$this->navigation = $this->get_navigation();
-
         //must be role_id?
         $role_id = $this->session->get("role_id");
-		if (!empty(static::$ROLE_ID) && static::$ROLE_ID != $role_id) {
-			if ($this->is_json) {
-				$this->json_not_login();
+        if (!empty(static::$ROLE_ID) && 
+                //bukan admin
+                (ROLEID_ADMIN != $role_id && ROLEID_SYSADMIN != $role_id) &&
+                //current role is not static::$ROLE_ID
+                ((!is_array(static::$ROLE_ID) && static::$ROLE_ID != $role_id) || 
+                //static::$ROLE_ID can be an array
+                (is_array(static::$ROLE_ID) && array_search($role_id,static::$ROLE_ID) === FALSE))) {
+            if ($this->is_json) {
+				$this->json_not_authorized();
                 return;
 			} else {
+                //navigation
+                $this->navigation = $this->get_navigation();
                 theme_403_with_navigation($this->navigation);		//not-authorized
                 return;
             }

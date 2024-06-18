@@ -27,8 +27,15 @@ class Peringkat extends PpdbController {
 	function index()
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
 
-        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
+        
 		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
         
         //pendaftar per penerapan
@@ -86,12 +93,12 @@ class Peringkat extends PpdbController {
             $data['final_ranking'] = 0;
         }
 
-		$data['inklusi']=0;
-        if ($data['profilsekolah'] != null) {
-            $data['inklusi']=$data['profilsekolah']['inklusi'];
-        }
+		// $data['inklusi']=0;
+        // if ($data['profilsekolah'] != null) {
+        //     $data['inklusi']=$data['profilsekolah']['inklusi'];
+        // }
 
-        $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        // $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         
         $data['use_datatable'] = 1;
 

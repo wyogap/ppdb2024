@@ -163,9 +163,31 @@ if ( ! function_exists('audit_siswa'))
             $json['data'] = $data;
         }
 
-        //TODO: output properly
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
         exit;
+
+        // //TODO: output properly
+        // if (empty($data) || count($data) <= 5000) {
+        //     echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
+        //     exit;
+        // }
+        // else {
+        //     //manual echo json file to avoid memory exhausted
+        //     echo '{"status":"1", "data":[';
+        //     $first = true;
+        //     foreach($data as $row)
+        //     {
+        //         if ($first) {
+        //             echo json_encode($row, JSON_INVALID_UTF8_IGNORE);
+        //             $first = false;
+        //         } else {
+        //             echo ",". json_encode($row, JSON_INVALID_UTF8_IGNORE);
+        //         }
+        //     }
+        //     echo ']}';
+        //     exit;
+        // }
+        
     }
 
     function update_daftarpendaftaran($pendaftaran, $batasan_perubahan = null, $batasan_siswa = null) {

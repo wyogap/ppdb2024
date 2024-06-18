@@ -29,108 +29,74 @@ Class Mhome
 		return $this->db->query($query, array("%$nama%"));
 	}
 
-	function tcg_daftarpenerapan(){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
-		$builder = $this->db->table('ref_penerapan a');
-		$builder->select('a.penerapan_id,a.jalur_id,c.nama AS jalur');
-		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
-		return $builder->get();
-	}
-
-	function tcg_dashboardwilayah(){
-		$kode_wilayah = $this->session->get('kode_wilayah_aktif');
+	function tcg_dashboard_summary($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$builder = $this->db->table('rpt_rekapitulasi_wilayah a');
-		$builder->select('a.rekapitulasi_wilayah_id,
-			a.kode_wilayah,
-			a.nama,
-			a.kuota_total,
-			a.total_pendaftar,
-			a.belum_diperingkat,
-			a.masuk_kuota,
-			a.daftar_tunggu,
-			a.tidak_masuk_kuota,
-			a.diterima_pilihan1,
-			a.belum_diverifikasi,
-			a.verifikasi_berkas_lengkap,
-			a.verifikasi_berkas_tidak_lengkap,
-			a.total_pendaftar_madrasah,
-			a.total_pendaftar_sd,
-			a.kuota_zonasi,
-			a.pendaftar_zonasi,
-			a.zonasi_diterima,
-			a.zonasi_tidak_diterima,
-			a.zonasi_belum_diperingkat,
-			a.kuota_prestasi,
-			a.pendaftar_prestasi,
-			a.prestasi_diterima,
-			a.prestasi_tidak_diterima,
-			a.prestasi_belum_diperingkat,
-			a.kuota_perpindahan_orang_tua,
-			a.pendaftar_perpindahan_orang_tua,
-			a.perpindahan_orang_tua_diterima,
-			a.perpindahan_orang_tua_tidak_diterima,
-			a.perpindahan_orang_tua_belum_diperingkat,
-			a.kuota_khusus,
-			a.pendaftar_khusus,
-			a.khusus_diterima,
-			a.khusus_tidak_diterima,
-			a.khusus_belum_diperingkat,
-			a.kuota_swasta,
-			a.pendaftar_swasta,
-			a.swasta_diterima,
-			a.swasta_tidak_diterima,
-			a.swasta_belum_diperingkat,
-			a.kuota_olahraga_dan_bakat,
-			a.pendaftar_olahraga_dan_bakat,
-			a.olahraga_dan_bakat_diterima,
-			a.olahraga_dan_bakat_tidak_diterima,
-			a.olahraga_dan_bakat_belum_diperingkat,
-			a.kuota_inklusi,
-			a.pendaftar_inklusi,
-			a.inklusi_diterima,
-			a.inklusi_tidak_diterima,
-			a.inklusi_belum_diperingkat,
-			a.kuota_perbatasan,
-			a.pendaftar_perbatasan,
-			a.perbatasan_diterima,
-			a.perbatasan_tidak_diterima,
-			a.perbatasan_belum_diperingkat,
-			a.kuota_afirmasi,
-			a.pendaftar_afirmasi,
-			a.afirmasi_diterima,
-			a.afirmasi_tidak_diterima,
-			a.afirmasi_belum_diperingkat,
-			a.kuota_madrasah,
-			a.pendaftar_madrasah,
-			a.madrasah_diterima,
-			a.madrasah_tidak_diterima,
-			a.madrasah_belum_diperingkat,
-			a.kode_wilayah_penerapan,
-			a.tahun_ajaran_id
-			');
-        $builder->where('a.kode_wilayah',$kode_wilayah);
+		$builder->select('a.*');
 		$builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
-		return $builder->get();
-	}    
 
-	// function tcg_dashboardpenerapan(){
-	// 	//$bentuk = $this->input->get("bentuk");
-		
-	// 	$sekolah_id = $this->input->get("sekolah_id");
-	// 	$builder->select('a.penerapan_id,c.nama AS jalur,d.kuota');
-	// 	$builder = $this->db->table('ref_penerapan a');
-	// 	$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-	// 	$builder->join('dbo_penerapan_sekolah d','a.penerapan_id = d.penerapan_id AND d.is_deleted = 0');
-	// 	$builder->where(array('a.aktif'=>1,'a.expired_date'=>NULL,'d.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
-	// 	$builder->order_by('c.nama DESC');
-	// 	return $builder->get();
-	// }
+        if (!empty($jenjang_id)) {
+            $builder->where('a.jenjang_id',$jenjang_id);
+        }
 
-	function tcg_dashboardline(){
+        if (!empty($status)) {
+            $builder->where('a.status',$status);
+        }
+
+        if (!empty($putaran)) {
+            $builder->where('a.putaran',$putaran);
+        }
+
+        // if (!empty($penerapan_id)) {
+        //     $builder->where('a.penerapan_id',$penerapan_id);
+        // }
+
+        if (!empty($kode_wilayah)) {
+            $builder->where('a.kode_wilayah',$kode_wilayah);
+        }
+
+		$result = $builder->get()->getResultArray();
+        
+        $retval = array();
+        if (count($result) > 0) {
+            $keys = array_keys($result[0]);
+            foreach($keys as $k => $v) {
+                $retval[$v] = 0;
+            }
+        }
+
+        //var_dump($result);
+        //var_dump($retval); exit;
+        $retval["tahun_ajaran_id"] = $tahun_ajaran_id;
+        $retval["jenjang_id"] = $jenjang_id;
+        $retval["putaran"] = $putaran;
+        $retval["penerapan_id"] = $penerapan_id;
+        $retval["kode_wilayah"] = $kode_wilayah;
+        $retval["nama"] = '';
+
+        //summary
+        foreach($result as $r) {
+            foreach($keys as $k => $v) {
+                if ($v == "tahun_ajaran_id")  continue;
+                if ($v == "jenjang_id")  continue;
+                if ($v == "putaran")  continue;
+                if ($v == "penerapan_id")  continue;
+                if (($v == "kode_wilayah" || $v == 'nama')) {
+                    //$retval[$v] = $r[$v];
+                    continue;
+                }
+
+                //sum
+                $retval[$v] += intval($r[$v]);
+            }
+        }
+
+        return $retval;
+	}
+
+	function tcg_dashboard_pendaftarharian($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		
 		$day0 = date("Y-m-d") ;
 		$nextday = date("Y-m-d", strtotime("+1 days"));
@@ -141,22 +107,92 @@ Class Mhome
 		$day5 = date("Y-m-d", strtotime("-5 days"));
 		$day6 = date("Y-m-d", strtotime("-6 days"));
 		$day7 = date("Y-m-d", strtotime("-7 days"));
-		
-		$query = "SELECT 
-		'$day0' as hari_ini,
-		SUM(CASE WHEN created_on BETWEEN '$day0' AND '$nextday' THEN 1 ELSE 0 END) AS day_0,
-		SUM(CASE WHEN created_on BETWEEN '$day1' AND '$day0' THEN 1 ELSE 0 END) AS day_1,
-		SUM(CASE WHEN created_on BETWEEN '$day2' AND '$day1' THEN 1 ELSE 0 END) AS day_2,
-		SUM(CASE WHEN created_on BETWEEN '$day3' AND '$day2' THEN 1 ELSE 0 END) AS day_3,
-		SUM(CASE WHEN created_on BETWEEN '$day4' AND '$day3' THEN 1 ELSE 0 END) AS day_4,
-		SUM(CASE WHEN created_on BETWEEN '$day5' AND '$day4' THEN 1 ELSE 0 END) AS day_5, 
-		SUM(CASE WHEN created_on BETWEEN '$day6' AND '$day5' THEN 1 ELSE 0 END) AS day_6, 
-		SUM(CASE WHEN created_on BETWEEN '$day7' AND '$day6' THEN 1 ELSE 0 END) AS day_7 
-		FROM tcg_pendaftaran
-		where is_deleted=0 and cabut_berkas=0";
 
-		return $this->db->query($query);
+		$builder = $this->db->table('tcg_pendaftaran a');
+		$builder->select("
+            '$day0' as hari_ini,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day0' AND '$nextday' THEN 1 ELSE 0 END) AS day_0,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day1' AND '$day0' THEN 1 ELSE 0 END) AS day_1,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day2' AND '$day1' THEN 1 ELSE 0 END) AS day_2,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day3' AND '$day2' THEN 1 ELSE 0 END) AS day_3,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day4' AND '$day3' THEN 1 ELSE 0 END) AS day_4,
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day5' AND '$day4' THEN 1 ELSE 0 END) AS day_5, 
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day6' AND '$day5' THEN 1 ELSE 0 END) AS day_6, 
+            SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day7' AND '$day6' THEN 1 ELSE 0 END) AS day_7
+        ");
+		$builder->join('cfg_putaran b',"b.putaran=a.putaran and b.is_deleted=0");
+        $builder->join('ref_sekolah c',"c.sekolah_id=a.sekolah_id and c.is_deleted=0");
+        $builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
+		$builder->where(array('a.is_deleted'=>0, 'a.cabut_berkas'=>0));
+ 
+        if (!empty($jenjang_id)) {
+            $builder->where('b.jenjang_id',$jenjang_id);
+        }
+
+        if (!empty($status)) {
+            $builder->where('c.status',$status);
+        }
+
+        if (!empty($putaran)) {
+            $builder->where('a.putaran',$putaran);
+        }
+
+        if (!empty($penerapan_id)) {
+            $builder->where('a.penerapan_id',$penerapan_id);
+        }
+
+        if (!empty($kode_wilayah)) {
+            $builder->where('c.kode_wilayah_kec',$kode_wilayah);
+        }
+        
+        $result = $builder->get()->getRowArray();
+		return $result;
 	}    
+
+    function tcg_dashboard_daftarpendaftaran($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah) {
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		
+		$builder = $this->db->table('tcg_pendaftaran a');
+		$builder->select("a.*, c.nama as sekolah, e.nama, e.lintang, e.bujur, f.nama as penerapan, g.nama as jalur");
+		$builder->join('cfg_putaran b',"b.putaran=a.putaran and b.is_deleted=0");
+        $builder->join('ref_sekolah c',"c.sekolah_id=a.sekolah_id and c.is_deleted=0");
+        $builder->join(
+            "(select x.pendaftaran_id, x.sekolah_id, x.peserta_didik_id,
+                row_number() over (partition by x.sekolah_id, x.peserta_didik_id order by x.pendaftaran_id) rn
+            from tcg_pendaftaran x) as d"
+            , "d.pendaftaran_id=a.pendaftaran_id and d.rn=1");
+        $builder->join('tcg_peserta_didik e',"e.peserta_didik_id=a.peserta_didik_id and e.is_deleted=0");
+        $builder->join('cfg_penerapan f',"f.penerapan_id=a.penerapan_id and f.is_deleted=0");
+        $builder->join('ref_jalur g',"g.jalur_id=f.jalur_id and g.is_deleted=0");
+        $builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
+		$builder->where(array('a.is_deleted'=>0, 'a.cabut_berkas'=>0));
+ 
+        if (!empty($jenjang_id)) {
+            $builder->where('b.jenjang_id',$jenjang_id);
+        }
+
+        if (!empty($status)) {
+            $builder->where('c.status',$status);
+        }
+
+        if (!empty($putaran)) {
+            $builder->where('a.putaran',$putaran);
+        }
+
+        if (!empty($penerapan_id)) {
+            $builder->where('a.penerapan_id',$penerapan_id);
+        }
+
+        if (!empty($kode_wilayah)) {
+            $builder->where('c.kode_wilayah_kec',$kode_wilayah);
+        }
+        
+        //limit
+        //$builder->limit(5000);
+
+        $result = $builder->get()->getResultArray();
+		return $result;
+    }
 
 	function tcg_rapor_mutu($tahun_ajaran_id=null){
 		if (empty($tahun_ajaran_id)) {

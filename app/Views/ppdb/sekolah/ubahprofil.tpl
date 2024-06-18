@@ -1,3 +1,16 @@
+
+{if $impersonasi_sekolah|default: FALSE} 
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        {if $impersonasi_sekolah|default: FALSE} 
+        <li class="breadcrumb-item active">[{$profilsekolah['nama']}]</li>
+        {/if}
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Ubah Profil</a></li>
+    </ol>
+</div>
+{/if}
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="card box-solid">
 				<div class="card-header with-border">

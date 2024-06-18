@@ -17,6 +17,16 @@
 </div>	
 {/if}
 
+{if $impersonasi_sekolah|default: FALSE} 
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">[{$profil['nama']}]</li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Peringkat</a></li>
+    </ol>
+</div>
+{/if}
+
 <div class="custom-tab-1" id="tabs">
     <ul class="nav nav-tabs nav-justified" id="tabNames" style="margin-bottom: 16px;">
         {if $show_all_pendaftar|default: FALSE}

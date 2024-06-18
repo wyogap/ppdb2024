@@ -116,7 +116,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -237,7 +237,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -358,7 +358,7 @@
                     className: "text-left",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -470,7 +470,7 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",

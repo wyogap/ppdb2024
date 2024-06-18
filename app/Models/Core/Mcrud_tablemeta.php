@@ -528,6 +528,16 @@ class Mcrud_tablemeta implements ICrudModel
                     $col['column_name'] = $this->table_name. "." .$col['name'];
                 }
 
+                //add link to open in new tab
+                $col['open_url'] = $row['open_url'];
+                if ( !empty($col['open_url']) && strpos($col['open_url'], 'http') !== 0 ) {
+                    $col['open_url'] = site_url() .$col['open_url'];
+                }
+                $col['open_url_label'] = $row['open_url_label'];
+                if (empty($col['open_url_label'])) {
+                    $col['open_url_label'] = "External Link";
+                }
+
                 // var_dump($col['column_name']);
                 // var_dump($this->select_columns);
 
@@ -1124,6 +1134,10 @@ class Mcrud_tablemeta implements ICrudModel
                 $action['css'] = $row['css'];
                 $action['onclick_js'] = $row['onclick_js'];
                 $action['conditional_js'] = $row['conditional_js'];
+                $action['open_url'] = $row['open_url'];
+                if ( !empty($action['open_url']) && strpos($action['open_url'], 'http') !== 0 ) {
+                    $action['open_url'] = site_url() .$action['open_url'];
+                }
                 $action['tooltip'] = $row['tooltip'];
                 if ($action['icon_only'] && empty($action['tooltip'])) {
                     $action['tooltip'] = $action['label'];

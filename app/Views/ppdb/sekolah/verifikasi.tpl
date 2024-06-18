@@ -42,7 +42,7 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pendaftaran</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -62,7 +62,7 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pendaftaran</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -84,7 +84,7 @@
                             <!-- <th class="text-center">Tanggal Pendaftaran</th> -->
                             <th class="text-center" data-priority="3">Tanggal Verifikasi</th>
                             <th class="text-center" data-priority="4">Lokasi Berkas</th>
-                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                         </tr>
@@ -102,7 +102,7 @@
                             <th class="text-center" data-priority="4">Asal Sekolah</th>
                             <th class="text-center">Kelengkapan Berkas</th>
                             <th class="text-center">Sedang Verifikasi</th>
-                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                             <th class="text-center" data-priority="1">#</th>
                             {/if}
                        </tr>

@@ -32,6 +32,10 @@ class Berkasdisekolah extends PpdbController {
 
 		$data['sekolah_id'] = $sekolah_id;
 		$data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
 	
         $data['use_datatable'] = 1;
 

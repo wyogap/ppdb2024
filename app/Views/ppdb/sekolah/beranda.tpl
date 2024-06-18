@@ -9,6 +9,16 @@
 
 </style>
 
+{if $impersonasi_sekolah|default: FALSE} 
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">[{$profil['nama']}]</li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Beranda</a></li>
+    </ol>
+</div>
+{/if}
+
 <div class="row">
 	<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 		<div class="card box-solid">

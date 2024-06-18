@@ -33,14 +33,6 @@ class Daftarsiswa extends PpdbController {
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
 
-        $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
-        $roleid = $this->session->get("role_id");
-        if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
-            $this->session->set("sekolah_id", $impersonasi_sekolah_id);
-            $this->session->set("impersonasi_sekolah", 1);
-            $sekolah_id = $impersonasi_sekolah_id;
-        }
-
         $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
         if (empty($profil)) {
             return $this->notauthorized();
@@ -54,7 +46,6 @@ class Daftarsiswa extends PpdbController {
         $data['kabupaten'] = $this->Mconfig->tcg_kabupaten();
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
-
 		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
 
         $data['use_datatable'] = 1;

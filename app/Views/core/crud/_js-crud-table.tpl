@@ -988,6 +988,11 @@ $(document).ready(function() {
                     data += ' <a target="_blank" href="{$site_url}{$controller}/{$x.reference_controller}/detail/' +id+ '" data-toggle="tooltip" data-placement="top" title="Buka Detail">'
                             + '<i class="fa fas fa-external-link-alt"></i></a>';
                     {/if}
+
+                    {if !empty($x.open_url)} 
+                    data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                            + '<i class="fa fas fa-external-link-alt"></i></a>';
+                    {/if}
                     return data;
                 }
                 {else if isset($x.type) && $x.type=="tcg_upload"}
@@ -1027,10 +1032,15 @@ $(document).ready(function() {
                             data = "";
                         }
                         {if $x.display_format_js}
-                        return {$x.display_format_js}(data, type, row);
-                        {else}
-                        return data;
+                        data = {$x.display_format_js}(data, type, row);
                         {/if}
+
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
+                        return data;
                     }
                     return data;
                 },
@@ -1044,11 +1054,15 @@ $(document).ready(function() {
                         if (data != "") {
                             data = moment.utc(data).local().format('YYYY-MM-DD');
                             {if $x.display_format_js}
-                            return {$x.display_format_js}(data, type, row);
-                            {else}
-                            return data;
+                            data = {$x.display_format_js}(data, type, row);
                             {/if}
                         }
+                        
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
                         return data;
                     }
                     return data;
@@ -1063,32 +1077,38 @@ $(document).ready(function() {
                         if (data != "") {
                             data = moment.utc(data).local().format('YYYY-MM-DD HH:mm:ss');
                             {if $x.display_format_js}
-                            return {$x.display_format_js}(data, type, row);
-                            {else}
-                            return data;
+                            data = {$x.display_format_js}(data, type, row);
                             {/if}
                         }
+
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
                         return data;
                     }
                     return data;
                 },
                 {else if isset($x.type) && $x.type=="tcg_currency"}
                 render: function ( data, type, row ) {
-                    // if (type == "export") {
-                    //     //export raw data?
-                    //     return data;
-                    // }
+                    if (typeof data === 'undefined' || data === null || data == "") {
+                        data = 0;
+                    }
 
                     if (type == "display") {
-                        if (typeof data === 'undefined' || data === null || data == "") {
-                            data = 0;
-                        }
+                        
                         data = $.fn.dataTable.render.number('{$currency_thousand_separator}', '{$currency_decimal_separator}', {$currency_decimal_precision}, '{$currency_prefix}').display(data);
                         {if $x.display_format_js}
-                        return {$x.display_format_js}(data, type, row);
-                        {else}
-                        return data;
+                        data = {$x.display_format_js}(data, type, row);
                         {/if}
+                        
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
+                        return data;
                     }
                     return data;
                 },
@@ -1104,11 +1124,15 @@ $(document).ready(function() {
                         else {
                             data = '{__("Tdk")}';
                         }
+                        
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
                         return data;
-                    // }  
-                    // return data;
                 },
-                {else if $x.display_format_js}
+                {else}
                 render: function ( data, type, row ) {
                     // if (type == "export") {
                     //     //export raw data?
@@ -1119,7 +1143,17 @@ $(document).ready(function() {
                         if (typeof data === 'undefined' || data === null) {
                             data = "";
                         }
-                        return {$x.display_format_js}(data, type, row);
+
+                        {if $x.display_format_js}
+                        data = {$x.display_format_js}(data, type, row);
+                        {/if}
+                        
+                        {if !empty($x.open_url)} 
+                        data += ' <a target="_blank" href="' +parse_open_url("{$x.open_url}", row)+ '" data-toggle="tooltip" data-placement="top" title="{$x.open_url_label}">'
+                                + '<i class="fa fas fa-external-link-alt"></i></a>';
+                        {/if}
+
+                        return data;
                     }
                     return data;
                 },
@@ -1139,84 +1173,98 @@ $(document).ready(function() {
                     let id = row['{$tbl.key_column}'];
                     {if count($tbl.row_actions) == 1 && $tbl.row_actions[0].icon_only == false}
                         {$x = $tbl.row_actions[0]}
-                        {if !empty($x.conditional_js)}
-                        if ({$x.conditional_js}(data, row, meta)) {
-                        {/if}
+                        if (true {if !empty($x.conditional_js)}&& {$x.conditional_js}(data, row, meta){/if}) {
+                            {if empty($x.open_url)}
                             return "<button href='#' onclick='event.stopPropagation(); {$x.onclick_js}(" +meta.row+ ", dt_{$tbl.table_id}, \"" +id+ "\");' " 
                                     + "data-tag='" +meta.row+ "' class='btn btn-sm btn-tooltip {$x.css}' "
                                     + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
                                     + "<i class='{$x.icon}'></i> {$x.label}"
                                     + "</button>";
-                        {if !empty($x.conditional_js)}
+                            {else} 
+                            return "<a href='" +parse_open_url("{$x.open_url}", data)+ "' target='_blank' " 
+                                    + "data-tag='" +meta.row+ "' class='btn btn-sm btn-tooltip {$x.css}' "
+                                    + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
+                                    + "<i class='{$x.icon}'></i> {$x.label}"
+                                    + "</a>";
+                            {/if}
                         }
-                        {/if}
                         return '';
                     {else}
                         let str = '';
 
+                        {* Icon-only action is shown separately, not part of dropdown *}
                         {assign var=num_of_dropdown value=0 }
                         {foreach $tbl.row_actions as $x} 
                             {if !$x.icon_only}
                                 {assign var=num_of_dropdown value=$num_of_dropdown+1 }
                             {else}
-                                {if !empty($x.conditional_js)}
-                                if ({$x.conditional_js}(data, row, meta)) {
-                                {/if}
-                                str += "<button href='#' onclick='event.stopPropagation(); {$x.onclick_js}(" +meta.row+ ", dt_{$tbl.table_id}, \"" +id+ "\");' "
-                                        + "data-tag='" +meta.row+ "' class='btn btn-icon-circle btn-tooltip {$x.css}' "
-                                        + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
-                                        + "<i class='{$x.icon}'></i>"
-                                        + "</button>"                           
-                                {if !empty($x.conditional_js)}
+                                if (true {if !empty($x.conditional_js)}&& {$x.conditional_js}(data, row, meta){/if}) {
+                                    {if empty($x.open_url)}
+                                    str += "<button href='#' onclick='event.stopPropagation(); {$x.onclick_js}(" +meta.row+ ", dt_{$tbl.table_id}, \"" +id+ "\");' "
+                                            + "data-tag='" +meta.row+ "' class='btn btn-icon-circle btn-tooltip {$x.css}' "
+                                            + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
+                                            + "<i class='{$x.icon}'></i>"
+                                            + "</button>"                           
+                                    {else} 
+                                    str += "<a href='" +parse_open_url("{$x.open_url}", data)+ "' target='_blank' " 
+                                            + "data-tag='" +meta.row+ "' class='btn btn-icon-circle btn-tooltip {$x.css}' "
+                                            + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
+                                            + "<i class='{$x.icon}'></i>"
+                                            + "</a>"                           
+                                    {/if}
                                 }
-                                {/if}
                             {/if}
                         {/foreach}
                         
+                        {* Show as dropdown for action which are not icon-only *}
                         {if $num_of_dropdown > 0}
                             let dropdown = '';
                             let dropdown_cnt = 0;
                             
                             let w = $(document).width();
                             if (w > 480) {
-                            {foreach $tbl.row_actions as $x}
+                                {foreach $tbl.row_actions as $x}
                                 {if !$x.icon_only}
-                                    {if $x.conditional_js}
-                                    if ({$x.conditional_js}(data, row, meta)) {
-                                    {/if}
+                                if (true {if !empty($x.conditional_js)}&& {$x.conditional_js}(data, row, meta){/if}) {
+                                    {if empty($x.open_url)}
                                     dropdown += "<button href='#' onclick='event.stopPropagation(); {$x.onclick_js}(" +meta.row+ ", dt_{$tbl.table_id}, \"" +id+ "\");' "
                                                 + "data-tag='" +meta.row+ "' class='btn btn-sm {$x.css}' "
                                                 + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
                                                 + "<i class='{$x.icon}'></i> {$x.label}"
                                                 + "</button>";
-                                    dropdown_cnt++;
-                                    {if $x.conditional_js}
-                                    }
+                                    {else}
+                                    dropdown += "<a href='" +parse_open_url("{$x.open_url}", data)+ "' target='_blank' " 
+                                                + "data-tag='" +meta.row+ "' class='btn btn-sm {$x.css}' "
+                                                + "{if !empty($x.tooltip)}type='button' data-toggle='tooltip' data-placement='top' title='{$x.tooltip}'{/if}>"
+                                                + "<i class='{$x.icon}'></i> {$x.label}"
+                                                + "</a>";
                                     {/if}
+                                    dropdown_cnt++;
+                                }
                                 {/if}
-                            {/foreach}
+                                {/foreach}
                             }
                             else { 
-                            dropdown += '<div class="dropright dt-row-actions" data-tag="' +meta.row+ '" style="display: inline-block;">'
-                                + '<button type="button" class="btn btn-icon-circle btn-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-                                    + '<i class="fa fa-ellipsis-v fas"></i>'
-                                + '</button>'
-                                + '<ul class="dropdown-menu" x-placement="right-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(5px, 248px, 0px);" x-out-of-boundaries="">';
+                                dropdown += '<div class="dropright dt-row-actions" data-tag="' +meta.row+ '" style="display: inline-block;">'
+                                    + '<button type="button" class="btn btn-icon-circle btn-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                        + '<i class="fa fa-ellipsis-v fas"></i>'
+                                    + '</button>'
+                                    + '<ul class="dropdown-menu" x-placement="right-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(5px, 248px, 0px);" x-out-of-boundaries="">';
 
-                            {foreach $tbl.row_actions as $x}
+                                {foreach $tbl.row_actions as $x}
                                 {if !$x.icon_only}
-                                    {if $x.conditional_js}
-                                    if ({$x.conditional_js}(data, row, meta)) {
-                                    {/if}
+                                if (true {if !empty($x.conditional_js)}&& {$x.conditional_js}(data, row, meta){/if}) {
+                                    {if empty($x.open_url)}
                                     dropdown += "<span style='cursor: pointer;' onclick='event.stopPropagation(); {$x.onclick_js}(" +meta.row+ ", dt_{$tbl.table_id}, \"" +row['{$tbl.key_column}']+ "\");' data-tag='" +meta.row+ "' class='dropdown-item'><i class='{$x.icon}'></i> {$x.label}</span>";
-                                    dropdown_cnt++;
-                                    {if $x.conditional_js}
-                                    }
+                                    {else}
+                                    dropdown += "<a href='" +parse_open_url("{$x.open_url}", data)+ "' target='_blank' " data-tag='" +meta.row+ "' class='dropdown-item'><i class='{$x.icon}'></i> {$x.label}</a>";
                                     {/if}
+                                    dropdown_cnt++;
+                                }
                                 {/if}
-                            {/foreach}
+                                {/foreach}
 
-                            dropdown += '</ul></div>';
+                                dropdown += '</ul></div>';
                             }
 
                             if (dropdown_cnt > 0) {
@@ -1658,6 +1706,25 @@ $(document).ready(function() {
 });
 
 var dt_{$tbl.table_id}_initialized = false;
+
+function parse_open_url(url, data) {
+    {literal}
+    let result = url.match(/{{[\w\.]*}}/);
+    if (result == null) return url;
+    {/literal}
+ 
+    let parsed_str = url;
+    result.forEach(function(match) {
+        let field = match.substr(2, match.length-4);
+        let val = data[field];
+        if (val === undefined || val == null) {
+            val = '';
+        }
+        parsed_str = parsed_str.replace(match, val);
+    })
+
+    return parsed_str;
+}
 
 function dt_{$tbl.table_id}_post_load(json) {
     //Hack: when dt is reloaded and the selected rows is gone, deselect event is not raised!

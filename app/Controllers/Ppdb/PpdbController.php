@@ -51,7 +51,7 @@ class PpdbController extends BaseController {
         //load library
         helper("ppdb");
         helper('functions');
-        
+                
         //load model
         $this->Mconfig = new Mconfig();
 
@@ -122,7 +122,9 @@ class PpdbController extends BaseController {
         //get from database
         if (empty($kode_wilayah)) {
             $kode_wilayah = $this->setting->get("kode_wilayah");
-            $nama_wilayah = $this->setting->get("nama_wilayah");
+            //make sure it is kabupaten level
+            $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
+            $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
         }
 
         if (!empty($kode_wilayah) && empty($nama_wilayah)) {

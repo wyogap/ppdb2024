@@ -421,6 +421,7 @@
         cursor: pointer;
         box-shadow: 0px 0px 2px #dee2e6;
         text-align: center;
+        align-content: center;
         position: relative;
     } 
 

@@ -25,56 +25,6 @@ class Dinas extends CrudController {
 		$this->home($params);
 	}
 
-	//customization here
-	public function api() {
-        $action = $_POST["action"] ?? null; 
-		if ($action=='generate_columns') {
-			
-            $values = $_POST["data"] ?? null; 
-            if ($values == null) {
-                $json['status'] = 0;
-                $json['error'] = 'no-data';
-			    echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
-                return;
-            }
-
-            $mtable = new Mtable();
-        
-			$json['data'] = array();
-			foreach ($values as $key => $valuepair) {
-				$mtable->generate_columns($key);
-            }
-
-			$json['status'] = 1;
-			echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
-		}
-        else if ($action == 'clone_table') {
-			
-            $values = $_POST["data"] ?? null; 
-            if ($values == null) {
-                $json['status'] = 0;
-                $json['error'] = 'no-data';
-			    echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
-                return;
-            }
-
-            $mtable = new Mtable();
-
-			$error_msg = "";
-			$json['data'] = array();
-			foreach ($values as $key => $valuepair) {
-				$new_key = $mtable->clone($key);
-                if ($new_key == 0) {
-                    continue;
-                }
-                $json['data'][] = $mtable->detail($new_key);
-            }
-
-			$json['status'] = 1;
-			echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
-        }
-    }
-
 	public function home() {
 		$page_data['page_name']              = 'home';
 		$page_data['page_title']             = 'Home';
@@ -102,5 +52,102 @@ class Dinas extends CrudController {
 		$page_data['use_select2'] = 1;
 		
 		$this->smarty->render_theme('/welcome_message.tpl', $page_data);
+	}
+
+    function impersonasi() {
+        $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
+        $roleid = $this->session->get("role_id");
+        if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
+            $this->session->set("sekolah_id", $impersonasi_sekolah_id);
+            $this->session->set("impersonasi_sekolah", 1);
+        }
+
+        $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
+        $profilsekolah = $msekolah->tcg_profilsekolah($impersonasi_sekolah_id);
+        if ($profilsekolah['bentuk'] == 'SD' or $profilsekolah['bentuk'] == 'MI') {
+            return redirect()->to(site_url() ."ppdb/dapodik/penerimaan");
+        }
+        else if ($profilsekolah['bentuk'] == 'SMP') {
+            return redirect()->to(site_url() ."ppdb/sekolah/verifikasi");
+        }
+        else {
+            theme_404_with_navigation($this->navigation);
+            return;
+        }
+	}
+
+    function dashboard() {
+		$mhome = new \App\Models\Ppdb\Mhome();
+
+        $jenjang = $this->request->getPostGet("jenjang_id");
+        $jenjang_id = 0;
+        $status = "";
+        if ($jenjang == "smp-negeri") {
+            $jenjang_id = 3; $status = 'N';
+        }
+        else if ($jenjang == "smp-swasta") {
+            $jenjang_id = 3; $status = 'S';
+        }
+        else if ($jenjang == "sd-negeri") {
+            $jenjang_id = 2; $status = 'N';
+        }
+        else if ($jenjang == "sd-swasta") {
+            $jenjang_id = 2; $status = 'S';
+        }
+        $putaran = $this->request->getPostGet("putaran");
+        $penerapan_id = $this->request->getPostGet("penerapan_id");
+        $kode_wilayah = $this->request->getPostGet("kode_wilayah");
+
+        $data = array();
+		$data['dashboardsummary'] = $mhome->tcg_dashboard_summary($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah);
+		$data['dashboardharian'] = $mhome->tcg_dashboard_pendaftarharian($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah);
+
+        echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+	}
+	
+	function pendaftaran() {
+        $jenjang = $this->request->getPostGet("jenjang_id");
+        $jenjang_id = 0;
+        $status = "";
+        if ($jenjang == "smp-negeri") {
+            $jenjang_id = 3; $status = 'N';
+        }
+        else if ($jenjang == "smp-swasta") {
+            $jenjang_id = 3; $status = 'S';
+        }
+        else if ($jenjang == "sd-negeri") {
+            $jenjang_id = 2; $status = 'N';
+        }
+        else if ($jenjang == "sd-swasta") {
+            $jenjang_id = 2; $status = 'S';
+        }
+        $putaran = $this->request->getPostGet("putaran");
+        $penerapan_id = $this->request->getPostGet("penerapan_id");
+        $kode_wilayah = $this->request->getPostGet("kode_wilayah");
+
+		$mhome = new \App\Models\Ppdb\Mhome();
+		$daftar = $mhome->tcg_dashboard_daftarpendaftaran($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah);
+
+		//manual echo json file to avoid memory exhausted
+		echo '{"data":[';
+		$first = true;
+        foreach($daftar as $row) {
+			if ($first) {
+				echo json_encode($row);
+				$first = false;
+			} else {
+				echo ",". json_encode($row);
+			}
+        }
+		// while ($row = $daftar->unbuffered_row())
+		// {
+		// 	if ($first) {
+		// 		echo json_encode($row);
+		// 		$first = false;
+		// 	} else {
+		// 		echo ",". json_encode($row);
+		// 	}
+		// }
+		echo ']}';
 	}
 }

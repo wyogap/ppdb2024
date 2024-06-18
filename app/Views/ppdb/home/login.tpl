@@ -37,7 +37,7 @@
     .eye {
         position: absolute;
         /* top: 45px; */
-        top: 20px;
+        top: 12px;
         right: 20px;
     }
     input.form-control {
