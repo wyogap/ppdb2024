@@ -872,7 +872,7 @@ abstract class CrudController extends BaseController {
 				$json['data'] = $model->search($search, $filters);
 			}
             
-            $this->print_json_output($json['data']);
+            $this->print_json_output($json['data'], 1);
             // echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
 		}
 		else if ($action=='edit'){
