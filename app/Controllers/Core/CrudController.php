@@ -872,8 +872,8 @@ abstract class CrudController extends BaseController {
 				$json['data'] = $model->search($search, $filters);
 			}
             
-
-            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
+            $this->print_json_output($json['data']);
+            // echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
 		}
 		else if ($action=='edit'){
 
@@ -1467,6 +1467,37 @@ abstract class CrudController extends BaseController {
     protected function json_invalid_page() {
         $data['error'] = "invalid-page";
         $this->json_response($data, self::HTTP_OK);
+    }
+
+    function print_json_output($data, $enforce = 0) {
+        $json = array();
+        $json["status"] = 1;
+        if (!empty($data) || $enforce) {
+            $json['data'] = $data;
+        }
+
+        //TODO: output properly
+        if (empty($data) || count($data) <= 5000) {
+            echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 
+            exit;
+        }
+        else {
+            //manual echo json file to avoid memory exhausted
+            echo '{"status":"1", "data":[';
+            $first = true;
+            foreach($data as $row)
+            {
+                if ($first) {
+                    echo json_encode($row, JSON_INVALID_UTF8_IGNORE);
+                    $first = false;
+                } else {
+                    echo ",". json_encode($row, JSON_INVALID_UTF8_IGNORE);
+                }
+            }
+            echo ']}';
+            exit;
+        }
+        
     }
 
     protected function json_response($data = null, $http_code = self::HTTP_OK, $continue = false)
