@@ -337,7 +337,7 @@ class Uploader {
 
             $valuepair = [
                 'is_deleted'  => 1,
-                'updated_on' => date('Y/m/d H:i:s'),
+                'updated_on' => gmdate('Y/m/d H:i:s'),
                 'updated_by' => $this->session->get('user_id')
             ];
     

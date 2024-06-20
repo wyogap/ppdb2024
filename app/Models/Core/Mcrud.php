@@ -261,7 +261,7 @@ class Mcrud implements ICrudModel
         }
 
         //inject updated 
-        $valuepair['updated_on'] = date('Y/m/d H:i:s');
+        $valuepair['updated_on'] = gmdate('Y/m/d H:i:s');
         $valuepair['updated_by'] = $this->session->get('user_id');
 
         $builder = $this->db->table(static::$TABLE_NAME);
@@ -289,7 +289,7 @@ class Mcrud implements ICrudModel
         if (static::$SOFT_DELETE) {
             $valuepair = array (
                 'is_deleted' => 1,
-                'updated_on' => date('Y/m/d H:i:s'),
+                'updated_on' => gmdate('Y/m/d H:i:s'),
                 'updated_by' => $this->session->get('user_id')
             );
 

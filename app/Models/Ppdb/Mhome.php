@@ -346,7 +346,7 @@ Class Mhome
 	// 	$data = array(
 	// 		'password' => md5($password),
 	// 		'ganti_password' => 1,
-	// 		'updated_on' => date("Y/m/d")
+	// 		'updated_on' => gmdate("Y/m/d")
 	// 	);
 
 	// 	$builder = $this->ro->table('dbo_users');
@@ -366,7 +366,7 @@ Class Mhome
 	// 	$data = array(
 	// 		'password' => md5($password),
 	// 		'ganti_password' => 0,
-	// 		'updated_on' => date("Y/m/d")
+	// 		'updated_on' => gmdate("Y/m/d")
 	// 	);
         
 	// 	$builder = $this->ro->table('dbo_pengguna');

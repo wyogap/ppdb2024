@@ -88,7 +88,7 @@ Class Mprofilsekolah
 
 		$data = array(
 			'approval' => $approval,
-			'updated_on' => date("Y/m/d h:m:s"),
+			'updated_on' => gmdate("Y/m/d h:m:s"),
             'updated_by' => $approving_id
 		);
 
@@ -343,7 +343,7 @@ Class Mprofilsekolah
 		if ($aktif == 1) {
 			$valuepair = array (
 				'sedang_verifikasi_oleh' => $pengguna_id,
-				'sedang_verifikasi_timestamp' => date("Y/m/d H:i:s")
+				'sedang_verifikasi_timestamp' => gmdate("Y/m/d H:i:s")
 			);
 		}
 		else {
@@ -396,7 +396,7 @@ Class Mprofilsekolah
 	
     function tcg_ubah_profil($key, $valuepair) {
 		//inject last update
-		$valuepair['updated_on'] = date("Y/m/d H:i:s");
+		$valuepair['updated_on'] = gmdate("Y/m/d H:i:s");
 
 		$builder = $this->db->table('ref_sekolah');
         $builder->where('sekolah_id', $key);

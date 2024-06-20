@@ -384,7 +384,7 @@ abstract class AuthController extends BaseController
                 helper('string');
                 $data['email'] = $email;
                 $data['activation_id'] = random_string('alnum',15);
-                $data['createdDtm'] = date('Y-m-d H:i:s');
+                $data['createdDtm'] = gmdate('Y-m-d H:i:s');
                 $data['agent'] = get_user_browser();
                 $data['client_ip'] = $this->request->getIPAddress();
                 

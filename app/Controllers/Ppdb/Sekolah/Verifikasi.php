@@ -462,6 +462,9 @@ class Verifikasi extends PpdbController {
             print_json_error("Tidak ada perubahan data");
         }
 
+        $pengguna_id = $this->session->get('user_id');
+        $this->Msekolah->tcg_touch_verifikasi($pengguna_id, $peserta_didik_id, 1); 
+
         //oldvalues
         $siswa = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         if ($siswa == null) {
@@ -504,7 +507,13 @@ class Verifikasi extends PpdbController {
                 break;
             }
 
+            $updated['terakhir_verifikasi_oleh'] = $pengguna_id;
+            $updated['terakhir_verifikasi_timestamp'] = gmdate('Y/m/d H:i:s');
+            
             $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
+
+            unset($updated['terakhir_verifikasi_oleh']);
+            unset($updated['terakhir_verifikasi_timestamp']);
 
             if ($detail == null)
                 print_json_error("Tidak berhasil mengubah data siswa.");

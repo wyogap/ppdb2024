@@ -2008,7 +2008,7 @@ class Mcrud_tablemeta implements ICrudModel
         //     $builder->where($this->table_metas['where_clause']);
 
         //inject updated 
-        $valuepair['updated_on'] = date('Y/m/d H:i:s');
+        $valuepair['updated_on'] = gmdate('Y/m/d H:i:s');
         $valuepair['updated_by'] = $this->session->get('user_id');
 
         $builder->update($valuepair);
@@ -2063,7 +2063,7 @@ class Mcrud_tablemeta implements ICrudModel
         if ($this->table_metas['soft_delete']) {
             $valuepair = array (
                 'is_deleted' => 1,
-                'updated_on' => date('Y/m/d H:i:s'),
+                'updated_on' => gmdate('Y/m/d H:i:s'),
                 'updated_by' => $this->session->get('user_id')
             );
 
@@ -2560,7 +2560,7 @@ class Mcrud_tablemeta implements ICrudModel
                         $ts = intval($val);
                         if ($ts > 0) {
                             $ts = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($ts);
-                            $val = date( $dateFormat, $ts);
+                            $val = gmdate( $dateFormat, $ts);
                         }
                         else {
                             $val = null;
@@ -2575,7 +2575,7 @@ class Mcrud_tablemeta implements ICrudModel
                         $ts = intval($val);
                         if ($ts > 0) {
                             $ts = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($ts);
-                            $val = date( $dateTimeFormat, $ts);
+                            $val = gmdate( $dateTimeFormat, $ts);
                         }
                         else {
                             $val = null;
@@ -2751,7 +2751,7 @@ class Mcrud_tablemeta implements ICrudModel
                                 )
                             );
 
-            $timestamp = date('Y/m/d H:i:s');
+            $timestamp = gmdate('Y/m/d H:i:s');
             //update entry
             $sql = "update " .$table_name. " a join " .$temp_table_name. " b on b." .$key_column_name. "=a." .$key_column_name. " set " .$update_list. ", a.is_deleted=0, a.updated_by=" .$userid. ", a.updated_on='" .$timestamp. "' where b._update_=1";
 

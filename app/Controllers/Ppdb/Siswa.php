@@ -355,9 +355,9 @@ class Siswa extends PpdbController {
 		$data['profilsiswa'] = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         //$data['daftarpendaftaran'] = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
         
-        $tgl_mulai_pendaftaran = date('Y-m-d');
+        $tgl_mulai_pendaftaran = gmdate('Y-m-d');
         $result = $this->Mconfig->tcg_waktupendaftaran();
-        $tgl = date( 'Y-m-d', strtotime($result['tanggal_mulai_aktif']));
+        $tgl = gmdate( 'Y-m-d', strtotime($result['tanggal_mulai_aktif']));
         if ($tgl > $tgl_mulai_pendaftaran) {
             $tgl_mulai_pendaftaran = $tgl;
         }
@@ -406,9 +406,9 @@ class Siswa extends PpdbController {
 		$data['profilsiswa'] = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
         //$data['daftarpendaftaran'] = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
         
-        $tgl_mulai_pendaftaran = date('Y-m-d');
+        $tgl_mulai_pendaftaran = gmdate('Y-m-d');
         $result = $this->Mconfig->tcg_waktupendaftaran();
-        $tgl = date( 'Y-m-d', strtotime($result['tanggal_mulai_aktif']));
+        $tgl = gmdate( 'Y-m-d', strtotime($result['tanggal_mulai_aktif']));
         if ($tgl > $tgl_mulai_pendaftaran) {
             $tgl_mulai_pendaftaran = $tgl;
         }

@@ -319,7 +319,7 @@
 	 */
 	function get_datetime($date) {
 		global $system;
-		return date($system['system_datetime_format'], strtotime($date));
+		return gmdate($system['system_datetime_format'], strtotime($date));
 	}
 
 

@@ -734,7 +734,7 @@ Class Mprofilsiswa
         if ($builder->insert($valuepair)) {
             $key = $this->db->insertID();
 			//update last verification flag
-			$timestamp = date("Y/m/d H:i:s");
+			$timestamp = gmdate("Y/m/d H:i:s");
 			$filter = array(
 				'peserta_didik_id' => $peserta_didik_id,
 				//'tahun_ajaran_id' => $this->tahun_ajaran_id,
@@ -784,7 +784,7 @@ Class Mprofilsiswa
 	function tcg_ubah_lokasiberkas($peserta_didik_id, $sekolah_id) {
 		$data = array(
 			'lokasi_berkas' => $sekolah_id,
-			'updated_on' => date("Y/m/d H:i:s")
+			'updated_on' => gmdate("Y/m/d H:i:s")
 		);
 
         $builder = $this->db->table('tcg_peserta_didik');
@@ -1069,8 +1069,8 @@ Class Mprofilsiswa
 	function tcg_verifikasi_siswa($peserta_didik_id, $valuepair, $user_id) {	
 		//enforce last-update
 		$valuepair['verifikator_id'] = $user_id;
-		$valuepair['tanggal_verifikasi'] = date("Y/m/d H:i:s");
-		$valuepair['updated_on'] = date("Y/m/d H:i:s");
+		$valuepair['tanggal_verifikasi'] = gmdate("Y/m/d H:i:s");
+		$valuepair['updated_on'] = gmdate("Y/m/d H:i:s");
 
         $builder = $this->db->table('tcg_peserta_didik');
 		$builder->where(array('peserta_didik_id'=>$peserta_didik_id,'is_deleted'=>0));
@@ -1102,7 +1102,7 @@ Class Mprofilsiswa
 			'web_path' => '',
 			'verifikasi' => 2,
 			'verifikator_id' => $user_id,
-			'tanggal_verifikasi' => date("Y/m/d H:i:s"),
+			'tanggal_verifikasi' => gmdate("Y/m/d H:i:s"),
 			'catatan' => $catatan
 		);
 

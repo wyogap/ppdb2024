@@ -35,7 +35,7 @@ class Setting
     public function set($name, $value, $group=null) {        
         $values = array (
             'value'         => $value,
-            'updated_on'    => date('Y/m/d H:i:s'),     //utc
+            'updated_on'    => gmdate('Y/m/d H:i:s'),     //utc
             'updated_by'    => $this->session->get('user_id')
         );
 
