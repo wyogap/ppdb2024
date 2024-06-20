@@ -476,12 +476,13 @@ class Verifikasi extends PpdbController {
                 //echo $val ." - ". $siswa[$key];
                 if ($val != $siswa[$key]) {
                     if (substr($key,0,8)=="catatan_") {
-                        //only update catatan if verifikasi != 2 (belum verifikasi/belum benar/eskalasi dinas)
-                        $tag = substr($key,8, strlen($key)-8);
-                        $verifikasi = (isset($updatedprofil['verifikasi_' .$tag]) ? $updatedprofil['verifikasi_' .$tag] : $siswa['verifikasi_' .$tag]);
-                        if ($verifikasi != 1) {
-                            $updated[$key] = nohtml($updatedprofil[$key]);
-                        }
+                        $updated[$key] = nohtml($updatedprofil[$key]);
+                        // //only update catatan if verifikasi != 2 (belum verifikasi/belum benar/eskalasi dinas)
+                        // $tag = substr($key,8, strlen($key)-8);
+                        // $verifikasi = (isset($updatedprofil['verifikasi_' .$tag]) ? $updatedprofil['verifikasi_' .$tag] : $siswa['verifikasi_' .$tag]);
+                        // if ($verifikasi != 1) {
+                        //     $updated[$key] = nohtml($updatedprofil[$key]);
+                        // }
                     } 
                     else if ($val == 1 && substr($key,0,11)=="verifikasi_") {
                         //if verifikasi is set = 1 (sudah benar), reset catatan
@@ -585,6 +586,7 @@ class Verifikasi extends PpdbController {
                 $jml_verifikasi++;
             }
 
+            //simpan catatan walaupun status verifikasi tidak berubah
             foreach($updated as $key => $val) {
                 if (substr($key,0,8)!="catatan_") continue;
 
