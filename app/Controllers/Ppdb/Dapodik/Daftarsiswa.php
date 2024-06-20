@@ -94,6 +94,8 @@ class Daftarsiswa extends PpdbController {
 
 		//only can verify within the specified timeframe
 		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        $cek_waktuperbaikandata = $this->Mconfig->tcg_cek_waktuperbaikandata();
+
         //debugging
         if (__DEBUGGING__) {
             $cek_waktusosialisasi = 1;
@@ -103,7 +105,7 @@ class Daftarsiswa extends PpdbController {
         $jml_pendaftaran = $this->Msiswa->tcg_cek_pendaftaran($peserta_didik_id);
         
         $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
-        if ($cek_waktusosialisasi != 1 && $profil['akses_ubah_data'] != 1 && $impersonasi_sekolah != 1 && $jml_pendaftaran > 0) {
+        if ($cek_waktusosialisasi != 1 && $cek_waktuperbaikandata != 1 && $profil['akses_ubah_data'] != 1 && $impersonasi_sekolah != 1 && $jml_pendaftaran > 0) {
             print_json_error("Sudah tidak diperbolehkan mengubah data DAPODIK.");
         }
 
