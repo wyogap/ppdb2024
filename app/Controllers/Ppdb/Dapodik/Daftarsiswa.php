@@ -47,6 +47,7 @@ class Daftarsiswa extends PpdbController {
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
 		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
+		$data['cek_waktuperbaikandata'] = $this->Mconfig->tcg_cek_waktuperbaikandata();
 
         $data['use_datatable'] = 1;
         $data['use_select2'] = 1;

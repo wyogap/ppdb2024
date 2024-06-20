@@ -2,6 +2,7 @@
     // Tabel
     var dt_siswa_kls6 = null;
     var cek_waktusosialisasi = {$cek_waktusosialisasi|default: 0};
+    var cek_waktuperbaikandata = {$cek_waktuperbaikandata|default: 0};
     var impersonasi_sekolah = {$impersonasi_sekolah|default: 0};
 
     $(document).ready(function() {
@@ -152,12 +153,12 @@
                     orderable: false
                 },
                 {
-                    data: null,
+                    data: null, 
                     className: 'dt-body-center',
                     orderable: false,
                     "render": function(data, type, row, meta) {
                         let str = '';
-                        if (cek_waktusosialisasi == 1 || impersonasi_sekolah == 1 || row['akses_ubah_data'] == 1 || row['jml_pendaftaran'] == 0) {
+                        if (cek_waktusosialisasi == 1 || cek_waktuperbaikandata == 1 || impersonasi_sekolah == 1 || row['akses_ubah_data'] == 1 || row['jml_pendaftaran'] == 0) {
                             str = "<button onclick=ubah_data(" +row['peserta_didik_id']+ ") class='btn btn-primary btn-xs text-nowrap mb-1'>Ubah Data</button><br>";
                         }
                         str += "<button onclick=reset_password(" +row['peserta_didik_id']+ "," +meta['row']+ ") class='btn btn-danger btn-xs text-nowrap'>Reset PIN</button>";

@@ -163,6 +163,7 @@ defined('TAHAPANID_PENDAFTARAN')            OR define('TAHAPANID_PENDAFTARAN', '
 defined('TAHAPANID_VERIFIKASI')             OR define('TAHAPANID_VERIFIKASI', '4');
 defined('TAHAPANID_DAFTARULANG')            OR define('TAHAPANID_DAFTARULANG', '6');
 defined('TAHAPANID_SUSULAN')                OR define('TAHAPANID_SUSULAN', '7');
+defined('TAHAPANID_PERBAIKANDATA')          OR define('TAHAPANID_PERBAIKANDATA', '8');
 
 defined('PUTARAN_SD')               OR define('PUTARAN_SD', '4');
 defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '301');

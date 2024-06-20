@@ -208,6 +208,34 @@ Class Mconfig
 		return $dalamperiode;
 	}
 
+	function tcg_waktuperbaikandata(){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		$putaran = $this->session->get('putaran_aktif');
+
+		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
+                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
+                                else 1 end as aktif');
+		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.tahapan_id'=>TAHAPANID_PERBAIKANDATA,'a.is_deleted'=>0));
+		return $builder->get()->getRowArray();
+	}
+
+	function tcg_cek_waktuperbaikandata(){
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		$putaran = $this->session->get('putaran_aktif');
+
+		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
+				  where a.tahapan_id=" .TAHAPANID_PERBAIKANDATA. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran'
+						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
+		
+		$dalamperiode=0;
+		foreach($this->db->query($query)->getResult() as $row):
+			$dalamperiode = $row->jumlah;
+		endforeach;
+
+		return $dalamperiode;
+	}
 
 	function tcg_waktupendaftaran_sd(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
@@ -321,7 +349,7 @@ Class Mconfig
 				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
                   join cfg_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
 				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
-				  order by a.putaran, a.tahapan_id";
+				  order by a.putaran, b.urutan, a.tahapan_id";
 
 		return $this->db->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
 	}
