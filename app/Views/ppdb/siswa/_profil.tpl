@@ -328,7 +328,7 @@
         //reset kelengkapan data
         kelengkapan_data = 1;
         tags.forEach(function(key) {
-            if(konfirmasi[key] != 1 || verifikasi[key] == 2) {
+            if(konfirmasi[key] != 1) { // || verifikasi[key] == 2) {
                 kelengkapan_data = 0;
             }
         });
