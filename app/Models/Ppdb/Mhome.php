@@ -7,12 +7,14 @@ use function PHPUnit\Framework\returnSelf;
 Class Mhome 
 {
     protected $db;
+    protected $ro;
     protected $session;
     protected $tahun_ajaran_id;
     protected $putaran;
 
     function __construct() {
         $this->db = \Config\Database::connect();
+        $this->ro = \Config\Database::connect('ro');
         $this->session = \Config\Services::session();
         $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 		$this->putaran = $this->session->get("putaran_aktif");
@@ -26,13 +28,13 @@ Class Mhome
 				  where a.is_deleted=0 and (a.nama like ?)
 				  group by a.peserta_didik_id,a.nama,a.jenis_kelamin,b.nama";
 
-		return $this->db->query($query, array("%$nama%"));
+		return $this->ro->query($query, array("%$nama%"));
 	}
 
 	function tcg_dashboard_summary($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('rpt_rekapitulasi_wilayah a');
+		$builder = $this->ro->table('rpt_rekapitulasi_wilayah a');
 		$builder->select('a.*');
 		$builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
 
@@ -108,7 +110,7 @@ Class Mhome
 		$day6 = date("Y-m-d", strtotime("-6 days"));
 		$day7 = date("Y-m-d", strtotime("-7 days"));
 
-		$builder = $this->db->table('tcg_pendaftaran a');
+		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select("
             '$day0' as hari_ini,
             SUM(CASE WHEN DATE_ADD(a.created_on, INTERVAL 7 HOUR) BETWEEN '$day0' AND '$nextday' THEN 1 ELSE 0 END) AS day_0,
@@ -152,7 +154,7 @@ Class Mhome
     function tcg_dashboard_daftarpendaftaran($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah) {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		
-		$builder = $this->db->table('tcg_pendaftaran a');
+		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select("a.*, c.nama as sekolah, e.nama, e.lintang, e.bujur, f.nama as penerapan, g.nama as jalur");
 		$builder->join('cfg_putaran b',"b.putaran=a.putaran and b.is_deleted=0");
         $builder->join('ref_sekolah c',"c.sekolah_id=a.sekolah_id and c.is_deleted=0");
@@ -199,7 +201,7 @@ Class Mhome
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 		}
 
-		$builder = $this->db->table('cfg_nilai_mutu_sekolah a');
+		$builder = $this->ro->table('cfg_nilai_mutu_sekolah a');
 		$builder->select('a.*, b.nama');
 		$builder->join('ref_sekolah b', 'a.sekolah_id=b.sekolah_id', 'left outer');
         $builder->where('tahun_ajaran_id', $tahun_ajaran_id);
@@ -209,7 +211,7 @@ Class Mhome
 	function tcg_cek_registrasi($nama, $jenis_kelamin, $tempat_lahir, $tanggal_lahir, $nama_ibu_kandung){
         if (empty($tanggal_lahir))  $tanggal_lahir = null;
 
-		$builder = $this->db->table('tcg_peserta_didik a');
+		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nama'=>$nama,'a.jenis_kelamin'=>$jenis_kelamin,'a.tempat_lahir'=>$tempat_lahir,'a.tanggal_lahir'=>$tanggal_lahir,'a.nama_ibu_kandung'=>$nama_ibu_kandung,'a.is_deleted'=>0));
@@ -225,7 +227,7 @@ Class Mhome
 	}
 
 	function tcg_cek_nisn($nisn){
-		$builder = $this->db->table('tcg_peserta_didik a');
+		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
@@ -241,7 +243,7 @@ Class Mhome
 	}
 
 	function tcg_cek_nik($nik){
-		$builder = $this->db->table('tcg_peserta_didik a');
+		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nik'=>$nik,'a.is_deleted'=>0));
@@ -289,7 +291,7 @@ Class Mhome
 		// $password = $this->input->post("password",TRUE);
 
 		//$peran_id = $this->input->post("peran_id",TRUE);
-		$builder = $this->db->table('dbo_users a');
+		$builder = $this->ro->table('dbo_users a');
 		$builder->select('a.user_id,a.role_id as peran_id,a.nama as nama_pengguna,a.user_name as username,a.approval,
                             a.peserta_didik_id, c.nisn, a.sekolah_id, c.tanggal_lahir, c.asal_data, c.kebutuhan_khusus, c.tutup_akses, CONVERT(c.kode_wilayah,CHAR(8)) AS kode_wilayah, 
                             b.nama as sekolah, b.bentuk');
@@ -304,7 +306,7 @@ Class Mhome
 	}
 
 	// function tcg_login($username, $password){
-	// 	$builder = $this->db->table('dbo_users a');
+	// 	$builder = $this->ro->table('dbo_users a');
 	// 	$builder->select('count(*) as jumlah');
 	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 	// 	$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
@@ -325,7 +327,7 @@ Class Mhome
 
 	// function tcg_cek_ikutppdb($sekolah_id, $tahun_ajaran_id) {
 	// 	// TODO: buka akses kalau nggak ikut ppdb tahap 2
-	// 	$builder = $this->db->table('cfg_kuota_sekolah a');
+	// 	$builder = $this->ro->table('cfg_kuota_sekolah a');
 	// 	$builder->select('a.ikut_ppdb');
 	// 	$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
 
@@ -347,7 +349,7 @@ Class Mhome
 	// 		'updated_on' => date("Y/m/d")
 	// 	);
 
-	// 	$builder = $this->db->table('dbo_users');
+	// 	$builder = $this->ro->table('dbo_users');
     //     $builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
 	// 	$retval = $builder($data);
 
@@ -367,7 +369,7 @@ Class Mhome
 	// 		'updated_on' => date("Y/m/d")
 	// 	);
         
-	// 	$builder = $this->db->table('dbo_pengguna');
+	// 	$builder = $this->ro->table('dbo_pengguna');
 	// 	$builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
 	// 	$retval = $builder->update($data);
 
@@ -384,7 +386,7 @@ Class Mhome
 	// 	$user_id = $this->session->get("user_id");
 
 	// 	$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-	// 	return $this->db->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
+	// 	return $this->ro->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
 	// }
 
     //dipakai untuk registrasi sisw
@@ -393,7 +395,7 @@ Class Mhome
 
         //get data wilayah
         $sql = "select * from ref_wilayah where kode_wilayah=? and is_deleted=0";
-        $wilayah = $this->db->query($sql, array($kode_wilayah))->getRowArray();
+        $wilayah = $this->ro->query($sql, array($kode_wilayah))->getRowArray();
         if ($wilayah == null)   return '';
 
 		$valuepair = array (
@@ -418,19 +420,19 @@ Class Mhome
 
 	function tcg_job_peringkatpendaftaran() {
 		$query = "select next_execution, last_execution_end from dbo_jobs where name='proses_peringkat_pendaftaran'";
-		return $this->db->query($query)->getRowArray();
+		return $this->ro->query($query)->getRowArray();
 	}
 
 	function tcg_rekapitulasi_sekolah() {
 		$sql = "select * from rpt_rekapitulasi_sekolah_publik where tahun_ajaran_id=? and putaran=? order by nama asc";
 
-		return $this->db->query($sql, array($this->tahun_ajaran_id, $this->putaran))->getResultArray();	
+		return $this->ro->query($sql, array($this->tahun_ajaran_id, $this->putaran))->getResultArray();	
 	}    
 
     function tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa) {
         $sql = "select kode_wilayah from ref_wilayah where nama_prov=? and nama_kab=? and nama_kec=? and nama_desa=? and is_deleted=0";
 
-        $result = $this->db->query($sql, array($nama_prov, $nama_kab, $nama_kec, $nama_desa))->getRowArray();
+        $result = $this->ro->query($sql, array($nama_prov, $nama_kab, $nama_kec, $nama_desa))->getRowArray();
         if ($result == null) return null;
 
         return $result['kode_wilayah'];
@@ -441,7 +443,7 @@ Class Mhome
             $putaran = $this->session->get('putaran_aktif');
         }
 
-		$builder = $this->db->table('ref_sekolah a');
+		$builder = $this->ro->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
         $builder->select('a.dapodik_id');
         $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');

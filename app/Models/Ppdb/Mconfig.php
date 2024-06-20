@@ -5,11 +5,13 @@ namespace App\Models\Ppdb;
 Class Mconfig 
 {
     protected $db;
+    protected $ro;
     protected $session;
     protected $tahun_ajaran_id;
 
     function __construct() {
         $this->db = \Config\Database::connect();
+        $this->ro = \Config\Database::connect('ro');
         $this->session = \Config\Services::session();
         $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
     }
@@ -20,7 +22,7 @@ Class Mconfig
 		from ref_jenjang a
 		order by a.urutan asc";
 
-		return $this->db->query($query)->getResultArray();
+		return $this->ro->query($query)->getResultArray();
 	}
 
 	function tcg_lookup_asaldata() {
@@ -30,14 +32,14 @@ Class Mconfig
         where a.group='asaldata'
 		order by a.order_no asc";
 
-		return $this->db->query($query)->getResultArray();
+		return $this->ro->query($query)->getResultArray();
 	}
 
 	function tcg_waktusosialisasi(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -55,7 +57,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -66,7 +68,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -84,7 +86,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -95,7 +97,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -113,7 +115,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -124,7 +126,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -142,7 +144,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -153,7 +155,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -172,7 +174,7 @@ Class Mconfig
 		
 		//echo $query;
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -183,7 +185,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -201,7 +203,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -212,7 +214,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -230,7 +232,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -240,7 +242,7 @@ Class Mconfig
 	function tcg_waktupendaftaran_sd(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('cfg_waktu_pelaksanaan a');
+		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
@@ -258,7 +260,7 @@ Class Mconfig
 						and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
 		
 		$dalamperiode=0;
-		foreach($this->db->query($query)->getResult() as $row):
+		foreach($this->ro->query($query)->getResult() as $row):
 			$dalamperiode = $row->jumlah;
 		endforeach;
 
@@ -279,7 +281,7 @@ Class Mconfig
 			$query .= " and bentuk_tujuan_sekolah='$bentuk_tujuan_sekolah'";
 		}
 
-		return $this->db->query($query)->getRowArray();
+		return $this->ro->query($query)->getRowArray();
 	}
 
     
@@ -287,7 +289,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('cfg_batasan_perubahan');
+		$builder = $this->ro->table('cfg_batasan_perubahan');
 		$builder->select('cabut_berkas,hapus_pendaftaran,ubah_pilihan,ubah_sekolah,ubah_jalur,batal_verifikasi');
 		$builder->where(array('expired_date'=>NULL, 'tahun_ajaran_id'=>$tahun_ajaran_id));
 		return $builder->get()->getRowArray();
@@ -297,7 +299,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('cfg_petunjuk_pelaksanaan a');
+		$builder = $this->ro->table('cfg_petunjuk_pelaksanaan a');
 		$builder->select('a.jadwal_pelaksanaan,a.persyaratan,a.tata_cara_pendaftaran,a.jalur_pendaftaran,a.proses_seleksi,a.konversi_nilai,a.embedded_script');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -308,7 +310,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('cfg_putaran a');
+		$builder = $this->ro->table('cfg_putaran a');
 		$builder->select('distinct c.jenjang_id, c.nama', false);
 		$builder->join('ref_jenjang c','a.jenjang_id = c.jenjang_id AND c.is_deleted=0');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
@@ -320,7 +322,7 @@ Class Mconfig
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
-		$builder = $this->db->table('cfg_putaran a');
+		$builder = $this->ro->table('cfg_putaran a');
 		$builder->select('a.*');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
 
@@ -330,7 +332,7 @@ Class Mconfig
 	function tcg_penerapan(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('cfg_penerapan a');
+		$builder = $this->ro->table('cfg_penerapan a');
 		$builder->select('a.penerapan_id,a.jalur_id,c.nama AS jalur,a.nama,a.putaran');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.aktif'=>1,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
@@ -351,7 +353,7 @@ Class Mconfig
 				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
 				  order by a.putaran, b.urutan, a.tahapan_id";
 
-		return $this->db->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
+		return $this->ro->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
 	}
 
 	function tcg_pengumuman(){
@@ -364,21 +366,21 @@ Class Mconfig
 						and (a.tanggal_selesai = 0 or a.tanggal_selesai >= now() or a.tanggal_selesai is null)
 				  order by a.tanggal_mulai asc";
 
-		return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
+		return $this->ro->query($query, array($tahun_ajaran_id))->getResultArray();
 	}
 
     function tcg_daftarpilihan(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 		$putaran = $this->session->get('putaran_aktif');
 
-        $builder = $this->db->table('cfg_jenis_pilihan');
+        $builder = $this->ro->table('cfg_jenis_pilihan');
 		$builder->select('*');
 		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'tahun_ajaran_id'=>$tahun_ajaran_id,'putaran'=>$putaran));
         return $builder->get()->getResultArray();
 	}    
 
 	function tcg_nama_wilayah($kode_wilayah) {
-		$builder = $this->db->table('ref_wilayah a');
+		$builder = $this->ro->table('ref_wilayah a');
 		$builder->select('a.nama');
 		$builder->where(array('a.kode_wilayah'=>$kode_wilayah,'a.expired_date'=>NULL));
 
@@ -391,7 +393,7 @@ Class Mconfig
 	}
 
 	function tcg_nama_tahunajaran($tahun_ajaran_id) {
-		$builder = $this->db->table('ref_tahun_ajaran a');
+		$builder = $this->ro->table('ref_tahun_ajaran a');
 		$builder->select('a.nama');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.expired_date'=>NULL));
 
@@ -406,7 +408,7 @@ Class Mconfig
 	function tcg_nama_putaran($putaran) {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
-		$builder = $this->db->table('cfg_putaran a');
+		$builder = $this->ro->table('cfg_putaran a');
 		$builder->select('a.nama');
 		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.expired_date'=>NULL));
 
@@ -430,7 +432,7 @@ Class Mconfig
 						and (a.tanggal_selesai >= now() or a.tanggal_selesai is null)
 				  order by a.tahapan_id asc";
 
-		return $this->db->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
+		return $this->ro->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
 	}
 
     function tcg_lookup_daftarskoring_prestasi() {
@@ -442,11 +444,11 @@ Class Mconfig
                   where a.tahun_ajaran_id=? and b.kunci=0 and b.jalur_id=" .JALURID_PRESTASI. "
                   order by b.urutan";
 
-        return $this->db->query($query, array($tahun_ajaran_id))->getResultArray();
+        return $this->ro->query($query, array($tahun_ajaran_id))->getResultArray();
     }
 
     function tcg_provinsi(){
-		$builder = $this->db->table('ref_wilayah a');
+		$builder = $this->ro->table('ref_wilayah a');
 		$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS provinsi');
 		$builder->where(array('a.id_level_wilayah'=>1,'a.expired_date'=>NULL));
 		$builder->orderBy('a.nama');
@@ -454,7 +456,7 @@ Class Mconfig
 	}
 
     function tcg_kabupaten($kode_wilayah = null){
-		$builder = $this->db->table('ref_wilayah a');
+		$builder = $this->ro->table('ref_wilayah a');
 		$builder->select('CONVERT(a.kode_wilayah,CHAR(6)) AS kode_wilayah,a.nama AS kabupaten,b.nama AS provinsi');
 		$builder->join('ref_wilayah b','a.mst_kode_wilayah = b.kode_wilayah AND b.is_deleted=0 AND b.id_level_wilayah = 1');
 		$builder->where(array('a.id_level_wilayah'=>2,'a.expired_date'=>NULL));
@@ -472,7 +474,7 @@ Class Mconfig
         //make sure level kabupaten
         $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
 
-        $builder = $this->db->table('ref_wilayah');
+        $builder = $this->ro->table('ref_wilayah');
         $builder->select('CONVERT(kode_wilayah,CHAR(6)) AS kode_wilayah,nama');
 		$builder->where(array('id_level_wilayah'=>3,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah));
 		$builder->orderBy('nama');
@@ -480,7 +482,7 @@ Class Mconfig
 	}
 
 	function tcg_desa($kode_wilayah_kec){
-		$builder = $this->db->table('ref_wilayah');
+		$builder = $this->ro->table('ref_wilayah');
 		$builder->select('CONVERT(kode_wilayah,CHAR(8)) AS kode_wilayah,nama');
 		$builder->where(array('id_level_wilayah'=>4,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah_kec));
 		$builder->orderBy('nama');
@@ -488,7 +490,7 @@ Class Mconfig
 	}
 
 	function tcg_padukuhan($kode_wilayah_desa){
-		$builder = $this->db->table('ref_wilayah');
+		$builder = $this->ro->table('ref_wilayah');
 		$builder->select('CONVERT(kode_wilayah,CHAR(10)) AS kode_wilayah,nama');
 		$builder->where(array('id_level_wilayah'=>5,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah_desa));
 		$builder->orderBy('nama');
@@ -496,7 +498,7 @@ Class Mconfig
 	}
 
 	function tcg_sekolah($kode_wilayah, $bentuk){
-		$builder = $this->db->table('ref_sekolah');
+		$builder = $this->ro->table('ref_sekolah');
 		$builder->select('sekolah_id,npsn,nama');
 		$builder->where('bentuk',$bentuk);
 		$builder->where('LEFT(kode_wilayah,4)',substr($kode_wilayah,0,4),true);
@@ -511,7 +513,7 @@ Class Mconfig
 		if (empty($kode_wilayah))
 			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
 
-		$builder = $this->db->table('ref_sekolah');
+		$builder = $this->ro->table('ref_sekolah');
 		$builder->select('sekolah_id,nama,npsn');
 		$builder->where(array('bentuk'=>'SMP','expired_date'=>NULL,'kode_wilayah_kab'=>$kode_wilayah));
 		$builder->orderBy('kode_wilayah, nama');
@@ -528,7 +530,7 @@ Class Mconfig
 		where expired_date is null and kode_wilayah_kab=? and (bentuk='SD' or bentuk='MI')
 		order by kode_wilayah, nama";
 
-		return $this->db->query($sql, array($kode_wilayah))->getResultArray();
+		return $this->ro->query($sql, array($kode_wilayah))->getResultArray();
 	}
 
 	function tcg_sekolah_tk_ra($kode_wilayah = null) {
@@ -540,7 +542,7 @@ Class Mconfig
 		where expired_date is null and kode_wilayah_kab=? and bentuk in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB')
 		order by kode_wilayah, nama";
 
-		return $this->db->query($sql, array($kode_wilayah))->getResultArray();
+		return $this->ro->query($sql, array($kode_wilayah))->getResultArray();
 	}
 
 }
