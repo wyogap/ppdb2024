@@ -585,6 +585,27 @@ class Verifikasi extends PpdbController {
                 $jml_verifikasi++;
             }
 
+            foreach($updated as $key => $val) {
+                if (substr($key,0,8)!="catatan_") continue;
+
+                $tag = substr($key,8,strlen($key)-8);
+                if (!empty($updated['verifikasi_' .$tag])) continue;    //sudah ditambahkan bersama tag verifikasi
+
+                $tagname = "";
+                switch($tag) {
+                    case "profil": $tagname = "Identitas Siswa"; break;
+                    case "lokasi": $tagname = "Lokasi Rumah"; break;
+                    case "nilai": $tagname = "Nilai Kelulusan / Nilai Ujian Nasional"; break;
+                    case "prestasi": $tagname = "Data Prestasi"; break;
+                    case "afirmasi": $tagname = "Data Afirmasi"; break;
+                    case "inklusi": $tagname = "Data Kebutuhan Khusus"; break;
+                    default: $tag;
+                }
+
+                $str = "Catatan " .$tagname. ": " .$updated['catatan_' .$tag];
+                $message[] = $str;
+            }
+
         } while (false);
 
         // var_dump($message);
