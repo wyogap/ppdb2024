@@ -526,6 +526,7 @@ class Verifikasi extends PpdbController {
                     $str .= "$key=$value, ";
                 }
                 $message[] = substr($str, 0, strlen($str)-2);
+                $jml_verifikasi++;
             }
 
             //status verifikasi profil

@@ -328,6 +328,7 @@
         //reset kelengkapan data
         kelengkapan_data = 1;
         tags.forEach(function(key) {
+            //kalau sedang proses verifikasi (dan ada yang perlu verifikasi ulang) => tetap dianggap data sudah lengkap => bisa melakukakn pendaftaran
             if(konfirmasi[key] != 1) { // || verifikasi[key] == 2) {
                 kelengkapan_data = 0;
             }
