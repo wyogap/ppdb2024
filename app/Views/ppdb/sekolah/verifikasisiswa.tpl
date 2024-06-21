@@ -109,7 +109,7 @@
                                             <option value="{$prov.kode_wilayah}">{$prov.provinsi}</option>
                                         {/foreach}
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='provinsi' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_provinsi' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -121,7 +121,7 @@
                                         tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Kabupaten/Kota --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kabupaten' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -133,7 +133,7 @@
                                         tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Kecamatan --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kecamatan' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -145,7 +145,7 @@
                                         tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Desa/Kelurahan --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='desa_kelurahan_label' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                             <tr tcg-field='padukuhan' tcg-field-type='toggle' tcg-field-false='hide' tcg-field-true='show'>

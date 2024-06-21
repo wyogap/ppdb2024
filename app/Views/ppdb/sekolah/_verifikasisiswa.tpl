@@ -440,36 +440,67 @@
 
                 //copy value
                 if (type == 'input') {
-                    let field = el.attr('tcg-field');
-                    if (field == null || field == '') return;
+                    if (el.is('select')) {
+                        //select
+                        let field = el.attr('tcg-field');
+                        if (field == null || field == '') return;
 
-                    let val = 0;
-                    if (el.attr('type') == 'number') {
-                        val = parseFloat(el.val());
-                        if (isNaN(val)) val = 0;
-                        val = val.toFixed(2);
-                        el.val(val);
+                        //get value and label
+                        let val = 0, str = '';
+                        val = el.val();
+                        str = el.children(':selected').text();
+
+                        //copy label not the value
+                        lbl = elements.filter("span[tcg-field='" +field+ "']");
+                        lbl.html(str); 
+
+                        //save to default value
+                        this.defaultValue = this.value;
+                        
+                        //check for updated value
+                        oldval = profil[field];
+                        if (el.attr('type') == 'number') {
+                            oldval = parseFloat(oldval);
+                            if (isNaN(oldval)) oldval = 0;
+                        }
+
+                        if (val != oldval) {
+                            perbaikan[tag] = 1;
+                        }
                     }
                     else {
-                        val = el.val();
-                    }
+                        //normal input
+                        let field = el.attr('tcg-field');
+                        if (field == null || field == '') return;
 
-                    //copy value if necessary
-                    lbl = elements.filter("span[tcg-field='" +field+ "']");
-                    lbl.html(val); 
+                        let val = 0;
+                        if (el.attr('type') == 'number') {
+                            val = parseFloat(el.val());
+                            if (isNaN(val)) val = 0;
+                            val = val.toFixed(2);
+                            el.val(val);
+                        }
+                        else {
+                            val = el.val();
+                        }
 
-                    //save to default value
-                    this.defaultValue = this.value;
-                    
-                    //check for updated value
-                    oldval = profil[field];
-                    if (el.attr('type') == 'number') {
-                        oldval = parseFloat(oldval);
-                        if (isNaN(oldval)) oldval = 0;
-                    }
+                        //copy value if necessary
+                        lbl = elements.filter("span[tcg-field='" +field+ "']");
+                        lbl.html(val); 
 
-                    if (val != oldval) {
-                        perbaikan[tag] = 1;
+                        //save to default value
+                        this.defaultValue = this.value;
+                        
+                        //check for updated value
+                        oldval = profil[field];
+                        if (el.attr('type') == 'number') {
+                            oldval = parseFloat(oldval);
+                            if (isNaN(oldval)) oldval = 0;
+                        }
+
+                        if (val != oldval) {
+                            perbaikan[tag] = 1;
+                        }
                     }
                 }
                 else if (type == 'toggle') {
@@ -484,31 +515,6 @@
                     }
                 }
                 else if (type == 'select') {
-                    let field = el.attr('tcg-field');
-                    if (field == null || field == '') return;
-
-                    //get value and label
-                    let val = 0, str = '';
-                    val = el.val();
-                    str = el.children(':selected').text();
-
-                    //copy label not the value
-                    lbl = elements.filter("span[tcg-field='" +field+ "']");
-                    lbl.html(str); 
-
-                    //save to default value
-                    this.defaultValue = this.value;
-                    
-                    //check for updated value
-                    oldval = profil[field];
-                    if (el.attr('type') == 'number') {
-                        oldval = parseFloat(oldval);
-                        if (isNaN(oldval)) oldval = 0;
-                    }
-
-                    if (val != oldval) {
-                        perbaikan[tag] = 1;
-                    }
                 }
             });
 
@@ -684,6 +690,12 @@
                 }
             });
         });
+
+        //special case for select label
+        $("[tcg-field='kode_provinsi'][tcg-field-type='label']").html(profil['provinsi']);
+        $("[tcg-field='kode_kabupaten'][tcg-field-type='label']").html(profil['kabupaten']);
+        $("[tcg-field='kode_kecamatan'][tcg-field-type='label']").html(profil['kecamatan']);
+        $("[tcg-field='kode_wilayah'][tcg-field-type='label']").html(profil['desa_kelurahan']);
 
         //trigger the changes
         $("#kode_provinsi").trigger("change");
