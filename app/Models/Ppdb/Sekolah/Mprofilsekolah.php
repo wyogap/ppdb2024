@@ -68,11 +68,11 @@ Class Mprofilsekolah
 		// $pengguna_id = $_GET["pengguna_id"] ?? null; 
 
 		$builder = $this->ro->table('dbo_users a');
-		$builder->select('a.user_id, a.user_name,a.pengguna_id,b.sekolah_id,c.npsn,c.nama AS sekolah,b.nik,b.nisn,b.nomor_ujian,b.nama,
+		$builder->select('a.user_id, a.user_name,a.peserta_didik_id,b.sekolah_id,c.npsn,c.nama AS sekolah,b.nik,b.nisn,b.nomor_ujian,b.nama,
                             b.jenis_kelamin,b.tempat_lahir,b.tanggal_lahir,b.nama_ibu_kandung,b.kebutuhan_khusus,b.alamat,
                             d.nama_desa AS desa_kelurahan,d.nama_kec AS kecamatan,d.nama_kab AS kabupaten,d.nama_prov AS provinsi,b.lintang,b.bujur,a.approval');
-		$builder->join('tcg_peserta_didik b','a.pengguna_id = b.peserta_didik_id AND b.is_deleted = 0');
-		$builder->join('ref_sekolah c','b.sekolah_id = c.sekolah_id','LEFT OUTER');
+		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
+		$builder->join('ref_sekolah c','b.sekolah_id = c.sekolah_id and c.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_wilayah d','b.kode_wilayah = d.kode_wilayah AND d.is_deleted=0','LEFT OUTER');
 		$builder->where(array('a.approval'=>0,'a.role_id'=>ROLEID_SISWA,'a.is_deleted'=>0));
 
