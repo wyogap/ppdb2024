@@ -108,11 +108,13 @@ Class Mprofilsekolah
 
 		$query = "
 		select a.penerapan_id,c.jalur_id,a.nama AS jalur,a.tooltip,d.kuota, coalesce(e.tambahan_kuota,0) as tambahan_kuota, 
-			   coalesce(e.memenuhi_syarat,0) as memenuhi_syarat, coalesce(e.masuk_kuota,0) as masuk_kuota, coalesce(e.daftar_tunggu,0) as daftar_tunggu, coalesce(e.diterima,0) as diterima,  coalesce(e.total_pendaftar,0) as total_pendaftar
+			   coalesce(e.memenuhi_syarat,0) as memenuhi_syarat, coalesce(e.masuk_kuota,0) as masuk_kuota, coalesce(e.daftar_tunggu,0) as daftar_tunggu, 
+               coalesce(e.diterima,0) as diterima,  coalesce(e.total_pendaftar,0) as total_pendaftar,
+			   ((d.kuota + coalesce(e.tambahan_kuota,0)) - coalesce(e.masuk_kuota,0)) as sisa_kuota
 		from cfg_penerapan a
 		join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
 		join cfg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND a.tahun_ajaran_id=d.tahun_ajaran_id AND d.is_deleted = 0
-		left outer join v_rpt_sekolah_summary e on a.penerapan_id = e.penerapan_id AND a.tahun_ajaran_id=e.tahun_ajaran_id AND e.sekolah_id = d.sekolah_id
+		left outer join rpt_sekolah_summary e on a.penerapan_id = e.penerapan_id AND a.tahun_ajaran_id=e.tahun_ajaran_id AND e.putaran=a.putaran AND e.sekolah_id = d.sekolah_id
         join ref_sekolah f on f.sekolah_id=d.sekolah_id and ((f.inklusi=1 and a.jalur_id=7) or a.jalur_id != 7)
 		where a.aktif=1 and a.is_deleted=0 and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=?
 		order by a.urutan";
