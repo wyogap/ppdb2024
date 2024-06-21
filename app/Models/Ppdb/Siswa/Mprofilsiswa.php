@@ -77,7 +77,7 @@ Class Mprofilsiswa
 		a.nilai_kelulusan, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label,
 		i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
-        $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan,
+        $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan, a.nama_dusun,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
 		                    c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
 		                    c.kode_wilayah_kab as kode_kabupaten,c.nama_kab AS kabupaten,

@@ -154,8 +154,8 @@
                                 <!-- <td><span tcg-field='padukuhan' tcg-field-type='label'></span></td> -->
                                 <td style="width: 50%;">
                                     <input class="form-control" 
-                                        tcg-tag='profil' tcg-field='padukuhan' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;"></input>
-                                    <span tcg-tag='profil' tcg-field='padukuhan' tcg-field-type='label'></span>
+                                        tcg-tag='profil' tcg-field='nama_dusun' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;"></input>
+                                    <span tcg-tag='profil' tcg-field='nama_dusun' tcg-field-type='label'></span>
                                 </td>
                             </tr>
                         </table>
