@@ -682,7 +682,81 @@
                                         text: 'Ya, Benar!',
                                         btnClass: 'btn-danger',
                                         action: function(){
-                                            alert('TODO');
+                                            
+                                            json = {};
+                                            json['peserta_didik_id'] = peserta_didik_id;
+                                            json['keterangan'] = keterangan.val();
+                                            json['action'] = 'cabutberkas';
+
+                                            //alert("TODO"); return true;
+                                            status = $.ajax({
+                                                type: 'POST',
+                                                url: "{$site_url}ppdb/sekolah/verifikasi/cabutberkas",
+                                                dataType: 'json',
+                                                data: json,
+                                                async: false,
+                                                cache: false,
+                                                //if we use formData, set processData = false. if we use json, set processData = true!
+                                                //contentType: true,
+                                                //processData: true,      
+                                                timeout: 60000,
+                                                success: function(json) {
+                                                    toastr.success("Berhasil cabut berkas an. " +nama);
+                                                    //reload table
+                                                    dt_berkas.ajax.reload();
+
+                                                    return true;
+                                               },
+                                                error: function(jqXhr, textStatus, errorThrown) {
+                                                    if (jqXhr.status == 403 || textStatus == 'Forbidden' || 
+                                                            (jqXhr.responseJSON !== undefined && jqXhr.responseJSON != null 
+                                                            && jqXhr.responseJSON.error != undefined && jqXhr.responseJSON.error == 'not-login')
+                                                        ) {
+                                                        //login ulang
+                                                        window.location.href = "{$site_url}" +'auth';
+                                                    }
+                                                    //send toastr message
+                                                    toastr.error("Gagal mengambil data via ajax");
+                                                    return false;
+                                                 }
+                                            });
+
+                                            // $.ajax({
+                                            //     "url": "{$site_url}ppdb/sekolah/verifikasi/cabutberkas",
+                                            //     "dataType": "json",
+                                            //     "type": "POST",
+                                            //     "data": {
+                                            //         peserta_didik_id: peserta_didik_id,
+                                            //         keterangan: keterangan
+                                            //     },
+                                            //     beforeSend: function(request) {
+                                            //         request.setRequestHeader("Content-Type",
+                                            //             "application/x-www-form-urlencoded; charset=UTF-8");
+                                            //     },
+                                            //     success: function(response) {
+                                            //         toastr.success("Berhasil cabut berkas an. " +nama);
+                                            //         //reload table
+                                            //         dt_berkas.ajax.reload();
+
+                                            //         return true;
+                                            //     },
+                                            //     error: function(jqXhr, textStatus, errorMessage) {
+                                            //         if (jqXhr.status == 403 || errorMessage == 'Forbidden' || 
+                                            //                 (jqXhr.responseJSON !== undefined && jqXhr.responseJSON != null 
+                                            //                 && jqXhr.responseJSON.error != undefined && jqXhr.responseJSON.error == 'not-login')
+                                            //             ) {
+                                            //             //login ulang
+                                            //             window.location.href = "{$site_url}" +'auth';
+                                            //         }
+                                            //         //send toastr message
+                                            //         toastr.error("Gagal mengambil data via ajax");
+                                            //         resolve({
+                                            //             data: [],
+                                            //         });
+                                            //     }
+                                            // });
+                                    
+                                            //return true;
                                         }
                                     },
                                     cancel: {
@@ -695,7 +769,7 @@
                                 }
                             });
                         }
-                        },
+                    },
                 }
             });      
 

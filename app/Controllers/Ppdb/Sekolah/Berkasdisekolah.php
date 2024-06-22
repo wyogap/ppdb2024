@@ -61,6 +61,13 @@ class Berkasdisekolah extends PpdbController {
 			$data['data'] = $this->Msekolah->tcg_berkasdisekolah($sekolah_id)->getResultArray(); 
 			echo json_encode($data);	
 		}
+		else if ($action=='cabutberkas') {
+            $peserta_didik_id = $this->request->getGetPost("peserta_didik_id");
+            $keterangan = $this->request->getGetPost("keterangan");
+            $this->Msekolah->tcg_cabutberkas($peserta_didik_id, $keterangan);
+            $data['status'] = 1;
+            echo json_encode($data);
+        }
 		else {
 			$data['error'] = "not-implemented"; 
 			echo json_encode($data);	

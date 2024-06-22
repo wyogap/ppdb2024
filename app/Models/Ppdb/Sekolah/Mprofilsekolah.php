@@ -43,14 +43,14 @@ Class Mprofilsekolah
 		return $builder->get()->getRowArray();
 	}
 
-	function tcg_cabutberkas($peserta_didik_id, $pendaftaran_id, $keterangan)
+	function tcg_cabutberkas($peserta_didik_id, $keterangan)
 	{
         $this->error_message = null;
 
 		$pengguna_id = $this->session->get("user_id");
 
-		$sql = "CALL " .SQL_CABUT_BERKAS. " (?,?,?,?)";
-        $status = $this->db->query($sql, array($peserta_didik_id,$pendaftaran_id,$keterangan,$pengguna_id));
+		$sql = "CALL " .SQL_CABUT_BERKAS. " (?,?,?)";
+        $status = $this->db->query($sql, array($peserta_didik_id,$keterangan,$pengguna_id));
         if (!$status) return 0;
 
         $message = $status->getRowArray();

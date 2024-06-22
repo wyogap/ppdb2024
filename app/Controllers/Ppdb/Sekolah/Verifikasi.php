@@ -860,6 +860,14 @@ class Verifikasi extends PpdbController {
 		$data['status'] = $this->Msekolah->tcg_touch_verifikasi($pengguna_id, $peserta_didik_id, $aktif); 
 		echo json_encode($data);	
 	}
+
+    function cabutberkas() {
+        $peserta_didik_id = $this->request->getGetPost("peserta_didik_id");
+        $keterangan = $this->request->getGetPost("keterangan");
+        $this->Msekolah->tcg_cabutberkas($peserta_didik_id, $keterangan);
+        $data['status'] = 1;
+        echo json_encode($data);        
+    }
 }
 
 ?>
