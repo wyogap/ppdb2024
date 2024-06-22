@@ -2373,7 +2373,7 @@ class Mcrud_tablemeta implements ICrudModel
         $column_def[] = "__import_id__ int(11) NOT NULL";
 
         foreach($columns as $key => $col) {
-            if ($col['visible'] == 0 && $col['export'] == 0)    continue;
+            if ($col['visible'] == 0 || $col['export'] == 0)    continue;
 
             //prevent double columm
             if (in_array($col['name'],$column_names))   continue;
@@ -2468,6 +2468,7 @@ class Mcrud_tablemeta implements ICrudModel
             'import'    => $import_columns,
             'upload'    => $upload_columns
         );
+
         return $retval;
     }
 

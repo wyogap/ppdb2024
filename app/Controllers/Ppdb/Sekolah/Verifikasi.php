@@ -440,13 +440,14 @@ class Verifikasi extends PpdbController {
 
 		//only can verify within the specified timeframe
 		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+        $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
 
         //debugging
         if (__DEBUGGING__) {
             $cek_waktuverifikasi = 1;
         }
 
-        if ($cek_waktuverifikasi != 1) {
+        if ($cek_waktuverifikasi != 1 && $impersonasi_sekolah != 1) {
             print_json_error("Tidak sedang tahapan verifikasi");
         }
 
