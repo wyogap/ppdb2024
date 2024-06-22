@@ -36,6 +36,18 @@ Class Mprofilsiswa
         $builder = $this->db->table("tcg_peserta_didik");
         $values['created_by'] = $this->session->get('user_id');
 
+        if (isset($values['punya_prestasi']) && $values['punya_prestasi'] == 0) {
+            $values['prestasi_skoring_id'] = null;
+            $values['uraian_prestasi'] = null;
+        }
+
+        if (isset($values['punya_nilai_un']) && $values['punya_nilai_un'] == 0) {
+            $values['nilai_un'] = 0;
+            $values['nilai_bin'] = 0;
+            $values['nilai_mat'] = 0;
+            $values['nilai_ipa'] = 0;
+        }
+
         $builder->where("peserta_didik_id", $peserta_didik_id);
         $builder->update($values);
 

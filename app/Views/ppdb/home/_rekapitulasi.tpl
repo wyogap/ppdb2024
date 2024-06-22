@@ -41,6 +41,17 @@
             "pagingType": "numbers",
             "dom": 'Bfrtpil',
             "buttons": [
+            {
+                extend: 'excelHtml5',
+                text: 'Ekspor',
+                className: 'btn-sm btn-primary',
+                exportOptions: {
+                    orthogonal: "export",
+                    modifier: {
+                        //selected: true
+                    },
+                },
+            },
             ],
             order: [ 1, 'asc' ],
         });

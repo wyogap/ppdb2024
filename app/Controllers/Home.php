@@ -439,8 +439,8 @@ class Home extends PpdbController
         $data['content_template'] = './rekapitulasi.tpl';
         $data['js_template'] = './_rekapitulasi.tpl';
 
-		$data['page'] = 'peringkat';
-		$data['page_title'] = 'Peringkat';
+		$data['page'] = 'rekapitulasi';
+		$data['page_title'] = 'Rekapitulasi Per Sekolah';
  
         $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
 	}

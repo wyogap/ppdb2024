@@ -527,6 +527,7 @@ class Mcrud_tablemeta implements ICrudModel
                 if (empty($col['column_name'])) {
                     $col['column_name'] = $this->table_name. "." .$col['name'];
                 }
+                //echo $col['column_name'] ."<br>";
 
                 //add link to open in new tab
                 $col['open_url'] = $row['open_url'];
@@ -761,7 +762,7 @@ class Mcrud_tablemeta implements ICrudModel
                     }
                 }
 
-                if ($this->table_metas['edit'] && ($col['allow_insert'] || $col['allow_edit'])) {
+                if ($this->table_metas['edit'] && ($col['allow_insert'] || $col['allow_edit']) && empty($row['column_name'])) {
                     $editor = Mtablemeta::$EDITOR;
                     $editor['name'] = $row['name'];
                     $editor['allow_insert'] = $col['allow_insert'];
