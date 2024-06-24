@@ -279,6 +279,17 @@
 			"dom": 'Bfrtpil',
 			select: true,
 			buttons: [
+				{
+					extend: 'excelHtml5',
+					text: 'Ekspor',
+					className: 'btn-sm btn-primary',
+					exportOptions: {
+						orthogonal: "export",
+						modifier: {
+							//selected: true
+						},
+					},
+				},
                 {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{ 
 					extend: "create", 
@@ -290,17 +301,6 @@
 					]
 				},
                 {/if}
-				// {
-				// 	extend: 'excelHtml5',
-				// 	text: 'Ekspor',
-				// 	className: 'btn-sm btn-primary',
-				// 	exportOptions: {
-				// 		orthogonal: "export",
-				// 		modifier: {
-				// 			//selected: true
-				// 		},
-				// 	},
-				// },
 			],
 			"ajax": {
                 "type" : "POST",
