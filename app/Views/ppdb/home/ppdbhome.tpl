@@ -167,7 +167,7 @@
                             </div>
                             <div class="app-name-long dashboard_bar">
                                 <span class="app-name">{$app_name}</span>
-                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran} <span class="caret"></span></span>
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">

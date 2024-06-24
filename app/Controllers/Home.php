@@ -80,6 +80,9 @@ class Home extends PpdbController
 	}
 
 	function peringkat() {
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $mconfig->tcg_putaran();
+
 		$sekolah_id = $this->request->getPostGet("sekolah_id");
         if (empty($sekolah_id)) {
             return redirect()->to(site_url() ."home/rekapitulasi");
@@ -431,7 +434,10 @@ class Home extends PpdbController
 	}
 
     function rekapitulasi(){
-		$data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah();
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $mconfig->tcg_putaran();
+
+        $data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah();
 			
         $data['use_datatable'] = 1;
 

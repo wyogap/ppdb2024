@@ -32,6 +32,9 @@ class Daftarulang extends PpdbController {
 			return $this->notauthorized();
 		}
 
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $mconfig->tcg_putaran();
+
 		do {
             $pendaftaran_id = $_GET["pendaftaran_id"] ?? null;
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
@@ -39,14 +42,16 @@ class Daftarulang extends PpdbController {
                 return "";
             }
     
-			$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
-            $pendaftarditerima = array();
-            foreach($data['daftarpenerapan'] as $row) {
-                $penerapan_id = $row['penerapan_id'];
-                $daftarpendaftar = $this->Msekolah->tcg_pendaftarditerima($sekolah_id, $penerapan_id);
-                $pendaftarditerima[$penerapan_id] = $daftarpendaftar;
-            }
-            $data["pendaftarditerima"] = $pendaftarditerima;
+			// $data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
+            // $pendaftarditerima = array();
+            // foreach($data['daftarpenerapan'] as $row) {
+            //     $penerapan_id = $row['penerapan_id'];
+            //     $daftarpendaftar = $this->Msekolah->tcg_pendaftarditerima($sekolah_id, $penerapan_id);
+            //     $pendaftarditerima[$penerapan_id] = $daftarpendaftar;
+            // }
+            // $data["pendaftarditerima"] = $pendaftarditerima;
+
+            $data["pendaftarditerima"] = $this->Msekolah->tcg_pendaftarditerima_all($sekolah_id);
 
 			$data['waktudaftarulang'] = $this->Mconfig->tcg_waktudaftarulang();
             if (empty($data['waktudaftarulang'])) {

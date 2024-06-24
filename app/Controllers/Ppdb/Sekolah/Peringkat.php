@@ -30,6 +30,9 @@ class Peringkat extends PpdbController {
         if (empty($sekolah_id)) {
 			return $this->notauthorized();
 		}
+        
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $mconfig->tcg_putaran();
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
         if ($data['impersonasi_sekolah'] == 1) {

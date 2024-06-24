@@ -39,8 +39,7 @@
 
 	// Tabel
 	$(document).ready(function() {
-		{foreach $daftarpenerapan as $row}
-		$('#t{$row.penerapan_id}').dataTable({
+		dt = $('#tnegeri').DataTable({
 			"responsive": true,
 			"pageLength": 25,
 			"lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
@@ -72,10 +71,10 @@
 						}
 						return data;
 					},
-					"targets": [9,10]
+					"targets": [8,11,12]
 				},
 			],
-			order: [ [9, 'asc'] ],
+			order: [ [3, 'asc'] ],
             "drawCallback": function( settings ) {
                 on_dt_refresh();
             },
@@ -83,10 +82,19 @@
                 on_dt_refresh();
             },
  		});
-		{/foreach}
 
         //create tooltips
         $('[data-bs-toggle="tooltip"]').tooltip();
-	});
+
+        dt.on('order.dt search.dt', function () {
+                let i = 1;
+        
+                dt.cells(null, 0, { search: 'applied', order: 'applied' })
+                    .every(function (cell) {
+                        this.data(i++);
+                    });
+            })
+            .draw();
+        });
 
 </script>
