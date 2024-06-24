@@ -117,6 +117,11 @@
                     orderable: 'true',
                 },
                 {
+                    data: "jenis_kelamin",
+                    className: "text-center",
+                    orderable: 'true',
+                },
+                {
                     data: "lokasi_berkas",
                     className: "text-left",
                     orderable: 'true',
@@ -248,6 +253,11 @@
                     orderable: 'true',
                 },
                 {
+                    data: "jenis_kelamin",
+                    className: "text-center",
+                    orderable: 'true',
+                },
+                {
                     data: "lokasi_berkas",
                     className: "text-left",
                     orderable: 'true',
@@ -360,6 +370,11 @@
                 {
                     data: "nomor_kontak",
                     className: "text-left",
+                    orderable: 'true',
+                },
+                {
+                    data: "jenis_kelamin",
+                    className: "text-center",
                     orderable: 'true',
                 },
                 {
@@ -493,6 +508,11 @@
                 {
                     data: "nomor_kontak",
                     className: "text-left",
+                    orderable: 'true',
+                },
+                {
+                    data: "jenis_kelamin",
+                    className: "text-center",
                     orderable: 'true',
                 },
                 {
