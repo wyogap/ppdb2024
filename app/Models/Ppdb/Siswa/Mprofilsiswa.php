@@ -48,6 +48,30 @@ Class Mprofilsiswa
             $values['nilai_ipa'] = 0;
         }
 
+        if (isset($values['verifikasi_profil']) && $values['verifikasi_profil'] == 1) {
+            $values['konfirmasi_profil'] = 1;
+        }
+
+        if (isset($values['verifikasi_lokasi']) && $values['verifikasi_lokasi'] == 1) {
+            $values['konfirmasi_lokasi'] = 1;
+        }
+
+        if (isset($values['verifikasi_nilai']) && $values['verifikasi_nilai'] == 1) {
+            $values['konfirmasi_nilai'] = 1;
+        }
+
+        if (isset($values['verifikasi_prestasi']) && $values['verifikasi_prestasi'] == 1) {
+            $values['konfirmasi_prestasi'] = 1;
+        }
+
+        if (isset($values['verifikasi_afirmasi']) && $values['verifikasi_afirmasi'] == 1) {
+            $values['konfirmasi_afirmasi'] = 1;
+        }
+
+        if (isset($values['verifikasi_inklusi']) && $values['verifikasi_inklusi'] == 1) {
+            $values['konfirmasi_inklusi'] = 1;
+        }
+
         $builder->where("peserta_didik_id", $peserta_didik_id);
         $builder->update($values);
 

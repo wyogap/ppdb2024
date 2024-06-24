@@ -112,6 +112,11 @@
                     },
                 },
                 {
+                    data: "nomor_kontak",
+                    className: "text-left",
+                    orderable: 'true',
+                },
+                {
                     data: "lokasi_berkas",
                     className: "text-left",
                     orderable: 'true',
@@ -238,6 +243,11 @@
                     },
                 },
                 {
+                    data: "nomor_kontak",
+                    className: "text-left",
+                    orderable: 'true',
+                },
+                {
                     data: "lokasi_berkas",
                     className: "text-left",
                     orderable: 'true',
@@ -345,6 +355,11 @@
                 {
                     data: "label_jenis_pilihan",
                     className: "text-center",
+                    orderable: 'true',
+                },
+                {
+                    data: "nomor_kontak",
+                    className: "text-left",
                     orderable: 'true',
                 },
                 {
@@ -474,6 +489,11 @@
 
                         return "Sudah Lengkap";
                     }
+                },
+                {
+                    data: "nomor_kontak",
+                    className: "text-left",
+                    orderable: 'true',
                 },
                 {
                     data: "sedang_verifikasi",
