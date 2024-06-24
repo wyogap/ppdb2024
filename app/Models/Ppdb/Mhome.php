@@ -390,7 +390,7 @@ Class Mhome
 	// }
 
     //dipakai untuk registrasi sisw
-	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status) {
+	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id,$alamat) {
 		$uuid = $this->uuid();
 
         //get data wilayah
@@ -407,7 +407,8 @@ Class Mhome
             "kode_wilayah_kab" => $wilayah['kode_wilayah_kab'],
 			"bentuk" => $bentuk,
 			"npsn" => $npsn,
-			"alamat_jalan" => "",
+			"alamat_jalan" => $alamat,
+            "dapodik_id" => $dapodik_id,
 			"status" => $status,
 			"created_by" => "1"
 		);
@@ -451,6 +452,18 @@ Class Mhome
 		$builder->where(array('a.npsn'=>$npsn, 'a.is_deleted'=>0));
 
 		return $builder->get()->getRowArray();
+	}
+
+	function tcg_sekolahid_from_npsn($npsn){
+		$builder = $this->ro->table('ref_sekolah a');
+		$builder->select('a.sekolah_id');
+        $builder->select('a.dapodik_id');
+		$builder->where(array('a.npsn'=>$npsn, 'a.is_deleted'=>0));
+
+		$result = $builder->get()->getRowArray();
+        if ($result == null)    return 0;
+        
+        return $result['sekolah_id'];
 	}
 
 	function uuid(){

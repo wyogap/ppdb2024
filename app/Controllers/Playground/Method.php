@@ -14,50 +14,51 @@ use Psr\Log\LoggerInterface;
 use Config\App;
 
 class Method extends PpdbController {
+	protected static $AUTHENTICATED = false;
 
     function index() {
         $data['page_title'] = "Map";
         $this->smarty->render("playground/map.tpl", $data);
     }
 
-    public function _remap($method, $param = null)
-	{
-        $uri = $this->request->getUri();
-        $segments = $uri->getSegments();
-        echo "Segments";
-        var_dump($segments);
+    // public function _remap($method, $param = null)
+	// {
+    //     $uri = $this->request->getUri();
+    //     $segments = $uri->getSegments();
+    //     echo "Segments";
+    //     var_dump($segments);
 
-        echo "Method";
-        var_dump($method);
+    //     echo "Method";
+    //     var_dump($method);
 
-        echo "this->method";
-        var_dump($this->method);
+    //     echo "this->method";
+    //     var_dump($this->method);
 
-        echo "this->params";
-        var_dump($this->params);
+    //     echo "this->params";
+    //     var_dump($this->params);
 
-        $method1 = $this->request->getMethod();
-        echo "Request Method";
-        var_dump($method1);
+    //     $method1 = $this->request->getMethod();
+    //     echo "Request Method";
+    //     var_dump($method1);
 
-        $gets = $this->request->getGet();
-        echo "Gets";
-        var_dump($gets);
+    //     $gets = $this->request->getGet();
+    //     echo "Gets";
+    //     var_dump($gets);
 
-        $headers = $this->request->getHeaders();
-        echo "Headers";
-        var_dump($headers);
+    //     $headers = $this->request->getHeaders();
+    //     echo "Headers";
+    //     var_dump($headers);
 
-        // $args = $this->request->getArgs();
-        // echo "Args";
-        // var_dump($args);
+    //     // $args = $this->request->getArgs();
+    //     // echo "Args";
+    //     // var_dump($args);
 
-        $path = $this->request->getPath();
-        echo "Path";
-        var_dump($path);
+    //     $path = $this->request->getPath();
+    //     echo "Path";
+    //     var_dump($path);
 
-        exit;
-    }
+    //     exit;
+    // }
 
     protected function get_params() {
         $segments = $this->request->getUri()->getSegments();
@@ -83,5 +84,13 @@ class Method extends PpdbController {
         }
 
         return $params;
-    }    
+    }   
+    
+    protected function sekolah() {
+        $npsn = $this->request->getPostGet("npsn");
+
+        $sekolah = get_profilsekolah_from_npsn($npsn);
+        
+        var_dump($sekolah);
+    }
 }

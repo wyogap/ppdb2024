@@ -286,4 +286,69 @@ if ( ! function_exists('audit_siswa'))
         return $pendaftaran;
     }    
 
+    function get_profilsekolah_from_npsn($npsn) {
+        helper("dom");
+        $mhome = new \App\Models\Ppdb\Mhome();
+        $sekolah = $mhome->tcg_profilsekolah_from_npsn($npsn);
+        
+        if (empty($sekolah)) {
+            $url = "https://referensi.data.kemdikbud.go.id/tabs.php?npsn=" .$npsn;
+
+            $retry = 0;
+            $arr = array();
+            do {
+                $client = new \GuzzleHttp\Client(['verify' => false ]);
+                $req = $client->request('GET', $url, ['http_errors' => false]);
+                $status_code = $req->getStatusCode();
+                $retry++;
+    
+                if ($status_code != 200) continue;
+    
+                $resp = (string) $req->getBody();
+                $html = str_get_html($resp);
+    
+                $tab = $html->find('.tabby-tab')[0];
+                $tr = $tab->find("tr");
+                foreach($tr as $row) {
+                    $td = $row->find("td");
+                    $field = $value = '';
+                    foreach($td as $k => $col) {
+                        if ($k == 1) $field = trim($col->innertext);
+                        if ($k == 3) $value = trim($col->innertext);
+                    }
+                    if (empty($field))  continue;
+                    $arr[$field] = $value;
+                }
+
+                $tab = $html->find('.tabby-tab')[4];
+                $tr = $tab->find("tr");
+
+            } 
+            while ($status_code != 200 && $retry < 3);
+    
+            $str = $arr['NPSN'];
+            $pos1 = strpos($str, "/profil/");
+            $pos2 = strpos($str, "\">", $pos1+8);
+            $dapodik_id = substr($str, $pos1+8, $pos2-$pos1-8);
+
+            $nama_sekolah = $arr['Nama'];
+            $alamat = $arr['Alamat'];
+            $bentuk = $arr['Bentuk Pendidikan'];
+            $status = substr($arr['Status Sekolah'],0,1);
+
+            $nama_desa = $arr['Desa/Kelurahan'];
+            $nama_kec = $arr['Kecamatan/Kota (LN)'];
+            $nama_kab = $arr['Kab.-Kota/Negara (LN)'];
+            $nama_prov = trim(str_replace("PROV.", "", $arr['Propinsi/Luar Negeri (LN)']));
+            $kode_wilayah = $mhome->tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa);
+
+            //buat sekolah baru
+            $sekolah_id = $mhome->tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id,$alamat);
+            if ($sekolah_id > 0) {
+                $sekolah = $mhome->tcg_profilsekolah_from_npsn($npsn);
+            }
+        }
+
+        return $sekolah;
+    }
 }

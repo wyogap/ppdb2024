@@ -122,23 +122,38 @@ class Penerimaan extends PpdbController {
             }
 
             $siswa = $values[0];
-            $detail = null;
+            $json = null;
 			do {
+                $siswa['nisn'] = trim($siswa['nisn'] ?? '');
 				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
 					print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
                     break;
 				}
 
+                $siswa['nik'] = trim($siswa['nik'] ?? '');
 				if (empty($siswa['nik']) || $this->Msiswa->tcg_cek_nik($siswa['nik'])) {
 					print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
                     break;
 				}
 
-                //enforce
-                $siswa['sekolah_id'] = $sekolah_id;
+                //asal sekolah
+                if (intval($siswa['npsn_sekolah_asal']) == 0) {
+                    $siswa['npsn_sekolah_asal'] = '';
+                }
+                $npsn_sekolah_asal = trim($siswa['npsn_sekolah_asal']);
+                //dont use '0000'
+                if (!empty($npsn_sekolah_asal)) {
+                    $asal_sekolah = get_profilsekolah_from_npsn($npsn_sekolah_asal);
+                    $siswa['sekolah_id'] = $asal_sekolah['sekolah_id'];
+                }
+                else {
+                    //default
+                    $siswa['sekolah_id'] = $sekolah_id;
+                }
                 
-				$detail = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
-				if ($detail == null) {
+                //buat peserta-didik
+				$peserta_didik_id = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
+				if (empty($peserta_didik_id)) {
 					$error = $this->Msekolah->get_error_message();
 					if (!empty($error)) {
                         print_json_error($error);
@@ -147,19 +162,35 @@ class Penerimaan extends PpdbController {
 					}
 				}
 
-                //the expected json format of the dt editor
-                $data = array();
-                $data[] = $detail;
+                //$profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
 
                 //audit trail
-                audit_siswa($detail, "SISWA BARU SD", "Siswa Baru Penerimaan SD an. " +$detail['nama']);
-                audit_pendaftaran($detail, "PENDAFTARAN SD", "Pendaftaran di SD " .$detail['sekolah']. " an. " +$detail['nama']);
+                $siswa['peserta_didik_id'] = $peserta_didik_id;
+                audit_siswa($siswa, "SISWA BARU SD", "Siswa Baru Penerimaan SD an. " .$siswa['nama']);
 
-                print_json_output($data);
-	
+                //buat pendaftaran
+                $status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
+                if (!$status) {
+                    $error = $this->Msekolah->get_error_message();
+                    if (!empty($error)) {
+                        print_json_error($error);
+                    } else {
+                        print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                    }
+                }                
+
+                $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
+
+                //audit trail
+                $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
+                audit_pendaftaran($pendaftaran, "PENDAFTARAN SD", "Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
+    
+                //print_json_output($pendaftaran);
+                $json[] = $pendaftaran;
+        
 			} while(false);
 
-            print_json_output($detail);
+            print_json_output($json);
 		}
         else if ($action=='edit'){
             $values = $this->request->getPost("data");
@@ -170,12 +201,29 @@ class Penerimaan extends PpdbController {
 
             $json = array();
             foreach($values as $k => $v) {
+
+                if (isset($v['nisn'])) {
+                    $v['nisn'] = trim($v['nisn'] ?? '');
+                    if (empty($v['nisn']) || $this->Msiswa->tcg_cek_nisn($v['nisn'], $k)) {
+                        print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
+                        break;
+                    }
+                }
+
+                if (isset($v['nik'])) {
+                    $v['nik'] = trim($v['nik'] ?? '');
+                    if (empty($v['nik']) || $this->Msiswa->tcg_cek_nik($v['nik'], $k)) {
+                        print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
+                        break;
+                    }
+                }
+
                 $profil = $this->Msiswa->tcg_profilsiswa($k);
                 $data = $this->Msiswa->tcg_update_siswa($k, $v);
 
                 if ($data != null) {
                     //audit trail
-                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " +$data['nama'], array_keys($v), $v, $profil);
+                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " .$data['nama'], array_keys($v), $v, $profil);
                 }
 
                 $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($k);
@@ -188,7 +236,7 @@ class Penerimaan extends PpdbController {
             $peserta_didik_id = $this->request->getPostGet('peserta_didik_id');
 
             //pendaftaran lama
-            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
             if ($sekolah_id != $pendaftaran['sekolah_id']) {
                 print_json_error('Tidak mendaftar di sekolah ini');
             }
@@ -220,7 +268,7 @@ class Penerimaan extends PpdbController {
             }
 
             //sudah diterima
-            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
             if ($pendaftaran != null) {
                 print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
             }
@@ -247,7 +295,7 @@ class Penerimaan extends PpdbController {
                 }
             }
 
-            $pendaftaran = $this->Msiswa->tcg_pendaftaran_diterima_sd($peserta_didik_id);
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
 
             //audit trail
             $pendaftaran['peserta_didik_id'] = $peserta_didik_id;

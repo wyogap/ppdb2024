@@ -229,55 +229,7 @@ class Home extends PpdbController
         $profil = json_decode($resp);
         $profil = (array) $profil[0];
 
-        $sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($npsn);
-
-        if (empty($sekolah)) {
-            $url = "https://referensi.data.kemdikbud.go.id/tabs.php?npsn=" .$npsn;
-
-            $retry = 0;
-            $arr = array();
-            do {
-                $client = new \GuzzleHttp\Client(['verify' => false ]);
-                $req = $client->request('GET', $url, ['http_errors' => false]);
-                $status_code = $req->getStatusCode();
-                $retry++;
-    
-                if ($status_code != 200) continue;
-    
-                $resp = (string) $req->getBody();
-                $html = str_get_html($resp);
-    
-                $tab = $html->find('.tabby-tab')[0];
-                $tr = $tab->find("tr");
-                foreach($tr as $row) {
-                    $td = $row->find("td");
-                    $field = $value = '';
-                    foreach($td as $k => $col) {
-                        if ($k == 1) $field = trim($col->innertext);
-                        if ($k == 3) $value = trim($col->innertext);
-                    }
-                    if (empty($field))  continue;
-                    $arr[$field] = $value;
-                }
-            } 
-            while ($status_code != 200 && $retry < 3);
-    
-            $sekolah = array();
-            $sekolah['npsn'] = $npsn;
-            $sekolah['dapodik_id'] = $profil['sekolah_id'];
-            $sekolah['nama'] = $arr['Nama'];
-            $sekolah['alamat'] = $arr['Alamat'];
-            $sekolah['nama_desa'] = $arr['Desa/Kelurahan'];
-            $sekolah['nama_kec'] = $arr['Kecamatan/Kota (LN)'];
-            $sekolah['nama_kab'] = $arr['Kab.-Kota/Negara (LN)'];
-            $sekolah['nama_prov'] = trim(str_replace("PROV.", "", $arr['Propinsi/Luar Negeri (LN)']));
-            $sekolah['bentuk'] = $arr['Bentuk Pendidikan'];
-            $sekolah['status'] = substr($arr['Status Sekolah'],0,1);
-            $sekolah['kode_wilayah'] = $this->Mhome->tcg_kode_wilayah($sekolah['nama_prov'], $sekolah['nama_kab'], $sekolah['nama_kec'], $sekolah['nama_desa']);
-   
-            //buat sekolah baru
-            $sekolah['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($sekolah['nama'],$sekolah['kode_wilayah'],$sekolah['bentuk'],$npsn,$sekolah['status']);
-        }
+        $sekolah = get_profilsekolah_from_npsn($npsn);
 
         $profil['nama_sekolah'] = $sekolah['nama'];
         $profil['sekolah_dapodik_id'] = $sekolah['dapodik_id'];

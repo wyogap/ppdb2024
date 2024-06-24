@@ -324,16 +324,16 @@ Class Mprofilsiswa
         return $result;
 	}    
 
-	function tcg_pendaftaran_diterima_sd($peserta_didik_id){
-        $this->error_message = null;
+	// function tcg_pendaftaran_diterima_sd($peserta_didik_id){
+    //     $this->error_message = null;
         
-        $filters = array("a.status_penerimaan_final"=>1, "a.putaran"=>PUTARAN_SD);
+    //     $filters = array("a.status_penerimaan_final"=>1, "a.putaran"=>PUTARAN_SD);
 
-        $result = $this->tcg_daftarpendaftaran($peserta_didik_id, $filters);
-        if($result == null) return null;
+    //     $result = $this->tcg_daftarpendaftaran($peserta_didik_id, $filters);
+    //     if($result == null) return null;
 
-        return $result[0];
-	}    
+    //     return $result[0];
+	// }    
   
 	function tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru){
         $this->error_message = null;
@@ -873,8 +873,16 @@ Class Mprofilsiswa
 		return $builder->get()->getResultArray();
 	}
 
-    function tcg_cek_nik($nik) {
+    function tcg_cek_nik($nik, $peserta_didik_id = null) {
+        if (strtoupper($nik) == 'NA') {
+            //special case: siswa yang belum punya KK
+            return 0;
+        }
+
         $sql = "select count(*) as jumlah from tcg_peserta_didik where is_deleted=0 and nik=?";
+        if ($peserta_didik_id != null) {
+            $sql .= " and peserta_didik_id!=" .secure($peserta_didik_id);
+        }
 
         $result = $this->ro->query($sql, array($nik))->getRowArray();
         if ($result == null)    return 0;
@@ -882,13 +890,16 @@ Class Mprofilsiswa
         return $result['jumlah'];
     }
 
-    function tcg_cek_nisn($nisn) {
+    function tcg_cek_nisn($nisn, $peserta_didik_id = null) {
         if (strtoupper($nisn) == 'NA') {
             //special case: siswa yang belum punya nisn
             return 0;
         }
 
         $sql = "select count(*) as jumlah from tcg_peserta_didik where is_deleted=0 and nisn=?";
+        if ($peserta_didik_id != null) {
+            $sql .= " and peserta_didik_id!=" .secure($peserta_didik_id);
+        }
 
         $result = $this->ro->query($sql, array($nisn))->getRowArray();
         if ($result == null)    return 0;

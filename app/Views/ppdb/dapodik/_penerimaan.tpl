@@ -71,6 +71,7 @@
 				label: "NIK:",
 				name: "nik",
 				type: "text",
+                fieldInfo: "Apabila belum mempunya NIK/KK, diisi dengan: NA"
 			}, {
 				label: "Tempat Lahir:",
 				name: "tempat_lahir",
@@ -88,10 +89,12 @@
 				label: "NPSN Sekolah Asal:",
 				name: "npsn_sekolah_asal",
 				type: "text",
+                fieldInfo: "Apabila belum pernah sekolah, dikosongkan"
 			}, {
 				label: "Nama Sekolah Asal:",
-				name: "asal_sekolah",
+				name: "nama_sekolah_asal",
 				type: "text",
+                fieldInfo: "Apabila belum pernah sekolah, dikosongkan"
 			}
 			],
             formOptions: {
@@ -183,7 +186,7 @@
  
                     if (!hasError) {
                         //TODO: validasi lebih lanjut
-						if (field.val().length != 16) {
+						if (field.val() != 'NA' && field.val().length != 16) {
 							hasError = true;
                         	field.error('NIK harus 16 digit.');
 						}
@@ -331,7 +334,7 @@
 				{ data: "tanggal_lahir", className: 'dt-body-center  text-nowrap' },
 				{ data: "nama_ibu_kandung", className: 'dt-body-center' },
 				{ data: "npsn_sekolah_asal", className: 'dt-body-center' },
-				{ data: "asal_sekolah", className: 'dt-body-left' },
+				{ data: "nama_sekolah_asal", className: 'dt-body-left' },
                 {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
