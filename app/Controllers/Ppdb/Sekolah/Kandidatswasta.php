@@ -40,6 +40,8 @@ class Kandidatswasta extends PpdbController {
         }
         $data['use_datatable'] = 1;
 
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
+
         //content template
         $data['content_template'] = 'kandidatswasta.tpl';
 

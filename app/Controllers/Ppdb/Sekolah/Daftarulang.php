@@ -32,8 +32,7 @@ class Daftarulang extends PpdbController {
 			return $this->notauthorized();
 		}
 
-        $mconfig = new \App\Models\Ppdb\Mconfig();
-        $data['daftarputaran'] = $mconfig->tcg_putaran();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
 		do {
             $pendaftaran_id = $_GET["pendaftaran_id"] ?? null;

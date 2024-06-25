@@ -34,6 +34,7 @@ class Ubahprofil extends PpdbController {
 		$data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
 		// $redirect = $_GET["redirect"] ?? null; 
 		// if (empty($redirect)) {

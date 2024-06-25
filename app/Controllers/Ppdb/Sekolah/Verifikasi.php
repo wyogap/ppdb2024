@@ -39,8 +39,7 @@ class Verifikasi extends PpdbController {
 			return $this->notauthorized();
 		}
 
-        $mconfig = new \App\Models\Ppdb\Mconfig();
-        $data['daftarputaran'] = $mconfig->tcg_putaran();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
         if ($data['impersonasi_sekolah'] == 1) {

@@ -30,6 +30,8 @@ class Pengajuanakun extends PpdbController {
 			return $this->notauthorized();
 		}
 
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
+
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
         if ($data['impersonasi_sekolah'] == 1) {
             $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);

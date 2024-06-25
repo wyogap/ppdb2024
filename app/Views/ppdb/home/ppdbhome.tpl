@@ -167,7 +167,7 @@
                             </div>
                             <div class="app-name-long dashboard_bar">
                                 <span class="app-name">{$app_name}</span>
-                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran} <span class="caret"></span></span>
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -187,6 +187,12 @@
                                     <a href="{$site_url}home/rekapitulasi" class="dropdown-item ai-icon">
                                         <i class="fas fa-table"></i> <span class="ms-2">Rekapitulasi Sekolah </span>
                                     </a>
+                                    {foreach $daftarputaran as $p}
+                                    {if $p.putaran == $putaran}{continue}{/if}
+                                    <a href="{$url}putaran={$p.putaran}" class="dropdown-item ai-icon">
+                                        <i class="fas fa-random"></i> <span class="ms-2">{$p.nama} </span>
+                                    </a>
+                                    {/foreach}
                                     <a href="{$site_url}auth/login" class="dropdown-item ai-icon">
                                         <i class="fas fa-sign-in-alt"></i> <span class="ms-2">Login </span>
                                     </a>

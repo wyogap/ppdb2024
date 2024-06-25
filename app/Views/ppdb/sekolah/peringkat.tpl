@@ -4,11 +4,6 @@
         <li class="breadcrumb-item active"><a href="{$site_url}home/rekapitulasi">Rekapitulasi Pendaftaran</a></li>
         <li class="breadcrumb-item"><a href="javascript:void(0)">{$profilsekolah.nama}</a></li>
     </ol>
-    <span class="float-right">
-        <select id="jenis_kelamin" name="jenis_kelamin" class="form-control select2" style="width:100%;" data-validation="required">
-            <option value="">-- Putaran --</option>
-        </select>
-    </span>
 </div>
 {/if}
 

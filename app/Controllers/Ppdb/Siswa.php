@@ -38,6 +38,9 @@ class Siswa extends PpdbController {
 
         $tahun_ajaran_id = $this->tahun_ajaran_id;
         $upload_dokumen = $this->setting->get('upload_dokumen');
+
+        $diterima = $this->session->get("diterima") ?? 0;
+        $tutup_akses = $this->session->get("tutup_akses") ?? 1;
         
         //waktu pelaksanaan
         $waktudaftarulang = $this->Mconfig->tcg_waktudaftarulang();
@@ -80,14 +83,9 @@ class Siswa extends PpdbController {
         $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
 
         $cek_pendaftaran_aktif = (count($pendaftaran) > 0);
-        $pendaftaran_diterima = null;
         $jumlahpendaftarannegeri = 0;
         $jumlahpendaftaranswasta = 0;
         foreach($pendaftaran as $row) {
-            //pendaftaran diterima
-            if ($row['status_penerimaan_final'] == 1 || $row['status_penerimaan_final'] == 3) {
-                $pendaftaran_diterima = $row;
-            }
             //jumlah pendaftaran
             if ($row['status_sekolah'] == 'N' && $row['pendaftaran']) {
                 $jumlahpendaftarannegeri++;
@@ -96,12 +94,14 @@ class Siswa extends PpdbController {
                 $jumlahpendaftaranswasta++;
             }
         }
-
+        
+        //pendaftaran diterima
+        $pendaftaran_diterima = $this->Msiswa->tcg_pendaftaran_diterima($peserta_didik_id);
         $cek_pendaftaran_diterima = ($pendaftaran_diterima != null);
-        $cek_daftar_ulang = 0;
-        if ($pendaftaran_diterima != null) {
-            $cek_daftar_ulang = $pendaftaran_diterima['status_daftar_ulang'];
-        }
+        // $cek_daftar_ulang = 0;
+        // if ($pendaftaran_diterima != null) {
+        //     $cek_daftar_ulang = $pendaftaran_diterima['status_daftar_ulang'];
+        // }
 
         //profil siswa | profil status
         $kelengkapan_data = 1;
@@ -131,69 +131,64 @@ class Siswa extends PpdbController {
             $pernyataan_tanggal = "no-upload";
         }
 
-        // //a hack for consistent logic
-        // $dokumen[DOCID_PRESTASI] = array();
-        // $dokumen[DOCID_PRESTASI]['verifikasi'] = 1;
+        $dok_surat_pernyataan = null;
 
-        // if ($upload_dokumen) {
-            $dok_surat_pernyataan = null;
-
-            $dokumen = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
-            foreach($dokumen as $row) {
-                $row['catatan'] = nl2br(trim($row['catatan']));
-                if ($row['daftar_kelengkapan_id'] == DOCID_SUKET_KEBENARAN_DOK) {
-                    $dok_surat_pernyataan = $row;
-                }
+        $dokumen = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
+        foreach($dokumen as $row) {
+            $row['catatan'] = nl2br(trim($row['catatan']));
+            if ($row['daftar_kelengkapan_id'] == DOCID_SUKET_KEBENARAN_DOK) {
+                $dok_surat_pernyataan = $row;
             }
+        }
 
-            //verifikasi dokumen tambahan -> the metadata is already included in $dokumen
-            $verifikasi_dokumen_tambahan = 1;
+        //verifikasi dokumen tambahan -> the metadata is already included in $dokumen
+        $verifikasi_dokumen_tambahan = 1;
 
-            foreach($dokumen as $row) {
-                if ($row['tambahan'] != 1)  continue;
+        foreach($dokumen as $row) {
+            if ($row['tambahan'] != 1)  continue;
 
-                $jml_dokumen_tambahan++;
-                if ($row['verifikasi'] == 2) {
-                    $verifikasi_dokumen_tambahan = 2;
-                }
-                else if ($row['verifikasi'] == 0 && $verifikasi_dokumen_tambahan == 0) {
-                    $verifikasi_dokumen_tambahan = 0;
-                }
+            $jml_dokumen_tambahan++;
+            if ($row['verifikasi'] == 2) {
+                $verifikasi_dokumen_tambahan = 2;
             }
-
-            // var_dump($dok_surat_pernyataan); exit;
-
-            //verifikasi suket kebenaran dok
-            if (!empty($dok_surat_pernyataan)) {
-                $pernyataan_verifikasi = $dok_surat_pernyataan['verifikasi'];
-                $pernyataan_file = $dok_surat_pernyataan['path'];
-                $pernyataan_tanggal = $dok_surat_pernyataan['tanggal_berkas'];    
+            else if ($row['verifikasi'] == 0 && $verifikasi_dokumen_tambahan == 0) {
+                $verifikasi_dokumen_tambahan = 0;
             }
-            else {
-                $pernyataan_verifikasi = 1;
-                $pernyataan_file = 1;
-                $pernyataan_tanggal = '';    
-            }
-        
-            //verifikasi dokumen
-            if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_KK]) && $dokumen[DOCID_KK]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_SUKET_DOMISILI]) && $dokumen[DOCID_SUKET_DOMISILI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_IJAZAH_SKL]) && $dokumen[DOCID_IJAZAH_SKL]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_HASIL_UN]) && $dokumen[DOCID_HASIL_UN]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_PRESTASI]) && $dokumen[DOCID_PRESTASI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_KIP]) && $dokumen[DOCID_KIP]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_SUKET_BDT]) && $dokumen[DOCID_SUKET_BDT]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
-            else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
-        // }
+        }
+
+        //verifikasi suket kebenaran dok
+        if (!empty($dok_surat_pernyataan)) {
+            $pernyataan_verifikasi = $dok_surat_pernyataan['verifikasi'];
+            $pernyataan_file = $dok_surat_pernyataan['path'];
+            $pernyataan_tanggal = $dok_surat_pernyataan['tanggal_berkas'];    
+        }
+        else {
+            $pernyataan_verifikasi = 1;
+            $pernyataan_file = 1;
+            $pernyataan_tanggal = '';    
+        }
+    
+        //verifikasi dokumen
+        if (!empty($dokumen[DOCID_AKTE]) && $dokumen[DOCID_AKTE]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_KK]) && $dokumen[DOCID_KK]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_SUKET_DOMISILI]) && $dokumen[DOCID_SUKET_DOMISILI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_IJAZAH_SKL]) && $dokumen[DOCID_IJAZAH_SKL]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_HASIL_UN]) && $dokumen[DOCID_HASIL_UN]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_PRESTASI]) && $dokumen[DOCID_PRESTASI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_KIP]) && $dokumen[DOCID_KIP]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_SUKET_BDT]) && $dokumen[DOCID_SUKET_BDT]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
+        else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
 
         //Output
         $data = array();
 
         //tab yang aktif
         //belum waktu_pendaftaran
-        if ($cek_waktusosialisasi) {
+        if ($diterima) {
+            $data['aktif'] = 'daftarulang';
+        } 
+        else if ($cek_waktusosialisasi) {
             $data['aktif'] = "kelengkapan";
         }
         else if (!$cek_waktupendaftaran && !$cek_waktudaftarulang) {
@@ -231,10 +226,6 @@ class Siswa extends PpdbController {
         $data['peserta_didik_id'] = $peserta_didik_id;
         $data['tahun_ajaran'] = $tahun_ajaran_id;
         $data['profilsiswa'] = $profil;
-        //$data['kelengkapan_data'] = $kelengkapan_data;
-        //$data['verifikasi_dok'] = $verifikasi_dok;
-
-        //var_dump($dokumen); exit;
 
         //dokumen pendukung
         $data['dokumen'] = $dokumen;   
@@ -266,8 +257,8 @@ class Siswa extends PpdbController {
         $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
 
         # PENDAFTARAN
-        $data['global_tutup_akses'] = ($this->session->get("tutup_akses") ?? 0);
-        // $data['pendaftarandikunci'] = (!$cek_waktupendaftaran && !$cek_waktusosialisasi) || $global_tutup_akses;
+        $data['tutup_akses'] = $tutup_akses || $diterima;
+        $data['diterima'] = $diterima;
 
         $data['batasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
         $data['batasansiswa'] = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
@@ -277,10 +268,6 @@ class Siswa extends PpdbController {
 
         $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'));
         
-        // // var_dump($data['daftarpenerapan']); exit;
-        // echo "--" .$profil['kebutuhan_khusus']. '--'; 
-        // var_dump(($profil['kebutuhan_khusus'] == 'Tidak ada')); exit;
-
         $daftarpilihan = $this->Mconfig->tcg_daftarpilihan();
         $data['maxpilihan'] = count($daftarpilihan);
         $data['maxpilihannegeri'] = 0;
@@ -664,6 +651,17 @@ class Siswa extends PpdbController {
 
     //upload dokumen
     function upload() {
+
+        $diterima = $this->session->get("diterima");
+        if ($diterima) {
+            print_json_error("Sudah diterima.");
+        }
+
+        $tutup_akses = $this->session->get("tutup_akses");
+        if ($tutup_akses) {
+            print_json_error("Akses ditutup.");
+        }
+
         $peserta_didik_id = $this->session->get("peserta_didik_id");
         $doc_id = $this->request->getPostGet("doc_id");
         if (empty($doc_id)) {
@@ -821,6 +819,16 @@ class Siswa extends PpdbController {
         $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
         $peserta_didik_id = $this->session->get('peserta_didik_id');
 
+        $diterima = $this->session->get("diterima");
+        if ($diterima) {
+            print_json_error("Sudah diterima.");
+        }
+
+        $tutup_akses = $this->session->get("tutup_akses");
+        if ($tutup_akses) {
+            print_json_error("Akses ditutup.");
+        }
+
         $pendaftaran_lama = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
         $audit_action_type = "";
         $audit_action_desc = '';
@@ -914,6 +922,16 @@ class Siswa extends PpdbController {
 		$sekolah_id = $this->request->getPostGet("sekolah_id");
 		$penerapan_id = $this->request->getPostGet("penerapan_id");
 		$jenis_pilihan = $this->request->getPostGet("jenis_pilihan");
+
+        $diterima = $this->session->get("diterima");
+        if ($diterima) {
+            print_json_error("Sudah diterima.");
+        }
+
+        $tutup_akses = $this->session->get("tutup_akses");
+        if ($tutup_akses) {
+            print_json_error("Akses ditutup.");
+        }
 
         //simpan dokumen pendukung tambahan
 		foreach($_POST as $key => $value)
@@ -1040,6 +1058,17 @@ class Siswa extends PpdbController {
 
     //hapus pendaftaran
     function hapus() {
+
+        $diterima = $this->session->get("diterima");
+        if ($diterima) {
+            print_json_error("Sudah diterima.");
+        }
+
+        $tutup_akses = $this->session->get("tutup_akses");
+        if ($tutup_akses) {
+            print_json_error("Akses ditutup.");
+        }
+
         $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
 		$keterangan = $this->request->getPostGet("keterangan");
 		

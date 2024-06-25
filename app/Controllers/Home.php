@@ -40,6 +40,7 @@ class Home extends PpdbController
 	{
 		$peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
 
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
         $upload_dokumen = $this->setting->get('upload_dokumen');
 
         $msiswa = new Mprofilsiswa();
@@ -80,8 +81,7 @@ class Home extends PpdbController
 	}
 
 	function peringkat() {
-        $mconfig = new \App\Models\Ppdb\Mconfig();
-        $data['daftarputaran'] = $mconfig->tcg_putaran();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 
 		$sekolah_id = $this->request->getPostGet("sekolah_id");
         if (empty($sekolah_id)) {
@@ -111,7 +111,6 @@ class Home extends PpdbController
             $pendaftar[$penerapan_id] = $penerapan;
         }
         $data['pendaftar'] = $pendaftar;
-        //exit;
 
         //semua pendaftar
         $data['show_all_pendaftar'] = 1;
@@ -386,9 +385,7 @@ class Home extends PpdbController
 	}
 
     function rekapitulasi(){
-        $mconfig = new \App\Models\Ppdb\Mconfig();
-        $data['daftarputaran'] = $mconfig->tcg_putaran();
-
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
         $data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah();
 			
         $data['use_datatable'] = 1;

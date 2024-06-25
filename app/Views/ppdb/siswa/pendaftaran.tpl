@@ -11,53 +11,57 @@
     //cek-waktu-pendaftaran
 -->
 
-{if $profilsiswa.tutup_akses} 
+{if $diterima} 
 <div class="alert alert-secondary" role='alert'>
-    Akses anda ditutup sementara. Hubungi Administrator untuk membuka akses.
+    Kamu sudah diterima dan tidak diijinkan melakukan pendaftaran lagi.
+</div>
+{else if $tutup_akses}
+<div class="alert alert-secondary" role='alert'>
+    Akses kamu ditutup sementara. Hubungi Administrator untuk membuka akses.
 </div>
 {/if}
 
-{if !$profilsiswa.tutup_akses}
+{if !$tutup_akses}
 <div class="alert alert-secondary alert-dismissible" role="alert" id='kebutuhan-khusus-notif'>
     Hanya jalur pendaftaran dan sekolah yang mendukung <b>Kebutuhan Khusus</b> yang ditampilkan.
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {/if}
 
-{if !$profilsiswa.tutup_akses && ($satu_zonasi_satu_jalur == 1)}
+{if !$tutup_akses && ($satu_zonasi_satu_jalur == 1)}
 <div class="alert alert-secondary alert-dismissible" role="alert">
-     Anda hanya bisa mendaftar menggunakan <b>Satu Jalur pada Satu Zonasi</b>. Mohon berhati-hati dalam menentukan jalur pendaftaran.           
+     Kamu hanya bisa mendaftar menggunakan <b>Satu Jalur pada Satu Zonasi</b>. Mohon berhati-hati dalam menentukan jalur pendaftaran.           
      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {/if}
 
-{if !$profilsiswa.tutup_akses && !$cek_batasanusia}
+{if !$tutup_akses && !$cek_batasanusia}
 <div class="alert alert-danger" role="alert">
-    Usia anda tidak memenuhi syarat untuk melakukan pendaftaran. Batasan <b>Usia Pendaftaran</b> jenjang <b>{$batasanusia.bentuk_tujuan_sekolah}</b> : 
+    Usiamu tidak memenuhi syarat untuk melakukan pendaftaran. Batasan <b>Usia Pendaftaran</b> jenjang <b>{$batasanusia.bentuk_tujuan_sekolah}</b> : 
     tanggal lahir dari <b><span class='tgl-indo'>{$batasanusia.maksimal_tanggal_lahir}</span></b> 
     sampai dengan <b><span class='tgl-indo'>{$batasanusia.minimal_tanggal_lahir}</span></b>
 </div>
 {/if}
 
 <div class="alert alert-danger" role='alert' id='kelengkapan-data-notif'>
-    Data profil belum lengkap. Silahkan lengkapi data profil sebelum anda bisa melakukan pendaftaran.
+    Data profil belum lengkap. Silahkan lengkapi data profil sebelum kamu bisa melakukan pendaftaran.
 </div>
 
-{if !$profilsiswa.tutup_akses && $cek_waktusosialisasi == 1}
+{if !$tutup_akses && $cek_waktusosialisasi == 1}
 <div class="alert alert-secondary" role="alert">
     <b>PERIODE SOSIALISASI. SETELAH PERIODE SOSIALISASI, SEMUA DATA PENDAFTARAN AKAN DIHAPUS. </b>        
 </div>
 {/if}
 
-{if !$cek_waktupendaftaran && !$cek_waktusosialisasi}
+{if !$tutup_akses && !$cek_waktupendaftaran && !$cek_waktusosialisasi}
 <div class="alert alert-secondary" role="alert">
     <b>Pendaftaran belum dibuka.</b> Periode pendaftaran adalah dari tanggal <b><span class='tgl-indo'>{$waktupendaftaran.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b><span class='tgl-indo'>{$waktupendaftaran.tanggal_selesai_aktif}</span></b>.      
 </div>
 {/if}
 
-{if !$profilsiswa.tutup_akses && ($cek_waktupendaftaran || $cek_waktusosialisasi)} 
+{if !$tutup_akses && ($cek_waktupendaftaran || $cek_waktusosialisasi)} 
 <div class="alert alert-secondary" role="alert" id="pendaftaran-notif">
-    Anda memiliki <b><span id="slot-negeri">0</span> slot</b> pendaftaran sekolah negeri dan <b><span id="slot-swasta">0</span> slot</b> pendaftaran sekolah swasta
+    Kamu memiliki <b><span id="slot-negeri">0</span> slot</b> pendaftaran sekolah negeri dan <b><span id="slot-swasta">0</span> slot</b> pendaftaran sekolah swasta
 </div>
 {/if}
 

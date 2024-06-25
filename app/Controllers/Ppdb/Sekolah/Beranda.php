@@ -39,6 +39,7 @@ class Beranda extends PpdbController {
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
         $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
 		$data['daftarkuota'] = $this->Msekolah->tcg_daftarkuota($sekolah_id);
 		

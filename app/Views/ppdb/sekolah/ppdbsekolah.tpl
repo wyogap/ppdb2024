@@ -62,6 +62,12 @@
                                         <button onclick=ganti_password() class="dropdown-item ai-icon">
                                             <i class="fas fa-user"></i> <span class="ms-2">Ganti PIN/Password </span>
                                         </button>
+                                        {foreach $daftarputaran as $p}
+                                        {if $p.putaran == $putaran}{continue}{/if}
+                                        <a href="{$url}putaran={$p.putaran}" class="dropdown-item ai-icon">
+                                            <i class="fas fa-random"></i> <span class="ms-2">{$p.nama} </span>
+                                        </a>
+                                        {/foreach}
                                         <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <i class="fas fa-sign-out-alt"></i> <span class="ms-2">Logout </span>
                                         </a>

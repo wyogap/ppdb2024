@@ -341,7 +341,7 @@
         siswa_tutup_akses = parseInt(profil['tutup_akses']);
 
         //update flag pendaftaran dikunci
-        if (!kelengkapan_data || siswa_tutup_akses) {
+        if (!kelengkapan_data || siswa_tutup_akses || tutup_akses==1 || diterima==1) {
             pendaftarandikunci = 1;
         }
 

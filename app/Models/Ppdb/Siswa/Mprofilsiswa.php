@@ -98,7 +98,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select("
-        a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,
+        a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,a.diterima,
 		a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
 		a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
 		a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi,
@@ -239,6 +239,37 @@ Class Mprofilsiswa
 
         return $result['jumlah'];
     }
+
+	function tcg_pendaftaran_diterima($peserta_didik_id){
+        $this->error_message = null;
+        
+        //SEMUA PUTARAN
+		$builder = $this->ro->table('tcg_pendaftaran a');
+		$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,
+							a.nomor_pendaftaran,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,
+							a.peringkat,a.skor,a.kelengkapan_berkas,a.status_penerimaan_final,a.peringkat_final,
+							a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,b.status as status_sekolah,
+							a.pendaftaran, e.keterangan as label_jenis_pilihan, f.keterangan as label_masuk_pilihan,
+							a.created_on, a.status_daftar_ulang, a.pendaftaran, a.tag,
+                            a.peserta_didik_id, g.nama as nama, g.nisn, c.nama as penerapan, c.parent_id as parent_penerapan_id');
+		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
+		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.aktif = 1 AND c.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');
+		$builder->join('cfg_jenis_pilihan e','e.jenis_pilihan = a.jenis_pilihan AND e.tahun_ajaran_id=a.tahun_ajaran_id and e.putaran=a.putaran AND e.is_deleted=0','LEFT OUTER');
+		$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id and f.putaran=a.putaran AND f.is_deleted=0','LEFT OUTER');
+		$builder->join('tcg_peserta_didik g','g.peserta_didik_id = a.peserta_didik_id AND g.is_deleted = 0','LEFT OUTER');
+		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
+        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+
+        //diterima 
+        $builder->where('a.status_penerimaan_final in (1,3)');
+
+		$builder->orderBy('a.jenis_pilihan');
+
+        //echo $builder->getCompiledSelect(); exit;
+
+		return $builder->get()->getRowArray();
+	}
 
 	function tcg_daftarpendaftaran($peserta_didik_id, $filters = null){
         $this->error_message = null;

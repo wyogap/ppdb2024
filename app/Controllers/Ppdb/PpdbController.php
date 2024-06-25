@@ -41,6 +41,7 @@ class PpdbController extends BaseController {
 
     protected $method = "";
     protected $params = array();
+    protected $url = null;
     protected $is_json = false;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -78,17 +79,21 @@ class PpdbController extends BaseController {
             }
         }
 
+        //build current url including the query
+        $this->url = current_url() ."?";
+        $getparams = $this->request->getGet();
+        if (!empty($getparams)) {
+            foreach($getparams as $k => $v) {
+                if ($k == 'putaran') continue;
+                $this->url .= $k ."=". $v ."&";
+            }
+        }
+
         //is-json
         if (!$this->is_json) {
             //other than the index, all are json call
             $this->is_json = ($this->method != '') && ($this->method != 'index');
         }
-
-        // //is-json
-        // $json_segment = $this->method=='json' || (array_search('json', $segments) !== FALSE);
-        // $json_param = !empty($this->request->getGetPost("json"));
-
-        // $this->is_json = ($json_segment || $json_param);
 
         //logged-in user
         $this->user_id = $this->session->get("user_id");
@@ -103,86 +108,89 @@ class PpdbController extends BaseController {
             $this->is_dapodik = ($this->peran_id == ROLEID_DAPODIK);
         }
 
-        //common vars
-        $nama_wilayah = "";
-		$kode_wilayah = "";
-
-		//get from GET or POST
-		$kode_wilayah = $_POST["kode_wilayah"] ?? null; 
-		if (empty($kode_wilayah)) {
-			$kode_wilayah = $_GET["kode_wilayah"] ?? null; 
-		}
-
-        //get from session if necessary
-        if (empty($kode_wilayah)) {
-            $kode_wilayah = $this->session->get('kode_wilayah_aktif');
-			$nama_wilayah = $this->session->get('nama_wilayah_aktif');
+        //smarty: general setting -> can be overriden below.
+        $arr = $this->setting->list_group('ppdb');
+        foreach($arr as $val) {
+            $this->smarty->assign($val['name'], $val['value']);
         }
 
-        //get from database
-        if (empty($kode_wilayah)) {
-            $kode_wilayah = $this->setting->get("kode_wilayah");
-            //make sure it is kabupaten level
-            $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
-            $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
-        }
+        // //common vars
+        // $nama_wilayah = "";
+		// $kode_wilayah = "";
 
-        if (!empty($kode_wilayah) && empty($nama_wilayah)) {
-            $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
-        }
+		// //get from GET or POST
+		// $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
 
-		//set from session if necessary
-		if ($this->session->get('kode_wilayah_aktif') != $kode_wilayah) {
-            $this->session->set('kode_wilayah_aktif', $kode_wilayah);
-            $this->session->set('nama_wilayah_aktif', $nama_wilayah);
-		}
+        // //get from session if necessary
+        // if (empty($kode_wilayah)) {
+        //     $kode_wilayah = $this->session->get('kode_wilayah_aktif');
+		// 	$nama_wilayah = $this->session->get('nama_wilayah_aktif');
+        // }
 
-		//replace global var if necessary
-        $this->kode_wilayah = $kode_wilayah;
-        $this->nama_wilayah = $nama_wilayah;
+        // //get from database
+        // if (empty($kode_wilayah)) {
+        //     $kode_wilayah = $this->setting->get("kode_wilayah");
+        //     //make sure it is kabupaten level
+        //     $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
+        //     $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
+        // }
 
-		//tahun ajaran
-		$nama_tahun_ajaran = "";
-		$tahun_ajaran_id = "";
+        // if (!empty($kode_wilayah) && empty($nama_wilayah)) {
+        //     $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
+        // }
 
-        //get from GET or POST
-		$tahun_ajaran_id = $_POST["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id)) {
-			$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		}
+		// //set from session if necessary
+		// if ($this->session->get('kode_wilayah_aktif') != $kode_wilayah) {
+        //     $this->session->set('kode_wilayah_aktif', $kode_wilayah);
+        //     $this->session->set('nama_wilayah_aktif', $nama_wilayah);
+		// }
+
+		// //replace global var if necessary
+        // $this->kode_wilayah = $kode_wilayah;
+        // $this->nama_wilayah = $nama_wilayah;
+
+		// //tahun ajaran
+		// $nama_tahun_ajaran = "";
+		// $tahun_ajaran_id = "";
+
+        // //get from GET or POST
+        // $tahun_ajaran_id = $this->request->getPostGet("tahun_ajaran"); 
  
-        //get from session if necessary
-        if (empty($tahun_ajaran_id)) {
-            $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-			$nama_tahun_ajaran = $this->session->get('nama_tahun_ajaran_aktif');
-        }
+        // //get from session if necessary
+        // if (empty($tahun_ajaran_id)) {
+        //     $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		// 	$nama_tahun_ajaran = $this->session->get('nama_tahun_ajaran_aktif');
+        // }
 
-		//get from database
-		if (empty($tahun_ajaran_id)) {
-			$tahun_ajaran_id = $this->setting->get("tahun_ajaran");
-		}
+		// //get from database
+		// if (empty($tahun_ajaran_id)) {
+		// 	$tahun_ajaran_id = $this->setting->get("tahun_ajaran");
+		// }
 
-        if (!empty($tahun_ajaran_id) && empty($nama_tahun_ajaran)) {
-            $nama_tahun_ajaran = $this->Mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
-        }
+        // if (!empty($tahun_ajaran_id) && empty($nama_tahun_ajaran)) {
+        //     $nama_tahun_ajaran = $this->Mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
+        // }
 
-		if ($this->session->get('tahun_ajaran_aktif') != $tahun_ajaran_id) {
-            $this->session->set('tahun_ajaran_aktif', $tahun_ajaran_id);
-            $this->session->set('nama_tahun_ajaran_aktif', $nama_tahun_ajaran);
-		}
+		// if ($this->session->get('tahun_ajaran_aktif') != $tahun_ajaran_id) {
+        //     $this->session->set('tahun_ajaran_aktif', $tahun_ajaran_id);
+        //     $this->session->set('nama_tahun_ajaran_aktif', $nama_tahun_ajaran);
+		// }
+
+		// //replace global var if necessary
+        // $this->tahun_ajaran_id = $tahun_ajaran_id;
+        // $this->nama_tahun_ajaran = $nama_tahun_ajaran;
 
 		//replace global var if necessary
-        $this->tahun_ajaran_id = $tahun_ajaran_id;
-        $this->nama_tahun_ajaran = $nama_tahun_ajaran;
+        $this->kode_wilayah = $this->session->get('kode_wilayah_aktif');
+        $this->nama_wilayah = $this->session->get('nama_wilayah_aktif');
+        $this->tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+        $this->nama_tahun_ajaran = $this->session->get('nama_tahun_ajaran_aktif');
 
-		$nama_putaran = "";
+        $nama_putaran = "";
 		$putaran = "";
 
         //get from GET or POST
-		$putaran = $_POST["putaran"] ?? null; 
-		if (empty($putaran)) {
-			$putaran = $_GET["putaran"] ?? null; 
-		}
+		$putaran = $this->request->getPostGet("putaran"); 
  
         //get from session if necessary
         if (empty($putaran)) {
@@ -215,12 +223,9 @@ class PpdbController extends BaseController {
         $this->smarty->assign('nama_tahun_ajaran', $this->nama_tahun_ajaran);
         $this->smarty->assign('putaran', $this->putaran);
         $this->smarty->assign('nama_putaran', $this->nama_putaran);
+        $this->smarty->assign('url', $this->url);
 
-        //smarty: general setting
-        $arr = $this->setting->list_group('ppdb');
-        foreach($arr as $val) {
-            $this->smarty->assign($val['name'], $val['value']);
-        }
+        //var_dump($this->putaran); exit; 
 
         //smarty: logged-in user
         if ($this->user_id) {
@@ -243,12 +248,6 @@ class PpdbController extends BaseController {
         $this->smarty->assign('error_message', $this->error_message);
         $this->smarty->assign('success_message', $this->success_message);
         $this->smarty->assign('info_message', $this->info_message);
-
-        // $this->waktu_verifikasi = $this->Msetting->tcg_cek_waktuverifikasi();
-        // $this->waktu_daftarulang = $this->Msetting->tcg_cek_waktudaftarulang();
-
-        // $this->smarty->assign('waktu_verifikasi', $this->waktu_verifikasi);
-        // $this->smarty->assign('waktu_daftarulang', $this->waktu_daftarulang);
 	}
 
 	public function _remap($method, $param = null)

@@ -254,7 +254,7 @@
 <script id="ubah-pilihan" type="text/template">
 
     <div class="alert alert-secondary alert-dismissible" role="alert">
-        Anda hanya bisa melakukan perubahan <b>"Jenis Pilihan"</b> sebanyak <b>{{batasan}} kali</b>
+        Kamu hanya bisa melakukan perubahan <b>"Jenis Pilihan"</b> sebanyak <b>{{batasan}} kali</b>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <table class="table">
@@ -297,7 +297,7 @@
 <script id="ubah-sekolah" type="text/template">
 
     <div class="alert alert-secondary alert-dismissible" role="alert">
-        Anda hanya bisa melakukan perubahan <b>"Pilihan Sekolah"</b> sebanyak <b>{{batasan}} kali</b>
+        Kamu hanya bisa melakukan perubahan <b>"Pilihan Sekolah"</b> sebanyak <b>{{batasan}} kali</b>
     </div>
     <!-- <div class="alert alert-secondary alert-dismissible" role="alert">
         Anda hanya bisa mendaftar menggunakan satu jalur pada satu zonasi. Mohon berhati-hati dalam menentukan jalur pendaftaran.            
@@ -346,7 +346,7 @@
 <script id="ubah-jalur" type="text/template">
 
     <div class="alert alert-secondary alert-dismissible" role="alert">
-        Anda hanya bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> sebanyak <b>{{batasan}} kali</b>
+        Kamu hanya bisa melakukan perubahan <b>"Jalur Pendaftaran"</b> sebanyak <b>{{batasan}} kali</b>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <table class="table">
@@ -391,7 +391,7 @@
 <script id="hapus-pendaftaran" type="text/template">
 
     <div class="alert alert-secondary alert-dismissible" role="alert">
-    Anda hanya bisa <b>menghapus</b> pendaftaran sebanyak <b>{{batasan}} kali</b>
+    Kamu hanya bisa <b>menghapus</b> pendaftaran sebanyak <b>{{batasan}} kali</b>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <table class="table">
@@ -441,7 +441,7 @@
 <div class="row" id="daftar-pendaftaran-notif">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="alert alert-info alert-dismissible" role="alert">
-            <i class="icon glyphicon glyphicon-info-sign"></i>Kamu belum melakukan pendaftaran.
+            <i class="icon glyphicon glyphicon-info-sign"></i>Kamu tidak mempunya pendaftaran aktif.
         </div>
     </div>
 </div>

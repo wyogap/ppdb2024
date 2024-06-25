@@ -299,10 +299,11 @@
     var siswa_tutup_akses = 0;
 
     //pendaftaran
+    var diterima = {$diterima|default: 0};
+    var tutup_akses = {$tutup_akses|default: 0};
     var cek_waktusosialisasi = {$cek_waktusosialisasi};
     var cek_waktupendaftaran = {$cek_waktupendaftaran};
     var cek_batasanusia = {$cek_batasanusia};
-    var global_tutup_akses = {$global_tutup_akses};
     var maxpilihannegeri = {$maxpilihannegeri};
     var maxpilihanswasta = {$maxpilihanswasta};
     var jumlahpendaftarannegeri = {$jumlahpendaftarannegeri};
@@ -327,7 +328,7 @@
         }
 
         //update flag pendaftaran dikunci
-        if (cek_batasanusia==0 || (!cek_waktupendaftaran && !cek_waktusosialisasi) || global_tutup_akses==1) {
+        if (cek_batasanusia==0 || (!cek_waktupendaftaran && !cek_waktusosialisasi) || tutup_akses==1 || diterima==1) {
             pendaftarandikunci = 1;
         }
 

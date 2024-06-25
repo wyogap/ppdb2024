@@ -14,6 +14,8 @@ use Psr\Log\LoggerInterface;
 class Auth extends AuthController
 {
     protected static $LOGIN_PAGE = "";
+
+    protected $siswa = null;
     
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -155,10 +157,12 @@ class Auth extends AuthController
         if ($role_id == ROLEID_SISWA) {
             $peserta_didik_id = $result['peserta_didik_id'];
 
-            $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
-            $siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
+            if (empty($this->siswa) || $this->siswa['peserta_didik_id'] != $peserta_didik_id) {
+                $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+                $this->siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
+            }
             
-            if (empty($siswa)) {
+            if (empty($this->siswa)) {
                 $error = 'Akun anda tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
                 if ($json == 1) {
                     $data = array('status'=>'0', 'error'=>$error);
@@ -170,21 +174,21 @@ class Auth extends AuthController
                 return false;
             }
             
-            //akses ditutup
-            if ($siswa['tutup_akses'] == '1') {
-                $error = __('Akses login anda untuk sementara ditolak');
-                if ($json == 1) {
-                    $data = array('status'=>'0', 'error'=>$error);
-                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
-                }
-                else {
-                    $this->session->setFlashdata('error', $error);	
-                }
-                return false;
-            }
+            // //akses ditutup
+            // if ($siswa['tutup_akses'] == '1') {
+            //     $error = __('Akses login anda untuk sementara ditolak');
+            //     if ($json == 1) {
+            //         $data = array('status'=>'0', 'error'=>$error);
+            //         echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+            //     }
+            //     else {
+            //         $this->session->setFlashdata('error', $error);	
+            //     }
+            //     return false;
+            // }
  
             //cabut berkas
-            if ($siswa['cabut_berkas'] == '1') {
+            if ($this->siswa['cabut_berkas'] == '1') {
                 $error = __('Anda sudah melakukan cabut berkas. Akses login anda ditolak!');
                 if ($json == 1) {
                     $data = array('status'=>'0', 'error'=>$error);
@@ -262,6 +266,24 @@ class Auth extends AuthController
             $this->session->set($s['name'], $s['value']);
         }
 
+        $role_id = $this->session->get('role_id');
+        if ($role_id == ROLEID_SISWA) {
+            $peserta_didik_id = $this->session->get('peserta_didik_id');
+
+            if (empty($this->siswa) || $this->siswa['peserta_didik_id'] != $peserta_didik_id) {
+                $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+                $this->siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
+            }
+
+            $data['diterima'] = 1;
+            $data['tutup_akses'] = 1;
+            if (!empty($this->siswa)) {
+                $data['diterima'] = $this->siswa['diterima'];
+                $data['tutup_akses'] = $this->siswa['tutup_akses'];
+            }
+
+            $this->session->set($data);
+        }
     }
  
     function changepassword() {

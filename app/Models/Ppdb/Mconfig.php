@@ -318,13 +318,17 @@ Class Mconfig
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_putaran() {
+	function tcg_putaran($jenjang_id = 0) {
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
         //Tidak per putaran!!!
 		$builder = $this->ro->table('cfg_putaran a');
 		$builder->select('a.*');
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
+
+        if($jenjang_id > 0) {
+            $builder->where('a.jenjang_id', $jenjang_id);
+        }
 
 		return $builder->get()->getResultArray();
 	}

@@ -30,8 +30,7 @@ class Berkasdisekolah extends PpdbController {
 			$sekolah_id = $this->session->get('sekolah_id');
 		}
 
-        $mconfig = new \App\Models\Ppdb\Mconfig();
-        $data['daftarputaran'] = $mconfig->tcg_putaran();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
         $data['sekolah_id'] = $sekolah_id;
 		$data['waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();

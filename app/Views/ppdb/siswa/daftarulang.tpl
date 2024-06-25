@@ -2,12 +2,12 @@
     Periode daftar ulang adalah dari tanggal <b><span class='tgl-indo'>{$waktudaftarulang.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b><span class='tgl-indo'>{$waktudaftarulang.tanggal_selesai_aktif}</span></b>.      
 </div>
 
-{if $pendaftaranditerima && $cek_waktudaftarulang}
+{if $pendaftaranditerima}
 <div class="row">
     <div class="col-12"> 
         <div class="card box-default box-solid">
             <div class="card-body">
-                <p><i class="icon glyphicon glyphicon-info-sign"></i>Selamat! Anda diterima di <b>{$pendaftaranditerima.label_masuk_pilihan}</b> di <b>{$pendaftaranditerima.sekolah}</b> melalui jalur <b>{$pendaftaranditerima.jalur}</b>.</p>
+                <p><i class="icon glyphicon glyphicon-info-sign"></i>Selamat! Kamu diterima di <b>{$pendaftaranditerima.label_masuk_pilihan}</b> di <b>{$pendaftaranditerima.sekolah}</b> melalui jalur <b>{$pendaftaranditerima.jalur}</b>.</p>
                 Silahkan melakukan daftar ulang di sekolah tujuan dengan membawa dokumen-dokumen pendukung di bawah.
             </div>
         </div>
