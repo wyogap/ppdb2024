@@ -319,13 +319,13 @@ class Daftarulang extends PpdbController {
         $view = \Config\Services::renderer();
         $html = $view->setData($data)->render('ppdb/sekolah/_buktidaftarulang',$data);
 		
-        echo $html; exit;
-        
 		$dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $dompdf->stream("BuktiDaftarUlang.pdf", array("Attachment"=>0));
+        $dompdf->stream("BuktiDU.pdf", array("Attachment"=>0));
+
+        exit(); 
 	}
 
 }
