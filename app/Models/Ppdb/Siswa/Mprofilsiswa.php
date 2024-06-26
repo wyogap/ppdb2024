@@ -333,7 +333,7 @@ Class Mprofilsiswa
 							a.peringkat,a.skor,a.kelengkapan_berkas,a.status_penerimaan_final,a.peringkat_final,
 							a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,b.status as status_sekolah,
 							a.pendaftaran, e.keterangan as label_jenis_pilihan, f.keterangan as label_masuk_pilihan,
-							a.created_on, a.status_daftar_ulang, a.pendaftaran, a.tag,
+							a.created_on, a.status_daftar_ulang, a.tanggal_daftar_ulang, a.pendaftaran, a.tag,
                             a.peserta_didik_id, g.nama as nama, g.nisn, c.nama as penerapan, c.parent_id as parent_penerapan_id');
 		$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id');
 		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.aktif = 1 AND c.is_deleted=0','LEFT OUTER');
