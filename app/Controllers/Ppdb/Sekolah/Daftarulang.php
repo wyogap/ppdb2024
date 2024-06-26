@@ -206,8 +206,8 @@ class Daftarulang extends PpdbController {
 
         audit_pendaftaran($pendaftaran, "DAFTAR ULANG", "Daftar ulang an. " .$pendaftaran['nama']. " di " .$pendaftaran['sekolah']);
 
-        echo "Successful"; 
-        
+        //echo "Successful"; 
+
 		//update lokasi berkas
 		//$this->Msekolah->tcg_ubah_lokasiberkas($peserta_didik_id,$sekolah_id);
 
