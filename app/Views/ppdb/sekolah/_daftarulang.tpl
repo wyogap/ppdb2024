@@ -72,7 +72,7 @@
 						}
 						return data;
 					},
-					"targets": [8,11,12]
+					"targets": [8,11,12,13]
 				},
 			],
 			order: [ [3, 'asc'] ],

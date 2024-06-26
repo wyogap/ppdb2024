@@ -35,6 +35,7 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Daftar Ulang</th>
                             <th class="none">Nilai Kelulusan</th>
+                            <th class="none">Nilai Rapor</th>
                             <th class="none">Nilai USBN</th>
                             <th class="none">Nomor Kontak</th>
                             {if $cek_waktudaftarulang}
@@ -57,6 +58,7 @@
                             <td class="text-center">{$row2.jenis_pilihan}</td>
                             <td class="text-center"><span class="tgl-daftar-ulang" dt-pendaftaran-id="{$row2.pendaftaran_id}">{$row2.tanggal_daftar_ulang}</span></td>
                             <td class="text-center">{$row2.nilai_kelulusan}</td>
+                            <td class="text-center">{$row2.nilai_semester}</td>
                             <td class="text-center">{$row2.nilai_usbn}</td>
                             <td class="text-center">{$row2.nomor_kontak}</td>
                             {if $cek_waktudaftarulang}

@@ -227,7 +227,7 @@ Class Mprofilsekolah
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,a.nomor_pendaftaran,a.kelengkapan_berkas,a.created_on');
         $builder->select('b.jenis_kelamin, b.tanggal_lahir, b.terakhir_verifikasi_timestamp as tanggal_verifikasi, k.nama as verifikasi_oleh');
 		$builder->select('b.nisn,b.nama,a.jenis_pilihan,b.lintang,b.bujur,a.status_penerimaan,a.masuk_jenis_pilihan,a.status_penerimaan_final,a.skor,a.peringkat,a.peringkat_final');
-		$builder->select('b.nilai_kelulusan,coalesce(b.nilai_un,0) as nilai_usbn, a.status_daftar_ulang');
+		$builder->select('b.nilai_kelulusan,b.nilai_semester,coalesce(b.nilai_un,0) as nilai_usbn, a.status_daftar_ulang');
         $builder->select('e.nama AS sekolah_asal,f.nama AS lokasi_berkas,g.keterangan as label_masuk_pilihan,h.keterangan as label_jenis_pilihan,i.nama as sedang_verifikasi');
         $builder->select('d.jalur_id,d.nama AS jalur, b.nomor_kontak');
         $builder->select('case when a.status_daftar_ulang = 1 then a.tanggal_daftar_ulang else NULL end as tanggal_daftar_ulang', false);
