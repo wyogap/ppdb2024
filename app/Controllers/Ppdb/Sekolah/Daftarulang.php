@@ -115,8 +115,7 @@ class Daftarulang extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
     
-        // var_dump($peserta_didik_id);
-        // var_dump($pendaftaran_id); exit;
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
         $sekolah_id = $this->session->get("sekolah_id");
         $upload_dokumen = $this->setting->get('upload_dokumen');
