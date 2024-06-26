@@ -55,13 +55,13 @@
                             <td class="text-center">{$row2.jalur}</td>
                             <td class="text-center">{$row2.skor}</td>
                             <td class="text-center">{$row2.jenis_pilihan}</td>
-                            <td class="text-center">{$row2.tanggal_daftar_ulang}</td>
+                            <td class="text-center"><span class="tgl-daftar-ulang" dt-pendaftaran-id="{$row2.pendaftaran_id}">{$row2.tanggal_daftar_ulang}</span></td>
                             <td class="text-center">{$row2.nilai_kelulusan}</td>
                             <td class="text-center">{$row2.nilai_usbn}</td>
                             <td class="text-center">{$row2.nomor_kontak}</td>
                             {if $cek_waktudaftarulang}
                             <td class="text-left">
-                                <span class="text-nowrap" style="display: flex;" dt-pendaftaran-id="{$row2.pendaftaran_id}">   
+                                <span class="text-nowrap row-action" style="display: flex;" dt-pendaftaran-id="{$row2.pendaftaran_id}">   
                                 {if ($row2.status_daftar_ulang==1)}
                                     <a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank" 
                                         class="btn btn-secondary btn-xs" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom">Bukti DU</a>

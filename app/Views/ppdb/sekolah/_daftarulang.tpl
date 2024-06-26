@@ -165,7 +165,11 @@
                                 str = '<a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id=' +peserta_didik_id+ '" target="_blank" '
                                         +'class="btn btn-secondary btn-xs" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom">Bukti DU</a>';
 
-                                $('[dt-pendaftaran-id="' +pendaftaran_id+ '"]').html(str);
+                                $('.row-action[dt-pendaftaran-id="' +pendaftaran_id+ '"]').html(str);
+
+                                str = moment().format('YYYY-MM-DD HH:mm:ss');
+
+                                $('.tgl-daftar-ulang[dt-pendaftaran-id="' +pendaftaran_id+ '"]').html(str);
 
                                 return true;
                             },
