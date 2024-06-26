@@ -110,7 +110,7 @@ class Daftarulang extends PpdbController {
     function siswa() 
 	{
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
-		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_pendaftaran($pendaftaran_id);
+		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
 
 		$sekolah_id = $this->session->get("sekolah_id");
 
