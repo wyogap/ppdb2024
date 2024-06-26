@@ -115,8 +115,8 @@ class Daftarulang extends PpdbController {
 		$pendaftaran_id = $_GET["pendaftaran_id"] ?? null; 
 		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
     
-        var_dump($peserta_didik_id);
-        var_dump($pendaftaran_id); exit;
+        // var_dump($peserta_didik_id);
+        // var_dump($pendaftaran_id); exit;
 
         $sekolah_id = $this->session->get("sekolah_id");
         $upload_dokumen = $this->setting->get('upload_dokumen');
@@ -126,6 +126,8 @@ class Daftarulang extends PpdbController {
 		$status_penerimaan = 0;
 
 		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id); 
+        var_dump($data['pendaftaran']); exit;
+        
         $status_daftar_ulang = $data['pendaftaran']['status_daftar_ulang'];
         $tanggal_daftar_ulang = $data['pendaftaran']['tanggal_daftar_ulang'];
         $status_penerimaan = $data['pendaftaran']['status_penerimaan_final'];
