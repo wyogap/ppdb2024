@@ -121,7 +121,7 @@ class Daftarulang extends PpdbController {
 		$tanggal_daftar_ulang = "";
 		$status_penerimaan = 0;
 
-		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
+		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id); 
 		foreach($data['pendaftaran']->getResult() as $row) {
 			$status_daftar_ulang = $row->status_daftar_ulang;
 			$tanggal_daftar_ulang = $row->tanggal_daftar_ulang;
