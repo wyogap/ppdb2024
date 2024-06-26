@@ -122,10 +122,10 @@ class Daftarulang extends PpdbController {
 		$status_penerimaan = 0;
 
 		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id); 
-		foreach($data['pendaftaran']->getResult() as $row) {
-			$status_daftar_ulang = $row->status_daftar_ulang;
-			$tanggal_daftar_ulang = $row->tanggal_daftar_ulang;
-			$status_penerimaan = $row->status_penerimaan_final;
+		foreach($data['pendaftaran'] as $row) {
+			$status_daftar_ulang = $row['status_daftar_ulang'];
+			$tanggal_daftar_ulang = $row['tanggal_daftar_ulang'];
+			$status_penerimaan = $row['status_penerimaan_final'];
 		}
 
 		if ($status_penerimaan != 1 && $status_penerimaan != 3) {
@@ -148,7 +148,7 @@ class Daftarulang extends PpdbController {
 		$data['kebutuhan_khusus'] = "Tidak ada";
 		$data['lokasi_berkas'] = "";
 
-		$data['profilsiswa'] = $this->Msekolah->tcg_profilsiswa_daftarulang($peserta_didik_id);
+		$data['profilsiswa'] = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
 		foreach($data['profilsiswa']->getResult() as $row) {
 			$data['punya_nilai_un'] = $row->punya_nilai_un;
 			$data['punya_prestasi'] = $row->punya_prestasi;
@@ -158,7 +158,7 @@ class Daftarulang extends PpdbController {
 			$data['lokasi_berkas'] = $row->lokasi_berkas;
 		}
 	
-		$data['dokumenpendukung'] = $this->Msekolah->tcg_dokumen_pendukung($peserta_didik_id);
+		$data['dokumenpendukung'] = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
 		foreach($data['dokumenpendukung']->getResult() as $row) {
 			$row->path= base_url(). $row->path;
 			$row->web_path= base_url(). $row->web_path;
