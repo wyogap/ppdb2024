@@ -178,7 +178,12 @@ class Daftarulang extends PpdbController {
 		// }
 		
 		$data['info'] = $this->session->getFlashdata('info');
-		view('sekolah/daftarulangsiswa/index',$data);
+
+        //content template
+        $data['content_template'] = 'daftarulangsiswa.tpl';
+
+        $data['page_title'] = 'Daftar Ulang Siswa';
+        $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}
 
 	function prosesdaftarulang()
