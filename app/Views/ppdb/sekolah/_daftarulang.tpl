@@ -1,4 +1,5 @@
 <script type="text/javascript">
+    var pendaftaranditerima = {$pendaftarditerima|json_encode};
 
 	$.extend( $.fn.dataTable.defaults, { 
         responsive: true,
@@ -97,4 +98,100 @@
             .draw();
         });
 
+    function daftar_ulang(pendaftaran_id) {
+
+    }
+
+    function daftar_ulang(pendaftaran_id) {
+        let pendaftaran = null;
+        
+        for(i=0; i<pendaftaranditerima.length; i++) {
+            if (pendaftaranditerima[i]['pendaftaran_id'] == pendaftaran_id) {
+                pendaftaran = pendaftaranditerima[i];
+                break;
+            }
+        }
+
+        if (pendaftaran == null) {
+            toastr.error("Pendaftaran tidak ditemukan");
+            return;
+        }
+
+        let nama = pendaftaran['nama'];
+        let peserta_didik_id = pendaftaran['peserta_didik_id'];
+
+        $.confirm({
+            title: 'Daftar Ulang',
+            content: 'Konfirmasi Daftar Ulang an. ' +nama+ "?",
+            icon: 'fa fa-warning',
+            columnClass: 'medium',
+            animation: 'scale',
+            // closeAnimation: 'zoom',
+            buttons: {
+                confirm: {
+                    text: 'Ya, Benar!',
+                    btnClass: 'btn-danger',
+                    action: function(){
+                        
+                        json = {};
+                        json['pendaftaran_id'] = pendaftaran_id;
+
+                        //alert("TODO"); return true;
+                        status = $.ajax({
+                            type: 'POST',
+                            url: "{$site_url}ppdb/sekolah/daftarulang/dodaftarulang",
+                            dataType: 'json',
+                            data: json,
+                            async: false,
+                            cache: false,
+                            //if we use formData, set processData = false. if we use json, set processData = true!
+                            //contentType: true,
+                            //processData: true,      
+                            timeout: 60000,
+                            success: function(json) {
+                                if (json.status == 0) {
+                                    if (json.error != null) {
+                                        toastr.error("Tidak berhasil daftar ulang an." +nama+ ": " + json.error);
+                                    }
+                                    else {
+                                        toastr.error("Tidak berhasil daftar ulang an." +nama);
+                                    }
+                                    return true;
+                                }
+
+                                toastr.success("Berhasil daftar ulang an." +nama);
+
+                                //reload table
+                                str = '<a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id=' +peserta_didik_id+ '" target="_blank" '
+                                        +'class="btn btn-secondary btn-xs" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom">Bukti DU</a>';
+
+                                $('[dt-pendaftaran-id="' +pendaftaran_id+ '"]').html(str);
+
+                                return true;
+                            },
+                            error: function(jqXhr, textStatus, errorThrown) {
+                                if (jqXhr.status == 403 || textStatus == 'Forbidden' || 
+                                        (jqXhr.responseJSON !== undefined && jqXhr.responseJSON != null 
+                                        && jqXhr.responseJSON.error != undefined && jqXhr.responseJSON.error == 'not-login')
+                                    ) {
+                                    //login ulang
+                                    window.location.href = "{$site_url}" +'auth';
+                                }
+                                //send toastr message
+                                toastr.error("Gagal mengambil data via ajax");
+                                return false;
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: 'Batal',
+                    action: function(){
+                        //do nothing
+                    }
+                },
+            }
+        });    
+
+    }
 </script>
