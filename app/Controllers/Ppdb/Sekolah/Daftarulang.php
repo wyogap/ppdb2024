@@ -116,17 +116,16 @@ class Daftarulang extends PpdbController {
 		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
 
 		$sekolah_id = $this->session->get("sekolah_id");
+        $upload_dokumen = $this->setting->get('upload_dokumen');
 
 		$status_daftar_ulang = 0;
 		$tanggal_daftar_ulang = "";
 		$status_penerimaan = 0;
 
 		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id); 
-		foreach($data['pendaftaran'] as $row) {
-			$status_daftar_ulang = $row['status_daftar_ulang'];
-			$tanggal_daftar_ulang = $row['tanggal_daftar_ulang'];
-			$status_penerimaan = $row['status_penerimaan_final'];
-		}
+        $status_daftar_ulang = $data['pendaftaran']['status_daftar_ulang'];
+        $tanggal_daftar_ulang = $data['pendaftaran']['tanggal_daftar_ulang'];
+        $status_penerimaan = $data['pendaftaran']['status_penerimaan_final'];
 
 		if ($status_penerimaan != 1 && $status_penerimaan != 3) {
 			view('home/notauthorized',$data);
@@ -149,21 +148,21 @@ class Daftarulang extends PpdbController {
 		$data['lokasi_berkas'] = "";
 
 		$data['profilsiswa'] = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
-		foreach($data['profilsiswa']->getResult() as $row) {
-			$data['punya_nilai_un'] = $row->punya_nilai_un;
-			$data['punya_prestasi'] = $row->punya_prestasi;
-			$data['punya_kip'] = $row->punya_kip;
-			$data['masuk_bdt'] = $row->masuk_bdt;
-			$data['kebutuhan_khusus'] = $row->kebutuhan_khusus;
-			$data['lokasi_berkas'] = $row->lokasi_berkas;
-		}
-	
+        $data['punya_nilai_un'] = $data['profilsiswa']['punya_nilai_un'];
+        $data['punya_prestasi'] = $data['profilsiswa']['punya_prestasi'];
+        $data['punya_kip'] = $data['profilsiswa']['punya_kip'];
+        $data['masuk_bdt'] = $data['profilsiswa']['masuk_bdt'];
+        $data['kebutuhan_khusus'] = $data['profilsiswa']['kebutuhan_khusus'];
+        $data['lokasi_berkas'] = $data['profilsiswa']['lokasi_berkas'];
+
 		$data['dokumenpendukung'] = $this->Msiswa->tcg_dokumenpendukung($peserta_didik_id);
-		foreach($data['dokumenpendukung']->getResult() as $row) {
-			$row->path= base_url(). $row->path;
-			$row->web_path= base_url(). $row->web_path;
-			$row->thumbnail_path = base_url(). $row->thumbnail_path;
-		}
+        if ($upload_dokumen) {
+            foreach($data['dokumenpendukung'] as $row) {
+                $row['path']= base_url(). $row['path'];
+                $row['web_path']= base_url(). $row['web_path'];
+                $row['thumbnail_path'] = base_url(). $row['thumbnail_path'];
+            }
+        }
 
 		// foreach($data['profilsiswa']->getResult() as $row) {
 		// 	$data['punya_nilai_un'] = $row->punya_nilai_un;
