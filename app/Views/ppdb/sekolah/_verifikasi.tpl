@@ -695,7 +695,6 @@
                     // },
                     cancel: {
                         text: 'Batal',
-                        keys: ['enter', 'shift'],
                         action: function(){
                             //do nothing
                         }
@@ -801,7 +800,6 @@
                                     },
                                     cancel: {
                                         text: 'Batal',
-                                        keys: ['enter', 'shift'],
                                         action: function(){
                                             //do nothing
                                         }
