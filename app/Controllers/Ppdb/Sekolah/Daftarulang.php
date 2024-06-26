@@ -185,6 +185,35 @@ class Daftarulang extends PpdbController {
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}
 
+    function dodaftarulang() {
+		$pengguna_id = $this->session->get('user_id');
+		$sekolah_id = $this->session->get('sekolah_id');
+
+        $pendaftaran_id = $this->request->getPostGet("pendaftaran_id"); 
+
+		$cek_waktudaftarulang = $this->Mconfig->tcg_cek_waktudaftarulang();
+        if ($cek_waktudaftarulang != 1) {
+            print_json_error("Belum waktu daftar ulang");
+        }
+
+        $this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,1,$pengguna_id);
+
+        //audittrail
+		$peserta_didik_id = $this->Msekolah->tcg_pesertadidikid_from_pendaftaranid($pendaftaran_id);
+
+        $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
+        $pendaftaran = $msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
+
+        audit_pendaftaran($pendaftaran, "DAFTAR ULANG", "Daftar ulang an. " .$pendaftaran['nama']. " di " .$pendaftaran['sekolah']);
+
+        echo "Successful"; 
+        
+		//update lokasi berkas
+		//$this->Msekolah->tcg_ubah_lokasiberkas($peserta_didik_id,$sekolah_id);
+
+        print_json_output(null);
+    }
+
 	function prosesdaftarulang()
 	{
 		$pengguna_id = $this->session->get('user_id');
