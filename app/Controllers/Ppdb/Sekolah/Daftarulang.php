@@ -319,6 +319,8 @@ class Daftarulang extends PpdbController {
         $view = \Config\Services::renderer();
         $html = $view->setData($data)->render('ppdb/sekolah/_buktidaftarulang',$data);
 		
+        echo $html; exit;
+        
 		$dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
