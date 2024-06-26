@@ -543,7 +543,7 @@ Class Mconfig
 
 		$sql = "select sekolah_id,nama,npsn 
 		from ref_sekolah 
-		where expired_date is null and kode_wilayah_kab=? and bentuk in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB')
+		where expired_date is null and kode_wilayah_kab=? and bentuk in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB', 'TPA')
 		order by kode_wilayah, nama";
 
 		return $this->ro->query($sql, array($kode_wilayah))->getResultArray();
