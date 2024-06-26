@@ -5,6 +5,7 @@ namespace App\Controllers\Ppdb\Sekolah;
 use App\Controllers\Ppdb\PpdbController;
 use App\Libraries\QRCodeLibrary;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
+use App\Models\Ppdb\Siswa\Mprofilsiswa;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Dompdf\Dompdf;
@@ -15,6 +16,7 @@ class Daftarulang extends PpdbController {
     protected static $ROLE_ID = ROLEID_SEKOLAH;      
 
     protected $Msekolah;
+    protected $Msiswa;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -23,6 +25,7 @@ class Daftarulang extends PpdbController {
 
         //load model
         $this->Msekolah = new Mprofilsekolah();
+        $this->Msiswa = new Mprofilsiswa();
     }
 
 	function index()
@@ -118,7 +121,7 @@ class Daftarulang extends PpdbController {
 		$tanggal_daftar_ulang = "";
 		$status_penerimaan = 0;
 
-		$data['pendaftaran'] = $this->Msekolah->tcg_detailpendaftaran($peserta_didik_id, $pendaftaran_id);
+		$data['pendaftaran'] = $this->Msiswa->tcg_pendaftaran_detil($peserta_didik_id, $pendaftaran_id);
 		foreach($data['pendaftaran']->getResult() as $row) {
 			$status_daftar_ulang = $row->status_daftar_ulang;
 			$tanggal_daftar_ulang = $row->tanggal_daftar_ulang;
