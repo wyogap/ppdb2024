@@ -61,6 +61,7 @@
                         <th class="text-center">Nomor Pendaftaran</th>
                         <th class="text-center" data-priority="5">NISN</th>
                         <th class="text-center" data-priority="2">Nama</th>
+                        <th class="text-center">Jenis Kelamin</th>
                         <th class="text-center">Sekolah Asal</th>
                         <th class="text-center" data-priority="6">Jalur</th>
                         <th class="text-center">Jenis Pilihan</th>
@@ -76,6 +77,7 @@
                         <td class="text-center">{$row.nomor_pendaftaran}</td>
                         <td class="text-center">{$row.nisn}</td>
                         <td><a href="{$base_url}home/detailpendaftaran?peserta_didik_id={$row.peserta_didik_id}" target="_blank">{$row.nama} <i class="fa fas fa-external-link-alt"></i></a></td>
+                        <td class="text-center">{$row.jenis_kelamin}</td>
                         <td>{$row.sekolah_asal}</td>
                         <td class="text-center">{$row.jalur}</td>
                         <td class="text-center">{$row.label_jenis_pilihan}</td>

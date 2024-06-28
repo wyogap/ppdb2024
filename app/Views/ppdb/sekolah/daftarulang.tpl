@@ -38,9 +38,7 @@
                             <th class="none">Nilai Rapor</th>
                             <th class="none">Nilai USBN</th>
                             <th class="none">Nomor Kontak</th>
-                            {if $cek_waktudaftarulang}
                             <th class="text-center" data-priority="1"></th>
-                            {/if}
                         </tr>
                     </thead>
                     <tbody>
@@ -61,19 +59,17 @@
                             <td class="text-center">{$row2.nilai_semester}</td>
                             <td class="text-center">{$row2.nilai_usbn}</td>
                             <td class="text-center">{$row2.nomor_kontak}</td>
-                            {if $cek_waktudaftarulang}
                             <td class="text-left">
                                 <span class="text-nowrap row-action" style="display: flex;" dt-pendaftaran-id="{$row2.pendaftaran_id}">   
                                 {if ($row2.status_daftar_ulang==1)}
                                     <a href="{$site_url}ppdb/sekolah/daftarulang/buktipendaftaran?peserta_didik_id={$row2.peserta_didik_id}" target="_blank" 
                                         class="btn btn-secondary btn-xs" data-bs-toggle="tooltip" title="Bukti Daftar Ulang" data-bs-placement="bottom">Bukti DU</a>
-                                {else}        
+                                {else if $cek_waktudaftarulang}        
                                     <button onclick="daftar_ulang('{$row2.pendaftaran_id}');"
-                                        class="btn btn-primary btn-xs" data-bs-toggle="tooltip" title="Daftar Ulang" data-bs-placement="top">Daftar Ulang</button><br>
+                                        class="btn btn-primary btn-xs" data-bs-toggle="tooltip" title="Daftar Ulang" data-bs-placement="top">Daftar Ulang</button>
                                 {/if}
                                 </span>
                             </td>
-                            {/if}
                         </tr>
                         {/foreach}
                     </tbody>
