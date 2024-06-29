@@ -244,6 +244,7 @@ class Home extends PpdbController
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
 		$data['cek_sosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
+		$data['cek_pendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
         $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
@@ -362,6 +363,7 @@ class Home extends PpdbController
 		$mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
 		$data['cek_sosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
+		$data['cek_pendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
         $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
