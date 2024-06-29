@@ -112,7 +112,7 @@
                 ],
                 "columnDefs": [ 
                 {
-                    "targets": 7,
+                    "targets": 8,
                     className: "text-end",
                     render: function (data, type, row, meta) {
 						if (type=='display') {
@@ -122,7 +122,7 @@
                     }
                 },
                 ],
-                "order": [[ 8, 'asc' ]]
+                "order": [[ 9, 'asc' ]]
             });
 
             els = $('.local-datetime');
