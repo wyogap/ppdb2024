@@ -809,6 +809,12 @@
                         $value = $setting->get($name);
                         
                     }
+                    else if ($clz == 'filter') {
+                        $setting = new \App\Libraries\Setting();
+                        //TODO
+                        $value = $setting->get($name);
+                        
+                    }
                     else if (!empty($tagvalues) > 0 && $clz == $tag) {
                         $value = array_key_exists($name, $tagvalues) ? $tagvalues[$name] : null;
                     }
