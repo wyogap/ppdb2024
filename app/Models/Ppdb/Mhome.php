@@ -390,8 +390,8 @@ Class Mhome
 	// }
 
     //dipakai untuk registrasi sisw
-	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id,$alamat) {
-		$uuid = $this->uuid();
+	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id=null,$alamat=null) {
+		//$uuid = $this->uuid();
 
         //get data wilayah
         $sql = "select * from ref_wilayah where kode_wilayah=? and is_deleted=0";
