@@ -257,7 +257,7 @@ class Siswa extends PpdbController {
         $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
 
         # PENDAFTARAN
-        $data['tutup_akses'] = $tutup_akses || $diterima;
+        $data['tutup_akses'] = ($tutup_akses || $diterima) ? 1 : 0;
         $data['diterima'] = $diterima;
 
         $data['batasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
