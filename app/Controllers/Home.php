@@ -320,7 +320,8 @@ class Home extends PpdbController
 			}
 
             //TODO: check for existing sekolah with the same npsn
-            $sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($data['npsn_sekolah']);
+            $sekolah = get_profilsekolah_from_npsn($data['npsn_sekolah']);
+            //$sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($data['npsn_sekolah']);
 
 			if (empty($sekolah)) {
 				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
