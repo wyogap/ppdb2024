@@ -239,7 +239,9 @@ class Home extends PpdbController
     }
 
     function registrasi() {
-		$mdropdown = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
+
+        $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
 		$data['cek_sosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
