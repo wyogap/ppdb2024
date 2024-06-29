@@ -237,7 +237,7 @@
 								<button type="submit" class="btn btn-primary btn-block">Masuk</button>
 							</div>
 							<h6 class="login-title"><span>ATAU</span></h6>
-							{if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE}
+							{if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE || $cek_pendaftaran|default: FALSE}
 							<div class="text-center mb-4">
 								<a href="{$site_url}home/registrasi" class="btn btn-secondary btn-block">Registrasi Siswa Luar Daerah</a>
 							</div>
