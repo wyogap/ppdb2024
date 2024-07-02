@@ -361,7 +361,9 @@ class Home extends PpdbController
 
         } while (false);
 
-		$mdropdown = new \App\Models\Ppdb\Mconfig();
+        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
+
+        $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['cek_registrasi'] = $this->Mconfig->tcg_cek_wakturegistrasi();
 		$data['cek_sosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
 		$data['cek_pendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
