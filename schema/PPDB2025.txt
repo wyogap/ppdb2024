@@ -1,0 +1,13 @@
+PPDB2025
+- update hitungskor SMP
+- create hitungskor SD
+- create prosesperingkat SD
+- add jalur zonasi dan afirmasi untuk SD
+- add jurnal untuk SD
+- add status ketua kelas untuk SMP
+- update skoring prestasi untuk SMP
+- add data afirmasi (daerah dan nasional)
+- update status afirmasi berdasarkan data afirmasi (bukan dari dapodik)
+- fix ppdb2025_generate_dokumen_pendukung (do we even need it?)
+- update daftar sekolah SD/SMP dan kuota nya
+- update perhitungan skor prestasi SMP (tidak ada nilai mutu sekolah)
