@@ -50,7 +50,7 @@
                             <td class="text-center">Nama Ibu Kandung</td>
                             <td class="text-center">NPSN Sekolah Asal</td>
                             <td class="text-center" data-priority="4">Sekolah Asal</td>
-                            {if $cek_waktupendaftaran_sd==1}
+                            {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
                             <td class="text-center" data-priority="2"></td>
                             {/if}
                         </tr>
@@ -113,7 +113,7 @@
                             <td class="text-center" data-priority="5">Tanggal Lahir</td>
                             <td class="text-center">Asal Sekolah</td>
                             <td class="text-center" data-priority="4">Diterima Di</td>
-                            {if $cek_waktupendaftaran_sd==1}
+                            {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
                             <td class="text-center" data-priority="2"></td>
                             {/if}
                         </tr>

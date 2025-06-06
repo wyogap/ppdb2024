@@ -69,7 +69,7 @@ class Penerimaan extends PpdbController {
 
         //debugging
         if (__DEBUGGING__) {
-
+            $data['cek_waktusosialisasi']=1;
         }
 
         $data['use_select2'] = 1;

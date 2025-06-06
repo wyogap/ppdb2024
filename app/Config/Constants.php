@@ -184,5 +184,5 @@ defined('COL_UPDATED_ON')                   OR define('COL_UPDATED_ON', 'updated
 defined('COL_UPDATED_BY')                   OR define('COL_UPDATED_BY', 'updated_by');
 defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired_date');
 
-defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 0);
+defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 1);
 defined('__USE_CDN__')                      OR define('__USE_CDN__', 1);
