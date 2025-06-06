@@ -1,7 +1,17 @@
-<div class="row page-titles">
+<div class="page-titles">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="javascript:void(0)">Rekapitulasi Pendaftaran</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Rekapitulasi Sekolah</a></li>
+        {if $show_jenjang}
+        <li class="breadcrumb-item active" id="nama-jenjang">{$nama_jenjang_aktif}</li>
+        {/if}
     </ol>
+    {if $show_jenjang}
+    <div class="page-tabs">
+        {foreach $daftarjenjang as $row}
+        <span class="btn btn-xs btn-secondary" tcg-jenjang-id="{$row.jenjang_id}" {if $row.jenjang_id==$jenjang_aktif}style="display:none;"{/if}><a onclick="show_rekapitulasi({$row.jenjang_id},'{$row.nama}');">{$row.nama}</a></span>
+        {/foreach}
+    </div>
+    {/if}
 </div>
  
 <div class="page-titles" style="margin-top: -16px;">
@@ -20,9 +30,10 @@
                 <thead>
                     <tr>
                         <th class="text-center" data-priority="1">Sekolah</th>
+                        <th class="text-center">Kecamatan</th>
                         <th class="text-center">NPSN</th>
-                        <th class="text-center">Total Kuota</th>
-                        <th class="text-center" data-priority="3">Total Pendaftar</th>
+                        <th class="text-center">Total<br/>Kuota</th>
+                        <th class="text-center" data-priority="3">Total<br/>Pendaftar</th>
                         <th class="text-center" data-priority="4">Diterima</th>
                         <th class="text-center">Selisih</th>
                         <th class="text-center" data-priority="5">Daftar Ulang</th>
@@ -34,6 +45,7 @@
                     {foreach $daftarsekolah as $row}
                     <tr>
                         <td class="text-left">{$row.nama}</td>
+                        <td class="text-center">{$row.kecamatan}</td>
                         <td class="text-center">{$row.npsn}</td>
                         <td class="text-center">{$row.kuota}</td>
                         <td class="text-center">{$row.total_pendaftar}</td>

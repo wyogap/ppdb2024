@@ -105,7 +105,7 @@ class Sistem extends CrudController {
         }
         
         $mconfig = new \App\Models\Ppdb\Mconfig();
-        $page_data['daftarjenjang'] = $mconfig->tcg_jenjangppdb();
+        $page_data['daftarjenjang'] = $mconfig->tcg_jenjang();
         $page_data['jenjang'] = 3;  //SMP
         $page_data['daftarputaran'] = $mconfig->tcg_putaran();
         $page_data['putaran'] = $this->session->get('putaran_aktif');

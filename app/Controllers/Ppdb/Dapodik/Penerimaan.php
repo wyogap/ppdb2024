@@ -6,6 +6,7 @@ use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mdropdown;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
 use App\Models\Ppdb\Siswa\Mprofilsiswa;
+use App\Models\Ppdb\Mconfig;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -37,11 +38,26 @@ class Penerimaan extends PpdbController {
 	{
         $sekolah_id = $this->session->get("sekolah_id");
 
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
+        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         if (empty($profil) || !$profil['ikut_ppdb']) {
             return $this->notauthorized();
         }
         $data['profilsekolah'] = $profil;
+
+        $jenjang_id=JENJANGID_SMP;
+        $nama_jenjang='SMP';
+        if ($profil['bentuk'] == 'SD' || $profil['bentuk'] == 'MI') {
+            $jenjang_id=JENJANGID_SD;
+            $nama_jenjang='SD';
+        }
+        else if ($profil['bentuk'] == 'TK') {
+            $jenjang_id=JENJANGID_TK;
+            $nama_jenjang='TK';
+        }
+        $this->session->set("jenjang_aktif", $jenjang_id);
+        $this->session->set("nama_jenjang_aktif", $nama_jenjang);
+
+        //var_dump($jenjang_id); exit;
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
@@ -49,7 +65,7 @@ class Penerimaan extends PpdbController {
 		//$sekolah_id = $this->session->get("sekolah_id");
 		//$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
 
-        $data['waktupendaftaran_sd'] = $this->Mconfig->tcg_waktupendaftaran_sd();
+        $data['waktupendaftaran_sd'] = $this->Mconfig->tcg_waktupendaftaran($jenjang_id);
         if (empty($data['waktupendaftaran_sd'])) {
             $data['cek_waktupendaftaran_sd'] = 0;
         }
@@ -64,17 +80,36 @@ class Penerimaan extends PpdbController {
             $data['cek_waktusosialisasi'] = ($data['waktusosialisasi']['aktif'] == 1) ? 1 : 0;
         }
 
-        $data['kuota'] = $this->Msekolah->tcg_kuota_sd($sekolah_id);
+        //$data['kuota'] = $this->Msekolah->tcg_kuota_sd($sekolah_id);
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
 
         //debugging
         if (__DEBUGGING__) {
-
+            $data['cek_waktusosialisasi']=1;
         }
+
+        // var_dump($jenjang_id);
+        // var_dump($data['waktupendaftaran_sd']);
+        // exit;
+
+        $mconfig = new Mconfig();
+        $data['daftarkab'] = $mconfig->tcg_kabupaten();
 
         $data['use_select2'] = 1;
         $data['use_datatable'] = 1;
         $data['use_datatable_editor'] = 1;
+
+        $data['show_all_pendaftar'] = 1;
+		// $semuapendaftar = $this->Msekolah->tcg_daftarpendaftaran($sekolah_id);
+        // for($i=0; $i<count($semuapendaftar); $i++) {
+        //     $semuapendaftar[$i]['idx'] = $i+1;
+        //     //mask nisn
+        //     $semuapendaftar[$i]['nisn'] = substr($semuapendaftar[$i]['nisn'],0,6) .str_repeat("*", 4);
+        // }
+        // $data['semuapendaftar'] = $semuapendaftar;
+
+		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
+        $this->session->set("daftarpenerapan", $data['daftarpenerapan']);
 
         //content template
         $data['content_template'] = 'penerimaan.tpl';
@@ -91,13 +126,21 @@ class Penerimaan extends PpdbController {
 		if (empty($tahun_ajaran_id))
 			$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-		$action = $this->request->getPostGet("action");
+        $penerapan_id = $_GET["penerapan_id"] ?? null;
+		if (empty($penerapan_id)) {
+            $penerapan_id = 0;
+        };
+
+        $jenjang_id = $this->session->get("jenjang_aktif");
+        $nama_jenjang = $this->session->get("nama_jenjang_aktif");
+
+        $action = $this->request->getPostGet("action");
 		if (empty($action) || $action=='view') {
 			$sekolah_id = $this->session->get("sekolah_id");
 
 			$data = array();
 
-			$result = $this->Msekolah->tcg_penerimaan_sd($sekolah_id);
+			$result = $this->Msekolah->tcg_penerimaan_sd($sekolah_id, $penerapan_id);
             if ($result == null) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
@@ -107,136 +150,12 @@ class Penerimaan extends PpdbController {
 
 			print_json_output($result, 1);
 		}
-        else if ($action=='create'){
-			$sekolah_id = $this->session->get("sekolah_id");
-            $values = $this->request->getPost("data");
-
-            if (empty($values)) {
-                print_json_error("Data siswa baru tidak valid/kosong.");
-            }
-
-            $kuota = $this->Msekolah->tcg_kuota_sd($sekolah_id);
-            $totalpendaftaran = $this->Msekolah->tcg_totalpendaftaran_sd($sekolah_id);
-            if ($totalpendaftaran>=$kuota) {
-                print_json_error("Kuota penerimaan sudah terpenuhi (" .$kuota. ")");
-            }
-
-            $siswa = $values[0];
-            $json = null;
-			do {
-                $siswa['nisn'] = trim($siswa['nisn'] ?? '');
-				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
-					print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
-                    break;
-				}
-
-                $siswa['nik'] = trim($siswa['nik'] ?? '');
-				if (empty($siswa['nik']) || $this->Msiswa->tcg_cek_nik($siswa['nik'])) {
-					print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
-                    break;
-				}
-
-                //asal sekolah
-                if (intval($siswa['npsn_sekolah_asal']) == 0) {
-                    $siswa['npsn_sekolah_asal'] = '';
-                }
-                $npsn_sekolah_asal = trim($siswa['npsn_sekolah_asal']);
-                //dont use '0000'
-                if (!empty($npsn_sekolah_asal)) {
-                    $asal_sekolah = get_profilsekolah_from_npsn($npsn_sekolah_asal);
-                    $siswa['sekolah_id'] = $asal_sekolah['sekolah_id'];
-                }
-                else {
-                    //default
-                    $siswa['sekolah_id'] = $sekolah_id;
-                }
-                
-                //buat peserta-didik
-				$peserta_didik_id = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
-				if (empty($peserta_didik_id)) {
-					$error = $this->Msekolah->get_error_message();
-					if (!empty($error)) {
-                        print_json_error($error);
-					} else {
-						print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
-					}
-				}
-
-                //$profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
-
-                //audit trail
-                $siswa['peserta_didik_id'] = $peserta_didik_id;
-                audit_siswa($siswa, "SISWA BARU SD", "Siswa Baru Penerimaan SD an. " .$siswa['nama']);
-
-                //buat pendaftaran
-                $status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
-                if (!$status) {
-                    $error = $this->Msekolah->get_error_message();
-                    if (!empty($error)) {
-                        print_json_error($error);
-                    } else {
-                        print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
-                    }
-                }                
-
-                $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
-
-                //audit trail
-                $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
-                audit_pendaftaran($pendaftaran, "PENDAFTARAN SD", "Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
-    
-                //print_json_output($pendaftaran);
-                $json[] = $pendaftaran;
-        
-			} while(false);
-
-            print_json_output($json);
-		}
-        else if ($action=='edit'){
-            $values = $this->request->getPost("data");
-
-            if (empty($values)) {
-                print_json_error("Data siswa baru tidak valid/kosong.");
-            }
-
-            $json = array();
-            foreach($values as $k => $v) {
-
-                if (isset($v['nisn'])) {
-                    $v['nisn'] = trim($v['nisn'] ?? '');
-                    if (empty($v['nisn']) || $this->Msiswa->tcg_cek_nisn($v['nisn'], $k)) {
-                        print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
-                        break;
-                    }
-                }
-
-                if (isset($v['nik'])) {
-                    $v['nik'] = trim($v['nik'] ?? '');
-                    if (empty($v['nik']) || $this->Msiswa->tcg_cek_nik($v['nik'], $k)) {
-                        print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
-                        break;
-                    }
-                }
-
-                $profil = $this->Msiswa->tcg_profilsiswa($k);
-                $data = $this->Msiswa->tcg_update_siswa($k, $v);
-
-                if ($data != null) {
-                    //audit trail
-                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " .$data['nama'], array_keys($v), $v, $profil);
-                }
-
-                $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($k);
-            }
-
-            print_json_output($json);
-        }
         else if ($action=='remove') {
 			$sekolah_id = $this->session->get("sekolah_id");
             $peserta_didik_id = $this->request->getPostGet('peserta_didik_id');
 
             //pendaftaran lama
-            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_siswa($peserta_didik_id);
             if ($sekolah_id != $pendaftaran['sekolah_id']) {
                 print_json_error('Tidak mendaftar di sekolah ini');
             }
@@ -253,55 +172,9 @@ class Penerimaan extends PpdbController {
 
             //audit trail
             $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
-            audit_pendaftaran($pendaftaran, "HAPUS PENDAFTARAN SD", "HAPUS Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
+            audit_pendaftaran($pendaftaran, "HAPUS PENDAFTARAN SD/TK", "HAPUS Pendaftaran di " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
 
 			print_json_output(array());
-        }
-		else if ($action=='accept'){
-			$sekolah_id = $this->session->get("sekolah_id");
-			$peserta_didik_id= $this->request->getPostGet("peserta_didik_id"); 
-
-            $kuota = $this->Msekolah->tcg_kuota_sd($sekolah_id);
-            $totalpendaftaran = $this->Msekolah->tcg_totalpendaftaran_sd($sekolah_id);
-            if ($totalpendaftaran>=$kuota) {
-                print_json_error("Kuota penerimaan sudah terpenuhi (" .$kuota. ")");
-            }
-
-            //sudah diterima
-            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
-            if ($pendaftaran != null) {
-                print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
-            }
-
-            //batasan usia
-            $batasan_usia = $this->Mconfig->tcg_batasanusia('SD');
-            $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
-
-            if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
-                print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
-            }
-
-            if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
-                print_json_error('Maksimal tanggal lahir: ' .$batasan_usia['maksimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
-            }            
-
-			$status = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id);
-            if (!$status) {
-                $error = $this->Msekolah->get_error_message();
-                if (!empty($error)) {
-                    print_json_error($error);
-                } else {
-                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
-                }
-            }
-
-            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($peserta_didik_id);
-
-            //audit trail
-            $pendaftaran['peserta_didik_id'] = $peserta_didik_id;
-            audit_pendaftaran($pendaftaran, "PENDAFTARAN SD", "Pendaftaran di SD " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
-
-			print_json_output($pendaftaran);	
         }
         else if ($action=='sekolah') {
             $mdropdown = new \App\Models\Ppdb\Mconfig();
@@ -333,6 +206,409 @@ class Penerimaan extends PpdbController {
 			echo json_encode($data);	
 		}
 	}
-       
+
+    function ubahdata() {
+		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
+		if (empty($tahun_ajaran_id))
+			$tahun_ajaran_id = $this->tahun_ajaran_id;
+
+        $sekolah_id = $this->session->get("sekolah_id");
+        $daftarpenerapan = $this->session->get("daftarpenerapan");
+        $jenjang_id = $this->session->get("jenjang_aktif");
+
+        $action = $this->request->getPostGet("action");
+        if ($action=='create'){
+            $values = $this->request->getPost("data");
+
+            if (empty($values)) {
+                print_json_error("Data siswa tidak valid/kosong.");
+            }
+
+            $json = array();
+            foreach($values as $peserta_didik_id => $siswa) {
+                $siswa['nisn'] = trim($siswa['nisn'] ?? '');
+				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
+					print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
+                    break;
+				}
+
+                $siswa['nik'] = trim($siswa['nik'] ?? '');
+				if (empty($siswa['nik']) || $this->Msiswa->tcg_cek_nik($siswa['nik'])) {
+					print_json_error("NIK siswa baru tidak valid/kosong/sudah terpakai.");
+                    break;
+				}
+
+                //asal sekolah
+                if (intval($siswa['npsn_sekolah_asal']) == 0) {
+                    $siswa['npsn_sekolah_asal'] = '';
+                }
+                $npsn_sekolah_asal = trim($siswa['npsn_sekolah_asal']);
+                //dont use '0000'
+                if (!empty($npsn_sekolah_asal)) {
+                    $asal_sekolah = get_profilsekolah_from_npsn($npsn_sekolah_asal);
+                    $siswa['sekolah_id'] = $asal_sekolah['sekolah_id'];
+                }
+                else {
+                    //default
+                    $siswa['sekolah_id'] = $sekolah_id;
+                }
+
+                $penerapan_id = 0;
+                if (isset($siswa['penerapan_id'])) {
+                    $penerapan_id = $siswa['penerapan_id'];
+                    unset($siswa['penerapan_id']);
+                }
+
+                //batasan usia
+                //var_dump($jenjang_id); exit;
+                $batasan_usia = $this->Mconfig->tcg_batasanusia($jenjang_id);
+
+                if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
+                    print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
+                }
+
+                if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
+                    print_json_error('Maksimal tanggal lahir: ' .$batasan_usia['maksimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
+                }            
+
+                //make sure it is valid penerapan
+                $penerapan = false;
+                foreach($daftarpenerapan as $p) {
+                    if ($p['penerapan_id'] == $penerapan_id) {
+                        $penerapan = $p;
+                        break;
+                    }
+                }
+
+                if (!$penerapan) {
+                    print_json_error("Jalur pendaftaran tidak valid.");
+                    break;
+                }
+            
+                //kalau pakai jalur afirmasi, cek masuk data afirmasi
+                if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+                    $nik = $siswa['nik'];
+                    if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+                        print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+                    }
+                }
+                
+                //buat peserta-didik
+				$peserta_didik_id = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
+				if (empty($peserta_didik_id)) {
+					$error = $this->Msekolah->get_error_message();
+					if (!empty($error)) {
+                        print_json_error($error);
+					} else {
+						print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+					}
+				}
+
+                //$profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+
+                //audit trail
+                $siswa['peserta_didik_id'] = $peserta_didik_id;
+                audit_siswa($siswa, "SISWA BARU SD/TK", "Siswa Baru Penerimaan SD/TK an. " .$siswa['nama']);
+
+                $pendaftaran = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
+                if (!$pendaftaran) {
+                    $error = $this->Msekolah->get_error_message();
+                    if (!empty($error)) {
+                        print_json_error($error);
+                    } else {
+                        print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                    }
+                }
+    
+                if (empty($pendaftaran) || $pendaftaran['sekolah_id']!=$sekolah_id || $pendaftaran['penerapan_id']!=$penerapan_id) {
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+    
+                //audit trail
+                audit_pendaftaran($pendaftaran, "PENDAFTARAN SD/TK", "Pendaftaran di " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
+    
+                $json[] = $pendaftaran;    
+            }
+
+            print_json_output($json);
+        }
+        else if ($action=='edit') {
+            $values = $this->request->getPost("data");
+
+            if (empty($values)) {
+                print_json_error("Data siswa tidak valid/kosong.");
+            }
+
+            $json = array();
+            foreach($values as $k => $v) {
+                $pendaftaran_id = $k;
+
+                // if (!isset($v['pendaftaran_id'])) {
+                //     print_json_error("Pendaftaran tidak valid.");
+                //     break;
+                // }
+                // $pendaftaran_id = $v['pendaftaran_id'];
+                // unset($v['pendaftaran_id']);
+
+                $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($sekolah_id, $pendaftaran_id);
+                if ($pendaftaran == null) {
+                    print_json_error("Pendaftaran tidak valid.");
+                    break;
+                }
+
+                $penerapan_id = 0;
+                if (isset($v['penerapan_id'])) {
+                    $penerapan_id = $v['penerapan_id'];
+                    unset($v['penerapan_id']);
+                }
+
+                //update profil
+                $peserta_didik_id = $pendaftaran['peserta_didik_id'];
+                if (isset($v['nisn'])) {
+                    $v['nisn'] = trim($v['nisn'] ?? '');
+                    if (empty($v['nisn']) || $this->Msiswa->tcg_cek_nisn($v['nisn'], $peserta_didik_id)) {
+                        print_json_error("NISN siswa tidak valid/kosong/sudah terpakai.");
+                        break;
+                    }
+                }
+
+                if (isset($v['nik'])) {
+                    $v['nik'] = trim($v['nik'] ?? '');
+                    if (empty($v['nik']) || $this->Msiswa->tcg_cek_nik($v['nik'], $peserta_didik_id)) {
+                        print_json_error("NIK siswa tidak valid/kosong/sudah terpakai.");
+                        break;
+                    }
+                }
+
+                $profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+                $data = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $v);
+
+                if ($data != null) {
+                    //audit trail
+                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " .$data['nama'], array_keys($v), $v, $profil);
+                }
+
+                if ($penerapan_id == 0 || $penerapan_id == $pendaftaran['penerapan_id']) {
+                    $json[] = $this->Msekolah->tcg_penerimaan_sd_detil($sekolah_id, $pendaftaran_id); 
+                    continue;               
+                }
+
+                //update penerapan
+                //make sure it is valid penerapan
+                $penerapan = false;
+                foreach($daftarpenerapan as $p) {
+                    if ($p['penerapan_id'] == $penerapan_id) {
+                        $penerapan = $p;
+                        break;
+                    }
+                }
+
+                if (!$penerapan) {
+                    print_json_error("Jalur pendaftaran tidak valid.");
+                    break;
+                }
+            
+                //kalau pakai jalur afirmasi, cek masuk data afirmasi
+                if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+                    $nik = $pendaftaran['nik'];
+                    if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+                        print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+                    }
+                }
+
+                $data = $this->Msekolah->tcg_ubahjalur_sd($pendaftaran_id, $penerapan_id);
+
+                if ($data != null) {
+                    //audit trail
+                    audit_pendaftaran($pendaftaran, "UBAH PENDAFTARAN SD/TK", "Ubah jalur pendaftaran siswa an. " .$data['nama']. " ke jalur " .$data['jalur'], 
+                        array("penerapan_id"), array($penerapan_id), array($pendaftaran['penerapan_id']));
+                }
+
+                $json[] = $data;
+            }
+
+            print_json_output($json);
+        }
+    }
+
+	function ubahjalur() {
+		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
+		if (empty($tahun_ajaran_id))
+			$tahun_ajaran_id = $this->tahun_ajaran_id;
+
+        // $penerapan_id = $_GET["penerapan_id"] ?? null;
+		// if (empty($penerapan_id)) {
+        //     $penerapan_id = 0;
+        // };
+
+        // $jenjang_id = $this->session->get("jenjang_aktif");
+        // $nama_jenjang = $this->session->get("nama_jenjang_aktif");
+        $sekolah_id = $this->session->get("sekolah_id");
+        $daftarpenerapan = $this->session->get("daftarpenerapan");
+
+        $values = $this->request->getPost("data");
+
+        if (empty($values)) {
+            print_json_error("Data pendaftaran tidak valid/kosong.");
+        }
+
+        $json = array();
+        foreach($values as $k => $v) {
+            $pendaftaran_id = $k;
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_detil($sekolah_id, $pendaftaran_id);
+            if (empty($pendaftaran)) {
+                print_json_error("Pendaftaran tidak ditemukan di sekolah.");
+                break;
+            }
+
+            if (!isset($v['penerapan_id'])) {
+                print_json_error("Jalur pendaftaran tidak valid.");
+                break;
+            }
+
+            $penerapan_id = $v['penerapan_id'];
+            if ($penerapan_id == $pendaftaran['penerapan_id'])  continue;
+
+            //make sure it is valid penerapan
+            $penerapan = false;
+            foreach($daftarpenerapan as $p) {
+                if ($p['penerapan_id'] == $penerapan_id) {
+                    $penerapan = $p;
+                    break;
+                }
+            }
+
+            if (!$penerapan) {
+                print_json_error("Jalur pendaftaran tidak valid.");
+                break;
+            }
+           
+            //kalau pakai jalur afirmasi, cek masuk data afirmasi
+            if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+                $nik = $pendaftaran['nik'];
+                if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+                    print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+                }
+            }
+
+            $data = $this->Msekolah->tcg_ubahjalur_sd($pendaftaran_id, $penerapan_id);
+
+            if ($data != null) {
+                //audit trail
+                audit_pendaftaran($pendaftaran, "UBAH PENDAFTARAN SD/TK", "Ubah jalur pendaftaran siswa an. " .$data['nama']. " ke jalur " .$data['jalur'], 
+                    array("penerapan_id"), array($penerapan_id), array($pendaftaran['penerapan_id']));
+            }
+
+            $json[] = $data;
+        }
+
+        print_json_output($json);
+    }
+
+    function daftar() {
+		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
+		if (empty($tahun_ajaran_id))
+			$tahun_ajaran_id = $this->tahun_ajaran_id;
+
+        // $penerapan_id = $_GET["penerapan_id"] ?? null;
+		// if (empty($penerapan_id)) {
+        //     $penerapan_id = 0;
+        // };
+
+        $jenjang_id = $this->session->get("jenjang_aktif");
+        // $nama_jenjang = $this->session->get("nama_jenjang_aktif");
+
+        $sekolah_id = $this->session->get("sekolah_id");
+        $daftarpenerapan = $this->session->get("daftarpenerapan");
+
+        $values = $this->request->getPost("data");
+
+        if (empty($values)) {
+            print_json_error("Data pendaftaran tidak valid/kosong.");
+        }
+
+        $json = array();
+        foreach($values as $k => $v) {
+            $peserta_didik_id = $k;
+
+            if (!isset($v['penerapan_id'])) {
+                print_json_error("Jalur pendaftaran tidak valid.");
+                break;
+            }
+            $penerapan_id = $v['penerapan_id'];
+
+            //make sure it is valid penerapan
+            $penerapan = null;
+            foreach($daftarpenerapan as $p) {
+                if ($p['penerapan_id'] == $penerapan_id) {
+                    $penerapan = $p;
+                    break;
+                }
+            }
+
+            if (!$penerapan) {
+                print_json_error("Jalur pendaftaran tidak valid.");
+                break;
+            }
+
+            // if (__DEBUGGING__) {
+            //     $penerapan_id=301;
+            // }
+
+            // $kuota = $this->Msekolah->tcg_kuota_sd($sekolah_id);
+            // $totalpendaftaran = $this->Msekolah->tcg_totalpendaftaran_sd($sekolah_id);
+            // if ($totalpendaftaran>=$kuota) {
+            //     print_json_error("Kuota penerimaan sudah terpenuhi (" .$kuota. ")");
+            // }
+
+            //sudah diterima
+            $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_siswa($peserta_didik_id);
+            if ($pendaftaran != null) {
+                print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
+            }
+
+            //batasan usia
+            //var_dump($jenjang_id); exit;
+            $batasan_usia = $this->Mconfig->tcg_batasanusia($jenjang_id);
+            $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+
+            if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
+                print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
+            }
+
+            if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
+                print_json_error('Maksimal tanggal lahir: ' .$batasan_usia['maksimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
+            }            
+
+            //kalau pakai jalur afirmasi, cek masuk data afirmasi
+            if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+                $nik = $siswa['nik'];
+                if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+                    print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+                }
+            }
+
+            $pendaftaran = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
+            if (!$pendaftaran) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    print_json_error($error);
+                } else {
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+            }
+
+            if (empty($pendaftaran) || $pendaftaran['sekolah_id']!=$sekolah_id || $pendaftaran['penerapan_id']!=$penerapan_id) {
+                print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+            }
+
+            //audit trail
+            audit_pendaftaran($pendaftaran, "PENDAFTARAN SD/TK", "Pendaftaran di " .$pendaftaran['sekolah']. " an. " .$pendaftaran['nama']);
+
+            $json[] = $pendaftaran;
+        }
+
+        print_json_output($pendaftaran);	
+    }
 }
 ?>

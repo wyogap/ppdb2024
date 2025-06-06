@@ -45,18 +45,30 @@
 
         {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 		editor_siswa = new $.fn.dataTable.Editor( {
-			ajax: "{$site_url}ppdb/dapodik/penerimaan/json",
-			table: "#tditerima",
-			idSrc: "peserta_didik_id",
+			ajax: "{$site_url}ppdb/dapodik/penerimaan/ubahdata",
+			table: "#tdaftarpendaftar",
+			idSrc: "pendaftaran_id",
 			fields: [ 
-			{
+            {
+                label: "Jalur Pendaftaran:",
+                name:  "penerapan_id",
+                type:  "radio",
+                compulsory: true,
+                options: [
+                    {foreach $daftarpenerapan as $p}
+                    { label: "{$p.jalur}", 	value: "{$p.penerapan_id}" },
+                    {/foreach}
+                ]
+            }, {
 				label: "Nama:",
 				name: "nama",
 				type: "text",
+                compulsory: true,
             }, {
                 label: "Jenis Kelamin:",
                 name:  "jenis_kelamin",
                 type:  "radio",
+                compulsory: true,
                 options: [
                     { label: "Laki-laki", 	value: "L" },
                     { label: "Perempuan",   value: "P" },
@@ -65,26 +77,65 @@
 				label: "NISN:",
 				name: "nisn",
 				type: "text",
+                compulsory: true,
                 def: "NA",
                 fieldInfo: "Apabila belum mempunya NISN, diisi dengan: NA"
 			}, {
 				label: "NIK:",
 				name: "nik",
 				type: "text",
+                compulsory: true,
                 fieldInfo: "Apabila belum mempunya NIK/KK, diisi dengan: NA"
 			}, {
 				label: "Tempat Lahir:",
 				name: "tempat_lahir",
 				type: "text",
+                compulsory: true,
 			}, {
 				label: "Tanggal Lahir:",
 				name: "tanggal_lahir",
                 type:  'datetime',
+                compulsory: true,
                 def:   function () { return new Date(); }
 			}, {
 				label: "Nama Ibu Kandung:",
 				name: "nama_ibu_kandung",
 				type: "text",
+                compulsory: true,
+			}, {
+				label: "Alamat:",
+				name: "kode_wilayah_kab",
+				type: "tcg_select2",
+                options: [
+                    {foreach $daftarkab as $kab}
+                    { label: "{$kab.kabupaten}", value: "{$kab.kode_wilayah}" },
+                    {/foreach}
+                ],
+                attr: {
+                    compulsory: true,
+                    placeholder: "Kabupaten/Kota",
+                    editorId: "editor_siswa",
+                },
+			}, {
+				label: "",
+				name: "kode_wilayah_kec",
+				type: "tcg_select2",
+                options: [],
+                attr: {
+                    compulsory: true,
+                    placeholder: "Kecamatan",
+                    editorId: "editor_siswa",
+                },
+			}, {
+				label: "",
+				name: "kode_wilayah",
+				type: "tcg_select2",
+                options: [],
+                attr: {
+                    compulsory: true,
+                    placeholder: "Desa/Kelurahan",
+                    editorId: "editor_siswa",
+                },
 			}, {
 				label: "NPSN Sekolah Asal:",
 				name: "npsn_sekolah_asal",
@@ -133,7 +184,20 @@
                 let field = null;
                 let hasError = false;
 
-				field = this.field('nama');
+                field = this.field('penerapan_id');
+                if (!field.isMultiValue()) {
+                    hasError = false;
+                    if (!field.val() || field.val() == '') {
+                        hasError = true;
+                        field.error('Jalur pendaftaran harus diisi.');
+                    }
+
+                    if (!hasError) {
+                        //TODO: validasi lebih lanjut
+                    }
+                }
+
+                field = this.field('nama');
 				if (!field.isMultiValue()) {
                     hasError = false;
                     if (!field.val() || field.val() == '') {
@@ -270,10 +334,41 @@
 
             }
 
-        });        
+        });  
+        
+        editor_siswa.on('postSubmit', function(e, json, data, action, xhr) {
+            if (action=="edit") {
+                if(json !== undefined && json !== null && json.data !== undefined && json.data !== null) {
+                    json.data.forEach(function(data) {
+                        let nama = data['nama'];
+                        toastr.success("Berhasil mengubah data siswa siswa an. " +nama);
+                    });
+
+                    dt_siswa.ajax.reload();
+
+                    {foreach $daftarpenerapan as $row}
+                    dt_{$row.penerapan_id}.ajax.reload();
+                    {/foreach}
+                }
+            }
+            else if(action=="create") {
+                if(json !== undefined && json !== null && json.data !== undefined && json.data !== null) {
+                    json.data.forEach(function(data) {
+                        let nama = data['nama'];
+                        toastr.success("Berhasil menambahkan data siswa an. " +nama);
+                    });
+ 
+                    dt_siswa.ajax.reload();
+
+                    {foreach $daftarpenerapan as $row}
+                    dt_{$row.penerapan_id}.ajax.reload();
+                    {/foreach}
+                }
+            }
+        });
         {/if}
 
-		dt_siswa = $('#tditerima').DataTable({
+		dt_siswa = $('#tdaftarpendaftar').DataTable({
 			"responsive": true,
 			"pageLength": 10,
 			"lengthMenu": [ [5, 10, 20, -1], [5, 10, 20, "All"] ],
@@ -321,10 +416,10 @@
                     return json.data;
                 }       
             },
-			rowId: 'peserta_didik_id',
+			rowId: 'pendaftaran_id',
 			columns: [
-				{ data: "nama", className: 'dt-body-left'
-				},
+				{ data: "rn", className: 'dt-body-left'},
+				{ data: "nama", className: 'dt-body-left'},
 				{ data: "jenis_kelamin", className: 'dt-body-center  text-nowrap' },
 				{ data: "nisn", className: 'dt-body-center'
 				},
@@ -335,6 +430,31 @@
 				{ data: "nama_ibu_kandung", className: 'dt-body-center' },
 				{ data: "npsn_sekolah_asal", className: 'dt-body-center' },
 				{ data: "nama_sekolah_asal", className: 'dt-body-left' },
+				{ data: "jalur", className: 'dt-body-center' },
+				{ data: "status_penerimaan_final", className: 'dt-body-center', 
+					render: function(data, type, row, meta) {
+						if(type != 'display') {
+							return data;
+						}
+
+                        {if $final_ranking|default: FALSE}
+                        if (data==1 || data==3) {
+                            return "Diterima";
+                        }
+                        else {
+                            return "Tidak Diterima"
+                        }
+                        {else}
+                        if (data==1 || data==3) {
+                            return "Masuk Kuota";
+                        }
+                        else {
+                            return "Tidak Masuk Kuota"
+                        }
+                        {/if}
+					}
+
+                },
                 {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
@@ -345,8 +465,8 @@
 							return "";
 						}
 
-                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
-						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
+                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
+						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
 
 						return str;
 						// return "<button href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-danger'>Hapus</button>";
@@ -354,9 +474,210 @@
 				}
                 {/if}
 			],
-			order: [ 0, 'asc' ],
-			"deferLoading": 0
+			order: [ 1, 'asc' ],
+			deferLoading: 0,
+            columnDefs: [{
+                targets: 11, 
+                // status penerimaan
+                createdCell: function(td, cellData, rowData, row, col) {                   
+                    if (rowData['status_penerimaan_final']==1 || rowData['status_penerimaan_final']==3) {
+                        $(td).removeClass('bg-red');
+                        $(td).addClass('bg-green');
+                    }
+                    else {
+                        $(td).addClass('bg-red');
+                        $(td).removeClass('bg-green');
+                    }
+                },
+            }],
 		});
+
+        dt_siswa.on('order.dt search.dt', function () {
+            let i = 1;
+    
+            dt_siswa
+                .cells(null, 0, { search: 'applied', order: 'applied' })
+                .every(function (cell) {
+                    let data = this.data();
+                    this.data(i++);
+                    let data2 = this.data();
+                });
+        })
+        .draw();
+
+        {foreach $daftarpenerapan as $row}
+            dt_{$row.penerapan_id} = $('#t{$row.penerapan_id}').DataTable({
+                "responsive": true,
+                "processing": true,
+                "pageLength": 10,
+                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                "paging": true,
+                "pagingType": "numbers",
+                "dom": 'Bfrtpil',
+                select: true,
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Ekspor',
+                        className: 'btn-sm btn-primary',
+                        exportOptions: {
+                            orthogonal: "export",
+                            modifier: {
+                                //selected: true
+                            },
+                        },
+                    },
+                ],
+                "ajax": {
+                    "type" : "POST",
+                    "url" : "{$site_url}ppdb/dapodik/penerimaan/json?penerapan_id="+{$row.penerapan_id},
+                    "dataSrc": function ( json ) {
+                        //hide loader
+                        $("#loading2").hide();
+
+                        //actual data source
+                        if (typeof json.error!='undefined' && json.error!=null && json.error!='') {
+                            alert(json.error);
+                            return [];
+                        }
+
+                        return json.data;
+                    }       
+                },
+                rowId: 'pendaftaran_id',
+                columns: [
+                    { data: "rn", className: 'dt-body-left'},
+                    { 
+                        data: "peringkat_final", className: 'dt-body-center',
+                    },
+                    { data: "nama", className: 'dt-body-left'},
+                    { data: "jenis_kelamin", className: 'dt-body-center  text-nowrap' },
+                    { data: "nisn", className: 'dt-body-center'
+                    },
+                    { data: "nik", className: 'dt-body-center'
+                    },
+                    { data: "tempat_lahir", className: 'dt-body-center' },
+                    { data: "tanggal_lahir", className: 'dt-body-center  text-nowrap' },
+                    { data: "nama_ibu_kandung", className: 'dt-body-center' },
+                    { data: "npsn_sekolah_asal", className: 'dt-body-center' },
+                    { data: "nama_sekolah_asal", className: 'dt-body-left' },
+                    { data: "skor", className: 'dt-body-center' },
+                    {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+                    {
+                        data: null,
+                        className: 'text-end inline-flex text-nowrap inline-actions',
+                        "orderable": false,
+                        render: function(data, type, row, meta) {
+                            if(type != 'display') {
+                                return "";
+                            }
+
+                            let str = "<button onclick='event.stopPropagation(); ubah_jalur(" +meta.row+ ", dt_{$row.penerapan_id}, editor_{$row.penerapan_id}, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-share'></i></button>";
+                            str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_{$row.penerapan_id}, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
+
+                            return str;
+                            // return "<button href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-danger'>Hapus</button>";
+                        }
+                    }
+                    {/if}
+                ],
+                order: [ 0, 'asc' ],
+                deferLoading: 0,
+                columnDefs: [{
+                    targets: 1, 
+                    // status penerimaan
+                    createdCell: function(td, cellData, rowData, row, col) {                   
+                        if (rowData['status_penerimaan_final']==1 || rowData['status_penerimaan_final']==3) {
+                            $(td).removeClass('bg-red');
+                            $(td).addClass('bg-green');
+                        }
+                        else {
+                            $(td).addClass('bg-red');
+                            $(td).removeClass('bg-green');
+                        }
+                    },
+                }],
+            });
+
+            editor_{$row.penerapan_id} = new $.fn.dataTable.Editor( {
+                ajax: "{$site_url}ppdb/dapodik/penerimaan/ubahjalur",
+                table: "#t{$row.penerapan_id}",
+                idSrc: "pendaftaran_id",
+                fields: [ 
+                    {
+                        label: "Jalur Pendaftaran:",
+                        name:  "penerapan_id",
+                        type:  "radio",
+                        options: [
+                            {foreach $daftarpenerapan as $p}
+                            { label: "{$p.jalur}", 	value: "{$p.penerapan_id}" },
+                            {/foreach}
+                        ]
+                    }
+                ],
+                formOptions: {
+                    main: {
+                        submit: 'changed',
+                        onBackground: 'none'
+                    }
+                },
+                i18n: {
+                    edit: {
+                        button: "Ubah Jalur",
+                        title:  "Ubah Jalur Pendaftaran",
+                        submit: "Simpan"
+                    },
+                    error: {
+                        system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi admin sistem."
+                    },
+                }
+            });
+
+            editor_{$row.penerapan_id}.on('preSubmit', function(e, o, action) {
+                if (action === 'create' || action === 'edit') {
+                    let field = null;
+                    let hasError = false;
+
+                    field = this.field('penerapan_id');
+                    if (!field.isMultiValue()) {
+                        hasError = false;
+                        if (!field.val() || field.val() == '') {
+                            hasError = true;
+                            field.error('Jalur pendaftaran harus diisi.');
+                        }
+    
+                        if (!hasError) {
+                            //TODO: validasi lebih lanjut
+                        }
+                    }
+
+                    /* If any error was reported, cancel the submission so it can be corrected */
+                    if (this.inError()) {
+                        this.error('Data wajib belum diisi atau tidak berhasil divalidasi');
+                        return false;
+                    }
+
+                }
+
+            });        
+
+            editor_{$row.penerapan_id}.on('postSubmit', function(e, json, data, action, xhr) {
+            if (action=="edit") {
+                if(json !== undefined && json !== null && json.data !== undefined && json.data !== null) {
+                    json.data.forEach(function(data) {
+                        let nama = data['nama'];
+                        toastr.success("Berhasil mengubah jalur pendaftaran siswa an. " +nama);
+                    });
+
+                    dt_siswa.ajax.reload();
+
+                    {foreach $daftarpenerapan as $row}
+                    dt_{$row.penerapan_id}.ajax.reload();
+                    {/foreach}
+                }
+            }
+        });            
+        {/foreach}
 
         //populate daftar sekolah untuk pencarian
 	});
@@ -377,14 +698,35 @@
 		return;
 	}
 
+    function ubah_jalur(row_id, dt, editor, key) {
+		let row = dt.row('#' +key);
+        // let data = row.data();
+        // var penerapan_id = data['penerapan_id'];
+
+		editor
+				.title("Ubah Jalur Pendaftaran")
+				.buttons([
+					{ label: "Simpan", className: "btn-primary", fn: function () { this.submit(); } },
+					{ label: "Batal", className: "btn-secondary", fn: function () { this.close(); } },
+				])
+				.edit(row.index(), {
+					submit: 'changed'
+				});
+
+		return;
+	}
+
 	function hapus_penerimaan(row_id, dt, key) {
 		// add assoc key values, this will be posts values
         let data = dt.rows(row_id).data();
         var nama = data[0]['nama'];
+        var pendaftaran_id = data[0]['pendaftaran_id'];
+        var peserta_didik_id = data[0]['peserta_didik_id'];
 
         // add assoc key values, this will be posts values
 		var formData = new FormData();
-		formData.append("peserta_didik_id", key);
+		formData.append("pendaftaran_id", pendaftaran_id);
+		formData.append("peserta_didik_id", peserta_didik_id);
 		formData.append("action", "remove");
 
 		$.ajax({
@@ -399,21 +741,25 @@
 			dataType: 'json',
 			success: function(json) {
 				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
-					toastr.error("Tidak berhasil menghapus penerimaan. " +json.error);
+					toastr.error("Tidak berhasil menghapus pendaftaran. " +json.error);
 					return;
 				}
 
 				//hide loader
 				//$("#loading2").show();
 				dt_siswa.ajax.reload();
+                
+                {foreach $daftarpenerapan as $row}
+                dt_{$row.penerapan_id}.ajax.reload();
+                {/foreach}
 				
                 //reload the search if necessary
                 cari_peserta_didik();
 
-                toastr.success("Data penerimaan an. " +nama+ " berhasil dihapus");
+                toastr.success("Data pendaftaran an. " +nama+ " berhasil dihapus");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil menghapus penerimaan. " +textStatus);
+                toastr.error("Tidak berhasil menghapus pendaftaran. " +textStatus);
 
 				return;
 			}
@@ -589,6 +935,7 @@
 			// 	},
 			// 	{ extend: "edit", editor: editor_pwd }
 			// ],
+            rowId: "peserta_didik_id",
 			columns: [
 				{ data: "nama", className: 'dt-body-left'
 				},
@@ -600,6 +947,7 @@
 				{ data: "tanggal_lahir", className: 'dt-body-center text-nowrap' },
 				{ data: "sekolah", className: 'dt-body-left' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
+				//{ data: "penerapan_id", className: 'dt-body-left' },
                 {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
@@ -620,8 +968,92 @@
                 {/if}
 			],
 			order: [ 0, 'asc' ],
-			"deferLoading": 0
+			deferLoading: 0
 		});
+
+        editor_search = new $.fn.dataTable.Editor( {
+            ajax: "{$site_url}ppdb/dapodik/penerimaan/daftar",
+            table: "#tsearch",
+            idSrc: "peserta_didik_id",
+            fields: [ 
+                {
+                    name: "peserta_didik_id",
+                    type: "hidden"
+                },
+                {
+                    label: "Jalur Pendaftaran:",
+                    name:  "penerapan_id",
+                    type:  "radio",
+                    options: [
+                        {foreach $daftarpenerapan as $p}
+                        { label: "{$p.jalur}", 	value: "{$p.penerapan_id}" },
+                        {/foreach}
+                    ]
+                }
+            ],
+            formOptions: {
+                main: {
+                    submit: 'changed',
+                    onBackground: 'none'
+                }
+            },
+            i18n: {
+                edit: {
+                    button: "Ubah Jalur",
+                    title:  "Ubah Jalur Pendaftaran",
+                    submit: "Simpan"
+                },
+                error: {
+                    system: "Ada permasalahan dalam menyimpan data. Silahkan hubungi admin sistem."
+                },
+            }
+        });
+
+        editor_search.on('preSubmit', function(e, o, action) {
+            if (action === 'create' || action === 'edit') {
+                let field = null;
+                let hasError = false;
+
+                field = this.field('penerapan_id');
+                if (!field.isMultiValue()) {
+                    hasError = false;
+                    if (!field.val() || field.val() == '') {
+                        hasError = true;
+                        field.error('Jalur pendaftaran harus diisi.');
+                    }
+
+                    if (!hasError) {
+                        //TODO: validasi lebih lanjut
+                    }
+                }
+
+                /* If any error was reported, cancel the submission so it can be corrected */
+                if (this.inError()) {
+                    this.error('Data wajib belum diisi atau tidak berhasil divalidasi');
+                    return false;
+                }
+
+            }
+
+        });        
+
+        editor_search.on('postSubmit', function(e, json, data, action, xhr) {
+            if (action=="edit") {
+                if(json !== undefined && json !== null && json.data !== undefined && json.data !== null) {
+                    let nama = json.data['nama'];
+
+                    dt_search.ajax.reload();
+                    dt_siswa.ajax.reload();
+
+                    {foreach $daftarpenerapan as $row}
+                    dt_{$row.penerapan_id}.ajax.reload();
+                    {/foreach}
+
+                    toastr.success("Berhasil menambahkan pendaftaran siswa an. " +nama);
+                }
+            }
+        });
+
 
         populate_daftar_sekolah();
 	});
@@ -700,42 +1132,56 @@
   	}
 
 	function tambah_penerimaan(row_id, dt, key) {
-		// add assoc key values, this will be posts values
-        let data = dt.rows(row_id).data();
-        var nama = data[0]['nama'];
+		let row = dt.row('#' +key);
 
-		var formData = new FormData();
-		formData.append("peserta_didik_id", key);
-		formData.append("action", "accept");
+		editor_search
+				.title("Pilih Jalur Pendaftaran")
+				.buttons([
+					{ label: "Simpan", className: "btn-primary", fn: function () { this.submit(); } },
+					{ label: "Batal", className: "btn-secondary", fn: function () { this.close(); } },
+				])
+				.edit(row.index(), {
+					submit: 'changed'
+				});
 
-		$.ajax({
-			type: "POST",
-			url: "{$site_url}ppdb/dapodik/penerimaan/json",
-			async: true,
-			data: formData,
-			cache: false,
-			contentType: false,
-			processData: false,
-			timeout: 60000,
-			dataType: 'json',
-			success: function(json) {
-				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
-					toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +json.error);
-					return;
-				}
+		return;
 
-				dt_search.ajax.reload();
-				dt_siswa.ajax.reload();
+        // // add assoc key values, this will be posts values
+        // let data = dt.rows(row_id).data();
+        // var nama = data[0]['nama'];
 
-                toastr.success("Berhasil menambahkan penerimaan siswa an. " +nama);
+		// var formData = new FormData();
+		// formData.append("peserta_didik_id", key);
+		// formData.append("action", "accept");
 
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +textStatus);
+		// $.ajax({
+		// 	type: "POST",
+		// 	url: "{$site_url}ppdb/dapodik/penerimaan/json",
+		// 	async: true,
+		// 	data: formData,
+		// 	cache: false,
+		// 	contentType: false,
+		// 	processData: false,
+		// 	timeout: 60000,
+		// 	dataType: 'json',
+		// 	success: function(json) {
+		// 		if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+		// 			toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +json.error);
+		// 			return;
+		// 		}
 
-				return;
-			}
-		});
+		// 		dt_search.ajax.reload();
+		// 		dt_siswa.ajax.reload();
+
+        //         toastr.success("Berhasil menambahkan penerimaan siswa an. " +nama);
+
+		// 	},
+		// 	error: function(jqXHR, textStatus, errorThrown) {
+        //         toastr.error("Tidak berhasil menambahkan penerimaan siswa. " +textStatus);
+
+		// 		return;
+		// 	}
+		// });
 
 	}
 

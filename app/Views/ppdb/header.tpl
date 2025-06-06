@@ -54,6 +54,11 @@
 
     {if $use_datatable_editor|default: FALSE}
     <link rel="stylesheet" href="{$base_url}assets/datatables/Editor-1.9.2/css/editor.dataTables.min.css" type="text/css" >   
+
+    {if !empty($use_select2)}
+    <link href="{$base_url}assets/datatables/tcg/dt-editor-select2.bootstrap4.css" rel="stylesheet" />
+    {/if}
+    
     {/if} 
     {/if}
 

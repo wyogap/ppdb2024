@@ -65,4 +65,17 @@
         //$($.fn.dataTable.tables(true)).DataTable().responsive.recalc();
     }
 
+    function show_rekapitulasi($jenjang_id, $nama) {
+        //alert($nama);
+
+        $("#nama-jenjang").text($nama);
+        $('.page-tabs .btn').each(function(i, obj) {
+            if ($(this).attr('tcg-jenjang-id') == $jenjang_id) {
+                $(this).hide();
+            }
+            else {
+                $(this).show();
+            }
+        });
+    }
 </script>

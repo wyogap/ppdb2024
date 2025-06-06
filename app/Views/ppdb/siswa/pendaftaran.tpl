@@ -37,7 +37,7 @@
 
 {if !$tutup_akses && !$cek_batasanusia}
 <div class="alert alert-danger" role="alert">
-    Usiamu tidak memenuhi syarat untuk melakukan pendaftaran. Batasan <b>Usia Pendaftaran</b> jenjang <b>{$batasanusia.bentuk_tujuan_sekolah}</b> : 
+    Usiamu tidak memenuhi syarat untuk melakukan pendaftaran. Batasan <b>Usia Pendaftaran</b> jenjang <b>{$batasanusia.nama_jenjang}</b> : 
     tanggal lahir dari <b><span class='tgl-indo'>{$batasanusia.maksimal_tanggal_lahir}</span></b> 
     sampai dengan <b><span class='tgl-indo'>{$batasanusia.minimal_tanggal_lahir}</span></b>
 </div>

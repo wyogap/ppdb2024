@@ -101,30 +101,30 @@ define('EVENT_PRIORITY_HIGH', 10);
 | Keep it as constant here to provide flexibility to use different versions
 |
 */
-defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2024_prosespendaftaran');
-defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2024_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
-defined('SQL_REGISTRASI')                   OR define('SQL_REGISTRASI', 'ppdb2024_registrasi');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
+defined('SQL_PROCESS_PENDAFTARAN')          OR define('SQL_PROCESS_PENDAFTARAN', 'ppdb2025_prosespendaftaran');
+defined('SQL_CABUT_BERKAS')                 OR define('SQL_CABUT_BERKAS', 'ppdb2025_cabutberkas');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
+defined('SQL_REGISTRASI')                   OR define('SQL_REGISTRASI', 'ppdb2025_registrasi');                  //hapus semua pendaftaran untuk satu siswa dan blok untuk daftar lagi
 //defined('SQL_RESET_PENDAFTARANSISWA')       OR define('SQL_RESET_PENDAFTARANSISWA', 'ppdb2023_resetpendaftaran');   //hapus semua pendaftaran untuk satu siswa
-defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2024_hapuspendaftaran');        //hapur satu pendaftaran
-defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2024_hitungskor');
+defined('SQL_HAPUS_PENDAFTARAN')            OR define('SQL_HAPUS_PENDAFTARAN', 'ppdb2025_hapuspendaftaran');        //hapur satu pendaftaran
+defined('SQL_HITUNGSKOR')                   OR define('SQL_HITUNGSKOR', 'ppdb2025_hitungskor');
 
-defined('SQL_UBAH_JENISPILIHAN')            OR define('SQL_UBAH_JENISPILIHAN', 'ppdb2024_ubah_jenispilihan');
-defined('SQL_UBAH_PILIHANSEKOLAH')          OR define('SQL_UBAH_PILIHANSEKOLAH', 'ppdb2024_ubah_pilihansekolah');
-defined('SQL_UBAH_JALUR')                   OR define('SQL_UBAH_JALUR', 'ppdb2024_ubah_jalur');
+defined('SQL_UBAH_JENISPILIHAN')            OR define('SQL_UBAH_JENISPILIHAN', 'ppdb2025_ubah_jenispilihan');
+defined('SQL_UBAH_PILIHANSEKOLAH')          OR define('SQL_UBAH_PILIHANSEKOLAH', 'ppdb2025_ubah_pilihansekolah');
+defined('SQL_UBAH_JALUR')                   OR define('SQL_UBAH_JALUR', 'ppdb2025_ubah_jalur');
 
-defined('SQL_PILIHSEKOLAH_SEKOLAH')             OR define('SQL_PILIHSEKOLAH_SEKOLAH', 'ppdb2024_pilihsekolah_sekolah');
-defined('SQL_PILIHSEKOLAH_JENISPILIHAN')        OR define('SQL_PILIHSEKOLAH_JENISPILIHAN', 'ppdb2024_pilihsekolah_jenispilihan');
-defined('SQL_UBAHPILIHAN_JENISPILIHAN')         OR define('SQL_UBAHPILIHAN_JENISPILIHAN', 'ppdb2024_ubahpilihan_jenispilihan');
-defined('SQL_SEBARAN_SEKOLAH')                  OR define('SQL_SEBARAN_SEKOLAH', 'ppdb2024_sebaransekolah');
+defined('SQL_PILIHSEKOLAH_SEKOLAH')             OR define('SQL_PILIHSEKOLAH_SEKOLAH', 'ppdb2025_pilihsekolah_sekolah');
+defined('SQL_PILIHSEKOLAH_JENISPILIHAN')        OR define('SQL_PILIHSEKOLAH_JENISPILIHAN', 'ppdb2025_pilihsekolah_jenispilihan');
+defined('SQL_UBAHPILIHAN_JENISPILIHAN')         OR define('SQL_UBAHPILIHAN_JENISPILIHAN', 'ppdb2025_ubahpilihan_jenispilihan');
+defined('SQL_SEBARAN_SEKOLAH')                  OR define('SQL_SEBARAN_SEKOLAH', 'ppdb2025_sebaransekolah');
 
-defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2024_ubah_kelengkapanberkas');     //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
-//defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2023_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
+defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2025_ubah_kelengkapanberkas');     //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
+defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2025_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
 //defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
 //defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
 
-defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2024_sd_hapus_penerimaan');
-defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2024_sd_tambah_penerimaan');
-defined('SQL_TAMBAH_SISWA_SD')              OR define('SQL_TAMBAH_SISWA_SD', 'ppdb2024_sd_tambah_siswa');
+defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2025_sd_hapus_penerimaan');
+defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2025_sd_tambah_penerimaan');
+defined('SQL_TAMBAH_SISWA_SD')              OR define('SQL_TAMBAH_SISWA_SD', 'ppdb2025_sd_tambah_siswa');
 
 // defined('SQL_UBAH_DATA')                    OR define('SQL_UBAH_DATA', 'ppdb2023_ubah_data');
 // defined('SQL_UBAH_NILAIKELULUSAN')          OR define('SQL_UBAH_NILAIKELULUSAN', 'ppdb2022_ubah_nilaikelulusan');
@@ -144,6 +144,7 @@ defined('JALURID_INKLUSI')                  OR define('JALURID_INKLUSI', '7');
 defined('JALURID_ZONASI')                   OR define('JALURID_ZONASI', '1');
 defined('JALURID_PRESTASI')                 OR define('JALURID_PRESTASI', '2');
 defined('JALURID_AFIRMASI')                 OR define('JALURID_AFIRMASI', '9');
+defined('JALURID_MUTASI')                   OR define('JALURID_MUTASI', '3');
 
 defined('DOCID_AKTE')                       OR define('DOCID_AKTE', '5');
 defined('DOCID_KK')                         OR define('DOCID_KK', '6');
@@ -161,14 +162,16 @@ defined('TAHAPANID_SOSIALISASI')            OR define('TAHAPANID_SOSIALISASI', '
 defined('TAHAPANID_REGISTRASI')             OR define('TAHAPANID_REGISTRASI', '2');
 defined('TAHAPANID_PENDAFTARAN')            OR define('TAHAPANID_PENDAFTARAN', '3');
 defined('TAHAPANID_VERIFIKASI')             OR define('TAHAPANID_VERIFIKASI', '4');
+defined('TAHAPANID_PENGUMUMAN')             OR define('TAHAPANID_PENGUMUMAN', '4');
 defined('TAHAPANID_DAFTARULANG')            OR define('TAHAPANID_DAFTARULANG', '6');
 defined('TAHAPANID_SUSULAN')                OR define('TAHAPANID_SUSULAN', '7');
 defined('TAHAPANID_PERBAIKANDATA')          OR define('TAHAPANID_PERBAIKANDATA', '8');
 
-defined('PUTARAN_SD')               OR define('PUTARAN_SD', '4');
-defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '301');
+//defined('PUTARAN_SD')               OR define('PUTARAN_SD', '4');
+//defined('PENERAPANID_SD')           OR define('PENERAPANID_SD', '301');
 defined('JENJANGID_SD')             OR define('JENJANGID_SD', '2');
 defined('JENJANGID_SMP')            OR define('JENJANGID_SMP', '3');
+defined('JENJANGID_TK')             OR define('JENJANGID_TK', '5');
 
 defined('ASALDATA_REGISTRASI')      OR define('ASALDATA_REGISTRASI', '1');
 defined('ASALDATA_DAPODIK')         OR define('ASALDATA_DAPODIK', '2');
@@ -184,5 +187,5 @@ defined('COL_UPDATED_ON')                   OR define('COL_UPDATED_ON', 'updated
 defined('COL_UPDATED_BY')                   OR define('COL_UPDATED_BY', 'updated_by');
 defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired_date');
 
-defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 0);
+defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 1);
 defined('__USE_CDN__')                      OR define('__USE_CDN__', 1);

@@ -201,6 +201,13 @@ Class Mprofilsekolah
         return $this->tcg_daftarpendaftaran($sekolah_id, $filters, $orderby);
 	}
 
+	function tcg_pendaftaran_detail($sekolah_id, $pendaftaran_id){
+
+        $filters = array("a.pendaftaran_id"=>$pendaftaran_id);
+        $orderby = "a.skor desc";
+        return $this->tcg_daftarpendaftaran($sekolah_id, $filters, $orderby);
+	}
+
 	function tcg_kandidatswasta($sekolah_id) {
 
         $sql = "select
@@ -508,18 +515,25 @@ Class Mprofilsekolah
         return $key;
 	}
 
-	function tcg_penerimaan_sd($sekolah_id, $filter=null) {
+	function tcg_penerimaan_sd($sekolah_id, $penerapan_id, $filter=null) {
 
-        $builder = $this->db->table("tcg_pendaftaran a");
+        $builder = $this->ro->table("tcg_pendaftaran a");
         $builder->select("b.peserta_didik_id, b.nama, b.nisn, b.nik, b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin, d.sekolah_id, d.nama as sekolah");
+        $builder->select("a.pendaftaran_id, a.status_penerimaan_final, a.peringkat_final, a.skor, a.penerapan_id, e.jalur_id, e.nama as jalur");
         $builder->select("coalesce(b.npsn_sekolah_asal, c.npsn) as npsn_sekolah_asal, coalesce(b.nama_sekolah_asal, c.nama) as nama_sekolah_asal");
+        $builder->select("row_number() over (order by b.nama) rn");
         $builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id and b.is_deleted=0");
         $builder->join("ref_sekolah c", "c.sekolah_id=b.sekolah_id and c.is_deleted=0", 'LEFT OUTER');
         $builder->join("ref_sekolah d", "d.sekolah_id=a.sekolah_id and d.is_deleted=0", 'LEFT OUTER');
-        $builder->where("a.is_deleted=0 and a.status_penerimaan_final=1");
+        $builder->join("cfg_penerapan e", "e.penerapan_id=a.penerapan_id and e.is_deleted=0", 'LEFT OUTER');
+        $builder->where("a.is_deleted=0");
 
         if (!empty($sekolah_id)) {
             $builder->where("a.sekolah_id", $sekolah_id);
+        }
+
+        if (!empty($penerapan_id)) {
+            $builder->where("a.penerapan_id", $penerapan_id);
         }
 
         if (!empty($filter)) {
@@ -540,10 +554,10 @@ Class Mprofilsekolah
 		// return $this->ro->query($sql, array($sekolah_id))->getResultArray();
 	}
 
-	function tcg_penerimaan_sd_detil($peserta_didik_id) {
+	function tcg_penerimaan_sd_siswa($peserta_didik_id) {
         $filter = array( "a.peserta_didik_id" => $peserta_didik_id);
 
-        $result = $this->tcg_penerimaan_sd(null, $filter);
+        $result = $this->tcg_penerimaan_sd(null, null, $filter);
         if($result == null) return null;
 
         return $result[0];
@@ -559,11 +573,42 @@ Class Mprofilsekolah
 		// return $this->ro->query($sql, array($peserta_didik_id))->getRowArray();
 	}
 
+	function tcg_penerimaan_sd_detil($sekolah_id, $pendaftaran_id) {
+        $filter = array( "a.pendaftaran_id" => $pendaftaran_id);
+
+        $result = $this->tcg_penerimaan_sd($sekolah_id, null, $filter);
+        if($result == null) return null;
+
+        return $result[0];
+	}
+
+    function tcg_ubahjalur_sd($pendaftaran_id, $penerapan_id) {
+		//inject last update
+        $valuepair = array();
+        $valuepair['penerapan_id'] = $penerapan_id;
+		$valuepair['updated_on'] = gmdate("Y/m/d H:i:s");
+
+		$builder = $this->db->table('tcg_pendaftaran');
+        $builder->where('pendaftaran_id', $pendaftaran_id);
+        $status = $builder->update($valuepair);
+        if (!$status)   return 0;
+
+        //put in audit trail
+        $this->audittrail->trail("tcg_pendaftaran",$pendaftaran_id,'UPDATE','Update jalur pendaftaran SD',array_keys($valuepair),$valuepair);
+
+        $filter = array( "a.pendaftaran_id" => $pendaftaran_id);
+
+        $result = $this->tcg_penerimaan_sd(null, null, $filter);
+        if($result == null) return null;
+
+        return $result[0];
+    }
+
 	function tcg_calon_pesertadidik_sd($nama, $nisn, $sekolah_id, $nik, $limit=1000){
 		$filter = 0;
 		$query = "select a.peserta_didik_id, a.nama, a.nisn, a.nik, a.tempat_lahir, a.tanggal_lahir,
 					  b.kode_wilayah_desa, b.nama_desa, b.kode_wilayah_kec, b.nama_kec, c.nama as sekolah,
-					  e.nama as diterima_sekolah, a.jenis_kelamin
+					  e.nama as diterima_sekolah, a.jenis_kelamin, null as penerapan_id
 				  from tcg_peserta_didik a
 				  left join ref_wilayah b on a.kode_wilayah=b.kode_wilayah and b.is_deleted=0
 				  left join ref_sekolah c on c.sekolah_id=a.sekolah_id and c.is_deleted=0
@@ -625,6 +670,9 @@ Class Mprofilsekolah
         $dapodik_id = uuid();
         $valuepair['dapodik_id'] = $dapodik_id;
         $valuepair['created_by'] = $this->session->get('user_id');
+
+        //enforce asaldata
+        $valuepair['asal_data'] = ASALDATA_PENERIMAANSD;
 
         $builder = $this->db->table("tcg_peserta_didik");
         $builder->insert($valuepair);
@@ -693,22 +741,25 @@ Class Mprofilsekolah
 	// 	// return $this->ro->query($sql, array($dapodik_id))->getRowArray();;
     // }
 
-	function tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
+	function tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id) {
 		$pengguna_id = $this->session->get("user_id");
 
-		$sql = "call " .SQL_PENERIMAAN_SD. "(?, ?, ?)";
-		$status = $this->db->query($sql, array($sekolah_id, $peserta_didik_id, $pengguna_id));
-        if (!$status) return 0;
+		$sql = "call " .SQL_PENERIMAAN_SD. "(?, ?, ?, ?)";
+		$status = $this->db->query($sql, array($sekolah_id, $penerapan_id, $peserta_didik_id, $pengguna_id));
+        if (!$status) return null;
 
         $message = $status->getRowArray();
         if ($message != null) {
             $this->error_message = $message['message'];
-            return 0;
+            return null;
         }
 
-        //audit trail -> di sp
-        
-		return 1;
+        $filter = array( "a.peserta_didik_id" => $peserta_didik_id);
+
+        $result = $this->tcg_penerimaan_sd($sekolah_id, $penerapan_id, $filter);
+        if($result == null) return null;
+
+        return $result[0];
 	}
 
 	function tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
@@ -826,32 +877,54 @@ Class Mprofilsekolah
         }
     }
 
-    function tcg_kuota_sd($sekolah_id) {
-		$builder = $this->ro->table('cfg_penerapan_sekolah a');
-        $builder->select("a.kuota");
-		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
-        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
-        $builder->where("a.penerapan_id", PENERAPANID_SD);
-        $builder->where("a.putaran", PUTARAN_SD);
+    // function tcg_kuota_sd($sekolah_id) {
+    //     return 28;
 
-        $result = $builder->get()->getRowArray();
-        if ($result == null)    return 0;
+	// 	// $builder = $this->ro->table('cfg_penerapan_sekolah a');
+    //     // $builder->select("a.kuota");
+	// 	// $builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
+    //     // $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+    //     // $builder->where("a.penerapan_id", PENERAPANID_SD);
+    //     // $builder->where("a.putaran", PUTARAN_SD);
 
-        return $result['kuota'];
-    }
+    //     // $result = $builder->get()->getRowArray();
+    //     // if ($result == null)    return 0;
 
-    function tcg_totalpendaftaran_sd($sekolah_id) {
-		$builder = $this->ro->table('tcg_pendaftaran a');
-        $builder->select("count(a.pendaftaran_id) as cnt");
-		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
-        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
-        $builder->where("a.penerapan_id", PENERAPANID_SD);
-        $builder->where("a.putaran", PUTARAN_SD);
+    //     // return $result['kuota'];
+    // }
 
-        $result = $builder->get()->getRowArray();
-        if ($result == null)    return 0;
+    // function tcg_totalpendaftaran_sd($sekolah_id) {
+    //     return 0;
 
-        return $result['cnt'];
-    }
+	// 	// $builder = $this->ro->table('tcg_pendaftaran a');
+    //     // $builder->select("count(a.pendaftaran_id) as cnt");
+	// 	// $builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
+    //     // $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+    //     // $builder->where("a.penerapan_id", PENERAPANID_SD);
+    //     // $builder->where("a.putaran", PUTARAN_SD);
+
+    //     // $result = $builder->get()->getRowArray();
+    //     // if ($result == null)    return 0;
+
+    //     // return $result['cnt'];
+    // }
     
+    // function tcg_cek_jalurafirmasi($penerapan_id) {
+    //     //TODO
+    //     return 0;
+    // }
+
+    function tcg_cek_dataafirmasi($nik) {
+        $builder = $this->ro->table("cfg_data_afirmasi a");
+        $builder->select("count(*) as cnt");
+        $builder->where("a.nik", $nik);
+        $builder->where("a.is_deleted=0");
+
+        $results = $builder->get()->getResultArray();
+        if (!$results) return 0;
+
+        if ($results[0]['cnt']>0)   return 1;
+        
+        return 0;
+    }
 }

@@ -20,27 +20,27 @@
     }
 
     table.dataTable tbody td.bg-gray {
-        color: #000;
+        color: #000 !important;
         background-color: #d2d6de !important;
     }
 
     table.dataTable tbody td.bg-red {
-        color: #fff;
+        color: #fff !important;
         background-color: red !important;
     }
 
     table.dataTable tbody td.bg-orange {
-        color: #fff;
+        color: #fff !important;
         background-color: orange !important;
     }
 
     table.dataTable tbody td.bg-green {
-        color: #fff;
+        color: #fff !important;
         background-color: #00a65a !important;
     }
 
     table.dataTable tbody td.bg-yellow {
-        color: #000;
+        color: #000 !important;
         background-color: yellow !important;
     }
 </style>

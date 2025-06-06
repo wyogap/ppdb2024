@@ -365,9 +365,9 @@ table.dataTable>tbody>tr.child span.dtr-title {
     color: #fff;    
 }  
 
-table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column tbody tr>.sorting_2, table.dataTable.order-column tbody tr>.sorting_3, table.dataTable.display tbody tr>.sorting_1, table.dataTable.display tbody tr>.sorting_2, table.dataTable.display tbody tr>.sorting_3 {
+/* table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column tbody tr>.sorting_2, table.dataTable.order-column tbody tr>.sorting_3, table.dataTable.display tbody tr>.sorting_1, table.dataTable.display tbody tr>.sorting_2, table.dataTable.display tbody tr>.sorting_3 {
     background-color: unset !important;
-}
+} */
 
 /* light theme */
 table.dataTable thead th, 
@@ -758,6 +758,49 @@ div.DTE button.btn,
 div.DTE div.DTE_Form_Buttons button {
     border-radius: 12px !important; 
 }
+
+div.DTE_Field .select2-container {
+    margin-bottom: 0px !important;
+}
+
+div.DTE_Field .select2-container--default .select2-selection--single {
+    border-radius: 1rem;
+    border: 2px solid black;
+    height: 36px;
+    background: #fff;
+}
+
+div.DTE_Field .select2-container--open .select2-selection--single {
+    border-radius: 1rem;
+    border-color: black;
+}
+
+div.DTE_Field .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #999;
+    /* position: absolute;
+    top: -1px;
+    left: 14px; */
+    margin-top: -3px;
+    margin-left: 0px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: black;
+    margin-top: -3px;
+    margin-left: -3px;
+}
+
+.select2-container.select2-container--open .select2-dropdown {
+    border: 2px solid black;
+    border-top: 0px solid black;
+    border-bottom: 0px solid black;
+    /* border-radius: 1.5rem; */
+}
+
+.select2-container.select2-container--open .select2-results__options {
+    padding-left: 5px;
+}
+
 
 @media only screen and (max-width: 768px) {
 

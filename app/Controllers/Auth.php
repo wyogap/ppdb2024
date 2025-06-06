@@ -41,13 +41,25 @@ class Auth extends AuthController
 			$kode_wilayah_aktif = $this->setting->get('kode_wilayah');
 		}
 		
-		$bentuk_sekolah_aktif = "SMP";
+		$jenjang_aktif = $_GET["jenjang"] ?? null; 
+		if (empty($jenjang_aktif)) {
+			$jenjang_aktif = $this->setting->get('jenjang');
+		}
+
+        $show_jenjang = $this->setting->get('show_jenjang');
+        $show_putaran = $this->setting->get('show_putaran');
+
+        //$bentuk_sekolah_aktif = "SMP";
 
 		$mconfig = new \App\Models\Ppdb\Mconfig();
         $nama_tahun_ajaran = $mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
         $nama_wilayah = $mconfig->tcg_nama_wilayah($kode_wilayah_aktif);
         $nama_putaran = $mconfig->tcg_nama_putaran($putaran);
-        
+        $bentuk_sekolah_aktif = $mconfig->tcg_nama_jenjang($jenjang_aktif);
+
+        $daftarputaran = $mconfig->tcg_putaran();
+        $daftarjenjang = $mconfig->tcg_jenjang();
+
 		$sessiondata = array(
 			'tahun_ajaran_aktif'=>$tahun_ajaran_id,
             'nama_tahun_ajaran_aktif'=>$nama_tahun_ajaran,
@@ -55,7 +67,13 @@ class Auth extends AuthController
             'nama_wilayah_aktif'=>$nama_wilayah,
             'putaran_aktif'=>$putaran,
             'nama_putaran_aktif'=>$nama_putaran,
-			'bentuk_sekolah_aktif'=>$bentuk_sekolah_aktif
+			'bentuk_sekolah_aktif'=>$bentuk_sekolah_aktif,
+            'jenjang_aktif'=>$jenjang_aktif,
+			'nama_jenjang_aktif'=>$bentuk_sekolah_aktif,
+            'show_jenjang'=>$show_jenjang,
+            'show_putaran'=>$show_putaran,
+            'daftarputaran'=>$daftarputaran,
+            'daftarjenjang'=>$daftarjenjang
 		);	
 		$this->session->set($sessiondata);
 
@@ -64,7 +82,13 @@ class Auth extends AuthController
         $data['tahun_ajaran_id']=$tahun_ajaran_id;
         $data['nama_tahun_ajaran']=$nama_tahun_ajaran;
         $data['putaran']=$putaran;
-        $data['nama_putaran']=$nama_putaran;
+        if ($show_putaran) {
+            $data['nama_putaran']=$nama_putaran;
+        }
+        else {
+            $data['nama_putaran']='';
+        }
+        $data['show_putaran']=$show_putaran;
 
 		$data['cek_registrasi'] = $mconfig->tcg_cek_wakturegistrasi();
 		$data['cek_sosialisasi'] = $mconfig->tcg_cek_waktusosialisasi();

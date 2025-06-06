@@ -391,9 +391,111 @@ class Home extends PpdbController
 		// $this->smarty->render('ppdb/home/registrasi.tpl',$data);
 	}
 
+    protected function _parse_paramaters($data=null) {
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+
+        if ($data == null) {
+            $data = array();
+        }
+
+        //daftar putaran
+        if ($this->session->has('daftarputaran')) {
+            $data['daftarputaran'] = $this->session->get('daftarputaran');
+        }
+        else {
+            $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
+            $this->session->set('daftarputaran', $data['daftarputaran']);
+        }
+
+        //daftar jenjang
+        if ($this->session->has('daftarjenjang')) {
+            $data['daftarjenjang'] = $this->session->get('daftarjenjang');
+        }
+        else {
+            $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
+            $this->session->set('daftarjenjang', $data['daftarjenjang']);
+        }
+
+        //putaran aktif
+		$data['putaran_aktif'] = $_GET["putaran"] ?? null; 
+        if ($data['putaran_aktif']) {
+            foreach($data['daftarputaran'] as $row) {
+                if ($row['putaran_id']==$data['putaran_aktif']) {
+                    $this->session->set('putaran_aktif', $data['putaran_aktif']);
+                    $data['nama_putaran_aktif'] = $row['nama'];
+                    $this->session->set('nama_putaran_aktif', $row['nama']);
+                    break;
+                }
+            }
+        }
+        else {
+            if ($this->session->has('putaran_aktif')) {
+                $data['putaran_aktif'] = $this->session->get('putaran_aktif');
+            }
+            else {
+                $data['putaran_aktif'] = $this->setting->get('putaran');
+                $this->session->set('putaran_aktif', $data['putaran_aktif']);
+            }
+        }
+ 
+        //jenjang aktif
+		$data['jenjang_aktif'] = $_GET["jenjang"] ?? null; 
+        if ($data['jenjang_aktif']) {
+            foreach($data['daftarjenjang'] as $row) {
+                if ($row['jenjang_id']==$data['jenjang_aktif']) {
+                    $this->session->set('jenjang_aktif', $data['jenjang_aktif']);
+                    $data['nama_jenjang_aktif'] = $row['nama'];
+                    $this->session->set('nama_jenjang_aktif', $row['nama']);
+                    break;
+                }
+            }
+        }
+        else {
+            if ($this->session->has('jenjang_aktif')) {
+                $data['jenjang_aktif'] = $this->session->get('jenjang_aktif');
+            }
+            else {
+                $data['jenjang_aktif'] = $this->setting->get('jenjang');
+                $this->session->set('jenjang_aktif', $data['jenjang_aktif']);
+            }
+
+            if ($this->session->has('nama_jenjang_aktif')) {
+                $data['nama_jenjang_aktif'] = $this->session->get('nama_jenjang_aktif');
+            }
+            else {
+                $data['nama_jenjang_aktif'] = $mconfig->tcg_nama_jenjang($data['jenjang_aktif']);
+                $this->session->set('nama_jenjang_aktif', $data['nama_jenjang_aktif']);
+            }
+        }
+
+        //show putaran
+        if ($this->session->has('show_putaran')) {
+            $data['show_putaran'] = $this->session->get('show_putaran');
+        }
+        else {
+            $data['show_putaran'] = $this->setting->get('show_putaran');
+            $this->session->set('show_putaran', $data['show_putaran']);
+        }
+
+        //show jenjang
+        if ($this->session->has('show_jenjang')) {
+            $data['show_jenjang'] = $this->session->get('show_jenjang');
+        }
+        else {
+            $data['show_jenjang'] = $this->setting->get('show_jenjang');
+            $this->session->set('show_jenjang', $data['show_jenjang']);
+        }
+
+        return $data;
+    }
+
     function rekapitulasi(){
-        $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
-        $data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah();
+        // $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
+        // $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
+
+        $data = $this->_parse_paramaters();
+
+        $data['daftarsekolah'] = $this->Mhome->tcg_rekapitulasi_sekolah($data['putaran_aktif'], $data['jenjang_aktif']);
 			
         $data['use_datatable'] = 1;
 

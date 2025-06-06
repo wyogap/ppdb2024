@@ -33,7 +33,7 @@ class Daftarsiswa extends PpdbController {
 	{
 		$sekolah_id = $this->session->get("sekolah_id");
 
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id, PUTARAN_SD);
+        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         if (empty($profil)) {
             return $this->notauthorized();
         }

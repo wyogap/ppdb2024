@@ -70,6 +70,11 @@
 
 {if $use_datatable_editor|default: FALSE}
 <script src="{$base_url}assets/datatables/Editor-1.9.2/js/dataTables.editor.min.js"></script>
+
+{if !empty($use_select2)}
+<script src="{$base_url}assets/datatables/tcg/dt-editor-select2.js" defer></script>
+{/if} 
+
 {/if}
 
 <!-- <script src="{$base_url}/themes/dompet/js/plugins-init/datatables.init.js"></script> -->

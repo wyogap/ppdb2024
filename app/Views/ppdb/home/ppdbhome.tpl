@@ -40,12 +40,38 @@
         top: 0px; 
     }
 
+    .page-titles {
+        --bs-gutter-x: 30px;
+        --bs-gutter-y: 0;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) / -2);
+        margin-left: calc(var(--bs-gutter-x) / -2);
+    }
+    
+    .page-titles .breadcrumb {
+        flex-shrink: 0;
+        max-width: 100%;
+        flex-grow: 100;
+        /* padding-right: calc(var(--bs-gutter-x) / 2);
+        padding-left: calc(var(--bs-gutter-x) / 2); */
+        margin-top: var(--bs-gutter-y);
+    }
+
+    .page-titles .page-tabs {
+        display: block;
+    }
 
     @media only screen and (max-width: 768px) {
         [data-theme-version="dark"] .hamburger .line {
             background: var(--bs-white) !important;
         }
 
+        .page-titles .breadcrumb {
+            width: 100%;
+        }
+        
         .home .header {
             padding-left: 20px !important; 
             padding-right: 20px !important;
@@ -167,7 +193,11 @@
                             </div>
                             <div class="app-name-long dashboard_bar">
                                 <span class="app-name">{$app_name}</span>
+                                {if $show_putaran}
                                 <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
+                                {else}
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran}</span>
+                                {/if}
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -187,12 +217,14 @@
                                     <a href="{$site_url}home/rekapitulasi" class="dropdown-item ai-icon">
                                         <i class="fas fa-table"></i> <span class="ms-2">Rekapitulasi Sekolah </span>
                                     </a>
+                                    {if $show_putaran}
                                     {foreach $daftarputaran as $p}
                                     {if $p.putaran == $putaran}{continue}{/if}
                                     <a href="{$url}putaran={$p.putaran}" class="dropdown-item ai-icon">
                                         <i class="fas fa-random"></i> <span class="ms-2">{$p.nama} </span>
                                     </a>
                                     {/foreach}
+                                    {/if}
                                     <a href="{$site_url}auth/login" class="dropdown-item ai-icon">
                                         <i class="fas fa-sign-in-alt"></i> <span class="ms-2">Login </span>
                                     </a>

@@ -11,6 +11,7 @@ Class Mhome
     protected $session;
     protected $tahun_ajaran_id;
     protected $putaran;
+    protected $jenjang;
 
     function __construct() {
         $this->db = \Config\Database::connect();
@@ -18,6 +19,7 @@ Class Mhome
         $this->session = \Config\Services::session();
         $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 		$this->putaran = $this->session->get("putaran_aktif");
+		$this->jenjang = $this->session->get("jenjang_aktif");
     }
 
 	function carisiswa($nama){
@@ -424,10 +426,16 @@ Class Mhome
 		return $this->ro->query($query)->getRowArray();
 	}
 
-	function tcg_rekapitulasi_sekolah() {
-		$sql = "select * from rpt_rekapitulasi_sekolah_publik where tahun_ajaran_id=? and putaran=? order by nama asc";
+	function tcg_rekapitulasi_sekolah($putaran_id=0, $jenjang_id=0) {
+		$sql = "select * from rpt_rekapitulasi_sekolah_publik where tahun_ajaran_id=? and putaran=? and jenjang_id=? order by nama asc";
 
-		return $this->ro->query($sql, array($this->tahun_ajaran_id, $this->putaran))->getResultArray();	
+        if ($putaran_id==0) {
+            $putaran_id = $this->putaran;
+        }
+        if ($jenjang_id==0) {
+            $jenjang_id = $this->jenjang;
+        }
+		return $this->ro->query($sql, array($this->tahun_ajaran_id, $putaran_id, $jenjang_id))->getResultArray();	
 	}    
 
     function tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa) {

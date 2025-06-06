@@ -109,6 +109,10 @@
         font-size: 16px;
     }
 
+    .wait-cursor {
+        cursor: wait; 
+    }
+
     @media only screen and (max-width: 992px) {
         .authincation {
             background: var(--headerbg);
@@ -171,81 +175,140 @@
 					<div class="login-form">
 						<div class="app-title text-center"">
 							<h3 class="title">{$app_name}</h3>
+                            {if $show_putaran}
 							<p>Tahun {$nama_tahun_ajaran} {$nama_putaran}</p>
+                            {else} 
+                            <p>Tahun {$nama_tahun_ajaran}</p>
+                            {/if}
 						</div>
 
-                        {if !empty($info_message)}
-                        <div class="alert alert-info alert-dismissible" id="alert-info" role="alert">
-                            {$error_message}        
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button>     
-                        </div>
-                        {/if}
-
-                        {if !empty($error_message)}
-                        <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                    
-                            {$error_message}
-                        </div>
-                        {/if}
-
-                        {if !empty($success_message)}
-                        <div class="alert alert-success alert-dismissible" id="alert-sucess" role="alert">
-                            {$success_message}                 
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {/if}
-
-                        {if $rekapitulasi|DEFAULT: FALSE}
-                        <div class="alert alert-secondary mb-4" role="alert">
-                            <span>Rekapitulasi Sekolah / Perangkingan: <a href="{$site_url}home/rekapitulasi" class="btn btn-xs btn-primary">Klik Di Sini</a></span>
-                        </div>
-                        {/if} 
-
-                        <form role="form" enctype="multipart/form-data" id="proses" action="{$base_url}auth/login" method="post">
-                            {if $user_id}
-                            <div class="header-profile mb-5">
-                                <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
-                                    <div class="header-info ms-3" style="display: block;">
-                                        <span class="font-w600 ">Halo, <b>{$nama_pengguna}</b></span>
-                                        <small class="font-w400">{$user_name}</small>
-                                    </div>
-                               </a>
+                        <div id='login-div'>
+                            {if !empty($info_message)}
+                            <div class="alert alert-info alert-dismissible" id="alert-info" role="alert">
+                                {$error_message}        
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button>     
                             </div>
-                            {else}
-							<div class="mb-4">
-								<!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
-								<input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
-                                id="username" name="username" data-validation="required" minlength="8" maxlength="100">
-							</div>
-							<div class="mb-4 position-relative">
-								<!-- <label class="mb-1 text-dark">PIN / Password</label> -->
-								<input type="password" id="dlab-password" class="form-control form-control"
-                                placeholder="Masukkan PIN / Password" id="password" name="password" data-validation="required">
-								<span class="show-pass eye">								
-									<i class="fa fa-eye-slash"></i>
-									<i class="fa fa-eye"></i>
-								</span>
-							</div>
-							<!-- <div class="form-row d-flex justify-content-between mt-4 mb-2">
-								<div class="mb-4" style="flex-grow: 1; text-align: right;">
-									<a href="page-forgot-password.html" class="btn-link text-primary">Lupa PIN/Password?</a>
-								</div>
-							</div> -->
                             {/if}
-							<div class="text-center mb-4">
-								<button type="submit" class="btn btn-primary btn-block">Masuk</button>
-							</div>
-							<h6 class="login-title"><span>ATAU</span></h6>
-							{if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE || $cek_pendaftaran|default: FALSE}
-							<div class="text-center mb-4">
-								<a href="{$site_url}home/registrasi" class="btn btn-secondary btn-block">Registrasi Siswa Luar Daerah</a>
-							</div>
-                            {else}
-                            <p class="text-center">Registrasi untuk siswa dari <b class="text-red">Luar Daerah</b> belum dibuka.</p>
+
+                            {if !empty($error_message)}
+                            <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                    
+                                {$error_message}
+                            </div>
                             {/if}
-						</form>
-					</div>
+
+                            {if !empty($success_message)}
+                            <div class="alert alert-success alert-dismissible" id="alert-sucess" role="alert">
+                                {$success_message}                 
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {/if}
+
+                            {if $rekapitulasi|DEFAULT: FALSE}
+                            <div class="alert alert-secondary mb-4" role="alert">
+                                <span>Rekapitulasi Sekolah / Perangkingan: <a href="{$site_url}home/rekapitulasi" class="btn btn-xs btn-primary">Klik Di Sini</a></span>
+                            </div>
+                            {/if} 
+
+                            <form role="form" enctype="multipart/form-data" id="proses" action="{$base_url}auth/login" method="post">
+                                {if $user_id}
+                                <div class="header-profile mb-5">
+                                    <a class="nav-link" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="{$base_url}assets/image/user.png" width="20" alt=""/>
+                                        <div class="header-info ms-3" style="display: block;">
+                                            <span class="font-w600 ">Halo, <b>{$nama_pengguna}</b></span>
+                                            <small class="font-w400">{$user_name}</small>
+                                        </div>
+                                </a>
+                                </div>
+                                {else}
+                                <div class="mb-4">
+                                    <!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
+                                    <input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
+                                    id="username" name="username" data-validation="required" minlength="8" maxlength="100">
+                                </div>
+                                <div class="mb-4 position-relative">
+                                    <!-- <label class="mb-1 text-dark">PIN / Password</label> -->
+                                    <input type="password" id="dlab-password" class="form-control form-control"
+                                    placeholder="Masukkan PIN / Password" id="password" name="password" data-validation="required">
+                                    <span class="show-pass eye">								
+                                        <i class="fa fa-eye-slash"></i>
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
+                                <div class="form-row d-flex justify-content-between mt-4 mb-2">
+                                    <div class="mb-4" style="flex-grow: 1; text-align: right;">
+                                        <a href="#" class="btn-link text-primary pwdreset" id="forgetpwd">Lupa PIN/Password?</a>
+                                    </div>
+                                </div>
+                                {/if}
+                                <div class="text-center mb-4">
+                                    <button type="submit" class="btn btn-primary btn-block" id="login">Masuk</button>
+                                </div>
+                                <h6 class="login-title"><span>ATAU</span></h6>
+                                {if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE || $cek_pendaftaran|default: FALSE}
+                                <div class="text-center mb-4">
+                                    <a href="{$site_url}home/registrasi" class="btn btn-secondary btn-block">Registrasi Siswa Luar Daerah</a>
+                                </div>
+                                {else}
+                                <p class="text-center">Registrasi untuk siswa dari <b class="text-red">Luar Daerah</b> belum dibuka.</p>
+                                {/if}
+                            </form>
+                        </div>
+                        <div id='forgetpwd-div' style="display:none;">
+                        <p class="text-center" style="margin-top:12px; margin-bottom:24px;">Reset PIN/Password</p>
+                            <div class="mb-4">
+                                        <!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
+                                        <input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
+                                        id="username-reset" name="username-reset" data-validation="required" minlength="8" maxlength="100">
+                                    </div>
+                                    <p class="text-center" style="margin-bottom:24px;">Kode reset akan dikirim ke alamat email yang terdaftar dan/atau melalui Whatsapp ke nomor HP yang terdaftar.</p>
+                                    <div class="text-center mb-4">
+                                        <button type="submit" class="btn btn-danger btn-block pwdreset" id="sendcode">Kirim Kode Reset</button><br>  
+                                        <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel">Batalkan</button>
+                                    </div>
+                        </div>
+                        <div id='resetpwd-div' style="display:none;">
+                            <p class="text-center" style="margin-top:12px; margin-bottom:24px;">Masukkan kode reset yang dikirim ke alamat email/HP yang terdaftar:</p>
+                            <div class="mb-4">
+                                <!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
+                                <input type="text" class="form-control form-control" placeholder="Kode Reset" 
+                                id="kodereset" name="kodereset" data-validation="required" minlength="8" maxlength="100">
+                            </div>
+                            <div class="text-center mb-4" id="checkcode-div">
+                                <button type="submit" class="btn btn-primary pwdreset" id="checkcode">Cek Kode</button>  
+                                <button type="submit" class="btn btn-danger pwdreset" id="resendcode">Kirim Ulang</button>
+                            </div>
+                            <p class="text-center" style="color: red; margin-top:12px; margin-bottom:24px; display:none;" id="kodereset-error">Kode reset salah!</p>
+                            <div id='newpwd-div' style="display:none;">
+                                <p class="text-center" style="margin-top:12px; margin-bottom:24px;" id="kodereset-valid">Masukkan PIN/Password Baru:</p>
+                                <div class="mb-4 position-relative">
+                                    <!-- <label class="mb-1 text-dark">PIN / Password</label> -->
+                                    <input type="password" id="reset-password1" class="form-control form-control"
+                                        placeholder="Masukkan PIN / Password Baru" name="reset-password1" data-validation="required">
+                                    <span class="show-pass eye">								
+                                        <i class="fa fa-eye-slash"></i>
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
+                                <div class="mb-4 position-relative">
+                                    <!-- <label class="mb-1 text-dark">PIN / Password</label> -->
+                                    <input type="password" id="reset-password2" class="form-control form-control"
+                                        placeholder="Masukkan Ulang PIN / Password Baru" name="reset-password2" data-validation="required">
+                                    <span class="show-pass eye">								
+                                        <i class="fa fa-eye-slash"></i>
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
+                                <div class="text-center mb-4">
+                                        <button type="submit" class="btn btn-danger btn-block pwdreset" id="resetpwd">Reset PIN/Password</button>
+                                </div>
+                            </div>
+                            <div class="text-center mb-4">
+                                <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel2">Batalkan</button>
+                            </div>
+                        </div>
+                    </div>
 				</div>
                 <div class="right-side col-xl-6 col-lg-6 bg-image" style="background-color: var(--bs-gray-dark); background-image: url('{$base_url}assets/image/landingpage.jpg')">
 					<div class="pages-left" style="display: flex; margin-top: 24px; margin-bottom: 24px;">
@@ -377,6 +440,8 @@
 
 <script type="text/javascript">
 
+    $counter = 0;
+    $countdown = null;
     $(document).ready(function() {
         //menu
         $('[data-bs-toggle="menu"]').on( "click", function(e) {
@@ -442,6 +507,118 @@
             el.html( moment.utc( el.html() ).local().format('YYYY-MM-DD HH:mm:ss') );
         });
 
+        $(".pwdreset").on( "click", function(e) {
+            e.preventDefault();
+            $dom = $(this);
+            $id = $dom.attr("id");
+
+            if ($id=='forgetpwd') {
+                $x = $("#login-div"); $x.hide();
+                $x = $("#forgetpwd-div"); $x.show();
+                $x = $("#resetpwd-div"); $x.hide();
+            }
+            else if ($id=='sendcode') {
+                $("#login-div").hide();
+                $("#forgetpwd-div").hide();
+                $("#resetpwd-div").show();
+                $("#checkcode-div").show();
+                $('#kodereset-error').hide();
+                $('#newpwd-div').hide();
+
+                //start counter for resend
+                $('#resendcode').prop('disabled', true);
+                $counter_resendcode=60;
+                $('#resendcode').text("Kirim Ulang (" +$counter_resendcode+ ")");
+
+                $countdown = setInterval(countdown_resendcode, 1000);
+            }
+            else if ($id=='checkcode') {
+                $('#kodereset-error').hide();
+                $('#newpwd-div').hide();
+
+                $dom.prop('disabled', true);
+
+                //TODO: check code
+                // Simulate a long-running task
+                setTimeout(() => {
+                    // Remove the wait cursor after 10 seconds (adjust as needed)
+                    $dom.removeClass('wait-cursor'); 
+                    if ($counter<=3) {
+                        //fail
+                        $('#kodereset-error').show();
+                        $dom.prop('disabled', false);
+                    }
+                    else {
+                        //success
+                        $dom.prop('disabled', false);
+                        clearInterval($countdown);
+                        $("#checkcode-div").hide();
+                        $('#kodereset-error').hide();
+                        $('#newpwd-div').show();
+                    }
+                }, 3000);
+                $counter++;
+
+                // Add the wait cursor immediately
+                $dom.addClass('wait-cursor'); 
+            }
+            else if ($id=='resendcode') {
+                $('#kodereset-error').hide();
+                $('#newpwd-div').hide();
+
+                $dom.prop('disabled', true);
+
+                //TODO: check code
+                // Simulate a long-running task
+                setTimeout(() => {
+                    // Remove the wait cursor after 10 seconds (adjust as needed)
+                    $dom.removeClass('wait-cursor'); 
+
+                    //start counter for resend
+                    $dom.prop('disabled', true);
+                    $counter_resendcode=60;
+                    $dom.text("Kirim Ulang (" +$counter_resendcode+ ")");
+
+                    $countdown = setInterval(countdown_resendcode, 1000);
+                }, 10000);
+                $counter++;
+
+                // Add the wait cursor immediately
+                $dom.addClass('wait-cursor'); 
+            }
+            else if ($id=='resetpwd') {
+
+                //TODO: reset pwd
+
+                $("#forgetpwd-div").hide();
+                $("#resetpwd-div").hide();
+                $("#login-div").show();
+
+            }
+        });
+
+        $(".cancelreset").on( "click", function(e) {
+            e.preventDefault();
+            $("#forgetpwd-div").hide();
+            $("#resetpwd-div").hide();
+            $("#login-div").show();
+        });
+
+        //$dbg = $(".pwdreset");
     });
+
+    $counter_resendcode=60;
+    function countdown_resendcode() {
+        $counter_resendcode--;
+        if ($counter_resendcode<=0) {
+            clearInterval($countdown);
+            $('#resendcode').text("Kirim Ulang");
+            $('#resendcode').prop('disabled', false);
+        }
+        else {
+            $('#resendcode').text("Kirim Ulang (" +$counter_resendcode+ ")");
+        }
+
+    };
 
 </script>
