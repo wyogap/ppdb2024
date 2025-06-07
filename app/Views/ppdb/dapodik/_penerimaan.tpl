@@ -505,6 +505,21 @@
 
         });
 
+        /* Value is set */
+        editor_siswa.on( 'open' , function ( e, type ) {
+            //let data = this.s.editData;
+
+            //hide empty label
+            $(".DTE_Label").each(function(i, el) {
+                dom = $(el);
+
+                if (dom.text() == "") {
+                    dom.hide();
+                };
+            });
+
+        });
+
         /* onchange */
         $(editor_siswa.field('kode_wilayah_kab').node()).on('change', function() {
             // let data = this.s.editData;
