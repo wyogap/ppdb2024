@@ -511,7 +511,7 @@
     $(document).ready(function() {
         map = L.map('peta',{ zoomControl:false }).setView([{$map_lintang},{$map_bujur}],11);
 		L.tileLayer(
-			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+			'{$map_streetmap}',{ maxZoom: 18,attribution: '{$app_short_name} {$nama_wilayah}',id: 'mapbox.streets' }
 		).addTo(map);
 
 		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),

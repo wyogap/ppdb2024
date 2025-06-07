@@ -265,7 +265,7 @@
         var map = L.map('peta',{zoomControl:false}).setView([lintang_aktif,bujur_aktif],16);
 
         var streetview = L.tileLayer(
-            '<?php echo $servis_peta_aktif;?>',{maxZoom: 18,attribution: 'PPDB <?php echo $wilayah_aktif;?>',id: 'mapbox.streets'}
+            '<?php echo $servis_peta_aktif;?>',{maxZoom: 18,attribution: '{$app_short_name} <?php echo $wilayah_aktif;?>',id: 'mapbox.streets'}
         );
         map.addLayer(streetview);
 

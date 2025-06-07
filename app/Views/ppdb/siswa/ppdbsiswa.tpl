@@ -1,5 +1,96 @@
 {include file="../header.tpl"}
 
+<style>
+.select2-container--default .select2-selection--single {
+    border-color: var(--primary-hover);
+}
+
+.select2-container {
+    margin-bottom: 0px !important; 
+}
+
+.select2-container--default .select2-selection--single {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-right: 12px !important;
+    white-space: normal;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #6e6e6e;
+}
+
+.select2-container--default .select2-dropdown.select2-dropdown--below {
+    padding-bottom: 12px;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.select2-container--default .select2-dropdown.select2-dropdown--above {
+    padding-top: 12px;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+textarea.form-control {
+    padding: 8px 16px;
+    color: #6e6e6e;
+}
+
+[data-theme-version="dark"] .select2-container--default .select2-selection--single {
+    border-color: var(--primary-hover);
+}
+
+[data-theme-version="dark"] textarea.form-control {
+    color: #fff;
+}
+
+[data-theme-version="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #fff;
+}
+
+[data-theme-version="dark"] .jconfirm .select2-container--default .select2-selection--single {
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
+}
+
+[data-theme-version="dark"] .jconfirm .select2-container--default.select2-container--open .select2-selection--single {
+    background-color: white;
+    color: var(--bs-dark);
+}
+
+[data-theme-version="dark"] .jconfirm .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--bs-dark);
+}
+
+[data-theme-version="dark"] .jconfirm .select2-container--default .select2-dropdown {
+    background: white;
+    border-color: var(--bs-dark);
+}
+
+[data-theme-version="dark"] .jconfirm .select2-search--dropdown .select2-search__field
+{
+    background: white;
+    border-color: var(--bs-dark);
+    color: var(--bs-dark);
+}
+
+.jconfirm .form-control {
+    margin-bottom: 0px !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .x-label {
+        margin-bottom: 8px;
+    }
+}
+
+</style>
+
 <body data-typography="cairo" data-theme-version="light" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 
     data-headerbg="color_1" data-sidebarbg="color_1" data-sidebar-position="fixed" data-header-position="fixed" data-container="boxed" direction="ltr" 
     data-primary="color_1">
@@ -62,7 +153,11 @@
                             </div>
                             <div class="app-name-long dashboard_bar">
                                 <span class="app-name">{$app_name}</span>
+                                {if $show_putaran}
                                 <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
+                                {else}
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran}</span>
+                                {/if}
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -304,6 +399,8 @@
     var cek_waktusosialisasi = {$cek_waktusosialisasi};
     var cek_waktupendaftaran = {$cek_waktupendaftaran};
     var cek_batasanusia = {$cek_batasanusia};
+    var maxpilihan = {$maxpilihan};
+    var maxpilihanumum = {$maxpilihanumum};
     var maxpilihannegeri = {$maxpilihannegeri};
     var maxpilihanswasta = {$maxpilihanswasta};
     var jumlahpendaftarannegeri = {$jumlahpendaftarannegeri};

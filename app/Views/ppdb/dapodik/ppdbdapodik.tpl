@@ -85,7 +85,11 @@
                             </div>
                             <div class="app-name-long dashboard_bar">
                                 <span class="app-name">{$app_name}</span>
+                                {if $show_putaran}
                                 <span class="app-desc">Tahun {$nama_tahun_ajaran} {$nama_putaran}</span>
+                                {else}
+                                <span class="app-desc">Tahun {$nama_tahun_ajaran}</span>
+                                {/if}
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">

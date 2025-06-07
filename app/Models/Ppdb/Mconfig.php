@@ -498,7 +498,19 @@ Class Mconfig
         $query = "select a.skoring_id as value, b.nama as label 
                   from cfg_daftar_nilai_skoring a 
                   join ref_daftar_skoring b on b.skoring_id=a.skoring_id and b.is_deleted=0
-                  where a.tahun_ajaran_id=? and b.kunci=0 and b.jalur_id=" .JALURID_PRESTASI. "
+                  where a.tahun_ajaran_id=? and b.kunci=0 and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_ORGANISASI_KEJUARAAN. "
+                  order by b.urutan";
+
+        return $this->ro->query($query, array($tahun_ajaran_id))->getResultArray();
+    }
+
+    function tcg_lookup_daftarskoring_akademik() {
+		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+
+        $query = "select a.skoring_id as value, b.nama as label 
+                  from cfg_daftar_nilai_skoring a 
+                  join ref_daftar_skoring b on b.skoring_id=a.skoring_id and b.is_deleted=0
+                  where a.tahun_ajaran_id=? and b.kunci=0 and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_AKADEMIK. "
                   order by b.urutan";
 
         return $this->ro->query($query, array($tahun_ajaran_id))->getResultArray();

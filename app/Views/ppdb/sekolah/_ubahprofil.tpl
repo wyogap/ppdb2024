@@ -6,7 +6,7 @@
 		//Peta
 		var map_profil = L.map('peta-profil',{ zoomControl:false }).setView([{$profilsekolah.lintang},{$profilsekolah.bujur}],16);
 		L.tileLayer(
-			'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+			'{$map_streetmap}',{ maxZoom: 18,attribution: '{$app_short_name} {$nama_wilayah}',id: 'mapbox.streets' }
 		).addTo(map_profil);
 
 		L.marker([{$profilsekolah.lintang},{$profilsekolah.bujur}]).addTo(map_profil)

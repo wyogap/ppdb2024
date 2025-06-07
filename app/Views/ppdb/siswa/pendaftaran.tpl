@@ -61,7 +61,11 @@
 
 {if !$tutup_akses && ($cek_waktupendaftaran || $cek_waktusosialisasi)} 
 <div class="alert alert-secondary" role="alert" id="pendaftaran-notif">
-    Kamu memiliki <b><span id="slot-negeri">0</span> slot</b> pendaftaran sekolah negeri dan <b><span id="slot-swasta">0</span> slot</b> pendaftaran sekolah swasta
+    {if $maxpilihan==$maxpilihanumum}
+    Kamu memiliki <b><span id="slot-umum">0</span> slot</b> pendaftaran.
+    {else}
+    Kamu memiliki <b><span id="slot-negeri">0</span> slot</b> pendaftaran sekolah negeri dan/atau <b><span id="slot-swasta">0</span> slot</b> pendaftaran sekolah swasta.
+    {/if}
 </div>
 {/if}
 

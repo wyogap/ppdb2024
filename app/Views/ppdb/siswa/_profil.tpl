@@ -169,7 +169,7 @@
             $("#profil-dikunci-notif").hide();
         }
 
-        //flag: visibility
+        //show/hide section berdasarkan profilflag
         flags.forEach(function(key) {
             value = profilflag[key];
             elements = $("[tcg-visible-tag='" +key+ "']");
@@ -179,7 +179,7 @@
 
         //special case: afirmasi
         elements = $("[tcg-visible-tag='afirmasi']");
-        if (!profilflag['kip'] && !profilflag['bdt']) {
+        if (!profilflag['punya_kip'] && !profilflag['masuk_bdt']) {
             elements.hide();
         }
         else {
@@ -188,29 +188,48 @@
 
         //konfirmasi: editability
         tags.forEach(function(key) {
-            value = verifikasi[key];
-            if (value == 2) {
+            if (verifikasi[key] == 2) {
                 konfirmasi[key] = 0;
             }
 
-            value = konfirmasi[key];
+            //dikonfirmasi oleh system -> hide dok pendukung
+            if (konfirmasi[key] == 4) {
+                elements = $("[tcg-visible-tag='" +key+ "']");
+                elements.each(function(idx) {
+                    el = $(this);
+                    if (el.hasClass('dokumen-pendukung')) {
+                        el.hide();
+                    }
+                });
+            };
+
+            //show/hide input berdasarkan status konfirmasi
             elements = $("[tcg-input-tag='" +key+ "']");
             elements.each(function(idx) {
                 el = $(this);
-                if (value) {
+                if (konfirmasi[key] == 4) {
+                    //konfirmasi oleh system
+                    action = el.attr('tcg-input-true');
+                }
+                else if (konfirmasi[key]) {
+                    //sudah dikonfirmasi
                     action = el.attr('tcg-input-true');
                 }
                 else {
+                    //belum dikonfirmasi
                     action = el.attr('tcg-input-false');
                 }
+                //default view
                 if (action == 'show') el.show();
                 else if (action == 'hide') el.hide();
                 else if (action == 'enable') el.attr("disabled",false);
                 else if (action == 'disable') el.attr("disabled",true);
             });
 
+            //show card text berdasarkan status konfirmasi dan verifikasi
             let card = $("#" +key);
             if (verifikasi[key] == 2) {
+                //status verifikasi
                 card.addClass("status-danger");
                 catatan = profil["catatan_" +key];
                 if (catatan != null && catatan.trim() != '') {
@@ -220,7 +239,13 @@
                     card.find(".accordion-header-text .status").html('*Sedang Proses Verifikasi*');
                 }
             }
-            else if (value) {
+            else if (konfirmasi[key] == 4) {
+                //dikonfirmasi oleh system
+                card.removeClass("status-danger");
+                card.find(".accordion-header-text .status").html('Data Sesuai Sistem');
+            }
+            else if (konfirmasi[key]) {
+                //sudah dikonfirmasi
                 card.removeClass("status-danger");
                 card.find(".accordion-header-text .status").html('');
             }
@@ -317,19 +342,21 @@
             konfirmasi['nomer-hp'] = verifikasi['nomer-hp'] = 1;
         }
 
-        //profil flag
+        //update profil flag
         flags.forEach(function(key) {
             if (key == 'kebutuhan_khusus')  return;
             profilflag[key] = parseInt(profil[key]);
         });
 
+        //special profil flag
         profilflag['kebutuhan_khusus'] = kebutuhankhusus;
+        profilflag['afirmasi'] = (profilflag['punya_kip'] || profilflag['masuk_bdt']) ? 1 : 0;
 
         //reset kelengkapan data
         kelengkapan_data = 1;
         tags.forEach(function(key) {
             //kalau sedang proses verifikasi (dan ada yang perlu verifikasi ulang) => tetap dianggap data sudah lengkap => bisa melakukakn pendaftaran
-            if(konfirmasi[key] != 1) { // || verifikasi[key] == 2) {
+            if(konfirmasi[key] != 1 && konfirmasi[key] != 4) { 
                 kelengkapan_data = 0;
             }
         });
@@ -403,7 +430,7 @@
                     json['data'][field] = val;
 
                     //store the label
-                    if (field == 'prestasi_skoring_id') {
+                    if (el.is('select')) {
                         val = el.children(':selected').text();
                     }
 
@@ -529,6 +556,14 @@
     }
 </script>
 
+<script>
+		//Dropdown Select
+		$(function () {
+			$(".select2").select2();
+		});
+
+</script>
+
 <script type="text/javascript" defer>
     var map;
 
@@ -536,7 +571,7 @@
         //Peta
         map = L.map('profil-peta',{ zoomControl:false }).setView([profil['lintang'],profil['bujur']],16);
         L.tileLayer(
-        	'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+        	'{$map_streetmap}',{ maxZoom: 18,attribution: '{$app_short_name} {$nama_wilayah}',id: 'mapbox.streets' }
         ).addTo(map);
 
         L.marker([profil['lintang'],profil['bujur']]).addTo(map)

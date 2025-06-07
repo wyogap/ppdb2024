@@ -79,6 +79,18 @@ class Siswa extends PpdbController {
             return redirect()->to(site_url() ."auth/logout");
         }
 
+        $jenjang_id = 0;
+        if ($profil['bentuk_sekolah'] == 'SD' || $profil['bentuk_sekolah'] == 'MI') {
+            $jenjang_id = JENJANGID_SMP;
+        }
+        else if ($profil['bentuk_sekolah'] == 'TK' || $profil['bentuk_sekolah'] == 'RA' || $profil['bentuk_sekolah'] == 'KB') {
+            $jenjang_id = JENJANGID_SD;
+        }
+        else {
+            $jenjang_id = JENJANGID_TK;
+        }
+        $this->session->set("jenjang_aktif", $jenjang_id);
+
         //daftar pendaftaran
         $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
 
@@ -180,6 +192,23 @@ class Siswa extends PpdbController {
         else if (!empty($dokumen[DOCID_SUKET_INKLUSI]) && $dokumen[DOCID_SUKET_INKLUSI]['verifikasi'] == 2) { $verifikasi_dok = 0; }
         else if ($verifikasi_dokumen_tambahan == 2) { $verifikasi_dok = 2; }
 
+        //data afirmasi
+        $afirmasi = $this->Msiswa->tcg_get_dataafirmasi($profil['nik']);
+        if (!$afirmasi) {
+            $profil['masuk_bdt'] = 0;
+            $profil['sumber_bdt'] = null;
+        }
+        else {
+            $profil['masuk_bdt'] = 1;
+            $profil['sumber_bdt'] = $afirmasi['sources'];
+        }
+
+        //debugging
+        if (__DEBUGGING__) {
+            $profil['masuk_bdt'] = 1;
+            $profil['sumber_bdt'] = "TestDB";
+        }
+
         //Output
         $data = array();
 
@@ -254,7 +283,8 @@ class Siswa extends PpdbController {
 
 		$data['pendaftaranditerima'] = $pendaftaran_diterima;
 
-        $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
+        $data['daftarskoring_prestasi'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
+        $data['daftarskoring_akademik'] = $this->Mconfig->tcg_lookup_daftarskoring_akademik();
 
         # PENDAFTARAN
         $data['tutup_akses'] = ($tutup_akses || $diterima) ? 1 : 0;
@@ -263,20 +293,24 @@ class Siswa extends PpdbController {
         $data['batasanperubahan'] = $this->Mconfig->tcg_batasanperubahan();
         $data['batasansiswa'] = $this->Msiswa->tcg_batasansiswa($peserta_didik_id);
 
-        $data['batasanusia'] = $this->Mconfig->tcg_batasanusia("SMP");
+        $data['batasanusia'] = $this->Mconfig->tcg_batasanusia($jenjang_id);
         $data['cek_batasanusia'] = ($data['batasanusia']['maksimal_tanggal_lahir'] < $profil['tanggal_lahir'] && $data['batasanusia']['minimal_tanggal_lahir'] > $profil['tanggal_lahir']) ? 1 : 0;
 
         $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], !($profil['kebutuhan_khusus'] == 'Tidak ada'));
         
         $daftarpilihan = $this->Mconfig->tcg_daftarpilihan();
         $data['maxpilihan'] = count($daftarpilihan);
+        $data['maxpilihanumum'] = 0;
         $data['maxpilihannegeri'] = 0;
         $data['maxpilihanswasta'] = 0;
         foreach($daftarpilihan as $row) {
-            if ($row['sekolah_negeri'] == 1) {
+            if ($row['sekolah_negeri'] == 1 && $row['sekolah_swasta'] == 1) {
+                $data['maxpilihanumum']++;
+            }
+            else if ($row['sekolah_negeri'] == 1) {
                 $data['maxpilihannegeri']++;
             }
-            if ($row['sekolah_swasta'] == 1) {
+            else if ($row['sekolah_swasta'] == 1) {
                 $data['maxpilihanswasta']++;
             }
         }
@@ -291,6 +325,7 @@ class Siswa extends PpdbController {
 
         $data['daftarpendaftaran'] = $pendaftaran;
 
+        $data['use_select2'] = 1;
         $data['use_leaflet'] = 1;
         $data['use_datatable'] = 1;
 
@@ -300,10 +335,10 @@ class Siswa extends PpdbController {
             $data['cek_waktusosialisasi'] = 1;
             $data['cek_waktudaftarulang'] = 1;
             //$data['kebutuhan_khusus'] = 1;
-            $data['satu_zonasi_satu_jalur'] = 1;
+            //$data['satu_zonasi_satu_jalur'] = 0;
             $data['profilsiswa']['tutup_akses'] = 0;
 
-            $data['aktif'] = 'pendaftaran';
+            //$data['aktif'] = 'pendaftaran';
         }
         //end debugging
 

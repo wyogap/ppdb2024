@@ -83,28 +83,47 @@
         }
 
         //sisa slot pendaftaran
-        jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
-        if (daftarpendaftaran != null) {
-            daftarpendaftaran.forEach(function(p) {
-                if (p['pendaftaran'] != 1)  return;
-                if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
-                else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
-            });
-        }
+        let slotumum=slotnegeri=slotswasta=0;
+        if (maxpilihan == maxpilihanumum) {
+            slotumum = maxpilihanumum - daftarpendaftaran.length;
+            $("#slot-umum").html(slotumum);
 
-        let slotnegeri = maxpilihannegeri - jumlahpendaftarannegeri;
-        let slotswasta = maxpilihanswasta - jumlahpendaftaranswasta;
-        $("#slot-negeri").html(slotnegeri);
-        $("#slot-swasta").html(slotswasta);
+            el = $("#pendaftaran-notif");
+            if (slotumum==0) {
+                el.removeClass('alert-secondary');
+                el.addClass("alert-danger");
+            }
+            else {
+                el.addClass('alert-secondary');
+                el.removeClass("alert-danger");
+            }        
 
-        el = $("#pendaftaran-notif");
-        if (slotnegeri==0 && slotswasta==0) {
-            el.removeClass('alert-secondary');
-            el.addClass("alert-danger");
+            slotswasta = slotnegeri = slotumum;
         }
         else {
-            el.addClass('alert-secondary');
-            el.removeClass("alert-danger");
+            jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
+            if (daftarpendaftaran != null) {
+                daftarpendaftaran.forEach(function(p) {
+                    if (p['pendaftaran'] != 1)  return;
+                    if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
+                    else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
+                });
+            }
+
+            slotnegeri = maxpilihannegeri - jumlahpendaftarannegeri;
+            slotswasta = maxpilihanswasta - jumlahpendaftaranswasta;
+            $("#slot-negeri").html(slotnegeri);
+            $("#slot-swasta").html(slotswasta);  
+
+            el = $("#pendaftaran-notif");
+            if (slotnegeri==0 && slotswasta==0) {
+                el.removeClass('alert-secondary');
+                el.addClass("alert-danger");
+            }
+            else {
+                el.addClass('alert-secondary');
+                el.removeClass("alert-danger");
+            }
         }
 
         //update layout
@@ -247,6 +266,16 @@
                     },
                 },
                 onContentReady: function () {
+                    //use select2 for consistency
+                    select = this.$content.find('select');
+
+                    _parent = $(document.body).find(".jconfirm");
+                    select.select2({
+                        minimumResultsForSearch: 5,
+                        //dropdownParent: $(_input).parent().parent().parent().parent(),
+                        dropdownParent: _parent,
+                    });                            
+
                     // bind to events
                     var jc = this;
                     this.$content.find('#jenis_pilihan').on('change', function (e) {
@@ -406,9 +435,9 @@
 	    bujur_aktif = profil['bujur'] ? profil['bujur'] : bujur_aktif;
 
         //Peta
-        map_sebaran = L.map('peta-sebaran',{ zoomControl:false }).setView([lintang_aktif,bujur_aktif],14);
+        map_sebaran = L.map('peta-sebaran',{ zoomControl:false }).setView([lintang_aktif,bujur_aktif],13);
         L.tileLayer(
-        	'{$map_streetmap}',{ maxZoom: 18,attribution: 'PPDB {$nama_wilayah}',id: 'mapbox.streets' }
+        	'{$map_streetmap}',{ maxZoom: 18,attribution: '{$app_short_name} {$nama_wilayah}',id: 'mapbox.streets' }
         ).addTo(map_sebaran);
 
         if ((profil['lintang'] != null) && (profil['bujur'] != null)) {

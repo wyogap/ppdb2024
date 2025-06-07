@@ -98,21 +98,22 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select("
-        a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,a.diterima,
-		a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
-		a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
-		a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi,
-		a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
-		a.catatan_profil,a.catatan_lokasi,a.catatan_nilai,a.catatan_prestasi,a.catatan_afirmasi,a.catatan_inklusi,
-		a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
-		a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,
-		coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-		coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt,		
-		a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa,
-		a.nilai_semester, a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2,
-		a.nilai_kelulusan, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label,
-		i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
+            a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah,a.diterima,
+            a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
+            a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
+            a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi,
+            a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
+            a.catatan_profil,a.catatan_lokasi,a.catatan_nilai,a.catatan_prestasi,a.catatan_afirmasi,a.catatan_inklusi,
+            a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
+            a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,      
+            i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
+        $builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
+        $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
+        $builder->select("a.nilai_kelulusan, a.nilai_semester, a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");
+        $builder->select("coalesce(a.punya_prestasi,0) as punya_prestasi, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label");
+        //TODO: tambahkan col
+        $builder->select("a.akademik_skoring_id, h.nama as akademik_skoring_label");
         $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan, a.nama_dusun,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
 		                    c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
@@ -130,6 +131,7 @@ Class Mprofilsiswa
 		$builder->join('dbo_users e','a.verifikator_id = e.user_id AND e.is_deleted = 0','LEFT OUTER');
 		$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND a.peserta_didik_id=f.peserta_didik_id AND f.is_deleted = 0','LEFT OUTER');
 		$builder->join('ref_daftar_skoring g','g.skoring_id = a.prestasi_skoring_id and g.is_deleted=0','LEFT OUTER');
+		$builder->join('ref_daftar_skoring h','h.skoring_id = a.akademik_skoring_id and h.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah i','i.sekolah_id = a.lokasi_berkas','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
@@ -184,12 +186,14 @@ Class Mprofilsiswa
 
 		$putaran = $this->session->get("putaran_aktif");
 		$kode_wilayah_aktif = $this->session->get("kode_wilayah_aktif");
+        $jenjang_id = $this->session->get("jenjang_aktif");
 		//$bentuk_sekolah = secure("SMP");
 
 		$builder = $this->ro->table('cfg_penerapan a');
 		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.kategori_susulan,a.kategori_inklusi');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
+        $builder->where("a.jenjang_id", $jenjang_id);
 		
 		if(substr($kode_wilayah,0,4)!=substr($kode_wilayah_aktif,0,4)){
 			$builder->where('a.luar_wilayah_administrasi',1);
@@ -603,6 +607,8 @@ Class Mprofilsiswa
         
         $user_id = $this->session->get('user_id');
         $tag = uuid();
+
+        //echo "$penerapan_id,$sekolah_id,$peserta_didik_id,$jenis_pilihan,$user_id, $tag"; exit;
 
 		$sql = "CALL " .SQL_PROCESS_PENDAFTARAN. " (?,?,?,?,?,?)";
 		$status = $this->db->query($sql, array($penerapan_id,$sekolah_id,$peserta_didik_id,$jenis_pilihan,$user_id, $tag));
@@ -1140,5 +1146,17 @@ Class Mprofilsiswa
         //TODO
     }
 
+    function tcg_get_dataafirmasi($nik) {
+        $builder = $this->ro->table("cfg_data_afirmasi a");
+        $builder->select("a.nik, group_concat(distinct `source`) as sources");
+        $builder->where("a.nik", $nik);
+        $builder->where("a.is_deleted=0");
+        $builder->groupBy("a.nik");
+
+        $result = $builder->get()->getRowArray();
+        if (!$result) return null;
+        
+        return $result;
+    }    
 }
 

@@ -178,6 +178,9 @@ defined('ASALDATA_REGISTRASI')      OR define('ASALDATA_REGISTRASI', '1');
 defined('ASALDATA_DAPODIK')         OR define('ASALDATA_DAPODIK', '2');
 defined('ASALDATA_PENERIMAANSD')    OR define('ASALDATA_PENERIMAANSD', '4');
 
+defined('TIPESKORING_AKADEMIK')                 OR define('TIPESKORING_AKADEMIK', '3');
+defined('TIPESKORING_ORGANISASI_KEJUARAAN')     OR define('TIPESKORING_ORGANISASI_KEJUARAAN', '8');
+
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
 

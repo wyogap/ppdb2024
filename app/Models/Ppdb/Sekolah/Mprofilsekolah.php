@@ -891,10 +891,10 @@ Class Mprofilsekolah
         $builder->where("a.nik", $nik);
         $builder->where("a.is_deleted=0");
 
-        $results = $builder->get()->getResultArray();
-        if (!$results) return 0;
+        $result = $builder->get()->getRowArray();
+        if (!$result) return 0;
 
-        if ($results[0]['cnt']>0)   return 1;
+        if ($result['cnt']>0)   return 1;
         
         return 0;
     }

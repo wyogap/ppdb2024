@@ -169,7 +169,7 @@
             {literal}
             map = L.map('peta',{ zoomControl:false }).setView([map_lintang,map_bujur],10);
             var tile = L.tileLayer(
-                map_streetmap,{ maxZoom: 18,attribution: 'PPDB ' +map_namawilayah,id: 'mapbox.streets' }
+                map_streetmap,{ maxZoom: 18,attribution: '{$app_short_name} ' +map_namawilayah,id: 'mapbox.streets' }
             ).addTo(map);
 
             var streetmap   = L.tileLayer(map_streetmap, { id: 'mapbox.light', attribution: '' }),

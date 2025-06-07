@@ -218,6 +218,11 @@ input.form-control, select.form-control {
     border-bottom-right-radius: 1rem;   
 }
 
+.accordion-primary-solid .accordion__body {
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem; 
+}
+
 .accordion-header-bg .accordion-header {
     background-color: white;
 }
