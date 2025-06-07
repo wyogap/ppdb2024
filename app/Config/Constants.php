@@ -122,9 +122,10 @@ defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS
 //defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
 //defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
 
-defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2025_sd_hapus_penerimaan');
-defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2025_sd_tambah_penerimaan');
+defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2025_sd_hapus_pendaftaran');
+defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2025_sd_tambah_pendaftaran');
 defined('SQL_TAMBAH_SISWA_SD')              OR define('SQL_TAMBAH_SISWA_SD', 'ppdb2025_sd_tambah_siswa');
+defined('SQL_HITUNGSKOR_SD')                OR define('SQL_HITUNGSKOR_SD', 'ppdb2025_sd_hitungskor');
 
 // defined('SQL_UBAH_DATA')                    OR define('SQL_UBAH_DATA', 'ppdb2023_ubah_data');
 // defined('SQL_UBAH_NILAIKELULUSAN')          OR define('SQL_UBAH_NILAIKELULUSAN', 'ppdb2022_ubah_nilaikelulusan');

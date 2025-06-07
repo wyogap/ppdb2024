@@ -210,8 +210,12 @@ input.form-control, select.form-control {
 
 /** ACCORDION */
 .accordion-header {
-    border-radius: 1rem;
-    
+    border-radius: 1rem;   
+}
+
+.accordion__body {
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;   
 }
 
 .accordion-header-bg .accordion-header {
@@ -375,6 +379,22 @@ table.dataTable thead td {
     border-top: solid 2px #000;
     border-bottom: solid 2px #000;
     color: #000;
+}
+
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+table.dataTable.display tbody tr.odd>.sorting_2, table.dataTable.order-column.stripe tbody tr.odd>.sorting_2,
+table.dataTable.display tbody tr.odd>.sorting_3, table.dataTable.order-column.stripe tbody tr.odd>.sorting_3 {
+    background-color: inherit;
+}
+
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1,
+table.dataTable.display tbody tr.even>.sorting_2, table.dataTable.order-column.stripe tbody tr.even>.sorting_2,
+table.dataTable.display tbody tr.even>.sorting_3, table.dataTable.order-column.stripe tbody tr.even>.sorting_3 {
+    background-color: inherit;
+}
+
+table.dataTable.display tbody a {
+    color: inherit;
 }
 
 [data-theme-version="dark"] table.dataTable thead th, 
@@ -801,8 +821,15 @@ div.DTE_Field .select2-container--default .select2-selection--single .select2-se
     padding-left: 5px;
 }
 
+div.DTE div.DTE_Footer {
+    height: 56px;
+}
 
 @media only screen and (max-width: 768px) {
+
+    div.DTE_Body div.DTE_Body_Content div.DTE_Field {
+        padding: 5px 6px;
+    }
 
     .page-titles .breadcrumb li a {
         font-size: 18px;

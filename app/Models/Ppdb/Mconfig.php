@@ -554,6 +554,28 @@ Class Mconfig
 		return $builder->get()->getResultArray();
 	}
 
+	function tcg_lookup_kecamatan($kode_wilayah = null){
+		if (empty($kode_wilayah))
+			$kode_wilayah = $this->session->get("kode_wilayah_aktif");
+ 
+        //make sure level kabupaten
+        $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
+
+        $builder = $this->ro->table('ref_wilayah');
+        $builder->select('CONVERT(kode_wilayah,CHAR(6)) AS value, nama as label');
+		$builder->where(array('id_level_wilayah'=>3,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah));
+		$builder->orderBy('nama');
+		return $builder->get()->getResultArray();
+	}
+
+	function tcg_lookup_desa($kode_wilayah_kec){
+		$builder = $this->ro->table('ref_wilayah');
+		$builder->select('CONVERT(kode_wilayah,CHAR(8)) AS value, nama as label');
+		$builder->where(array('id_level_wilayah'=>4,'expired_date'=>NULL,'mst_kode_wilayah'=>$kode_wilayah_kec));
+		$builder->orderBy('nama');
+		return $builder->get()->getResultArray();
+	}
+
 	function tcg_sekolah($kode_wilayah, $bentuk){
 		$builder = $this->ro->table('ref_sekolah');
 		$builder->select('sekolah_id,npsn,nama');

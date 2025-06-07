@@ -44,6 +44,7 @@ Class Mprofilsekolah
 
 		$builder = $this->ro->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
+		$builder->select('a.kode_wilayah, a.kode_wilayah_kec, a.kode_wilayah_kab');
         $builder->select('a.dapodik_id');
         $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');
         $builder->join("($subquery) as b", "b.sekolah_id = a.sekolah_id",'LEFT OUTER');
@@ -521,11 +522,13 @@ Class Mprofilsekolah
         $builder->select("b.peserta_didik_id, b.nama, b.nisn, b.nik, b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin, d.sekolah_id, d.nama as sekolah");
         $builder->select("a.pendaftaran_id, a.status_penerimaan_final, a.peringkat_final, a.skor, a.penerapan_id, e.jalur_id, e.nama as jalur");
         $builder->select("coalesce(b.npsn_sekolah_asal, c.npsn) as npsn_sekolah_asal, coalesce(b.nama_sekolah_asal, c.nama) as nama_sekolah_asal");
+        $builder->select("f.kode_wilayah_kab, f.kode_wilayah_kec, f.kode_wilayah");
         $builder->select("row_number() over (order by b.nama) rn");
-        $builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id and b.is_deleted=0");
+        $builder->join("tcg_peserta_didik b", "b.peserta_didik_id=a.peserta_didik_id and b.is_deleted=0", 'INNER');
         $builder->join("ref_sekolah c", "c.sekolah_id=b.sekolah_id and c.is_deleted=0", 'LEFT OUTER');
         $builder->join("ref_sekolah d", "d.sekolah_id=a.sekolah_id and d.is_deleted=0", 'LEFT OUTER');
-        $builder->join("cfg_penerapan e", "e.penerapan_id=a.penerapan_id and e.is_deleted=0", 'LEFT OUTER');
+        $builder->join("cfg_penerapan e", "e.penerapan_id=a.penerapan_id and e.is_deleted=0", 'INNER');
+        $builder->join("ref_wilayah f", "f.kode_wilayah=b.kode_wilayah and f.is_deleted=0", 'LEFT OUTER');
         $builder->where("a.is_deleted=0");
 
         if (!empty($sekolah_id)) {
@@ -659,7 +662,7 @@ Class Mprofilsekolah
 		return $this->ro->query($query)->getResultArray();	
 	}
 
-    function tcg_tambah_pesertadidik_sd($valuepair) {
+    function tcg_tambah_pendaftar_sd($valuepair) {
         $this->error_message = '';
 
         if (empty($valuepair)) {
@@ -686,62 +689,30 @@ Class Mprofilsekolah
         return $peserta_didik_id;
     }
 
-    // function tcg_tambah_pesertadidik_sd($valuepair) {
-    //     $this->error_message = '';
+    function tcg_update_pendaftar_sd($pendaftaran, $values) {
+        $this->error_message = null;
 
-    //     if (empty($valuepair)) {
-    //         $this->error_message = "Data siswa baru tidak lengkap";
-    //         return 0;
-    //     }
+        $peserta_didik_id = $pendaftaran['peserta_didik_id'];
 
-    //     $values = array();
-    //     $values[] = $valuepair['sekolah_id']; 
-    //     $values[] = $valuepair['nama']; 
-    //     $values[] = empty($valuepair['jenis_kelamin']) ? null : $valuepair['jenis_kelamin']; 
-    //     $values[] = empty($valuepair['nisn']) ? null : $valuepair['nisn']; 
-    //     $values[] = empty($valuepair['nik']) ? null : $valuepair['nik']; 
-    //     $values[] = empty($valuepair['tempat_lahir']) ? null : $valuepair['tempat_lahir']; 
-    //     $values[] = empty($valuepair['tanggal_lahir']) ? null : $valuepair['tanggal_lahir'];  
-    //     $values[] = empty($valuepair['nama_ibu_kandung']) ? null : $valuepair['nama_ibu_kandung'];  
-    //     $values[] = empty($valuepair['nama_ayah']) ? null : $valuepair['nama_ayah'];  
-    //     $values[] = empty($valuepair['npsn_sekolah_asal']) ? null : $valuepair['npsn_sekolah_asal'];  
-    //     $values[] = empty($valuepair['nama_sekolah_asal']) ? null : $valuepair['nama_sekolah_asal'];  
-    //     $dapodik_id = uuid();
-    //     $values[] = $dapodik_id;
-    //     $values[] = $this->session->get('user_id');
+        $builder = $this->db->table("tcg_peserta_didik");
+        $values['created_by'] = $this->session->get('user_id');
 
-        
-	// 	$sql = "call " .SQL_TAMBAH_SISWA_SD. "(?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?)";
-	// 	$status = $this->db->query($sql, $values);
-    //     if (!$status) return null;
+        $builder->where("peserta_didik_id", $peserta_didik_id);
+        $builder->update($values);
 
-    //     $message = $status->getResultArray();
-    //     if ($message != null) {
-    //         $this->error_message = $message['message'];
-    //         return null;
-    //     }
+        //update skoring
+        if (!empty($values['kode_wilayah']) || !empty($values['tanggal_lahir'])) {
+            $sql = "call " .SQL_HITUNGSKOR_SD. " (?)";
+            $this->db->query($sql, array( $pendaftaran['pendaftaran_id'] ));
+        }
 
-    //     //audit trail -> di sp
-        
-    //     $filter = array( "b.dapodik_id" => $dapodik_id);
+        //audit trail
+        $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, $pendaftaran);
 
-    //     $result = $this->tcg_penerimaan_sd(null, $filter);
-    //     if($result == null) return null;
+        return $this->tcg_penerimaan_sd_siswa($peserta_didik_id);
+    }
 
-    //     return $result[0];
-
-    //     // $sql = "select b.peserta_didik_id, b.nama, b.nisn, b.nik,
-    //     //                 coalesce(b.npsn_sekolah_asal, c.npsn) as npsn_sekolah_asal, coalesce(b.nama_sekolah_asal, c.nama) as nama_sekolah_asal,
-    //     //                 b.tempat_lahir, b.tanggal_lahir, b.nama_ibu_kandung, b.jenis_kelamin, c.sekolah_id, c.nama as sekolah
-	// 	// 		  from tcg_pendaftaran a
-	// 	// 		  join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id
-	// 	// 		  left join ref_sekolah c on c.sekolah_id=b.sekolah_id
-	// 	// 		  where a.is_deleted=0 and a.status_penerimaan_final=1 and b.dapodik_id=?";
-
-	// 	// return $this->ro->query($sql, array($dapodik_id))->getRowArray();;
-    // }
-
-	function tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id) {
+	function tcg_terima_pendaftar_sd($sekolah_id, $peserta_didik_id, $penerapan_id) {
 		$pengguna_id = $this->session->get("user_id");
 
 		$sql = "call " .SQL_PENERIMAAN_SD. "(?, ?, ?, ?)";
@@ -762,7 +733,7 @@ Class Mprofilsekolah
         return $result[0];
 	}
 
-	function tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id) {
+	function tcg_hapus_pendaftar_sd($sekolah_id, $peserta_didik_id) {
 		$pengguna_id = $this->session->get("user_id");
 
         $keterangan = "Hapus pendaftaran oleh sekolah";

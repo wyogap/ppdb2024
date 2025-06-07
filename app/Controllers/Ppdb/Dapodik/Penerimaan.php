@@ -65,12 +65,12 @@ class Penerimaan extends PpdbController {
 		//$sekolah_id = $this->session->get("sekolah_id");
 		//$nama_sekolah = $this->Msekolah->tcg_nama_sekolah($sekolah_id);
 
-        $data['waktupendaftaran_sd'] = $this->Mconfig->tcg_waktupendaftaran($jenjang_id);
-        if (empty($data['waktupendaftaran_sd'])) {
-            $data['cek_waktupendaftaran_sd'] = 0;
+        $data['waktupendaftaran'] = $this->Mconfig->tcg_waktupendaftaran($jenjang_id);
+        if (empty($data['waktupendaftaran'])) {
+            $data['cek_waktupendaftaran'] = 0;
         }
         else {
-            $data['cek_waktupendaftaran_sd'] = ($data['waktupendaftaran_sd']['aktif'] == 1) ? 1 : 0;
+            $data['cek_waktupendaftaran'] = ($data['waktupendaftaran']['aktif'] == 1) ? 1 : 0;
         }
         $data['waktusosialisasi'] = $this->Mconfig->tcg_waktusosialisasi();
         if (empty($data['waktusosialisasi'])) {
@@ -100,13 +100,14 @@ class Penerimaan extends PpdbController {
         $data['use_datatable_editor'] = 1;
 
         $data['show_all_pendaftar'] = 1;
-		// $semuapendaftar = $this->Msekolah->tcg_daftarpendaftaran($sekolah_id);
-        // for($i=0; $i<count($semuapendaftar); $i++) {
-        //     $semuapendaftar[$i]['idx'] = $i+1;
-        //     //mask nisn
-        //     $semuapendaftar[$i]['nisn'] = substr($semuapendaftar[$i]['nisn'],0,6) .str_repeat("*", 4);
-        // }
-        // $data['semuapendaftar'] = $semuapendaftar;
+
+		$data['cek_waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
+        if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1 && $data['cek_waktusosialisasi'] != 1) {
+            $data['final_ranking'] = 1;
+        }
+        else {
+            $data['final_ranking'] = 0;
+        }
 
 		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
         $this->session->set("daftarpenerapan", $data['daftarpenerapan']);
@@ -160,7 +161,7 @@ class Penerimaan extends PpdbController {
                 print_json_error('Tidak mendaftar di sekolah ini');
             }
 
-            $status = $this->Msekolah->tcg_hapus_pesertadidik_sd($sekolah_id, $peserta_didik_id);
+            $status = $this->Msekolah->tcg_hapus_pendaftar_sd($sekolah_id, $peserta_didik_id);
             if (!$status) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {
@@ -226,6 +227,10 @@ class Penerimaan extends PpdbController {
 
             $json = array();
             foreach($values as $peserta_didik_id => $siswa) {
+                //remove helper fields
+                unset($siswa['kode_wilayah_kab']);
+                unset($siswa['kode_wilayah_kec']);
+
                 $siswa['nisn'] = trim($siswa['nisn'] ?? '');
 				if (empty($siswa['nisn']) || $this->Msiswa->tcg_cek_nisn($siswa['nisn'])) {
 					print_json_error("NISN siswa baru tidak valid/kosong/sudah terpakai.");
@@ -294,7 +299,7 @@ class Penerimaan extends PpdbController {
                 }
                 
                 //buat peserta-didik
-				$peserta_didik_id = $this->Msekolah->tcg_tambah_pesertadidik_sd($siswa);
+				$peserta_didik_id = $this->Msekolah->tcg_tambah_pendaftar_sd($siswa);
 				if (empty($peserta_didik_id)) {
 					$error = $this->Msekolah->get_error_message();
 					if (!empty($error)) {
@@ -310,7 +315,7 @@ class Penerimaan extends PpdbController {
                 $siswa['peserta_didik_id'] = $peserta_didik_id;
                 audit_siswa($siswa, "SISWA BARU SD/TK", "Siswa Baru Penerimaan SD/TK an. " .$siswa['nama']);
 
-                $pendaftaran = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
+                $pendaftaran = $this->Msekolah->tcg_terima_pendaftar_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
                 if (!$pendaftaran) {
                     $error = $this->Msekolah->get_error_message();
                     if (!empty($error)) {
@@ -362,6 +367,10 @@ class Penerimaan extends PpdbController {
                     unset($v['penerapan_id']);
                 }
 
+                //remove helper fields
+                unset($v['kode_wilayah_kab']);
+                unset($v['kode_wilayah_kec']);
+
                 //update profil
                 $peserta_didik_id = $pendaftaran['peserta_didik_id'];
                 if (isset($v['nisn'])) {
@@ -380,12 +389,12 @@ class Penerimaan extends PpdbController {
                     }
                 }
 
-                $profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
-                $data = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $v);
+                //$profil = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+                $data = $this->Msekolah->tcg_update_pendaftar_sd($pendaftaran, $v);
 
                 if ($data != null) {
                     //audit trail
-                    audit_siswa($profil, "UBAH DATA", "Ubah data siswa an. " .$data['nama'], array_keys($v), $v, $profil);
+                    audit_siswa($pendaftaran, "UBAH DATA", "Ubah data siswa an. " .$data['nama'], array_keys($v), $v, $pendaftaran);
                 }
 
                 if ($penerapan_id == 0 || $penerapan_id == $pendaftaran['penerapan_id']) {
@@ -588,7 +597,7 @@ class Penerimaan extends PpdbController {
                 }
             }
 
-            $pendaftaran = $this->Msekolah->tcg_terima_pesertadidik_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
+            $pendaftaran = $this->Msekolah->tcg_terima_pendaftar_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
             if (!$pendaftaran) {
                 $error = $this->Msekolah->get_error_message();
                 if (!empty($error)) {

@@ -11,6 +11,9 @@
 	var editor, editor_siswa, dt_siswa;
 	var nama, sekolah_id, peran_id, username;
 
+    var kode_wilayah_kab=kode_wilayah_kec=kode_wilayah=null;
+    var onchange_flag=onchange_flag1=onchange_flag2=false;
+
 	$(document).ready(function() {
 		$.extend( $.fn.dataTable.defaults, { 
             responsive: true, 
@@ -43,7 +46,7 @@
 		    $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
 		} );
 
-        {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
 		editor_siswa = new $.fn.dataTable.Editor( {
 			ajax: "{$site_url}ppdb/dapodik/penerimaan/ubahdata",
 			table: "#tdaftarpendaftar",
@@ -296,6 +299,19 @@
                     }
                 }
 
+				field = this.field('kode_wilayah');
+				if (!field.isMultiValue()) {
+                    hasError = false;
+                    if (!field.val() || field.val() == '') {
+                        hasError = true;
+                        field.error('Alamat desa/kelurahan harus diisi.');
+                    }
+ 
+                    if (!hasError) {
+                        //TODO: validasi lebih lanjut
+                    }
+                }
+
 				// field = this.field('npsn_sekolah_asal');
 				// if (!field.isMultiValue()) {
                 //     hasError = false;
@@ -332,6 +348,12 @@
                     return false;
                 }
 
+                //remove helper field
+                $.each(o.data, function (key, val) {
+                    delete o.data[key].kode_wilayah_kab;
+                    delete o.data[key].kode_wilayah_kec;
+                });
+
             }
 
         });  
@@ -366,6 +388,225 @@
                 }
             }
         });
+
+        /* Called before editor open event when edit is called. Value is not set. */
+        editor_siswa.on( 'initEdit', function (e, node, data, items, type) {
+            onchange_flag = true;
+
+            //get list of kecamatan from json
+            let newval1=data['kode_wilayah_kab'];
+
+            //default kab to kode_wilayah_aktif
+            if (newval1===null || newval1=="") {
+                newval1 = "{$profilsekolah.kode_wilayah_kab}";
+            }
+
+            if (kode_wilayah_kab!=newval1) {
+                onchange_flag1 = true;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{$site_url}/home/lkkecamatan?kode_wilayah=" +newval1,
+                    async: true,
+                    data: null,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    timeout: 60000,
+                    dataType: 'json',
+                    success: function(json) {
+                        if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+                            toastr.error("Tidak berhasil mendapat daftar kecamatan. " +json.error);
+                        }
+                        else {
+                            //update list
+                            editor_siswa.field('kode_wilayah_kec').update(json.data); 
+                            //set value in case open() already finished
+                            let val = data['kode_wilayah_kec'];     
+                            editor_siswa.field('kode_wilayah_kec').set(val);
+
+                            kode_wilayah_kab = newval1;
+                        }
+                        
+                        onchange_flag1 = false;              
+                        if (!onchange_flag1 && !onchange_flag2) {
+                            onchange_flag = false;
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        toastr.error("Tidak berhasil mendapat daftar kecamatan. " +textStatus);
+                        
+                        onchange_flag1 = false;              
+                        if (!onchange_flag1 && !onchange_flag2) {
+                            onchange_flag = false;
+                        }
+
+                        return;
+                    }
+                })
+            }
+
+            //get list of kecamatan from json
+            let newval2=data['kode_wilayah_kec'];
+
+            //default kab to kode_wilayah_aktif
+            if (newval2===null || newval2=="") {
+                newval2 = "{$profilsekolah.kode_wilayah_kec}";
+            }
+
+            if (kode_wilayah_kec!=newval2) {
+                onchange_flag2 = true;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{$site_url}/home/lkdesa?kode_wilayah=" + newval2,
+                    async: true,
+                    data: null,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    timeout: 60000,
+                    dataType: 'json',
+                    success: function(json) {
+                        if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+                            toastr.error("Tidak berhasil mendapat daftar desa/kelurahan. " +json.error);
+                        }
+                        else {
+                            //update list
+                            editor_siswa.field('kode_wilayah').update(json.data);  
+                            //set value in case open() already finished
+                            let val = data['kode_wilayah'];     
+                            editor_siswa.field('kode_wilayah').set(val);
+                            
+                            kode_wilayah_kec = newval2;
+                        }
+
+                        onchange_flag2 = false;                        
+                        if (!onchange_flag1 && !onchange_flag2) {
+                            onchange_flag = false;
+                        }                        
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        toastr.error("Tidak berhasil mendapat daftar desa/kelurahan. " +textStatus);
+                        
+                        onchange_flag2 = false;
+                        if (!onchange_flag1 && !onchange_flag2) {
+                            onchange_flag = false;
+                        }
+
+                        return;
+                    }
+                })
+            }
+
+            if (!onchange_flag1 && !onchange_flag2) {
+                onchange_flag = false;
+            }
+
+        });
+
+        /* onchange */
+        $(editor_siswa.field('kode_wilayah_kab').node()).on('change', function() {
+            // let data = this.s.editData;
+            // if (typeof(data) === undefined)     return;
+
+            let newval = editor_siswa.field('kode_wilayah_kab').val();
+            if (newval == null || kode_wilayah_kab === newval) {
+                return;
+            }
+
+            //in the middle of onchange processing. dont let it recursive
+            if (onchange_flag)  return;
+
+            onchange_flag = true;
+
+            //get list from json
+            let lookup=null;
+
+            $.ajax({
+                type: "POST",
+                url: "{$site_url}/home/lkkecamatan?kode_wilayah=" +newval,
+                async: true,
+                data: null,
+                cache: false,
+                contentType: false,
+                processData: false,
+                timeout: 60000,
+                dataType: 'json',
+                success: function(json) {
+                    if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+                        toastr.error("Tidak berhasil mendapat daftar kecamatan. " +json.error);
+                        return;
+                    }
+
+                    //update list
+                    editor_siswa.field('kode_wilayah_kec').update(json.data);      
+                    
+                    kode_wilayah_kab = editor_siswa.field('kode_wilayah_kab').val();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("Tidak berhasil mendapat daftar kecamatan. " +textStatus);
+
+                    onchange_flag = false;
+                    return;
+                }
+            })
+            .then(function(resp){
+                onchange_flag = false;
+            });
+
+        });
+
+        $(editor_siswa.field('kode_wilayah_kec').node()).on('change', function() {
+            // let data = this.s.editData;
+            // if (typeof(data) === undefined)     return;
+
+            let newval = editor_siswa.field('kode_wilayah_kec').val();
+            if (newval == null || kode_wilayah_kec === newval) {
+                return;
+            }
+
+            //in the middle of onchange processing. dont let it recursive
+            if (onchange_flag)  return;
+
+            onchange_flag = true;
+
+            //get list from json
+            let lookup=null;
+
+            $.ajax({
+                type: "POST",
+                url: "{$site_url}/home/lkdesa?kode_wilayah=" + newval,
+                async: true,
+                data: null,
+                cache: false,
+                contentType: false,
+                processData: false,
+                timeout: 60000,
+                dataType: 'json',
+                success: function(json) {
+                    if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+                        toastr.error("Tidak berhasil mendapat daftar desa/kelurahan. " +json.error);
+                        return;
+                    }
+
+                    //update list
+                    editor_siswa.field('kode_wilayah').update(json.data);      
+                    
+                    kode_wilayah_kec = editor_siswa.field('kode_wilayah_kec').val();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("Tidak berhasil mendapat daftar desa/kelurahan. " +textStatus);
+                    onchange_flag = false;
+
+                    return;
+                }
+            })
+            .then(function(resp){
+                onchange_flag = false;
+            });
+
+        });
         {/if}
 
 		dt_siswa = $('#tdaftarpendaftar').DataTable({
@@ -388,7 +629,7 @@
 						},
 					},
 				},
-                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
 				{ 
 					extend: "create", 
                     text: "Siswa Baru (Luar Daerah/Belum Sekolah)",
@@ -419,7 +660,16 @@
 			rowId: 'pendaftaran_id',
 			columns: [
 				{ data: "rn", className: 'dt-body-left'},
-				{ data: "nama", className: 'dt-body-left'},
+				{ 
+                    data: "nama", className: 'dt-body-left',
+                    render: function(data, type, row, meta) {
+						if(type != 'display') {
+							return data;
+						}
+
+                        return "<a href='{$base_url}home/detailpendaftaran?peserta_didik_id=" +row['peserta_didik_id']+ "' target='_blank'>" +row['nama']+ " <i class='fa fas fa-external-link-alt'></i></a>";
+                    }
+                },
 				{ data: "jenis_kelamin", className: 'dt-body-center  text-nowrap' },
 				{ data: "nisn", className: 'dt-body-center'
 				},
@@ -437,7 +687,7 @@
 							return data;
 						}
 
-                        {if $final_ranking|default: FALSE}
+                        {if $final_ranking}
                         if (data==1 || data==3) {
                             return "Diterima";
                         }
@@ -448,6 +698,9 @@
                         if (data==1 || data==3) {
                             return "Masuk Kuota";
                         }
+                        else if (data==0) {
+                            return "Belum Diperingkat";
+                        }
                         else {
                             return "Tidak Masuk Kuota"
                         }
@@ -455,7 +708,7 @@
 					}
 
                 },
-                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -483,10 +736,17 @@
                     if (rowData['status_penerimaan_final']==1 || rowData['status_penerimaan_final']==3) {
                         $(td).removeClass('bg-red');
                         $(td).addClass('bg-green');
+                        $(td).removeClass('bg-gray');
+                    }
+                    else if (rowData['status_penerimaan_final']==0) {
+                        $(td).removeClass('bg-red');
+                        $(td).removeClass('bg-green');
+                        $(td).addClass('bg-gray');
                     }
                     else {
                         $(td).addClass('bg-red');
                         $(td).removeClass('bg-green');
+                        $(td).removeClass('bg-gray');
                     }
                 },
             }],
@@ -550,7 +810,16 @@
                     { 
                         data: "peringkat_final", className: 'dt-body-center',
                     },
-                    { data: "nama", className: 'dt-body-left'},
+                    { 
+                        data: "nama", className: 'dt-body-left',
+                        render: function(data, type, row, meta) {
+                            if(type != 'display') {
+                                return data;
+                            }
+
+                            return "<a href='{$base_url}home/detailpendaftaran?peserta_didik_id=" +row['peserta_didik_id']+ "' target='_blank'>" +row['nama']+ " <i class='fa fas fa-external-link-alt'></i></a>";
+                        }
+                    },
                     { data: "jenis_kelamin", className: 'dt-body-center  text-nowrap' },
                     { data: "nisn", className: 'dt-body-center'
                     },
@@ -562,7 +831,7 @@
                     { data: "npsn_sekolah_asal", className: 'dt-body-center' },
                     { data: "nama_sekolah_asal", className: 'dt-body-left' },
                     { data: "skor", className: 'dt-body-center' },
-                    {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+                    {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
                     {
                         data: null,
                         className: 'text-end inline-flex text-nowrap inline-actions',
@@ -581,7 +850,7 @@
                     }
                     {/if}
                 ],
-                order: [ 0, 'asc' ],
+                order: [ 11, 'desc' ],
                 deferLoading: 0,
                 columnDefs: [{
                     targets: 1, 
@@ -590,10 +859,17 @@
                         if (rowData['status_penerimaan_final']==1 || rowData['status_penerimaan_final']==3) {
                             $(td).removeClass('bg-red');
                             $(td).addClass('bg-green');
+                            $(td).removeClass('bg-gray');
+                        }
+                        else if (rowData['status_penerimaan_final']==0) {
+                            $(td).removeClass('bg-red');
+                            $(td).removeClass('bg-green');
+                            $(td).addClass('bg-gray');
                         }
                         else {
                             $(td).addClass('bg-red');
                             $(td).removeClass('bg-green');
+                            $(td).removeClass('bg-gray');
                         }
                     },
                 }],
@@ -948,7 +1224,7 @@
 				{ data: "sekolah", className: 'dt-body-left' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
 				//{ data: "penerapan_id", className: 'dt-body-left' },
-                {if $cek_waktupendaftaran_sd==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',

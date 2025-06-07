@@ -383,17 +383,6 @@ Class Mprofilsiswa
 
         return $result;
 	}    
-
-	// function tcg_pendaftaran_diterima_sd($peserta_didik_id){
-    //     $this->error_message = null;
-        
-    //     $filters = array("a.status_penerimaan_final"=>1, "a.putaran"=>PUTARAN_SD);
-
-    //     $result = $this->tcg_daftarpendaftaran($peserta_didik_id, $filters);
-    //     if($result == null) return null;
-
-    //     return $result[0];
-	// }    
   
 	function tcg_ubah_pilihansekolah($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru){
         $this->error_message = null;
@@ -658,26 +647,6 @@ Class Mprofilsiswa
         return 1;
 	}
 
-	// function tcg_simpan_dokumenpendukung($peserta_didik_id,$upload_id,$kelengkapan_id, $replace=1, $prestasi=0, $tambahan=0){
-    //     $this->error_message = null;
-        
-    //     $user_id = $this->session->get('user_id');
-	// 	$query = "call " .SQL_SIMPAN_DOKUMEN. "(?, ?, ?, ?, ?, ?, ?)";
-	// 	$status = $this->ro->query($query, array($upload_id,$peserta_didik_id,$kelengkapan_id,$replace,$prestasi,$tambahan,$user_id));
-        
-    //     $message = $status->getRowArray();
-    //     if ($message != null) {
-    //         $this->error_message = $message['message'];
-    //         return 0;
-    //     }
-
-    //     $filters = array("a.dokumen_id"=>$upload_id);
-    //     $result = $this->tcg_dokumenpendukung($peserta_didik_id, $filters);
-    //     if ($result == null)    return null;
-
-	// 	return $result[0];
-	// }
-
 	function tcg_hapus_dokumenpendukung($peserta_didik_id,$kelengkapan_id){
         $this->error_message = null;
         
@@ -725,7 +694,6 @@ Class Mprofilsiswa
         
         return $builder->get()->getResultArray();
 	}
-
 
 	function tcg_dokumenpendukung_tambahan($peserta_didik_id) {
         $this->error_message = null;
@@ -967,31 +935,6 @@ Class Mprofilsiswa
         return $result['jumlah'];
     }
 
-
-    //---
-
-
-    // function tcg_prestasi($peserta_didik_id) {
-
-	// 	$query = "SELECT distinct(a.prestasi_skoring_id) as daftar_nilai_skoring_id, `b`.`nama`, coalesce(`c`.`nilai`,0) as nilai, 1 as `verifikasi`, '' as verifikator_id 
-	// 	FROM `tcg_pendaftaran` `a` 
-	// 	JOIN `ref_daftar_skoring` `b` ON `b`.`skoring_id` = `a`.`prestasi_skoring_id` and `b`.`expired_date` is null 
-	// 	left outer join `cfg_daftar_nilai_skoring` `c` on `c`.`daftar_nilai_skoring_id` = `a`.`prestasi_skoring_id` and `c`.`tahun_ajaran_id`=`a`.`tahun_ajaran_id` and `c`.`nilai` > 0 and `c`.`expired_date` is null 
-	// 	WHERE `a`.`peserta_didik_id` = ? AND `a`.`is_deleted` = 0 AND `a`.`cabut_berkas` = 0 
-	// 	AND `a`.`prestasi_skoring_id` IS NOT NULL AND `a`.`prestasi_skoring_id` != 0";
-
-	// 	return $this->ro->query($query, array($peserta_didik_id));
-	// }
-
-
-	// function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-	// 	$user_id = $this->session->get("user_id");
-
-    //     //TODO
-	// 	// $query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-	// 	// return $this->ro->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
-	// }
-
 	function tcg_prestasi_detil($peserta_didik_id, $key) {
 		$query = "
 		select a.prestasi_id, a.skoring_id, b.nama as prestasi, a.uraian, a.dokumen_pendukung,
@@ -1004,38 +947,6 @@ Class Mprofilsiswa
 
 		return $this->ro->query($query, array($key));
 	}
-
-
-	// function tcg_profilsiswa_daftarulang($peserta_didik_id){
-
-	// 	$builder = $this->ro->table('tcg_peserta_didik a');
-	// 	$builder->select("a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,
-	// 	a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,a.kebutuhan_khusus,
-	// 	a.rt,a.rw,a.alamat,a.kode_wilayah,
-	// 	'' as kode_padukuhan,'' AS padukuhan,
-	// 	c.kode_wilayah_desa as kode_desa, c.nama_desa AS desa_kelurahan,
-	// 	c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
-	// 	c.kode_wilayah_kab as kode_kabupaten,c.nama_kab AS kabupaten,
-	// 	c.kode_wilayah_prov,c.nama_prov AS provinsi,
-	// 	a.lintang,a.bujur,a.asal_data, 
-	// 	d.user_name as username,a.nomor_kontak,
-	// 	coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-	// 	coalesce(a.punya_kip,0) as punya_kip,
-	// 	coalesce(a.masuk_bdt,0) as masuk_bdt,
-	// 	e.nama as lokasi_berkas
-	// 	");
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
-	// 	$builder->join('dbo_users d','a.peserta_didik_id = d.peserta_didik_id AND d.is_deleted = 0','LEFT OUTER');
-	// 	$builder->join('ref_sekolah e','e.sekolah_id = a.lokasi_berkas','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
-
-	// 	return $builder->get();
-	// }
 
 	function tcg_daftarulang_dokumenpendukung($peserta_didik_id, $dokumen_id, $status, $penerima_berkas_id) {
 		$query = "
@@ -1061,30 +972,6 @@ Class Mprofilsiswa
 		return $retval;
 
 	} 
-
-	// function tcg_profilsiswa_klarifikasidinas($peserta_didik_id){
-	// 	$this->tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
-	// 	$sql = "select a.peserta_didik_id,
-	// 					case when (b.tipe_data = 'profil') then 1 else 0 end as klarifikasi_dinas_profil,
-	// 					case when (b.tipe_data = 'profil') then b.catatan_dinas else null end as catatan_dinas_profil,
-	// 					case when (b.tipe_data = 'lokasi') then 1 else 0 end as klarifikasi_dinas_lokasi,
-	// 					case when (b.tipe_data = 'lokasi') then b.catatan_dinas else null end as catatan_dinas_lokasi
-	// 			from tcg_peserta_didik a
-	// 			left join (
-	// 				select 
-	// 					b.peserta_didik_id, b.tipe_data,
-	// 					group_concat(catatan_dinas, '<br>') as catatan_dinas
-	// 				from tcg_verifikasi_dinas b 
-	// 				where b.peserta_didik_id=? and b.tahun_ajaran_id=? and b.verifikasi=1 and b.is_deleted=0
-	// 				group by b.peserta_didik_id, b.tipe_data
-	// 			) as b on a.peserta_didik_id=b.peserta_didik_id
-	// 			where 
-	// 				a.peserta_didik_id=? and a.tahun_ajaran_id=? and a.is_deleted=0
-	// 		";
-
-	// 	return $this->db->query($sql, array($peserta_didik_id, $this->tahun_ajaran_id, $peserta_didik_id, $this->tahun_ajaran_id));
-	// }    
 
 	function tcg_berkas_fisik($peserta_didik_id) {
 		$query = "select a.dokumen_id, a.daftar_kelengkapan_id, b.nama, 
@@ -1191,8 +1078,6 @@ Class Mprofilsiswa
 		return $retval;	
 	}
 
-
-
 	function tcg_dokumen_pendukung_hilang($peserta_didik_id, $daftar_kelengkapan_id, $user_id, $catatan) {
 		// $query = $this->tcg_dokumen_pendukung_kelengkapan_id($peserta_didik_id, $daftar_kelengkapan_id);
 		// if ($query->num_rows() > 0) {
@@ -1250,141 +1135,10 @@ Class Mprofilsiswa
         return $key;
 	}    
 
+    //TODO
     function tcg_updatekebutuhankhusus($peserta_didik_id, $kebutuhan_khusus, $user_id) {
         //TODO
     }
-
-    // function tcg_profilsiswa($peserta_didik_id){
-
-	// 	$builder = $this->db->table('tcg_peserta_didik a');
-	// 	$builder->select("a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,
-	// 	a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
-	// 	a.rt,a.rw,a.alamat,a.kode_wilayah,
-	// 	'' as kode_padukuhan, a.nama_dusun AS padukuhan,
-	// 	c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
-	// 	c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
-	// 	c.kode_wilayah_kab as kode_kabupaten,c.nama_kab AS kabupaten,
-	// 	c.kode_wilayah_prov,c.nama_prov AS provinsi,
-	// 	a.lintang,a.bujur,a.asal_data, 
-	// 	d.user_name,a.nomor_kontak,
-	// 	coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-	// 	coalesce(a.punya_kip,0) as punya_kip,
-	// 	coalesce(a.masuk_bdt,0) as masuk_bdt,a.kebutuhan_khusus,
-	// 	a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi");
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
-	// 	$builder->join('dbo_users d','a.peserta_didik_id = d.peserta_didik_id AND d.is_deleted = 0','LEFT OUTER');
-	// 	//case when (a.no_kip is null or trim(a.no_kip) = '' or a.no_kip = '0' or a.no_kip = '-') then 0 else 1 end as punya_kip,
-	// 	// $builder->join('ref_wilayah c4','c.kode_wilayah_desa = c4.kode_wilayah AND c4.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c3','c.kode_wilayah_kec = c3.kode_wilayah AND c3.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c2','c.kode_wilayah_kab = c2.kode_wilayah AND c2.is_deleted=0','LEFT OUTER');
-	// 	// $builder->join('ref_wilayah c1','c.kode_wilayah_prov = c1.kode_wilayah AND c1.is_deleted=0','LEFT OUTER');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
-
-	// 	return $builder->get();
-	// }
-
-	// function tcg_profilsiswa_status($peserta_didik_id){
-
-	// 	$builder = $this->db->table('tcg_peserta_didik a');
-	// 	$builder->select("a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
-	// 	a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
-	// 	a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,
-	// 	coalesce(a.punya_nilai_un,0) as punya_nilai_un,coalesce(a.punya_prestasi,0) as punya_prestasi,
-	// 	coalesce(a.punya_kip,0) as punya_kip,
-	// 	coalesce(a.masuk_bdt,0) as masuk_bdt,
-	// 	a.nomor_kontak,a.surat_pernyataan_kebenaran_dokumen,
-	// 	f.filename as nama_surat_pernyataan,
-	// 	f.path as path_surat_pernyataan,
-	// 	f.web_path as img_surat_pernyataan,
-	// 	f.thumbnail_path as thumbnail_surat_pernyataan,
-	// 	f.created_on as tanggal_surat_pernyataan
-	// 	");
-	// 	$builder->join('dbo_users e','a.verifikator_id = e.user_id AND e.is_deleted = 0','LEFT OUTER');
-	// 	$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND (a.peserta_didik_id=f.peserta_didik_id or a.surat_pernyataan_kebenaran_dokumen=1) AND f.is_deleted = 0','LEFT OUTER');
-	// 	$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
-
-	// 	return $builder->get()->getRowArray();
-	// }    
-
-
-    // function tcg_kelengkapanpendaftaran_berkasfisik($pendaftaran_id){
-	// 	$builder = $this->db->table('tcg_pendaftaran a');
-	// 	$builder->select('b.dokumen_id,c.nama AS kelengkapan,b.berkas_fisik,d.kondisi_khusus,d.wajib');
-	// 	$builder->join('tcg_dokumen_pendukung b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
-	// 	$builder->join('ref_daftar_kelengkapan c','b.daftar_kelengkapan_id = c.daftar_kelengkapan_id AND c.is_deleted=0');
-	// 	$builder->join('cfg_kelengkapan_penerapan d','d.daftar_kelengkapan_id = c.daftar_kelengkapan_id AND d.is_deleted=0');
-	// 	$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0,'c.dokumen_fisik'=>1));
-	// 	$builder->orderBy('c.daftar_kelengkapan_id');
-	// 	return $builder->get();
-	// }
-
-
-
-
-	// function tcg_daftar_prestasi_files($peserta_didik_id) {
-	// 	$query = "
-	// 	select a.dokumen_pendukung as id,
-	// 			c.filename, c.filesize, c.path, c.web_path, c.thumbnail_path, c.created_on as tanggal_upload
-	// 	from tcg_prestasi a
-	// 	join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
-	// 	left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
-	// 	where a.is_deleted=0 and a.peserta_didik_id=?";
-
-	// 	return $this->db->query($query, array($peserta_didik_id));
-	// }
-
-	// function tcg_hapus_prestasi($peserta_didik_id, $key) {
-	// 	$file_path = "";
-	// 	$thumbnail_path = "";
-	// 	$dokumen_id = 0;
-
-	// 	$query = $this->tcg_prestasi_detil($peserta_didik_id, $key);
-	// 	foreach($query->getResult() as $row) {
-	// 		$file_path = $row->web_path;
-	// 		$thumbnail_path = $row->thumbnail_path;
-	// 		$dokumen_id = $row->dokumen_pendukung;
-	// 	}
-
-	// 	//delete entry in tcg_dokumen_pendukung
-	// 	if (!empty($dokumen_id)) {
-    //         $builder = $this->db->table('tcg_dokumen_pendukung');
-	// 		$builder->where('dokumen_id', $dokumen_id);
-	// 		$builder->delete();
-	// 	}
-
-	// 	//delete entry in tcg_prestasi
-    //     $builder = $this->db->table('tcg_prestasi');
-	// 	$builder->where('prestasi_id', $key);
-	// 	$builder->delete();
-
-	// }
-
-	// function tcg_prestasi_baru($peserta_didik_id, $valuepair) {
-	// 	//dokumen bukti prestasi
-	// 	$kelengkapan_id = 8;
-
-	// 	//inject peserta_didik_id
-    //     $valuepair['peserta_didik_id'] = $peserta_didik_id;
-
-    //     $builder = $this->db->table('tcg_prestasi');
-    //     if ($builder->insert($valuepair)) {
-    //         $key = $this->db->insertID();
-	// 		//simpan dokumen pendukung
-    //         if (!empty($valuepair['dokumen_pendukung'])) {
-    //             $dokumen_pendukung = $valuepair['dokumen_pendukung'];
-    //             if (!empty($dokumen_pendukung) && !empty($key)) {
-    //                 $query = "call usp_simpan_dokumen_pendukung_2021(?,?,?,0,1,0)";
-    //                 $this->db->query($query, array($dokumen_pendukung,$peserta_didik_id,$kelengkapan_id));
-    //             }
-    //         }
-    //         //return the id
-    //         return $key;
-    //     } else {
-    //         return 0;
-    //     }
-	// }
-
 
 }
 

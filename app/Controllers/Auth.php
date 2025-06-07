@@ -309,6 +309,7 @@ class Auth extends AuthController
 
             $this->session->set($data);
         }
+        //else if ($role_id == ROLEID_SISWA)
     }
  
     function changepassword() {

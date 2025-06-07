@@ -141,9 +141,16 @@ class Home extends PpdbController
 		else
 			$data['show_profile_sekolah'] = 1;
 
+        $data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
+
+        //debugging
+        if (__DEBUGGING__) {
+            $data['cek_waktusosialisasi']=1;
+        }
+
 		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
 		$data['cek_waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
-        if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1) {
+        if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1 && $data['cek_waktusosialisasi'] != 1) {
             $data['final_ranking'] = 1;
         }
         else {
@@ -508,6 +515,20 @@ class Home extends PpdbController
  
         $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
 	}
+
+    function lkkecamatan() {
+        $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
+		$mdropdown = new \App\Models\Ppdb\Mconfig();
+		$kecamatan = $mdropdown->tcg_lookup_kecamatan($kode_wilayah);
+        print_json_output($kecamatan);
+    }
+
+    function lkdesa() {
+        $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
+		$mdropdown = new \App\Models\Ppdb\Mconfig();
+		$desa = $mdropdown->tcg_lookup_desa($kode_wilayah);
+        print_json_output($desa);
+    }
 
 	function ddsekolah()
 	{

@@ -158,11 +158,13 @@
                         <td><b>Peringkat</b></td>
                         <td>:</td>
                         <td>
-                            <span>{{item.label_peringkat}}</span> 
-                            <span class="pull-right"><a href="{{item.url_perankingan}}" target="_blank" 
+                            <div style="display: flex;">
+                            <div style="align-self: center; flex-grow: 100;">{{item.label_peringkat}}</div> 
+                            <div style="align-self: flex-end;"><a href="{{item.url_perankingan}}" target="_blank" 
                                 data-bs-toggle="tooltip" title="Lihat Peringkat Sekolah" data-placement="top" class="btn btn-xs btn-primary">
                                 Perangkingan</a>
-                            </span>
+                            </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
