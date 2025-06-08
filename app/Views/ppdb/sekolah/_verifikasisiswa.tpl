@@ -32,6 +32,14 @@
 {/literal}
 
 <script>
+		//Dropdown Select
+		$(function () {
+			$(".select2").select2();
+		});
+
+</script>
+
+<script>
 
     var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi'];
     var flags = ['nilai-un', 'prestasi', 'kip', 'bdt', 'inklusi'];
@@ -49,34 +57,6 @@
     var dtriwayat;
 
     $(document).ready(function() {    
-
-        //all datatable must be responsive
-        $.extend( $.fn.dataTable.defaults, { 
-            responsive: true,
-			"language": {
-				"processing":   "Sedang proses...",
-				"lengthMenu":   "Tampilan _MENU_ baris",
-				"zeroRecords":  "Tidak ditemukan data yang sesuai",
-				"info":         "Tampilan _START_ - _END_ dari _TOTAL_ baris",
-				"infoEmpty":    "Tampilan 0 hingga 0 dari 0 baris",
-				"infoFiltered": "(disaring dari _MAX_ baris keseluruhan)",
-				"infoPostFix":  "",
-				"loadingRecords": "Loading...",
-				"emptyTable":   "Tidak ditemukan data yang sesuai",
-				"search":       "Cari:",
-				"url":          "",
-				"paginate": {
-                    "first":    "Awal",
-                    "previous": "Balik",
-                    "next":     "Lanjut",
-                    "last":     "Akhir"
-				},
-				aria: {
-                    sortAscending:  ": klik untuk mengurutkan dari bawah ke atas",
-                    sortDescending: ": klik untuk mengurutkan dari atas ke bawah"
-				}
-			},	
-        } );
 
         dtriwayat = $('#triwayat').DataTable({
             "responsive": true,
@@ -156,92 +136,21 @@
 
             let formdata = new FormData();
 
-            btn = $(".btn-perbaikan[tcg-tag='" +submittag+ "']");
-            if (flagval != 2) {
-                btn.hide();
-            } else {
-                btn.show();
-            }
+            // btn = $(".btn-perbaikan[tcg-tag='" +submittag+ "']");
+            // if (flagval != 2) {
+            //     btn.hide();
+            // } else {
+            //     btn.show();
+            // }
 
             el = $("tr.catatan[tcg-tag='" +submittag+ "']");
-            if (flagval == 2 || perbaikan[submittag]) {
+            if (flagval == 2 || flagval == 3 || perbaikan[submittag]) {
                 el.show();
             } else {
                 el.hide();
             }
 
-            // if (flagval == 0) {
-            //     // //reset the notes   
-            //     // el.val("");
-            //     // // //form data
-            //     // // formdata.append("verifikasi_" +submittag, flagval)
-            //     //hide tombol perbaikan
-            //     $(".btn-perbaikan[tcg-tag='" +submittag+ "']").hide();
-            // }
-            // else if (flagval == 2) {
-            //     // //note harus diisi
-            //     // val = $.trim(el.val());
-            //     // if (val == "") {
-            //     //     //alert("Catatan harus diisi!");
-            //     //     //toastr.options.positionClass = 'toast-bottom-left';
-            //     //     toastr.error('Catatan verifikasi harus diisi!');
-            //     //     //cancel event
-            //     //     this.value = this.defaultValue;
-            //     //     //set border to red to notify
-            //     //     el.addClass("border-red");
-            //     //     return;
-            //     // }
-            //     // // //form data
-            //     // // formdata.append("verifikasi_" +submittag, flagval)
-            //     // // formdata.append("catatan_" +submittag, val)
-            //     //munculkan tombol perbaikan
-            //     $(".btn-perbaikan[tcg-tag='" +submittag+ "']").show();
-            // }
-            // else {
-            //     //reset the notes
-            //     el.val("");
-            //     // //form data
-            //     // formdata.append("verifikasi_" +submittag, flagval)
-            //     //fields
-            //     let elements = $("[tcg-tag='" +submittag+ "']");
-            //     elements.each(function(idx) {
-            //         el = $(this);
-
-            //         //data to submit
-            //         let field = el.attr('tcg-field');
-            //         if (field == null || field == '') return;
-
-            //         let tosubmit = el.attr("tcg-field-submit");
-            //         if (!tosubmit) return;
-
-            //         val = el.val();
-            //         formdata.append(field, val);
-            //     });
-            //     //hide tombol perbaikan
-            //     $(".btn-perbaikan[tcg-tag='" +submittag+ "']").hide();
-            // }
-
-            // $.ajax({
-            //     type: "POST",
-            //     url: "{$site_url}ppdb/sekolah/verifikasi/updateprofil",
-            //     async: true,
-            //     data: formdata,
-            //     cache: false,
-            //     contentType: false,
-            //     processData: false,
-            //     timeout: 60000,
-            //     dataType: 'json',
-            //     success: function(json) {
-            //         if (json.error !== undefined && json.error != "" && json.error != null) {
-            //             return;
-            //         }
-            //         //TODO: get the return value and re-set the field
-            //     },
-            //     error: function(jqXHR, textStatus, errorThrown) {
-            //         //TODO
-            //         return;
-            //     }
-            // });
+            //dont send data partially -> send as a whole when use click button "Simpan"
 
             //set border to red to notify
             el.removeClass("border-red");
@@ -262,12 +171,56 @@
                 card.addClass("status-danger");
                 card.find(".accordion-header-text .status").html('*Belum Benar*');
             }
+            else if (flagval == 3){
+                card.removeClass("status-warning");
+                card.addClass("status-danger");
+                card.find(".accordion-header-text .status").html('*Perbaikan Data*');
+            }
             else {
                 card.removeClass("status-warning");
                 card.removeClass("status-danger");
                 card.find(".accordion-header-text .status").html('');
-           }
+            }
 
+            //perbaiki data
+            if (flagval == 3) {
+                //show input element
+                let elements = $("[tcg-tag='" +submittag+ "']");
+                elements.each(function(idx) {
+                    //action
+                    el = $(this);
+                    type = el.attr('tcg-field-type');
+
+                    if (type == 'input') el.show();
+                    else if (type == 'label') el.hide();
+                    else if (type == 'toggle')  el.attr('disabled', false);
+    
+                    //save default value in case we need to revert
+                    if (el.is('input') || el.is('select')) {
+                        this.defaultValue = this.value;
+                    }
+                });
+
+                elements.filter(".btn-kembalikan").hide();
+
+                //show btn save
+                elements.filter(".btn-simpan").show();
+                elements.filter(".btn-batal").show();
+
+                //hide btn perbaikan
+                //btn.hide();
+
+                //special case
+                if (submittag == 'lokasi') {
+                    map_enable_edit = true;
+                }
+
+                //disable the status flag
+                elements.filter(".status-verifikasi").attr("disabled", true);
+
+                //catatan
+                elements.filter(".catatan").show();
+            }
         });
 
         $("[tcg-field-type='toggle']").on("change", function(evt) {
@@ -367,6 +320,7 @@
                             let elements = $("[tcg-tag='" +tag+ "']");
                             elements.each(function(idx) {
                                 el = $(this);
+                                if (el.hasClass("status-verifikasi")) return;
 
                                 //get the value
                                 key = el.attr('tcg-field');
@@ -393,26 +347,34 @@
                                 else if (type == 'toggle') {
                                     el.val(value);
                                 }
+
+                                //trigger related change
+                                el.trigger("change");
                             });
 
                             //hide tombol revert
                             elements.filter(".btn-kembalikan").hide();   
                         
+                            //enable the status flag
+                            elements.filter(".status-verifikasi").attr("disabled", false);
+                            elements.filter(".status-verifikasi").val(0);   //belum verifikasi
+
                             //reset tampilan
-                            perbaikan[tag] = 0;
                             let card = $("#" +tag);
-                            let status = parseInt(card.find(".status-verifikasi").val());
-                            if (status == 0) {
-                                card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
-                            }
-                            else if (status == 2) {
-                                card.find(".accordion-header-text .status").html('*Belum Benar*');
-                            }
-                            else {
-                                card.find(".accordion-header-text .status").html('');
-                            }
+                            card.addClass("status-warning");
+                            card.removeClass("status-danger");
+                            card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
+
+                            //catatan
                             elements.filter(".catatan").removeClass("border-red");
+                            el = $("tr.catatan[tcg-tag='" +tag+ "']");
+                            el.hide();
+
+                            //map
                             layerGroup.clearLayers();
+
+                            //flag
+                            perbaikan[tag] = 0;
                         }
                     },
                 }
@@ -432,8 +394,9 @@
             elements.each(function(idx) {
                 //action
                 el = $(this);
-                type = el.attr('tcg-field-type');
+                if (el.hasClass("status-verifikasi")) return;
 
+                type = el.attr('tcg-field-type');
                 if (type == 'input') el.hide();
                 else if (type == 'label') el.show();
                 else if (type == 'toggle')  el.attr('disabled', true);
@@ -474,19 +437,23 @@
                         if (field == null || field == '') return;
 
                         let val = 0;
+                        let txtval = '';
                         if (el.attr('type') == 'number') {
                             val = parseFloat(el.val());
                             if (isNaN(val)) val = 0;
+                            txtval = val.toLocaleString("id-ID", { maximumFractionDigits:"2" });
+
                             val = val.toFixed(2);
                             el.val(val);
                         }
                         else {
                             val = el.val();
+                            txtval = val;
                         }
 
                         //copy value if necessary
                         lbl = elements.filter("span[tcg-field='" +field+ "']");
-                        lbl.html(val); 
+                        lbl.html(txtval); 
 
                         //save to default value
                         this.defaultValue = this.value;
@@ -518,16 +485,29 @@
                 }
             });
 
-            //show perbaikan save
-            elements.filter(".btn-perbaikan").show();
+            // //show perbaikan save
+            // elements.filter(".btn-perbaikan").show();
 
             //hide btn simpan
             elements.filter(".btn-simpan").hide();
             elements.filter(".btn-batal").hide();
 
-            //tombol revert
+            //ada perbaikan data?
             if (perbaikan[tag]) {
+                //tombol revert
                 elements.filter(".btn-kembalikan").show();
+                //harus ada catatan perbaikan
+                elements.filter(".catatan").removeClass("border-red");
+                el = $("tr.catatan[tcg-tag='" +tag+ "']");
+                el.show();
+            }
+            else {
+                //tombol revert
+                elements.filter(".btn-kembalikan").hide();
+                //harus ada catatan perbaikan
+                elements.filter(".catatan").removeClass("border-red");
+                el = $("tr.catatan[tcg-tag='" +tag+ "']");
+                el.hide();
             }
 
             //special case
@@ -537,6 +517,13 @@
 
             //enable the status flag
             elements.filter(".status-verifikasi").attr("disabled", false);
+            elements.filter(".status-verifikasi").val(1);   //sudah benar
+
+            //update card status
+            let card = $("#" +tag);
+            card.removeClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('');
 
         });
 
@@ -551,20 +538,22 @@
             elements.each(function(idx) {
                 //action
                 el = $(this);
-                type = el.attr('tcg-field-type');
-
-                if (type == 'input') el.hide();
-                else if (type == 'label') el.show();
-                else if (type == 'toggle')  el.attr('disabled', true);
+                if (el.hasClass("status-verifikasi")) return;
 
                 //revert to default value
                 if (el.is('input') || el.is('select')) {
                     el.val(this.defaultValue).trigger("change");
                 }            
+
+                //visibility
+                type = el.attr('tcg-field-type');
+                if (type == 'input') el.hide();
+                else if (type == 'label') el.show();
+                else if (type == 'toggle')  el.attr('disabled', true);
             });
 
-            //show perbaikan save
-            elements.filter(".btn-perbaikan").show();
+            // //show perbaikan save
+            // elements.filter(".btn-perbaikan").show();
 
             //hide btn simpan
             elements.filter(".btn-simpan").hide();
@@ -575,8 +564,20 @@
                 map_enable_edit = false;
             }
 
+            //catatan
+            elements.filter(".catatan").removeClass("border-red");
+            el = $("tr.catatan[tcg-tag='" +tag+ "']");
+            el.hide();
+
             //enable the status flag
             elements.filter(".status-verifikasi").attr("disabled", false);
+            elements.filter(".status-verifikasi").val(0);   //belum diverifikasi
+
+            //update card status
+            let card = $("#" +tag);
+            card.addClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
 
         });
 
@@ -658,12 +659,13 @@
         //set dom field value
         keys.forEach(function(key) {
             value = profil[key];
+            txtvalue = '';
             elements = $("[tcg-field='" +key+ "']");
             elements.each(function(idx) {
                 el = $(this);
                 type = el.attr('tcg-field-type');
                 if (type == 'input') {
-                    //if number, try to convert it
+                    //if number, try to convert
                     if (el.attr('type') == 'number') {
                         value = parseFloat(value);
                         if (isNaN(value)) value = 0;
@@ -672,8 +674,22 @@
                     }
                     el.val(value);
                     el.attr("defaultValue", value);
+                    el.trigger('change');
                 }
                 else if (type == 'label') {
+                    //use init-field for label
+                    lblfield = el.attr('tcg-init-field');
+                    if (lblfield !== undefined && profil[lblfield] !== undefined) {
+                        value = profil[lblfield];
+                    }
+                    //if number, convert to locale
+                    format = el.attr('type');
+                    if (format == "number") {
+                        value = parseFloat(value);
+                        if (isNaN(value)) value = 0;
+                        //txtval
+                        value = value.toLocaleString("id-ID", { maximumFractionDigits:"2" });                  
+                    }
                     el.html(value);
                 }
                 else if (type == 'href') {
@@ -691,11 +707,11 @@
             });
         });
 
-        //special case for select label
-        $("[tcg-field='kode_provinsi'][tcg-field-type='label']").html(profil['provinsi']);
-        $("[tcg-field='kode_kabupaten'][tcg-field-type='label']").html(profil['kabupaten']);
-        $("[tcg-field='kode_kecamatan'][tcg-field-type='label']").html(profil['kecamatan']);
-        $("[tcg-field='kode_wilayah'][tcg-field-type='label']").html(profil['desa_kelurahan']);
+        // //special case for select label
+        // $("[tcg-field='kode_provinsi'][tcg-field-type='label']").html(profil['provinsi']);
+        // $("[tcg-field='kode_kabupaten'][tcg-field-type='label']").html(profil['kabupaten']);
+        // $("[tcg-field='kode_kecamatan'][tcg-field-type='label']").html(profil['kecamatan']);
+        // $("[tcg-field='kode_wilayah'][tcg-field-type='label']").html(profil['desa_kelurahan']);
 
         //trigger the changes
         $("#kode_provinsi").trigger("change");
@@ -812,6 +828,30 @@
                 btn.hide();
             }
 
+            //dikonfirmasi oleh system -> hide dok pendukung
+            if (value == 4) {
+                //hide dok pendukung
+                elements = $("[tcg-visible-tag='" +key+ "']");
+                elements.each(function(idx) {
+                    el = $(this);
+                    if (el.hasClass('dokumen-pendukung')) {
+                        el.hide();
+                    }
+                });
+            };
+
+            //hide/show verifikasi button
+            let ver_sistem = $("#" +key+ "-verifikasi-row .verifikasi-sistem");
+            let ver_manual = $("#" +key+ "-verifikasi-row .verifikasi-manual");
+            if (value == 4) {
+                ver_sistem.show();
+                ver_manual.hide();
+            }
+            else {
+                ver_sistem.hide();
+                ver_manual.show();
+            }
+
             let card = $("#" +key);
             if (value == 0) {
                 card.addClass("status-warning");
@@ -822,6 +862,11 @@
                 card.removeClass("status-warning");
                 card.addClass("status-danger");
                 card.find(".accordion-header-text .status").html('*Belum Benar*');
+            }
+            else if (value == 4){
+                card.removeClass("status-warning");
+                card.removeClass("status-danger");
+                card.find(".accordion-header-text .status").html('Data Sesuai Sistem');
             }
             else {
                 card.removeClass("status-warning");
@@ -984,18 +1029,27 @@
             //check for catatan verifikasi
             status = elements.filter(".status-verifikasi").val();
             if (perbaikan[key] && updated["catatan_" +key] === undefined) {
-                msg = "Catatan verifikasi " +key.toUpperCase()+ " harus diisi!";
+                msg = "Catatan perbaikan " +key.toUpperCase()+ " harus diisi!";
                 toastr.info(msg);
+
+                card.removeClass("status-warning");
+                card.addClass("status-danger");
                 card.find(".accordion-header-text .status").html('*' +msg+ '*');
                 elements.filter(".catatan").addClass("border-red");
+
                 //dont submit
                 tosubmit = false;
+                
             }
             else if (status == 2 && updated["catatan_" +key] === undefined && profil["catatan_" +key] == "") {
                 msg = "Catatan verifikasi " +key.toUpperCase()+ " harus diisi!";
                 toastr.info(msg);
+
+                card.removeClass("status-warning");
+                card.addClass("status-danger");
                 card.find(".accordion-header-text .status").html('*' +msg+ '*');
                 elements.filter(".catatan").addClass("border-red");
+
                 //dont submit
                 tosubmit = false;
             }
@@ -1006,7 +1060,7 @@
         });
 
         if (!tosubmit)  {
-            toastr.error("Catatan perubahan harus diisi.");
+            toastr.error("Catatan verifikasi/perbaikan harus diisi.");
             return false;
         }
 

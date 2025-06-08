@@ -27,6 +27,16 @@
 			},	
         });
 
+        //change error message from html pop-up to toastr.
+        $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
+            if (message.search("not-login") >= 0) {
+                toastr.error("Sesi login sudah kadaluarsa. Silahkan login kembali.");
+            }
+            else {
+                toastr.error(message);
+            }
+        };
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             $.fn.dataTable.tables({
                 visible: true,

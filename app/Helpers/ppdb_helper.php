@@ -190,7 +190,7 @@ if ( ! function_exists('audit_siswa'))
         
     }
 
-    function update_daftarpendaftaran($pendaftaran, $batasan_perubahan, $batasan_siswa = null) {
+    function update_daftarpendaftaran($pendaftaran, $batasan_perubahan = null, $batasan_siswa = null) {
 
         $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
 

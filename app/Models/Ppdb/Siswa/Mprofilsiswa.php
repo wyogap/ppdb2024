@@ -111,8 +111,8 @@ Class Mprofilsiswa
         //$builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
         $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
         $builder->select("a.nilai_kelulusan, a.nilai_semester, a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");
-        $builder->select("coalesce(a.punya_prestasi,0) as punya_prestasi, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label");
-        $builder->select("a.akademik_skoring_id, h.nama as akademik_skoring_label");
+        $builder->select("coalesce(a.punya_prestasi,0) as punya_prestasi, a.prestasi_skoring_id, a.uraian_prestasi, coalesce(g.nama,'Tidak ada') as prestasi_skoring_label");
+        $builder->select("a.akademik_skoring_id, coalesce(h.nama,'Tidak ada') as akademik_skoring_label");
         $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan, a.nama_dusun,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
 		                    c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,

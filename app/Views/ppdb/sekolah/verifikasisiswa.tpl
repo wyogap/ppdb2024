@@ -109,7 +109,7 @@
                                             <option value="{$prov.kode_wilayah}">{$prov.provinsi}</option>
                                         {/foreach}
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kode_provinsi' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_provinsi' tcg-field-type='label' tcg-init-field='provinsi'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -121,7 +121,7 @@
                                         tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Kabupaten/Kota --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_kabupaten' tcg-field-type='label' tcg-init-field='kabupaten'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -133,7 +133,7 @@
                                         tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='input' tcg-field-submit=0 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Kecamatan --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_kecamatan' tcg-field-type='label' tcg-init-field='kecamatan'></span>
                                 </td>
                             </tr>
                             <tr>
@@ -145,7 +145,7 @@
                                         tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='input' tcg-field-submit=1 style="display: none; width: 100%;">
                                         <option value="">-- Pilih Desa/Kelurahan --</option>
                                     </select>
-                                    <span tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='label'></span>
+                                    <span tcg-tag='profil' tcg-field='kode_wilayah' tcg-field-type='label' tcg-init-field='desa_kelurahan'></span>
                                 </td>
                             </tr>
                             <tr tcg-field='padukuhan' tcg-field-type='toggle' tcg-field-false='hide' tcg-field-true='show'>
@@ -213,32 +213,7 @@
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                    <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                        <tr id="profil-konfirmasi-row">
-                            <td colspan="1">
-                                <b>Apakah data identitas di atas sudah benar? </b>
-                                <select class="form-control input-default status-verifikasi" 
-                                    tcg-tag='profil'
-                                    tcg-field='verifikasi_profil' tcg-field-type='status' tcg-field-submit=1>
-                                <option value="0">Belum Diverifikasi</option>
-                                <option value="1">SUDAH Benar</option>
-                                <option value="2">BELUM Benar</option>
-                                </select>
-                                <button class="btn btn-secondary btn-perbaikan" tcg-tag='profil'>Perbaiki Data</button>
-                                <button class="btn btn-primary btn-kembalikan" tcg-tag='profil'>Kembalikan Data Awal</button>
-                                <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='profil'>Simpan Data</button>
-                                <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='profil'>Batalkan</button>
-                            </td>
-                        </tr>
-                        <tr id="profil-catatan-row" class="catatan" tcg-tag='profil'>
-                            <td colspan="1">
-                                <span id="profil-error-msg">
-                                    <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='profil'
-                                    tcg-field='catatan_profil' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="profil" tag_label="identitas"}
                 </div>
             </div>
         </div>
@@ -305,57 +280,11 @@
                                     {/if}
                                 </td>
                             </tr>
-                            <tr>
-                                <td id="row-dokumen-kelas6" style="width: 45%;"><b>Rapor Kelas 6</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    {if !($flag_upload_dokumen)}
-                                    Dicocokkan di sekolah tujuan
-                                    {else}
-                                    <img id="dokumen-26" class="img-view-thumbnail" tcg-doc-id="{$smarty.const.DOCID_RAPOR_KELAS6}" 
-                                            src="" 
-                                            img-path="" 
-                                            img-id="" 
-                                            img-title="Rapor Kelas 6"
-                                            style="display:none; "/>  
-                                    <span>
-                                    <input type="file" class="upload-file" tcg-doc-id="{$smarty.const.DOCID_RAPOR_KELAS6}" id="unggah-profil-26" hidden/>
-                                    <label for="unggah-profil-26" class="btn btn-primary" tcg-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
-                                    </span>
-                                    <div id="msg-dokumen-26" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
-                                    {/if}
-                                </td>
-                            </tr>
                         </table>
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                    <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr id="lokasi-konfirmasi-row">
-                                <td colspan="1">
-                                    <b>Apakah data lokasi rumah di atas sudah benar? </b>
-                                    <select class="form-control input-default status-verifikasi" 
-                                        tcg-tag='lokasi'
-                                        tcg-field='verifikasi_lokasi' tcg-field-type='status' tcg-field-submit=1>
-                                    <option value="0">Belum Diverifikasi</option>
-                                    <option value="1">SUDAH Benar</option>
-                                    <option value="2">BELUM Benar</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-perbaikan" tcg-tag='lokasi'>Perbaiki Data</button>
-                                    <button class="btn btn-primary btn-kembalikan" tcg-tag='lokasi'>Kembalikan Data Awal</button>
-                                    <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='lokasi'>Simpan Data</button>
-                                    <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='lokasi'>Batalkan</button>
-                                </td>
-                            </tr>
-                            <tr id="lokasi-catatan-row" class="catatan" tcg-tag='lokasi'>
-                                <td colspan="1">
-                                    <span id="lokasi-error-msg">
-                                        <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='lokasi'
-                                        tcg-field='catatan_lokasi' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                    </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="lokasi" tag_label="lokasi rumah"}
                 </div>
 
             </div>
@@ -364,19 +293,20 @@
     <div class="accordion-item" id="nilai" data-editor-id="">
         <div class="accordion-header rounded-lg collapsed" id="nilai-header" data-bs-toggle="collapse" data-bs-target="#nilai-content" aria-controls="nilai-content" aria-expanded="true" role="button">
             <span class="accordion-header-icon"></span>
-        <span class="accordion-header-text">Nilai Kelulusan / Nilai Ujian Nasional <span class='status'></span></span>
+        <span class="accordion-header-text">Prestasi Akademik di Sekolah <span class='status'></span></span>
         <span class="accordion-header-indicator"></span>
         </div>
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    {if $flag_nilai_kelulusan|default: FALSE}
+                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 20px !important;">
                             <tr>
                                 <td colspan="3"><b>Nilai Kelulusan</b></td>
                             </tr>
                             <tr>
-                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor</b></td>
+                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <input class="form-control" id="nilai-rapor-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this)
@@ -387,7 +317,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah</b></td>
+                                <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <input class="form-control" id="nilai-lulus-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this)
@@ -399,7 +329,9 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    {/if}
+                    {if $flag_nilai_un|default: FALSE}
+                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
@@ -448,12 +380,61 @@
                             </tr>
                         </table>
                     </div>
+                    {/if}
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
+                            <tr tcg-tag='nilai' tcg-field-type='input'>
+                                <td colspan="3">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Prestasi akademik di sekolah :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                            <select class="form-control select2" tcg-tag='nilai' tcg-field='akademik_skoring_id'
+                                            tcg-field-type='input' tcg-field-submit=1>
+                                                <option value="0">Tidak ada</option>
+                                                {foreach $daftarskoring_akademik as $skor}
+                                                <option value="{$skor.value}">{$skor.label}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr tcg-tag='nilai' tcg-field-type='label'>
+                                <td style="width: 45%;"><b>Prestasi akademik di sekolah</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <span tcg-tag='nilai' tcg-field='akademik_skoring_id' tcg-field-type='label' tcg-init-field='akademik_skoring_label'></span>
+                                </td>
+                            </tr>
+                         </table>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important; margin-top: 20px !important">
                             <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
+                            </tr>
+                            <tr id="row-dokumen-kelas6">
+                                <td style="width: 45%;"><b>Rapor Kelas 6</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    {if !($flag_upload_dokumen)}
+                                    Dicocokkan di sekolah tujuan
+                                    {else}
+                                    <img id="dokumen-26" class="img-view-thumbnail" 
+                                            src="{(empty($dokumen[26])) ? '' : $dokumen[26]['thumbnail_path']}" 
+                                            img-path="{(empty($dokumen[26])) ? '' : $dokumen[26]['web_path']}" 
+                                            img-id="{(empty($dokumen[26])) ? '' : $dokumen[26]['dokumen_id']}" 
+                                            img-title="Rapor Kelas 6"
+                                            style="display:none; "/>  
+                                    <span>
+                                    <input type="file" class="upload-file" tcg-doc-id="26" id="unggah-profil-26" hidden/>
+                                    <label for="unggah-profil-26" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                    </span>
+                                    <div id="msg-dokumen-26" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    {/if}
+                                </td>
                             </tr>
                             <tr id="row-dokumen-skl">
                                 <td style="width: 45%;"><b>Surat Keterangan Lulus</b></td>
@@ -476,6 +457,7 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {if $flag_nilai_un|default: FALSE}
                             <tr id="row-dokumen-un" tcg-visible-tag='nilai-un'>
                                 <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
                                 <td>:</td>
@@ -497,38 +479,14 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                        <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr id="nilai-konfirmasi-row">
-                                <td colspan="1">
-                                    <b>Apakah data nilai UN dan nilai kelulusan di atas sudah benar? </b>
-                                    <select class="form-control input-default status-verifikasi" 
-                                        tcg-tag='nilai'
-                                        tcg-field='verifikasi_nilai' tcg-field-type='status' tcg-field-submit=1>
-                                        <option value="0">Belum Diverifikasi</option>
-                                        <option value="1">SUDAH Benar</option>
-                                        <option value="2">BELUM Benar</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-perbaikan" tcg-tag='nilai'>Perbaiki Data</button>
-                                    <button class="btn btn-primary btn-kembalikan" tcg-tag='nilai'>Kembalikan Data Awal</button>
-                                    <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='nilai'>Simpan Data</button>
-                                    <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='nilai'>Batalkan</button>
-                                </td>
-                            </tr>
-                            <tr id="nilai-catatan-row" class="catatan" tcg-tag='nilai'>
-                                <td colspan="1">
-                                    <span  id="nilai-error-msg">
-                                        <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='nilai'
-                                        tcg-field='catatan_nilai' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="nilai" tag_label="prestasi akademik"}
                 </div>
             </div>
         </div>
@@ -536,7 +494,7 @@
     <div class="accordion-item" id="prestasi" data-editor-id="">
         <div class="accordion-header rounded-lg collapsed" id="prestasi-header" data-bs-toggle="collapse" data-bs-target="#prestasi-content" aria-controls="prestasi-content" aria-expanded="true" role="button">
             <span class="accordion-header-icon"></span>
-        <span class="accordion-header-text">Prestasi Siswa <span class='status'></span></span>
+        <span class="accordion-header-text">Pengalaman Organisasi dan Kejuaraan <span class='status'></span></span>
         <span class="accordion-header-indicator"></span>
         </div>
         <div id="prestasi-content" class="collapse accordion__body" aria-labelledby="prestasi-header" data-bs-parent="#profil-siswa" style="">
@@ -546,7 +504,7 @@
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
                             <tr>
                                 <td colspan="3">
-                                    <b>Punya prestasi akademis atau non-akademis (olahraga/seni/dll)? </b>
+                                    <b>Punya pengalaman organisasi/kejuaraan? </b>
                                     <select class="form-control input-default " id="prestasi-akademis" name="prestasi-akademis" 
                                         tcg-tag='prestasi' 
                                         tcg-field='punya_prestasi' tcg-field-type='toggle' tcg-field-submit=1
@@ -556,30 +514,52 @@
                                     </select>
                                 </td>
                             </tr>
+                            <!-- tcg-visible-tag must be in different level from tcg-input-tag -->
+                            <!-- tcg-visible-tag will be toggled by profilflag (punya_prestasi) -->
+                            <!-- tcg-input-tag will be toggled by status konfirmasi -->
                             <tr tcg-visible-tag='prestasi'>
-                                <td style="width: 45%;"><b>Jenjang Prestasi</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    <select class="form-control" 
+                                <td colspan="3" tcg-tag='prestasi' tcg-field-type='input'>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Pengalaman Organisasi/Kejuaraan :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                        <select class="form-control" 
                                         tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='input' tcg-field-submit=1 style="display: none;">
-                                    <option value="0">Tidak ada</option>
-                                    {foreach $daftarskoring as $skor}
-                                    <option value="{$skor.value}">{$skor.label}</option>
-                                    {/foreach}
-                                    </select>
-                                    <span tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='label'></span>
+                                            <option value="0">Tidak ada</option>
+                                            {foreach $daftarskoring_prestasi as $skor}
+                                            <option value="{$skor.value}">{$skor.label}</option>
+                                            {/foreach}
+                                        </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 45%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                    <b>Pengalaman Organisasi/Kejuaraan</b>
+                                </td>
+                                <td tcg-tag='prestasi' tcg-field-type='label'>:</td>
+                                <td style="width: 50%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                <span tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='label' tcg-init-field='prestasi_skoring_label'></span>
                                 </td>
                             </tr>
                             <tr tcg-visible-tag='prestasi'>
-                                <td style="width: 45%;"><b>Beri Uraian Tentang Prestasi Tersebut</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    <textarea class="form-control" 
-                                        tcg-tag='prestasi' tcg-field='uraian_prestasi' tcg-field-type='input' tcg-field-submit=1
-                                        style="display: none; width: 100%; height: 100px;"></textarea>
-                                    <span tcg-tag='prestasi' tcg-field='uraian_prestasi' tcg-field-type='label'></span>
+                                <td colspan="3" tcg-tag='prestasi' tcg-field-type='input'>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Beri Uraian Tentang Prestasi Tersebut :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                            <textarea class="form-control" 
+                                            tcg-tag='prestasi' tcg-field='uraian_prestasi' tcg-field-type='input' tcg-field-submit=1
+                                            style="display: none; width: 100%; height: 100px;"></textarea>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 45%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                    <b>Beri Uraian Tentang Prestasi Tersebut</b>
+                                </td>
+                                <td tcg-tag='prestasi' tcg-field-type='label'>:</td>
+                                <td style="width: 50%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                    <span tcg-field='uraian_prestasi' tcg-tag='prestasi' tcg-field-type='label'></span>
                                </td>
                             </tr>
+                            </span>
                         </table>
                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='prestasi'>
                             <tr id="row-dokumen-header">
@@ -591,7 +571,7 @@
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                    {include file="./_verifikasisiswa_status.tpl" tag="prestasi" tag_label="Prestasi"}
+                    {include file="./_verifikasisiswa_status.tpl" tag="prestasi" tag_label="pengalaman organisasi/kejuaraan"}
                 </div>
             </div>
         </div>
@@ -606,6 +586,7 @@
             <div class="accordion-body-text">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        {if $flag_kip|default: FALSE}
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
@@ -630,9 +611,10 @@
                                     <span tcg-tag='afirmasi' tcg-field='no_kip' tcg-field-type='label'></span>
                                 </td>
                             </tr>
-                            <tr tcg-visible-tag='kip'>
-                                <td colspan="3"></td>
-                            </tr>
+                        </table>
+                        {/if}
+                        {if $flag_bdt|default: FALSE}
+                        <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
                                     <b>Masuk di dalam Basis Data Terpadu dalam kategori Keluarga Miskin? </b>
@@ -657,10 +639,32 @@
                                 </td>
                             </tr>
                         </table>
+                        {/if}
+                        <table class="table table-striped" style="margin-bottom: 0px !important;">
+                            <tr>
+                                <td colspan="3">
+                                    <b>Masuk di dalam Basis Data Terpadu untuk program Afirmasi? </b>
+                                    <select class="form-control input-default" id="bdt" name="bdt"
+                                        tcg-tag='afirmasi' 
+                                        tcg-field='masuk_bdt' tcg-field-type='toggle' tcg-field-submit=0>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">YA</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
+                                <td style="width: 45%;"><b>Sumber Data Afirmasi</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    <span id="sumber-bdt" tcg-tag='afirmasi' tcg-field='sumber_bdt' tcg-field-type='label'></span>
+                                </td>
+                            </tr>
+                        </table>
                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='afirmasi'>
                             <tr id="row-dokumen-afirmasi">
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
+                            {if $flag_kip|default: FALSE}
                             <tr id="row-dokumen-kip" tcg-visible-tag='kip'>
                                 <td style="width: 45%;"><b>Kartu Indonesia Pintar</b></td>
                                 <td>:</td>
@@ -682,6 +686,8 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
+                            {if $flag_bdt|default: FALSE}
                             <tr id="row-dokumen-bdt" tcg-visible-tag='bdt'>
                                 <td style="width: 45%;"><b>Kartu PKH / Kartu KJS / Surat Keterangan masuk BDT dari Desa/Kelurahan</b></td>
                                 <td>:</td>
@@ -703,36 +709,12 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                        <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr id="afirmasi-konfirmasi-row">
-                                <td colspan="1">
-                                    <b>Apakah data afirmasi di atas sudah benar? </b>
-                                    <select class="form-control input-default status-verifikasi" 
-                                        tcg-tag='afirmasi'
-                                        tcg-field='verifikasi_afirmasi' tcg-field-type='status' tcg-field-submit=1>
-                                        <option value="0">Belum Diverifikasi</option>
-                                    <option value="1">SUDAH Benar</option>
-                                    <option value="2">BELUM Benar</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-perbaikan" tcg-tag='afirmasi'>Perbaiki Data</button>
-                                    <button class="btn btn-primary btn-kembalikan" tcg-tag='nilai'>Kembalikan Data Awal</button>
-                                    <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='afirmasi'>Simpan Data</button>
-                                    <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='afirmasi'>Batalkan</button>
-                                </td>
-                            </tr>
-                            <tr id="afirmasi-catatan-row" class="catatan" tcg-tag='afirmasi'>
-                                <td colspan="1">
-                                    <span  id="afirmasi-error-msg">
-                                        <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='afirmasi'
-                                        tcg-field='catatan_afirmasi' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="afirmasi" tag_label="afirmasi"}
                 </div>
             </div>
         </div>
@@ -814,32 +796,7 @@
                     </div>
                 </div>
                 <div class="box-footer" tcg-visible-tag="dikunci">
-                        <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr id="inklusi-konfirmasi-row">
-                                <td colspan="1">
-                                    <b>Apakah data kebutuhan khusus di atas sudah benar? </b>
-                                    <select class="form-control input-default status-verifikasi"
-                                        tcg-tag='inklusi' 
-                                        tcg-field='verifikasi_inklusi' tcg-field-type='status' tcg-field-submit=1>
-                                        <option value="0">Belum Diverifikasi</option>
-                                        <option value="1">SUDAH Benar</option>
-                                        <option value="2">BELUM Benar</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-perbaikan" tcg-tag='inklusi'>Perbaiki Data</button>
-                                    <button class="btn btn-primary btn-kembalikan" tcg-tag='nilai'>Kembalikan Data Awal</button>
-                                    <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='inklusi'>Simpan Data</button>
-                                    <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='inklusi'>Batalkan</button>
-                                </td>
-                            </tr>
-                            <tr id="inklusi-catatan-row" class="catatan" tcg-tag='inklusi'>
-                                <td colspan="1">
-                                    <span  id="inklusi-error-msg">
-                                        <textarea class="form-control catatan" placeholder="Catatan verifikasi" tcg-tag='inklusi'
-                                        tcg-field='catatan_inklusi' tcg-field-type='note' tcg-field-submit=1></textarea>
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
+                    {include file="./_verifikasisiswa_status.tpl" tag="inklusi" tag_label="kebutuhan khusus"}
                 </div>
             </div>
         </div>
@@ -936,8 +893,8 @@
 
 </style>
 <div class="ctx2">
-    <button class="btn btn-secondary ctx-handphone" disabled>
-        082138171939
+    <button class="btn btn-secondary" disabled style="opacity:1;">
+        <i class="fa fa-phone"></i> <span class="ctx-handphone">082138171939</span>
     </button>
 </div>
 

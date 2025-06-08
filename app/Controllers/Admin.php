@@ -40,7 +40,8 @@ class Admin extends CrudController {
 		$navigation = $mnavigation->get_navigation($this->session->get('role_id'));
 		$page_data['navigation']	 = $navigation;
 
-        if (!empty($this->session->get('page_role'))) {
+		//controller name
+		if (!empty($this->session->get('page_role'))) {
 			$controller = $this->session->get('page_role');
 		}
 		else {
@@ -48,14 +49,26 @@ class Admin extends CrudController {
 		}
 		$page_data['controller'] = $controller;
 
-        $page_data['nama_wilayah'] = $this->session->get('nama_wilayah_aktif');
-
-		$page_data['use_datatable'] = 1;
+        //smarty: general setting
+        $arr = $this->setting->list_group('ppdb');
+        foreach($arr as $val) {
+            $page_data[ $val['name'] ] = $val['value'];
+        }
+        
+        $mconfig = new \App\Models\Ppdb\Mconfig();
+        $page_data['daftarjenjang'] = $mconfig->tcg_jenjang();
+        $page_data['jenjang'] = 3;  //SMP
+        $page_data['daftarputaran'] = $mconfig->tcg_putaran();
+        $page_data['putaran'] = $this->session->get('putaran_aktif');
+		$page_data['daftarpenerapan'] = $mconfig->tcg_penerapan();
+		$page_data['daftarkecamatan'] = $mconfig->tcg_kecamatan();
+        
+        $page_data['use_datatable'] = 1;
 		$page_data['use_geo'] = 1;
 		$page_data['use_select2'] = 1;
-		
-		// $this->smarty->render_theme('sistem/home.tpl', $page_data);
-		$this->smarty->render_theme('/ppdb/admin/welcome.tpl', $page_data);
+        $page_data['use_highchart'] = 1;
+        
+		$this->smarty->render_theme('/ppdb/admin/dashboard.tpl', $page_data);
 	}
 
 	public function api() {

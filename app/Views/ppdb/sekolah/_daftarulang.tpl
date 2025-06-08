@@ -28,6 +28,16 @@
 			},	
     } );
 
+    //change error message from html pop-up to toastr.
+    $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
+        if (message.search("not-login") >= 0) {
+            toastr.error("Sesi login sudah kadaluarsa. Silahkan login kembali.");
+        }
+        else {
+            toastr.error(message);
+        }
+    };
+
     $('a[data-bs-toggle="tab"]').on( 'shown.bs.tab', function (e) {
         $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
     } );
