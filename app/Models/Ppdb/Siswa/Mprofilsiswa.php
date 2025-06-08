@@ -101,18 +101,17 @@ Class Mprofilsiswa
             a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah,a.diterima,
             a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
             a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
-            a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.batal_verifikasi,
+            a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.ubah_jalur,a.batal_verifikasi,
             a.verifikasi_profil,a.verifikasi_lokasi,a.verifikasi_nilai,a.verifikasi_prestasi,a.verifikasi_afirmasi,a.verifikasi_inklusi,a.verifikasi_dokumen,
             a.catatan_profil,a.catatan_lokasi,a.catatan_nilai,a.catatan_prestasi,a.catatan_afirmasi,a.catatan_inklusi,
             a.verifikator_id,e.nama as nama_verifikator,a.tanggal_verifikasi,
             a.konfirmasi_profil,a.konfirmasi_lokasi,a.konfirmasi_nilai,a.konfirmasi_prestasi,a.konfirmasi_afirmasi,a.konfirmasi_inklusi,      
             i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
-        $builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
+        //$builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
         $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
         $builder->select("a.nilai_kelulusan, a.nilai_semester, a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");
         $builder->select("coalesce(a.punya_prestasi,0) as punya_prestasi, a.prestasi_skoring_id, a.uraian_prestasi, g.nama as prestasi_skoring_label");
-        //TODO: tambahkan col
         $builder->select("a.akademik_skoring_id, h.nama as akademik_skoring_label");
         $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan, a.nama_dusun,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
@@ -135,10 +134,29 @@ Class Mprofilsiswa
 		$builder->join('ref_sekolah i','i.sekolah_id = a.lokasi_berkas','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
+        $profil = $builder->get()->getRowArray();
+        if (!$profil) return null;
+
+        $afirmasi = $this->tcg_get_dataafirmasi($profil['nik']);
+        if (empty($afirmasi)) {
+            $profil['masuk_bdt'] = 0;
+            $profil['sumber_bdt'] = null;
+        }
+        else {
+            $profil['masuk_bdt'] = 1;
+            $profil['sumber_bdt'] = $afirmasi['sumber_bdt'];
+        }
+
+        //debugging
+        if (__DEBUGGING__) {
+            $profil['masuk_bdt'] = 1;
+            $profil['sumber_bdt'] = "TestDB";
+        }
+
         // $sql = $builder->getCompiledSelect();
         // echo $sql; exit;
 
-		return $builder->get()->getRowArray();
+		return $profil;
 	}   
 
     function tcg_profilsiswa($peserta_didik_id){
@@ -147,7 +165,15 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('a.*');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
-		return $builder->get()->getRowArray();
+		$profil = $builder->get()->getRowArray();
+
+        //debugging
+        // if (__DEBUGGING__) {
+        //     $profil['masuk_bdt'] = 1;
+        //     $profil['sumber_bdt'] = "TestDB";
+        // }
+
+        return $profil;
     }
 
     function tcg_profilsiswa_from_userid($user_id) {
@@ -179,7 +205,7 @@ Class Mprofilsiswa
 		return $this->ro->query($query, array($peserta_didik_id, $pendaftaran_id))->getResultArray();
 	}
 
-	function tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus=0, $selain_penerapan_id=0){
+	function tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $afirmasi, $selain_penerapan_id=0){
         $this->error_message = null;
         
         //IMPORTANT: Perhitungan berdasarkan tanggal lahir sekarang dilakukan secara global!
@@ -201,12 +227,36 @@ Class Mprofilsiswa
 			$builder->where('a.dalam_wilayah_administrasi',1);
 		}
 
-		if($kebutuhan_khusus==1){
-			$builder->groupStart();
-			$builder->where('a.kategori_inklusi',1);
-			$builder->orWhere('c.jalur_id',7);			//jalur inklusi
-			$builder->groupEnd();
-		}
+        if (JALURID_INKLUSI == JALURID_AFIRMASI) {
+            if ($afirmasi) {
+                //afirmasi -> include semua
+            }
+            else if ($kebutuhan_khusus) {
+                //tidak afirmasi tapi kebutuhan khusus -> include jalur kategori inklusi
+                $builder->groupStart();
+                $builder->where('a.kategori_inklusi',1);
+                $builder->orWhere('c.jalur_id',JALURID_INKLUSI);			//jalur inklusi
+                $builder->groupEnd();
+            }
+            else {
+                //tidak afirmasi dan tidak kebutuhan khusus -> exclude jalur afirmasi
+                $builder->where('c.jalur_id!=',JALURID_AFIRMASI);
+            }
+        }
+        else {
+            //kebutuhan khusus -> include jalur kategori inklusi
+            if($kebutuhan_khusus){
+                $builder->groupStart();
+                $builder->where('a.kategori_inklusi',1);
+                $builder->orWhere('c.jalur_id',JALURID_INKLUSI);			//jalur inklusi
+                $builder->groupEnd();
+            }
+
+            //tidak afirmasi -> exclude jalur afirmasi
+            if(!$afirmasi){
+                $builder->where('c.jalur_id!=',JALURID_AFIRMASI);
+            }
+        }
 		
  		// if ($afirmasi==0) {
 		// 	$builder->where('a.kategori_afirmasi',0);
@@ -392,6 +442,8 @@ Class Mprofilsiswa
         $this->error_message = null;
         $user_id = $this->session->get('user_id');
         
+        //echo "$peserta_didik_id, $pendaftaran_id, $sekolah_id_baru, $user_id"; exit;
+
 		$query = "CALL " .SQL_UBAH_PILIHANSEKOLAH. " (?, ?, ?, ?)";
 		$status = $this->db->query($query, array($peserta_didik_id, $pendaftaran_id, $sekolah_id_baru, $user_id));
         if (!$status) return null;
@@ -1148,7 +1200,7 @@ Class Mprofilsiswa
 
     function tcg_get_dataafirmasi($nik) {
         $builder = $this->ro->table("cfg_data_afirmasi a");
-        $builder->select("a.nik, group_concat(distinct `source`) as sources");
+        $builder->select("a.nik, group_concat(distinct `source`) as sumber_bdt");
         $builder->where("a.nik", $nik);
         $builder->where("a.is_deleted=0");
         $builder->groupBy("a.nik");
@@ -1158,5 +1210,22 @@ Class Mprofilsiswa
         
         return $result;
     }    
+
+    function tcg_kuotasekolah($sekolah_id) {
+        $putaran = $this->session->get("putaran_aktif");
+
+        $builder = $this->ro->table("cfg_penerapan_sekolah a");
+        $builder->select("a.penerapan_id, a.kuota");
+        $builder->where("a.is_deleted=0");
+        $builder->where("a.sekolah_id", $sekolah_id);
+        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.putaran", $putaran);
+
+        $result = $builder->get()->getResultArray();
+        if (!$result) return null;
+        
+        return $result;
+    }    
+
 }
 

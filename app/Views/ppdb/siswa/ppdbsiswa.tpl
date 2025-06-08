@@ -409,7 +409,7 @@ textarea.form-control {
     var daftarpenerapan = {$daftarpenerapan|json_encode};
 
     //hasil pendaftaran
-    var batasanperubahan = {$batasanperubahan|json_encode};
+
     var daftarpendaftaran = {$daftarpendaftaran|json_encode};
 
     //profil

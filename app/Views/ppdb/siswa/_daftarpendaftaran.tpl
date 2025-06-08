@@ -4,6 +4,12 @@
             $('#daftar-pendaftaran-notif').show();
             let parent = $("#daftar-pendaftaran");
             parent.html(''); 
+
+            //tidak ada pendaftaran aktif -> reenable edit of profil (buka kunci)
+            if (profildikunci) {
+                profildikunci = 0;
+                update_profile_layout();
+            }
             return;
         }
 
@@ -19,6 +25,12 @@
             let template = $('#detail-pendaftaran').html();
             Mustache.parse(template);
 
+            //batasan
+            pendaftaran['ubah_pilihan'] = pendaftaran['batasan_ubah_pilihan'] > 0;
+            pendaftaran['ubah_jalur'] = pendaftaran['batasan_ubah_jalur'] > 0;
+            pendaftaran['ubah_sekolah'] = pendaftaran['batasan_ubah_sekolah'] > 0;
+            pendaftaran['hapus_pendaftaran'] = pendaftaran['batasan_hapus'] > 0;
+
             let dom = Mustache.render(template, {
                 'allow_edit': !pendaftarandikunci,
                 'kelengkapan_data' : kelengkapan_data,
@@ -29,6 +41,13 @@
 
             parent.append(dom);
         });
+        
+        //kunci profil
+        if (!profildikunci) {
+            profildikunci = 1;
+            update_profile_layout();
+        }
+
     }
 
     {if !$is_public|default: FALSE}
@@ -41,7 +60,7 @@
         Mustache.parse(template);
 
         let dom = Mustache.render(template, {
-            'batasan'   : 1,
+            'batasan'   : p['batasan_hapus'],
             'item'      : p,
         });
 
@@ -111,7 +130,7 @@
             Mustache.parse(template);
 
             let dom = Mustache.render(template, {
-                'batasan'   : 1,
+                'batasan'   : p['batasan_ubah_pilihan'],
                 'item'      : p,
                 'pilihan'   : json.data
             });
@@ -169,13 +188,13 @@
             cache: false,
             timeout: 60000,
             error: function(jqXHR, textStatus, errorThrown) {
-                toastr.error("Tidak berhasil mendapatkan daftar pilihan. " + textStatus)
+                toastr.error("Tidak berhasil mendapatkan daftar jalur. " + textStatus)
                 return;
             }
         })
         .then(function(json) {
             if (json.error !== undefined && json.error != "" && json.error != null) {
-                toastr.error("Tidak berhasil mendapatkan daftar pilihan. " + json.error)
+                toastr.error("Tidak berhasil mendapatkan daftar jalur. " + json.error)
                 return;
             }
 
@@ -184,7 +203,7 @@
             Mustache.parse(template);
 
             let dom = Mustache.render(template, {
-                'batasan'   : 1,
+                'batasan'   : p['batasan_ubah_jalur'],
                 'item'      : p,
                 'pilihan'   : json.data
             });
@@ -280,7 +299,7 @@
             Mustache.parse(template);
 
             let dom = Mustache.render(template, {
-                'batasan'   : 1,
+                'batasan'   : p['batasan_ubah_sekolah'],
                 'item'      : p,
                 'pilihan'   : options
             });

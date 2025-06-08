@@ -19,8 +19,8 @@
             if (width < 785) {
                 header_offset = 100;
             }
-            else if (width < 1040) {
-                header_offset = 100;
+            else if (width < 1020) {
+                header_offset = 120;
             }
 
             $('html,body').animate({
@@ -187,6 +187,7 @@
         }
 
         //konfirmasi: editability
+        kelengkapan_profil = 1;
         tags.forEach(function(key) {
             if (verifikasi[key] == 2) {
                 konfirmasi[key] = 0;
@@ -260,38 +261,54 @@
                 item.find("[tcg-visible-tag='dikunci']").show();
                 item.find("#" +key+ "-konfirmasi").val(0);
             }
+
+            //if konfirmasi == 0 or 2 -> profil belum lengkap
+            if (konfirmasi[key]!=1 && konfirmasi[key]!=4) {
+                kelengkapan_profil = 0;
+            }
         });
         
         //special case: nomor-hp
-        let flagval = konfirmasi['nomer-hp'];
         let card = $("#nomer-hp");
-        if (flagval) {
+        if (konfirmasi['nomer-hp']) {
             card.removeClass("status-danger");
             card.find(".accordion-header-text .status").html('');
         }
         else {
             card.addClass("status-danger");
             card.find(".accordion-header-text .status").html('*Belum Diisi*');
+            //kalau nomer hp belum diisi -> profil belum lengkap
+            kelengkapan_profil=0;
         }
 
         //special case: surat pernyataan
-        flagval = konfirmasi['surat-pernyataan'];
         card = $("#surat-pernyataan");
         {if !($flag_upload_dokumen)}
-        {* no upload -> always OK *}
-        card.removeClass("status-danger");
-        card.find(".accordion-header-text .status").html('');
-        {else}
-        if (flagval) {
+            {* no upload -> always OK *}
             card.removeClass("status-danger");
             card.find(".accordion-header-text .status").html('');
-        }
-        else {
-            card.addClass("status-danger");
-            card.find(".accordion-header-text .status").html('*Belum Unggah Dokumen*');
-        }
+        {else}
+            if (konfirmasi['surat-pernyataan']) {
+                card.removeClass("status-danger");
+                card.find(".accordion-header-text .status").html('');
+            }
+            else {
+                card.addClass("status-danger");
+                card.find(".accordion-header-text .status").html('*Belum Unggah Dokumen*');
+                //kalau upload_dok=1 dan belum upload surat pernyataan -> profil belum lengkap
+                kelengkapan_profil=0;
+            }
         {/if}
 
+        // //profil lengkap -> enable pendaftaran -> munculkan daftar jalur (buka kunci)
+        // if (kelengkapan_profil && (!kelengkapan_data)) {
+        //     kelengkapan_data=1;
+        //     update_pendaftaran_layout();
+        // }
+        // else if (!kelengkapan_profil && kelengkapan_data) {
+        //     kelengkapan_data=0;
+        //     update_pendaftaran_layout();
+        // }
     }       
 
     function impose_min_max(el){
@@ -368,14 +385,19 @@
         siswa_tutup_akses = parseInt(profil['tutup_akses']);
 
         //update flag pendaftaran dikunci
+        flag = 0
         if (!kelengkapan_data || siswa_tutup_akses || tutup_akses==1 || diterima==1) {
-            pendaftarandikunci = 1;
+            flag = 1;
+        }
+
+        if (flag != pendaftarandikunci) {
+            pendaftarandikunci=flag;
+            update_pendaftaran_layout();
         }
 
         //redraw is necessary
         if (redraw) {
             update_profile_layout();
-            update_pendaftaran_layout();
         }
     }
 

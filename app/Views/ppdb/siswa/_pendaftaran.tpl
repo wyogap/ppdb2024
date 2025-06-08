@@ -71,16 +71,25 @@
     }
 
     function update_pendaftaran_layout(redraw_jalur = true) {
-        //update kelengkapan data
-        tags.forEach(function(key) {
-            if(!konfirmasi[key]) {
-                kelengkapan_data = 0;
-            }
-        });
-
-        if (!konfirmasi['nomer-hp']) {
-            kelengkapan_data = 0;
+        
+        parent = $("#jalur-pendaftaran");
+        if (pendaftarandikunci || !kelengkapan_data) {
+            parent.hide();
+        } else {
+            parent.show();
         }
+
+        // //update kelengkapan data
+        // kelengkapan_data = 1;
+        // tags.forEach(function(key) {
+        //     if(!konfirmasi[key]) {
+        //         kelengkapan_data = 0;
+        //     }
+        // });
+
+        // if (!konfirmasi['nomer-hp']) {
+        //     kelengkapan_data = 0;
+        // }
 
         //sisa slot pendaftaran
         let slotumum=slotnegeri=slotswasta=0;
@@ -139,13 +148,6 @@
             el.hide();
         } else {
             el.show();
-        }
-        
-        parent = $("#jalur-pendaftaran");
-        if (pendaftarandikunci) {
-            parent.hide();
-        } else {
-            parent.show();
         }
         
         if (redraw_jalur) {
