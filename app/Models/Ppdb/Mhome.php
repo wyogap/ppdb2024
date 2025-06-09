@@ -231,7 +231,7 @@ Class Mhome
 	function tcg_cek_nisn($nisn){
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
+		//$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nisn'=>$nisn,'a.is_deleted'=>0));
 
         // echo $builder->getCompiledSelect(); exit;
@@ -247,7 +247,7 @@ Class Mhome
 	function tcg_cek_nik($nik){
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
+		//$builder->join('dbo_users b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->where(array('a.nik'=>$nik,'a.is_deleted'=>0));
 
 		$sudah_registrasi=0;
@@ -277,12 +277,10 @@ Class Mhome
 		// $bujur = (empty($bujur)) ? 'null' : secure($bujur);
 		// $nomor_kontak = secure($nomor_kontak);
 
-		$sql = "CALL ppdb_2024." .SQL_REGISTRASI. " (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		$sql = "CALL " .SQL_REGISTRASI. " (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 
-        $query = $this->db->query($sql, array($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak));
+        $query = $this->db->query($sql, array($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,$nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak)); 
         if ($query == null)     return null;
-
-        //audittrail -> di sp
 
         $user = $this->tcg_detailuser($username);
 		return $user;

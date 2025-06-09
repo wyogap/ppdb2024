@@ -200,7 +200,7 @@
             //     layerGroup.clearLayers();
             // });
 
-            new L.Control.Fullscreen({ position:'bottomleft' }).addTo(map);
+            new L.control.fullscreen({ position:'bottomleft' }).addTo(map);
             new L.Control.Zoom({ position:'bottomright' }).addTo(map);
 
             new L.Control.EasyButton( '<span class="map-button" style="font-size: 30px;">&curren;</span>', function(){
@@ -505,7 +505,7 @@
                 label = dom.prev('label');
                 if (label.length > 0)   text = label[0].innerText;
                 else text = field;
-                toastr.error("Field " +text+ " harus diisi.");
+                toastr.error("Data " +text+ " harus diisi.");
                 select2 = dom.next(".select2");
                 select2.find(".select2-selection").addClass("border-red")
             }

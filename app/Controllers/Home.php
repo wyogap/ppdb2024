@@ -215,27 +215,20 @@ class Home extends PpdbController
         $nisn = $this->request->getPostGet('nisn');
         $npsn = $this->request->getPostGet('npsn');
 
-        $jumlah = $this->Mhome->tcg_cek_nisn($nisn);
-        if($jumlah>0){
-            print_json_error("Data akun siswa dengan nisn tersebut sudah ada.", -90);
+        // $jumlah = $this->Mhome->tcg_cek_nisn($nisn);
+        // if($jumlah>0){
+        //     print_json_error("Data akun siswa dengan nisn tersebut sudah ada.", -90);
+        // }
+
+        $profil = get_data_dapodik($nisn, $npsn);
+        if ($profil == null) {
+            print_json_error("Tidak berhasil mendapatkan data siswa dari dapodik.", -91);
         }
-
-        helper("dom");
-      
-        $url = 'https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=16F236D8-1153-4B69-B9EF-CC99FEDE2D65&nisn=' .$nisn. '&npsn=' .$npsn;
-
-        $client = new \GuzzleHttp\Client(['verify' => false ]);
-        $req = $client->request('GET', $url);
-        $resp = $req->getBody();
-
-        if ($resp == null) {
-            print_json_error("Tidak berhasil mendapatkan data dapodik.");
-        }
-
-        $profil = json_decode($resp);
-        $profil = (array) $profil[0];
 
         $sekolah = get_profilsekolah_from_npsn($npsn);
+        if ($sekolah == null) {
+            print_json_error("Tidak berhasil mendapatkan profil sekolah dari dapodik.", -92);
+        }
 
         $profil['nama_sekolah'] = $sekolah['nama'];
         $profil['sekolah_dapodik_id'] = $sekolah['dapodik_id'];
@@ -254,10 +247,19 @@ class Home extends PpdbController
 		$data['cek_pendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
+        //debugging
+        if (__DEBUGGING__) {
+            $data['cek_sosialisasi'] = 1;
+        }
+
         $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
         if (!empty($batasanusia)) {
             $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
             $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
+        }
+
+        if (!$data['cek_registrasi']) {
+            $data['waktu_registrasi'] = $this->Mconfig->tcg_wakturegistrasi();
         }
 
         $data['use_leaflet'] = 1;
@@ -361,13 +363,13 @@ class Home extends PpdbController
 
             //pesan
             $data['info'] = "<div class='alert alert-secondary' role='alert'>Registrasi berhasil. Silahkan tunggu pemberitahuan persetujuan akun melalui nomor kontak yang anda berikan. Apabila setelah 1x24 jam anda belum menerima pemberitahuan persetujuan, silahkan menghubungi nomor bantuan yang ada di halaman utama.</div>
-            <div class='alert alert-secondary' role='alert'>Anda bisa melakukan masuk ke sistem PPDB Online menggunakan nomor NISN anda. </div>
-            <div class='alert alert-secondary' role='alert'>Segera masuk dan ganti PIN anda sekarang juga. <br>Gunakan akun berikut untuk masuk ke sistem: <br><ul><li>Nama Pengguna: " .$data['nisn']. "</li><li>PIN: " .$data['nisn']. "</li></ol></div>";
+            <div class='alert alert-secondary' role='alert'>Anda bisa masuk ke sistem PPDB Online menggunakan nomor NISN anda. </div>
+            <div class='alert alert-secondary' role='alert'>Segera masuk dan ganti PIN anda sekarang juga. Gunakan akun berikut untuk masuk ke sistem: <br><ul><li>Nama Pengguna: " .$data['nisn']. "</li><li>PIN: " .$data['nisn']. "</li></ol></div>";
 
             $data["sukses"] = 1;
 
         } while (false);
-
+ 
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
@@ -376,14 +378,26 @@ class Home extends PpdbController
 		$data['cek_pendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
         $data['kabupaten'] = $mdropdown->tcg_kabupaten();
 
+        //debugging
+        if (__DEBUGGING__) {
+            $data['cek_sosialisasi'] = 1;
+        }
+
         $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
         if (!empty($batasanusia)) {
             $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
             $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
         }
 
+        if (!$data['cek_registrasi']) {
+            $data['waktu_registrasi'] = $this->Mconfig->tcg_wakturegistrasi();
+        }
+
         $data['use_leaflet'] = 1;
         $data['use_select2'] = 1;
+
+        //flag to indicate this is a submission
+        $data['do_registrasi'] = 1;
 
         //content template
         $data['content_template'] = './registrasi.tpl';
@@ -391,7 +405,7 @@ class Home extends PpdbController
 
 		$data['page'] = 'registrasi';
 		$data['page_title'] = 'Registrasi Siswa Luar Daerah';
- 
+        
         $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
 
         // $data["page_title"] = "Registrasi";

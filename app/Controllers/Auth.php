@@ -181,6 +181,17 @@ class Auth extends AuthController
 
         if ($role_id == ROLEID_SISWA) {
             $peserta_didik_id = $result['peserta_didik_id'];
+            if ($result['registrasi'] && empty($result['approval'])) {
+                $error = 'Akun kamu belum disetujui. Silahkan menghubungi Sekolah Tujuan untuk persetujuan akun.';
+                if ($json == 1) {
+                    $data = array('status'=>'0', 'error'=>$error);
+                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+                }
+                else {
+                    $this->session->setFlashdata('error', $error);	
+                }
+                return false;
+            }
 
             if (empty($this->siswa) || $this->siswa['peserta_didik_id'] != $peserta_didik_id) {
                 $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
@@ -188,7 +199,7 @@ class Auth extends AuthController
             }
             
             if (empty($this->siswa)) {
-                $error = 'Akun anda tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
+                $error = 'Akun kamu tidak terkonfigurasi dengan benar. Silahkan hubungi Admin Dinas.';
                 if ($json == 1) {
                     $data = array('status'=>'0', 'error'=>$error);
                     echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
@@ -358,6 +369,22 @@ class Auth extends AuthController
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
     }
 
+    function sendresetcode() {
+        //TODO
+        $username = $this->request->getGetPost('username');
+    }
+
+    function checkresetcode() {
+        //TODO
+        $code = $this->request->getGetPost('code');
+    }
+
+    function resetpassword() {
+        //TODO
+        $code = $this->request->getGetPost('code');
+        $pwd1 = $this->request->getGetPost('pwd1');
+        $pwd1 = $this->request->getGetPost('pwd1');
+    }
 }
 
 ?>

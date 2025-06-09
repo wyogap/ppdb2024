@@ -184,21 +184,21 @@
 
                         <div id='login-div'>
                             {if !empty($info_message)}
-                            <div class="alert alert-info alert-dismissible" id="alert-info" role="alert">
+                            <div class="alert alert-info alert-dismissible" id="alert-info" role="alert" style="margin-top: -32px">
                                 {$error_message}        
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button>     
                             </div>
                             {/if}
 
                             {if !empty($error_message)}
-                            <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert">
+                            <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert" style="margin-top: -32px">
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                    
                                 {$error_message}
                             </div>
                             {/if}
 
                             {if !empty($success_message)}
-                            <div class="alert alert-success alert-dismissible" id="alert-sucess" role="alert">
+                            <div class="alert alert-success alert-dismissible" id="alert-sucess" role="alert" style="margin-top: -32px">
                                 {$success_message}                 
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -236,11 +236,14 @@
                                         <i class="fa fa-eye"></i>
                                     </span>
                                 </div>
+                                {if 1==0}
+                                {* TODO *}
                                 <div class="form-row d-flex justify-content-between mt-4 mb-2">
                                     <div class="mb-4" style="flex-grow: 1; text-align: right;">
                                         <a href="#" class="btn-link text-primary pwdreset" id="forgetpwd">Lupa PIN/Password?</a>
                                     </div>
                                 </div>
+                                {/if}
                                 {/if}
                                 <div class="text-center mb-4">
                                     <button type="submit" class="btn btn-primary btn-block" id="login">Masuk</button>
@@ -256,17 +259,17 @@
                             </form>
                         </div>
                         <div id='forgetpwd-div' style="display:none;">
-                        <p class="text-center" style="margin-top:12px; margin-bottom:24px;">Reset PIN/Password</p>
+                            <p class="text-center" style="margin-top:12px; margin-bottom:24px;">Reset PIN/Password</p>
                             <div class="mb-4">
-                                        <!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
-                                        <input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
-                                        id="username-reset" name="username-reset" data-validation="required" minlength="8" maxlength="100">
-                                    </div>
-                                    <p class="text-center" style="margin-bottom:24px;">Kode reset akan dikirim ke alamat email yang terdaftar dan/atau melalui Whatsapp ke nomor HP yang terdaftar.</p>
-                                    <div class="text-center mb-4">
-                                        <button type="submit" class="btn btn-danger btn-block pwdreset" id="sendcode">Kirim Kode Reset</button><br>  
-                                        <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel">Batalkan</button>
-                                    </div>
+                                <!-- <label class="mb-1 text-dark">NISN / NIK / Nama Pengguna</label> -->
+                                <input type="text" class="form-control form-control" placeholder="Ketik NISN / NIK / Nama Pengguna" 
+                                id="username-reset" name="username-reset" data-validation="required" minlength="8" maxlength="100">
+                            </div>
+                            <p class="text-center" style="margin-bottom:24px;">Kode reset akan dikirim ke alamat email yang terdaftar dan/atau melalui Whatsapp ke nomor HP yang terdaftar.</p>
+                            <div class="text-center mb-4">
+                                <button type="submit" class="btn btn-danger btn-block pwdreset" id="sendcode">Kirim Kode Reset</button><br>  
+                                <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel">Batalkan</button>
+                            </div>
                         </div>
                         <div id='resetpwd-div' style="display:none;">
                             <p class="text-center" style="margin-top:12px; margin-bottom:24px;">Masukkan kode reset yang dikirim ke alamat email/HP yang terdaftar:</p>

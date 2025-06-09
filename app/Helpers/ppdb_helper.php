@@ -291,6 +291,31 @@ if ( ! function_exists('audit_siswa'))
         return $pendaftaran;
     }    
 
+    function get_data_dapodik($nisn, $npsn) {
+        $token = "16F236D8-1153-4B69-B9EF-CC99FEDE2D65";
+
+        helper("dom");
+      
+        //https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=16F236D8-1153-4B69-B9EF-CC99FEDE2D65&nisn=3205774073&npsn=69917000
+        $url = 'https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=' .$token. '&nisn=' .$nisn. '&npsn=' .$npsn;
+
+        $client = new \GuzzleHttp\Client(['verify' => false ]);
+        $req = $client->request('GET', $url);
+        $resp = $req->getBody();
+
+        if ($resp == null) {
+            print_json_error("Tidak berhasil mendapatkan data dapodik.");
+        }
+
+        $profil = json_decode($resp);
+        if (!is_array($profil)) {
+            return null;
+        }
+
+        $profil = (array) $profil[0];
+        return $profil;
+    }
+
     function get_profilsekolah_from_npsn($npsn) {
         helper("dom");
         $mhome = new \App\Models\Ppdb\Mhome();
