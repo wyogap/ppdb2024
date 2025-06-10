@@ -430,6 +430,7 @@
             if (field == null || field == '') return;
 
             let val = 0;
+            let txtval = '';
 
             if (!flagval) {
                 //start-editing -> store old value just in case
@@ -441,11 +442,14 @@
                     if (el.attr('type') == 'number') {
                         val = parseFloat(el.val());
                         if (isNaN(val)) val = 0;
+                        txtval = val.toLocaleString("id-ID", { maximumFractionDigits:"2" });
+
                         val = val.toFixed(2);
                         el.val(val);
                     }
                     else {
                         val = el.val();
+                        txtval = val;
                     }
 
                     //form data
@@ -459,7 +463,7 @@
                     //copy value if necessary
                     //lbl = elements.find("span[tcg-field='" +field+ "']");
                     lbl = $("span[tcg-field='" +field+ "']");
-                    lbl.html(val);
+                    lbl.html(txtval);
                 }
             }
         });

@@ -305,12 +305,8 @@
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    {if $flag_nilai_kelulusan|default: FALSE}
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 20px !important;">
-                            <tr>
-                                <td colspan="3"><b>Nilai Kelulusan</b></td>
-                            </tr>
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Rapor (0-100)</b></td>
                                 <td>:</td>
@@ -320,6 +316,7 @@
                                     <span id="nilai-rapor" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_semester'>{$profilsiswa.nilai_semester}</span>
                                 </td>
                             </tr>
+                            {if 1==0}
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah (0-100)</b></td>
                                 <td>:</td>
@@ -329,9 +326,9 @@
                                     <span id="nilai-kelulusan" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_kelulusan'>{$profilsiswa.nilai_kelulusan}</span>
                                </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
-                    {/if}
                     {if $flag_nilai_un|default: FALSE}
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
@@ -451,6 +448,7 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {if $flag_nilai_un|default: FALSE}
                             <tr id="row-dokumen-un" tcg-visible-tag='punya_nilai_un'>
                                 <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
                                 <td>:</td>
@@ -472,6 +470,7 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">

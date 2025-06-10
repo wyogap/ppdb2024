@@ -299,12 +299,8 @@
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    {if $flag_nilai_kelulusan|default: FALSE}
                     <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 20px !important;">
-                            <tr>
-                                <td colspan="3"><b>Nilai Kelulusan</b></td>
-                            </tr>
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Rapor (0-100)</b></td>
                                 <td>:</td>
@@ -316,6 +312,7 @@
                                     <span id="nilai-rapor" tcg-tag='nilai' tcg-field='nilai_semester' tcg-field-type='label'></span>
                                 </td>
                             </tr>
+                            {if 1==0}
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Ujian Sekolah (0-100)</b></td>
                                 <td>:</td>
@@ -327,9 +324,9 @@
                                     <span id="nilai-lulus" tcg-tag='nilai' tcg-field='nilai_kelulusan' tcg-field-type='label'></span>
                                </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
-                    {/if}
                     {if $flag_nilai_un|default: FALSE}
                     <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 0px !important;">

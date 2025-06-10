@@ -193,3 +193,5 @@ defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired
 
 defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 1);
 defined('__USE_CDN__')                      OR define('__USE_CDN__', 1);
+
+defined('BASE_URL') OR define('BASE_URL', ($_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');
