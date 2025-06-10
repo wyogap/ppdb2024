@@ -355,7 +355,7 @@ Class Mconfig
 
  		$builder = $this->ro->table('cfg_penerapan a');
         $builder->join("ref_jenjang b", "b.jenjang_id=a.jenjang_id and b.is_deleted=0", "INNER");
-		$builder->select('distinct b.jenjang_id, b.nama', false);
+		$builder->select('distinct b.jenjang_id, b.nama, b.urutan', false);
 		$builder->where(array('a.is_deleted'=>0,'a.tahun_ajaran_id'=>$tahun_ajaran_id));
         $builder->orderBy("b.urutan");
 
