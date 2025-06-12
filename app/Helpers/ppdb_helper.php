@@ -285,7 +285,7 @@ if ( ! function_exists('audit_siswa'))
                 $val = floatval($s['nilai']);
                 $totalskoring += $val;
             }
-            $pendaftaran[$k]['totalskoring'] = number_format($totalskoring,2,".","");
+            $pendaftaran[$k]['totalskoring'] = number_format($p['skor'],2,",","");
         }
 
         return $pendaftaran;

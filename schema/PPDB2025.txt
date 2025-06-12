@@ -1,13 +1,46 @@
-PPDB2025
-- update hitungskor SMP
-- create hitungskor SD
-- create prosesperingkat SD
-- add jalur zonasi dan afirmasi untuk SD
-- add jurnal untuk SD
-- add status ketua kelas untuk SMP
-- update skoring prestasi untuk SMP
-- add data afirmasi (daerah dan nasional)
-- update status afirmasi berdasarkan data afirmasi (bukan dari dapodik)
-- fix ppdb2025_generate_dokumen_pendukung (do we even need it?)
-- update daftar sekolah SD/SMP dan kuota nya
-- update perhitungan skor prestasi SMP (tidak ada nilai mutu sekolah)
+SPMB 2025
+x Add jalur zonasi, mutasi dan afirmasi untuk SD
+x Add jurnal perankingan untuk SD
+x Add perhitungan skor/peringkat untuk SD:
+  -> zonasi: berdasarkan desa domisili dan usia
+  -> afirmasi: berdasarkan desa domisili dan usia
+  -> mutase: berdasarkan usia
+x Add jurnal public (rekapitulasi hasil) untuk SD
+x Add skoring prestasi akademik untuk SMP
+x Add skoring pengalaman organisasi untuk SMP
+x Add data afirmasi (daerah dan nasional)
+x Update status afirmasi berdasarkan data afirmasi (bukan dari dapodik)
+x Update perhitungan skor/peringkat untuk SMP:
+  -> zonasi: tidak ada penalty luar daerah
+  -> prestasi: rata-rata nilai rapor + skor prestasi akademik sekolah + pengalaman organisasi/kejuaraan + hasil test khusus (tertulis dan wawancara)
+  -> afirmasi: berdasarkan data afirmasi. hanya untuk siswa dalam daerah.
+  -> mutasi: tidak ada penalty luar daerah
+x Tarik data sekolah
+x Tarik data siswa
+x Configure kuota sekolah
+x Configure jalur penerimaan SMP:
+  -> afirmasi berdasarkan data afirmasi (tidak ada input manual)
+  -> tetap didaftarkan secara otomatis di jalur prestasi
+  -> tetap pakai ring zonasi (perubahan Jarak ring?)
+  -> jalur khusus boarding school untuk SMPN 1 Kebumen
+  -> tidak ada jalur khusus swasta
+x Retest: api untuk cek siswa/sekolah dari dapodik di proses registrasi
+- Add notifikasi WA untuk status registrasi
+- Add notifikasi WA untuk reset password
+- Daftar panitia SPMB SMP
+- Daftar SMP swasta yang ikut SPMB
+x Configure GCP infrastructure with load balancer and autoscaling
+- Redirect DNS
+- Test load balancer and autoscaling
+
+Test admin sd: sdn2klirong
+Test admin smp: smpn1klirong@ppdb.go.id
+Test siswa: nisn: 3121349137, id: 28680
+
+nilai rapor - rata-rata 5 semester atau hanya kelas 6?
+dok pendukung untuk juara sekolah.
+TODO:
+x Kata Zonasi -> domisili
+- Buka akses untuk masukkan data afirmasi di profil siswa (yang belum masuk database terpadu)
+- Update perhitungan prestasi smp
+x Perlu update jarak ring domisili

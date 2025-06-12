@@ -299,10 +299,10 @@
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
+                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 20px !important;">
                             <tr>
-                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor (0-100)</b></td>
+                                <td style="width: 45%;"><b>Nilai Rata-rata Rapor 5 Semester (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <input class="form-control" id="nilai-rapor-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this)
@@ -328,7 +328,7 @@
                         </table>
                     </div>
                     {if $flag_nilai_un|default: FALSE}
-                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-6 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
+                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
@@ -412,24 +412,24 @@
                             <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
-                            <tr id="row-dokumen-kelas6">
-                                <td style="width: 45%;"><b>Rapor Kelas 6</b></td>
+                            <tr id="row-dokumen-rapor5semester">
+                                <td style="width: 45%;"><b>Rapor 5 Semester</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     {if !($flag_upload_dokumen)}
                                     Dicocokkan di sekolah tujuan
                                     {else}
-                                    <img id="dokumen-26" class="img-view-thumbnail" 
-                                            src="{(empty($dokumen[26])) ? '' : $dokumen[26]['thumbnail_path']}" 
-                                            img-path="{(empty($dokumen[26])) ? '' : $dokumen[26]['web_path']}" 
-                                            img-id="{(empty($dokumen[26])) ? '' : $dokumen[26]['dokumen_id']}" 
-                                            img-title="Rapor Kelas 6"
+                                    <img id="dokumen-27" class="img-view-thumbnail" 
+                                            src="{(empty($dokumen[27])) ? '' : $dokumen[27]['thumbnail_path']}" 
+                                            img-path="{(empty($dokumen[27])) ? '' : $dokumen[27]['web_path']}" 
+                                            img-id="{(empty($dokumen[27])) ? '' : $dokumen[27]['dokumen_id']}" 
+                                            img-title="Rapor 5 Semester"
                                             style="display:none; "/>  
                                     <span>
-                                    <input type="file" class="upload-file" tcg-doc-id="26" id="unggah-profil-26" hidden/>
-                                    <label for="unggah-profil-26" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                    <input type="file" class="upload-file" tcg-doc-id="27" id="unggah-profil-27" hidden/>
+                                    <label for="unggah-profil-27" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
                                     </span>
-                                    <div id="msg-dokumen-26" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    <div id="msg-dokumen-27" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
                                     {/if}
                                 </td>
                             </tr>
@@ -610,40 +610,14 @@
                             </tr>
                         </table>
                         {/if}
-                        {if $flag_bdt|default: FALSE}
-                        <table class="table table-striped" style="margin-bottom: 0px !important;">
-                            <tr>
-                                <td colspan="3">
-                                    <b>Masuk di dalam Basis Data Terpadu dalam kategori Keluarga Miskin? </b>
-                                    <select class="form-control input-default " id="bdt" name="bdt" 
-                                        tcg-tag='afirmasi' 
-                                        tcg-field='masuk_bdt' tcg-field-type='toggle' tcg-field-submit=1
-                                        tcg-edit-action='toggle' tcg-toggle-tag='bdt'>
-                                    <option value="0">Tidak</option>
-                                    <option value="1">YA</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr id="row-bdt" tcg-visible-tag='bdt'>
-                                <td style="width: 45%;"><b>Nomor PKH/KJS/BDT</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    <span><input class="form-control" id="nomor-bdt-input" type="text"
-                                        tcg-tag='afirmasi'
-                                        tcg-field='no_bdt' tcg-field-type='input' tcg-field-submit=1
-                                        style="display: none;"></input></span>
-                                    <span id="nomor-bdt" tcg-tag='afirmasi' tcg-field='no_bdt' tcg-field-type='label'></span>
-                                </td>
-                            </tr>
-                        </table>
-                        {/if}
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
                                     <b>Masuk di dalam Basis Data Terpadu untuk program Afirmasi? </b>
                                     <select class="form-control input-default" id="bdt" name="bdt"
                                         tcg-tag='afirmasi' 
-                                        tcg-field='masuk_bdt' tcg-field-type='toggle' tcg-field-submit=0>
+                                        tcg-field='masuk_bdt' tcg-field-type='toggle' tcg-field-submit=0
+                                        tcg-edit-action='toggle' tcg-toggle-tag='masuk_bdt'>
                                         <option value="0">Tidak</option>
                                         <option value="1">YA</option>
                                     </select>
@@ -653,6 +627,10 @@
                                 <td style="width: 45%;"><b>Sumber Data Afirmasi</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
+                                    <span><input class="form-control" id="nomor-bdt-input" type="text"
+                                        tcg-tag='afirmasi'
+                                        tcg-field='sumber_bdt' tcg-field-type='input' tcg-field-submit=1
+                                        style="display: none;"></input></span>
                                     <span id="sumber-bdt" tcg-tag='afirmasi' tcg-field='sumber_bdt' tcg-field-type='label'></span>
                                 </td>
                             </tr>
@@ -684,9 +662,8 @@
                                 </td>
                             </tr>
                             {/if}
-                            {if $flag_bdt|default: FALSE}
-                            <tr id="row-dokumen-bdt" tcg-visible-tag='bdt'>
-                                <td style="width: 45%;"><b>Kartu PKH / Kartu KJS / Surat Keterangan masuk BDT dari Desa/Kelurahan</b></td>
+                            <tr id="row-dokumen-bdt" tcg-visible-tag='masuk_bdt'>
+                                <td style="width: 45%;"><b>Surat Keterangan masuk BDT dari Desa/Kelurahan/Dinas Sosial</b></td>
                                 <td>:</td>
                                 <td>
                                     {if !($flag_upload_dokumen)}
@@ -700,13 +677,12 @@
                                                 style="display:none; "/>  
                                         <span>
                                         <input type="file" class="upload-file" tcg-doc-id="{$smarty.const.DOCID_SUKET_BDT}" id="unggah-profil-20" hidden/>
-                                        <label for="unggah-profil-20" class="btn btn-primary" tcg-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                        <label for="unggah-profil-20" class="btn btn-primary" tcg-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
                                         </span>
                                         <div id="msg-dokumen-20" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
                                     {/if}
                                 </td>
                             </tr>
-                            {/if}
                         </table>
                     </div>
                 </div>

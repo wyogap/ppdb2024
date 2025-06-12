@@ -26,8 +26,8 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => '34.50.70.195',
-        'username'     => 'root',
+        'hostname'     => 'localhost',
+        'username'     => 'ppdb',
         'password'     => 'c00l@dmin',
         'database'     => 'ppdb_2025',
         'DBDriver'     => 'MySQLi',
@@ -41,7 +41,7 @@ class Database extends Config
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],
-        'port'         => 3306,
+        'port'         => 3308,
         'numberNative' => false,
         'dateFormat'   => [
             'date'     => 'Y-m-d',
@@ -52,8 +52,8 @@ class Database extends Config
 
     public array $ro = [
         'DSN'          => '',
-        'hostname'     => '34.50.70.195',
-        'username'     => 'root',
+        'hostname'     => 'localhost',
+        'username'     => 'ppdb',
         'password'     => 'c00l@dmin',
         'database'     => 'ppdb_2025',
         'DBDriver'     => 'MySQLi',
@@ -67,7 +67,7 @@ class Database extends Config
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],
-        'port'         => 3306,
+        'port'         => 3308,
         'numberNative' => false,
         'dateFormat'   => [
             'date'     => 'Y-m-d',

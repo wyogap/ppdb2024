@@ -192,41 +192,43 @@ class Verifikasi extends PpdbController {
 
         //VERIFIKASI DATA
         do {
-            //only save changed data
             $updated = array();
             foreach($updatedprofil as $key => $val) {
-                if (!isset($siswa[$key])) continue;
+                //only save valid column
+                if (!array_key_exists($key, $siswa)) continue;
+                //only save changed data
+                if ($val == $siswa[$key]) continue;
+                //verified by system
+                if (substr($key,0,11)=="verifikasi_" && $siswa[$key]==4) continue;
 
                 //echo $val ." - ". $siswa[$key];
-                if ($val != $siswa[$key]) {
-                    if (substr($key,0,8)=="catatan_") {
-                        $updated[$key] = nohtml($updatedprofil[$key]);
-                        // //only update catatan if verifikasi != 2 (belum verifikasi/belum benar/eskalasi dinas)
-                        // $tag = substr($key,8, strlen($key)-8);
-                        // $verifikasi = (isset($updatedprofil['verifikasi_' .$tag]) ? $updatedprofil['verifikasi_' .$tag] : $siswa['verifikasi_' .$tag]);
-                        // if ($verifikasi != 1) {
-                        //     $updated[$key] = nohtml($updatedprofil[$key]);
-                        // }
-                    } 
-                    else if ($val == 1 && substr($key,0,11)=="verifikasi_") {
-                        //if verifikasi is set = 1 (sudah benar), reset catatan
-                        $updated[$key] = $updatedprofil[$key];
-                        $tag = substr($key,11, strlen($key)-11);
-                        $updated['catatan_' .$tag] = null;
+                if (substr($key,0,8)=="catatan_") {
+                    $updated[$key] = nohtml($updatedprofil[$key]);
+                    // //only update catatan if verifikasi != 2 (belum verifikasi/belum benar/eskalasi dinas)
+                    // $tag = substr($key,8, strlen($key)-8);
+                    // $verifikasi = (isset($updatedprofil['verifikasi_' .$tag]) ? $updatedprofil['verifikasi_' .$tag] : $siswa['verifikasi_' .$tag]);
+                    // if ($verifikasi != 1) {
+                    //     $updated[$key] = nohtml($updatedprofil[$key]);
+                    // }
+                } 
+                else if ($val == 1 && substr($key,0,11)=="verifikasi_") {
+                    //if verifikasi is set = 1 (sudah benar), reset catatan
+                    $updated[$key] = $updatedprofil[$key];
+                    $tag = substr($key,11, strlen($key)-11);
+                    $updated['catatan_' .$tag] = null;
+                }
+                else {
+                    //internally, decimal point is '.' not ','
+                    if ($key == 'nilai_semester' || $key == 'nilai_kelulusan' || $key == 'nilai_bin' || $key == 'nilai_mat' || $key == 'nilai_ipa') {
+                        $val = str_replace(',', '.', $val);
                     }
-                    else {
-                        //internally, decimal point is '.' not ','
-                        if ($key == 'nilai_semester' || $key == 'nilai_kelulusan' || $key == 'nilai_bin' || $key == 'nilai_mat' || $key == 'nilai_ipa') {
-                            $val = str_replace(',', '.', $val);
-                        }
-                        $updated[$key] = $val;
-                    }
+                    $updated[$key] = $val;
+                }
 
-                    //clear prestasi_skoring_id if punya_prestasi=0
-                    if ($key == 'punya_prestasi' && $updatedprofil[$key] == 0) {
-                        $updated[$key] = 0;
-                        $updated['prestasi_skoring_id'] = 0;
-                    }
+                //clear prestasi_skoring_id if punya_prestasi=0
+                if ($key == 'punya_prestasi' && $updatedprofil[$key] == 0) {
+                    $updated[$key] = 0;
+                    $updated['prestasi_skoring_id'] = 0;
                 }
             }
 
@@ -275,8 +277,8 @@ class Verifikasi extends PpdbController {
                 switch($tag) {
                     case "profil": $tagname = "Identitas Siswa"; break;
                     case "lokasi": $tagname = "Lokasi Rumah"; break;
-                    case "nilai": $tagname = "Nilai Kelulusan / Nilai Ujian Nasional"; break;
-                    case "prestasi": $tagname = "Data Prestasi"; break;
+                    case "nilai": $tagname = "Data Nilai/Prestasi Akademik"; break;
+                    case "prestasi": $tagname = "Data Pengalaman Organisasi/Kejuaraan"; break;
                     case "afirmasi": $tagname = "Data Afirmasi"; break;
                     case "inklusi": $tagname = "Data Kebutuhan Khusus"; break;
                     default: $tag;
@@ -331,10 +333,10 @@ class Verifikasi extends PpdbController {
 
                 $tagname = "";
                 switch($tag) {
-                    case "profil": $tagname = "Identitas Siswa"; break;
-                    case "lokasi": $tagname = "Lokasi Rumah"; break;
-                    case "nilai": $tagname = "Nilai Kelulusan / Nilai Ujian Nasional"; break;
-                    case "prestasi": $tagname = "Data Prestasi"; break;
+                    case "profil": $tagname = "Data Identitas Siswa"; break;
+                    case "lokasi": $tagname = "Data Lokasi Rumah"; break;
+                    case "nilai": $tagname = "Data Nilai/Prestasi Akademik"; break;
+                    case "prestasi": $tagname = "Data Pengalaman Organisasi/Kejuaraan"; break;
                     case "afirmasi": $tagname = "Data Afirmasi"; break;
                     case "inklusi": $tagname = "Data Kebutuhan Khusus"; break;
                     default: $tag;
@@ -418,6 +420,15 @@ class Verifikasi extends PpdbController {
 		if ($jml_verifikasi > 0) {
             //recalc status kelengkapan berkas
             $status_verifikasi = $this->Msiswa->tcg_update_kelengkapanberkas($peserta_didik_id);
+
+            //kalau sudah diverifikasi, kunci profi
+            if ($status_verifikasi == 1 && !$siswa['diverifikasi']) {
+                $this->Msiswa->tcg_kunci_profil($peserta_didik_id, 1);
+            }
+            else if ($siswa['diverifikasi']) {
+                //buka kunci
+                $this->Msiswa->tcg_kunci_profil($peserta_didik_id, 0);
+            }
 
             //riwayat verifikasi
             foreach ($message as $val) {

@@ -92,9 +92,19 @@
         // }
 
         //sisa slot pendaftaran
+        jumlahpendaftaran = jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
+        if (daftarpendaftaran != null) {
+            daftarpendaftaran.forEach(function(p) {
+                if (p['pendaftaran'] != 1)  return;
+                jumlahpendaftaran++;
+                if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
+                else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
+            });
+        }
+
         let slotumum=slotnegeri=slotswasta=0;
         if (maxpilihan == maxpilihanumum) {
-            slotumum = maxpilihanumum - daftarpendaftaran.length;
+            slotumum = maxpilihanumum - jumlahpendaftaran;
             $("#slot-umum").html(slotumum);
 
             el = $("#pendaftaran-notif");
@@ -110,15 +120,6 @@
             slotswasta = slotnegeri = slotumum;
         }
         else {
-            jumlahpendaftarannegeri = jumlahpendaftaranswasta = 0;
-            if (daftarpendaftaran != null) {
-                daftarpendaftaran.forEach(function(p) {
-                    if (p['pendaftaran'] != 1)  return;
-                    if (p['status_sekolah'] == 'N') jumlahpendaftarannegeri++;
-                    else if (p['status_sekolah'] == 'S') jumlahpendaftaranswasta++;
-                });
-            }
-
             slotnegeri = maxpilihannegeri - jumlahpendaftarannegeri;
             slotswasta = maxpilihanswasta - jumlahpendaftaranswasta;
             $("#slot-negeri").html(slotnegeri);

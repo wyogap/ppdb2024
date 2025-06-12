@@ -7,14 +7,14 @@
 	<meta name="keywords" content="" />
 	<meta name="author" content="" />
 	<meta name="robots" content="" />
-	<meta name="description" content="PPDB ONLINE {$nama_wilayah}" />
-	<meta property="og:title" content="PPDB ONLINE {$nama_wilayah}" />
-	<meta property="og:description" content="PPDB ONLINE {$nama_wilayah}" />
+	<meta name="description" content="{$app_name}" />
+	<meta property="og:title" content="{$app_name}" />
+	<meta property="og:description" content="{$app_name}" />
 	<meta property="og:image" content="{$base_url}assets/image/tutwuri.png" />
 	<meta name="format-detection" content="telephone=no">
 	
 	<!-- PAGE TITLE HERE -->
-    <title>PPDB ONLINE {$nama_wilayah}{if $page_title|default: FALSE} - {$page_title}{/if}</title>
+    <title>{$app_name}{if $page_title|default: FALSE} - {$page_title}{/if}</title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="{$base_url}assets/image/tutwuri.png" rel="shortcut icon">

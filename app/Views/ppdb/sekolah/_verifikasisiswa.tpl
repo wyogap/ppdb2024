@@ -42,7 +42,7 @@
 <script>
 
     var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi'];
-    var flags = ['nilai-un', 'prestasi', 'kip', 'bdt', 'inklusi'];
+    var flags = ['nilai-un', 'prestasi', 'kip', 'masuk_bdt', 'inklusi'];
     //var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
 
     var verifikasi = {};
@@ -236,9 +236,9 @@
             profilflag[toggletag] = value;
             
             //special case: afirmasi
-            if (toggletag == 'kip' || toggletag == 'bdt') {
+            if (toggletag == 'kip' || toggletag == 'masuk_bdt') {
                 elements = $("[tcg-visible-tag='afirmasi']");
-                if (!profilflag['kip'] && !profilflag['bdt']) {
+                if (!profilflag['kip'] && !profilflag['masuk_bdt']) {
                     elements.hide();
                 }
                 else {
@@ -254,48 +254,48 @@
             // }
         });
 
-        $(".btn-perbaikan").on("click", function(e) {
-            btn = $(this);
-            tag = btn.attr("tcg-tag");
+        // $(".btn-perbaikan").on("click", function(e) {
+        //     btn = $(this);
+        //     tag = btn.attr("tcg-tag");
 
-            //val: set to false to edit
-            flagval = false;
+        //     //val: set to false to edit
+        //     flagval = false;
 
-            //show input element
-            let elements = $("[tcg-tag='" +tag+ "']");
-            elements.each(function(idx) {
-                //action
-                el = $(this);
-                type = el.attr('tcg-field-type');
+        //     //show input element
+        //     let elements = $("[tcg-tag='" +tag+ "']");
+        //     elements.each(function(idx) {
+        //         //action
+        //         el = $(this);
+        //         type = el.attr('tcg-field-type');
 
-                if (type == 'input') el.show();
-                else if (type == 'label') el.hide();
-                else if (type == 'toggle')  el.attr('disabled', false);
+        //         if (type == 'input') el.show();
+        //         else if (type == 'label') el.hide();
+        //         else if (type == 'toggle')  el.attr('disabled', false);
  
-                //save default value in case we need to revert
-                if (el.is('input') || el.is('select')) {
-                    this.defaultValue = this.value;
-                }
-            });
+        //         //save default value in case we need to revert
+        //         if (el.is('input') || el.is('select')) {
+        //             this.defaultValue = this.value;
+        //         }
+        //     });
 
-            elements.filter(".btn-kembalikan").hide();
+        //     elements.filter(".btn-kembalikan").hide();
 
-            //show btn save
-            elements.filter(".btn-simpan").show();
-            elements.filter(".btn-batal").show();
+        //     //show btn save
+        //     elements.filter(".btn-simpan").show();
+        //     elements.filter(".btn-batal").show();
 
-            //hide btn perbaikan
-            btn.hide();
+        //     //hide btn perbaikan
+        //     btn.hide();
 
-            //special case
-            if (tag == 'lokasi') {
-                map_enable_edit = true;
-            }
+        //     //special case
+        //     if (tag == 'lokasi') {
+        //         map_enable_edit = true;
+        //     }
 
-            //disable the status flag
-            elements.filter(".status-verifikasi").attr("disabled", true);
+        //     //disable the status flag
+        //     elements.filter(".status-verifikasi").attr("disabled", true);
 
-        });
+        // });
 
         $(".btn-kembalikan").on("click", function(e) {
             btn = $(this);
@@ -653,8 +653,10 @@
         profilflag['nilai-un'] = parseInt(profil['punya_nilai_un']);
         profilflag['prestasi'] = parseInt(profil['punya_prestasi']);
         profilflag['kip'] = parseInt(profil['punya_kip']);
-        profilflag['bdt'] = parseInt(profil['masuk_bdt']);
+        profilflag['masuk_bdt'] = parseInt(profil['masuk_bdt']);
         profilflag['inklusi'] = profil['kebutuhan_khusus'] == 'Tidak ada' ? 0 : 1;
+
+        flag_provinsi = flag_kabupaten = flag_kecamatan = flag_desa = 0;
 
         //set dom field value
         keys.forEach(function(key) {
@@ -665,6 +667,7 @@
                 el = $(this);
                 type = el.attr('tcg-field-type');
                 if (type == 'input') {
+                    curval = el.val();
                     //if number, try to convert
                     if (el.attr('type') == 'number') {
                         value = parseFloat(value);
@@ -672,9 +675,30 @@
                         //save back for easier comparison
                         profil[key] = value;
                     }
-                    el.val(value);
-                    el.attr("defaultValue", value);
-                    el.trigger('change');
+                    //only set if it is a new value
+                    if (value != curval) {
+                        el.val(value);
+                        el.attr("defaultValue", value);
+                        if (key=='kode_provinsi') {
+                            //cascading code wilayah. trigger change later
+                            flag_provinsi = 1;
+                        }
+                        else if (key=='kode_kabupaten') {
+                            //cascading code wilayah. trigger change later
+                            flag_kabupaten = 1;
+                        } 
+                        else if (key=='kode_kecamatan') {
+                            //cascading code wilayah. trigger change later
+                            flag_kecamatan = 1;
+                        }
+                        else if (key=='kode_wilayah') {    
+                            //cascading code wilayah. trigger change later
+                            flag_desa = 1;
+                        }
+                        else {
+                            el.trigger('change');
+                        }
+                    }
                 }
                 else if (type == 'label') {
                     //use init-field for label
@@ -707,14 +731,23 @@
             });
         });
 
-        // //special case for select label
-        // $("[tcg-field='kode_provinsi'][tcg-field-type='label']").html(profil['provinsi']);
-        // $("[tcg-field='kode_kabupaten'][tcg-field-type='label']").html(profil['kabupaten']);
-        // $("[tcg-field='kode_kecamatan'][tcg-field-type='label']").html(profil['kecamatan']);
-        // $("[tcg-field='kode_wilayah'][tcg-field-type='label']").html(profil['desa_kelurahan']);
-
-        //trigger the changes
-        $("#kode_provinsi").trigger("change");
+        //special case for cascading kode_wilayah -> trigger from the top
+        if (flag_provinsi) {
+            el = $("#kode_provinsi");
+            el.trigger('change');
+        }
+        else if (flag_kabupaten) {
+            el = $("#kode_kabupaten");
+            el.trigger('change');
+        }
+        else if (flag_kecamatan) {
+            el = $("#kode_kecamatan");
+            el.trigger('change');
+        }
+        else if (flag_desa) {
+            el = $("#kode_wilayah");
+            el.trigger('change');
+        }
 
         //dokumen pendukung
         if (dokumen != null && dokumen.length > 0) {
@@ -782,7 +815,7 @@
 
         //special case: afirmasi
         elements = $("[tcg-visible-tag='afirmasi']");
-        if (!profilflag['kip'] && !profilflag['bdt']) {
+        if (!profilflag['kip'] && !profilflag['masuk_bdt']) {
             elements.hide();
         }
         else {
@@ -809,16 +842,22 @@
             buttons = elements.filter(".btn");
             buttons.hide();
 
+            //only show catatan ketika "belum benar"
             el = elements.filter("tr.catatan");
-            btn = elements.filter(".btn-perbaikan");
             if (value != 2) {
                 el.hide();
-                btn.hide();
             }
             else {
                 el.show();
-                btn.show();
             }
+
+            // btn = elements.filter(".btn-perbaikan");
+            // if (value != 2) {
+            //     btn.hide();
+            // }
+            // else {
+            //     btn.show();
+            // }
 
             btn = elements.filter(".btn-kembalikan");
             if (perbaikan[key]) {
@@ -972,6 +1011,9 @@
     function close_verifikasi() {
         $("#verifikasi").hide();
 
+        //enable status -> in case disabled by perbaikan data
+        $(".status-verifikasi").prop('disabled', false);
+
         tabs = $("#tabs");
         tabs.show();
 
@@ -983,13 +1025,37 @@
         else if (width < 1040) {
             header_offset = 100;
         }
-
+        
         $('html,body').animate({
             scrollTop: tabs.offset().top - header_offset
         }, 100);
     }
 
     function simpan_verifikasi() {
+        //check active perbaikan
+        perbaikan = 0;
+        elements = $(".status-verifikasi");
+        elements.each(function(idx) {
+            el = $(this);
+            tag = el.attr('tcg-tag');
+
+            if (el.val()==3) {
+                let card = $("#" +tag);
+
+                msg = "Perbaikan data " +tag.toUpperCase()+ " belum dikonfirmasi!";
+                toastr.info(msg);
+
+                card.removeClass("status-warning");
+                card.addClass("status-danger");
+                card.find(".accordion-header-text .status").html('*' +msg+ '*');
+                elements.filter(".catatan").addClass("border-red");
+
+                perbaikan = 1;
+            }
+        });
+
+        //kalau ada perbaikan, cancel
+        if (perbaikan)  return;
 
         updated = {};
         tosubmit = true;
@@ -1016,7 +1082,7 @@
                     if (isNaN(oldval)) oldval = 0;
                 }
 
-                console.log("tosubmit:" +tosubmit+ "; field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
+                //console.log("tosubmit:" +tosubmit+ "; field: " +field+ "; oldval: " +oldval+ "; newval: " +val);
 
                 //only get updated value
                 if (val != oldval) {

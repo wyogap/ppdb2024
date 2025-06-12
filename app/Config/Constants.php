@@ -117,10 +117,11 @@ defined('SQL_PILIHSEKOLAH_JENISPILIHAN')        OR define('SQL_PILIHSEKOLAH_JENI
 defined('SQL_UBAHPILIHAN_JENISPILIHAN')         OR define('SQL_UBAHPILIHAN_JENISPILIHAN', 'ppdb2025_ubahpilihan_jenispilihan');
 defined('SQL_SEBARAN_SEKOLAH')                  OR define('SQL_SEBARAN_SEKOLAH', 'ppdb2025_sebaransekolah');
 
-defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2025_ubah_kelengkapanberkas');     //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
+//defined('SQL_UBAH_KELENGKAPANBERKAS')       OR define('SQL_UBAH_KELENGKAPANBERKAS', 'ppdb2025_ubah_kelengkapanberkas');     //set status kelengkapan dengan nilai tertentu (lengkap, belum lengkap, belum verifikasi)
 defined('SQL_CEK_KELENGKAPANBERKAS')        OR define('SQL_CEK_KELENGKAPANBERKAS', 'ppdb2025_cek_kelengkapanberkas');   //cek dan update status kelengkapan berkas sesuai kelengkapan data pendukung
 //defined('SQL_BERKAS_PENDAFTARAN')           OR define('SQL_BERKAS_PENDAFTARAN', 'ppdb_berkas_pendaftaran');             //daftar berkas pendaftaran
 //defined('SQL_SIMPAN_DOKUMEN')               OR define('SQL_SIMPAN_DOKUMEN', 'ppdb2024_simpan_dokumen_pendukung');             //simpan berkas pendaftaran
+defined('SQL_GENERATE_DOK_PENDUKUNG')       OR define('SQL_GENERATE_DOK_PENDUKUNG', 'ppdb2025_generate_dokumen_pendukung');     //generate dok pendukung based on profil and pilihan pendaftaran
 
 defined('SQL_HAPUS_PENERIMAAN_SD')          OR define('SQL_HAPUS_PENERIMAAN_SD', 'ppdb2025_sd_hapus_pendaftaran');
 defined('SQL_PENERIMAAN_SD')                OR define('SQL_PENERIMAAN_SD', 'ppdb2025_sd_tambah_pendaftaran');
@@ -194,4 +195,8 @@ defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired
 defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 1);
 defined('__USE_CDN__')                      OR define('__USE_CDN__', 1);
 
-defined('BASE_URL') OR define('BASE_URL', ($_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');
+defined('BASE_URL')                         OR define('BASE_URL', 
+                                                (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) ? $_SERVER['HTTP_X_FORWARDED_PROTO'] ."://" 
+                                                    : ($_SERVER['SERVER_PORT'] == 443 ? 'https://' 
+                                                        : 'http://')) 
+                                                . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');

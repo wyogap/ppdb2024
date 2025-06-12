@@ -6,7 +6,7 @@
             parent.html(''); 
 
             //tidak ada pendaftaran aktif -> reenable edit of profil (buka kunci)
-            if (profildikunci) {
+            if (profildikunci && !diverifikasi) {
                 profildikunci = 0;
                 update_profile_layout();
             }

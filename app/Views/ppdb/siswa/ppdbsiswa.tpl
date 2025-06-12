@@ -403,6 +403,7 @@
 
     //pendaftaran
     var diterima = {$diterima|default: 0};
+    var diverifikasi = {$profilsiswa.diverifikasi|default: 0};
     var tutup_akses = {$tutup_akses|default: 0};
     var cek_waktusosialisasi = {$cek_waktusosialisasi};
     var cek_waktupendaftaran = {$cek_waktupendaftaran};
@@ -429,6 +430,11 @@
 
         //profil dikunci kalau ada pendaftaran
         if (daftarpendaftaran != null && daftarpendaftaran.length > 0) {
+            profildikunci = 1;
+        }
+
+        //profil dikunci kalau sudah diverifikasi
+        if (diverifikasi) {
             profildikunci = 1;
         }
 

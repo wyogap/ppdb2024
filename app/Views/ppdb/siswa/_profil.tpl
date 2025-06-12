@@ -52,7 +52,7 @@
             //special case: afirmasi
             if (toggletag == 'punya_kip' || toggletag == 'masuk_bdt') {
                 elements = $("[tcg-visible-tag='afirmasi']");
-                if (!profilflag['kip'] && !profilflag['bdt']) {
+                if (!profilflag['punya_kip'] && !profilflag['masuk_bdt']) {
                     elements.hide();
                 }
                 else {
@@ -457,7 +457,7 @@
 
                     //store the label
                     if (el.is('select')) {
-                        val = el.children(':selected').text();
+                        txtval = el.children(':selected').text();
                     }
 
                     //copy value if necessary

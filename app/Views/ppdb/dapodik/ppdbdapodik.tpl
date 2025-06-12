@@ -43,6 +43,44 @@
         color: #000 !important;
         background-color: yellow !important;
     }
+
+    table.dataTable.display tbody>tr.odd.selected>.sorting_1, table.dataTable.order-column.stripe tbody>tr.odd.selected>.sorting_1,
+    table.dataTable.display tbody>tr.odd.selected>.sorting_2, table.dataTable.order-column.stripe tbody>tr.odd.selected>.sorting_2,
+    table.dataTable.display tbody>tr.odd.selected>.sorting_3, table.dataTable.order-column.stripe tbody>tr.odd.selected>.sorting_3 {
+        background-color: inherit;
+    }
+
+    table.dataTable.display tbody>tr.even.selected>.sorting_1, table.dataTable.order-column.stripe tbody>tr.even.selected>.sorting_1,
+    table.dataTable.display tbody>tr.even.selected>.sorting_2, table.dataTable.order-column.stripe tbody>tr.even.selected>.sorting_2,
+    table.dataTable.display tbody>tr.even.selected>.sorting_3, table.dataTable.order-column.stripe tbody>tr.even.selected>.sorting_3 {
+        background-color: inherit;
+    }
+
+    [data-theme-version="dark"] .select2-container--default .select2-results>.select2-results__options
+    {
+        background-color: #ffffff;
+        border: 2px solid black;
+    }
+
+    [data-theme-version="dark"] .select2-search--dropdown  {
+        background: var(--bs-white);
+        border-left: 2px solid black;
+        border-right: 2px solid black;
+    }
+
+    [data-theme-version="dark"] .select2-search--dropdown.select2-dropdown--above {
+        border-top: 2px solid black;
+    }
+
+    [data-theme-version="dark"] .select2-search--dropdown.select2-dropdown--below {
+        border-bottom: 2px solid black;
+    }
+
+    [data-theme-version="dark"] .select2-search--dropdown .select2-search__field {
+        background: var(--bs-white);
+        border-color: var(--bs-dark);
+        color: #999;;
+    }
 </style>
 
 <body data-typography="cairo" data-theme-version="light" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 

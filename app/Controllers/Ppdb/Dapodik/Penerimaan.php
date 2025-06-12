@@ -573,7 +573,7 @@ class Penerimaan extends PpdbController {
             //sudah diterima
             $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_siswa($peserta_didik_id);
             if ($pendaftaran != null) {
-                print_json_error("Sudah diterima di " .$pendaftaran['sekolah']);
+                print_json_error("Sudah didaftarkan di " .$pendaftaran['sekolah']);
             }
 
             //batasan usia

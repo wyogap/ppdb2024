@@ -461,7 +461,7 @@ class Siswa extends PpdbController {
 
     //riwayat verifikasi (view only)
 	function riwayat() {
-        $peserta_didik_id = $this->session->get("user_id");
+        $peserta_didik_id = $this->session->get("peserta_didik_id");
         if ($this->session->get('peran_id') == 4) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null; 
         }
@@ -613,22 +613,32 @@ class Siswa extends PpdbController {
 
         $peserta_didik_id = $this->session->get('peserta_didik_id');
 
-        $keys = array_keys($data);
+        //$keys = array_keys($data);
 
-        $toggle = false;
-        $colname = "";
-        if (count($keys) == 1 && substr($keys[0],0,11) == "konfirmasi_") {
-            $toggle = true;
-            $colname = $keys[0];
+        // $toggle = false;
+        // $colname = "";
+        // if (count($keys) == 1 && substr($keys[0],0,11) == "konfirmasi_") {
+        //     $toggle = true;
+        //     $colname = $keys[0];
+        // }
+
+        // //oldvalues
+        // $oldvalues = null;
+        // if (!$toggle) {
+        //     $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+        //     if ($oldvalues == null) {
+        //         print_json_error("Invalid userid");
+        //     }
+        // }
+
+        $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
+        if ($oldvalues == null) {
+            print_json_error("Invalid userid");
         }
 
-        //oldvalues
-        $oldvalues = null;
-        if (!$toggle) {
-            $oldvalues = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);
-            if ($oldvalues == null) {
-                print_json_error("Invalid userid");
-            }
+        //kalau sudah diverifikasi, kunci profil
+        if ($oldvalues['diverifikasi']) {
+            print_json_error("Sudah diverifikasi di sekolah tujuan. Silahkan menghubungi sekolah tujuan untuk perbaikan data.");
         }
 
         //internally, decimal point is '.' not ','
@@ -641,17 +651,24 @@ class Siswa extends PpdbController {
 
         //only updated val
         $updated = array();
-        if ($toggle) {
-            $updated = $data;
-        }
-        else {
-            foreach ($data as $k => $v) {
-                $old = $oldvalues[$k];
-                if ($old != $v) {
-                    $updated[$k] = $v;
-                }
+        foreach ($data as $k => $v) {
+            $old = $oldvalues[$k];
+            if ($old != $v) {
+                $updated[$k] = $v;
             }
         }
+    
+        // if ($toggle) {
+        //     $updated = $data;
+        // }
+        // else {
+        //     foreach ($data as $k => $v) {
+        //         $old = $oldvalues[$k];
+        //         if ($old != $v) {
+        //             $updated[$k] = $v;
+        //         }
+        //     }
+        // }
 
         //reset verifikasi status if necessary
         $keys = array_keys($updated);
@@ -663,15 +680,19 @@ class Siswa extends PpdbController {
             $updated['verifikasi_lokasi'] = 0;
         }
         
-        if(array_search('konfirmasi_nilai', $keys) !== FALSE || array_search('nilai_semester', $keys) !== FALSE || array_search('nilai_kelulusan', $keys) !== FALSE || array_search('punya_nilai_un', $keys) !== FALSE || array_search('nilai_un', $keys) !== FALSE) {
+        if(array_search('konfirmasi_nilai', $keys) !== FALSE || array_search('nilai_semester', $keys) !== FALSE 
+                || array_search('nilai_kelulusan', $keys) !== FALSE || array_search('punya_nilai_un', $keys) !== FALSE 
+                || array_search('nilai_un', $keys) !== FALSE || array_search('akademik_skoring_id', $keys) !== FALSE) {
             $updated['verifikasi_nilai'] = 0;
         }
         
-        if(array_search('konfirmasi_prestasi', $keys) !== FALSE || array_search('punya_prestasi', $keys) !== FALSE || array_search('prestasi_skoring_id', $keys) !== FALSE) {
+        if(array_search('konfirmasi_prestasi', $keys) !== FALSE || array_search('punya_prestasi', $keys) !== FALSE 
+                || array_search('prestasi_skoring_id', $keys) !== FALSE) {
             $updated['verifikasi_prestasi'] = 0;
         }
         
-        if(array_search('konfirmasi_afirmasi', $keys) !== FALSE || array_search('punya_kip', $keys) !== FALSE || array_search('masuk_bdt', $keys) !== FALSE) {
+        if(array_search('konfirmasi_afirmasi', $keys) !== FALSE || array_search('punya_kip', $keys) !== FALSE 
+                || array_search('masuk_bdt', $keys) !== FALSE) {
             $updated['verifikasi_afirmasi'] = 0;
         }
         
@@ -679,18 +700,56 @@ class Siswa extends PpdbController {
             $updated['verifikasi_inklusi'] = 0;
         }
         
+        //catatan verifikasi
+        $message = array();
+        if (isset($updated['verifikasi_profil']) && $updated['verifikasi_profil'] != $oldvalues['verifikasi_profil']) {
+            $message[] = "Perubahan data Identitas Siswa."; 
+        }
+        if (isset($updated['verifikasi_lokasi']) && $updated['verifikasi_lokasi'] != $oldvalues['verifikasi_lokasi']) {
+            $message[] = "Perubahan data Lokasi."; 
+        }
+        if (isset($updated['verifikasi_nilai']) && $updated['verifikasi_nilai'] != $oldvalues['verifikasi_nilai']) {
+            $message[] = "Perubahan data Nilai/Prestasi Akademik."; 
+        }
+        if (isset($updated['verifikasi_prestasi']) && $updated['verifikasi_prestasi'] != $oldvalues['verifikasi_prestasi']) {
+            $message[] = "Perubahan data Pengalaman Organisasi/Kejuaraan."; 
+        }
+        if (isset($updated['verifikasi_afirmasi']) && $updated['verifikasi_afirmasi'] != $oldvalues['verifikasi_afirmasi']) {
+            $message[] = "Perubahan data Afirmasi."; 
+        }
+        if (isset($updated['verifikasi_inklusi']) && $updated['verifikasi_inklusi'] != $oldvalues['verifikasi_inklusi']) {
+            $message[] = "Perubahan data Inklusi."; 
+        }
+
+        if (count($message)>0) {
+            //recalc status kelengkapan berkas
+            //$status_verifikasi = $this->Msiswa->tcg_update_kelengkapanberkas($peserta_didik_id);
+            $status_verifikasi = 0;
+
+            //riwayat verifikasi
+            $catatan_verifikasi = "";
+            foreach ($message as $val) {
+                if ($catatan_verifikasi != "")  $catatan_verifikasi .= "<br>";
+                $catatan_verifikasi .= $val;
+            }
+            
+            //update riwayat verifikasi
+            $key = $this->Msiswa->tcg_tambah_riwayatverifikasi($peserta_didik_id, $status_verifikasi, $catatan_verifikasi);
+        }
+
         //update profil siswa
         $detail = $this->Msiswa->tcg_update_siswa($peserta_didik_id, $updated);
         if ($detail == null)
             print_json_error("Tidak berhasil mengubah data siswa.");
 
         //audit trail
-        if ($toggle) {
-            //audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
-        }
-        else {
-            audit_siswa($oldvalues, "UPDATE PROFIL", "Ubah data siswa", $keys, $updated, $oldvalues);
-        }
+        audit_siswa($oldvalues, "UPDATE PROFIL", "Ubah data siswa", $keys, $updated, $oldvalues);
+        // if ($toggle) {
+        //     //audit_siswa($peserta_didik_id, "UPDATE PROFIL", "Toggle status " .$colname, $colname, $data[$colname], null);
+        // }
+        // else {
+        //     audit_siswa($oldvalues, "UPDATE PROFIL", "Ubah data siswa", $keys, $updated, $oldvalues);
+        // }
 
         print_json_output($detail);
     }
