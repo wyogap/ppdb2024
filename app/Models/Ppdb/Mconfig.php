@@ -390,12 +390,13 @@ Class Mconfig
         }
 
         //Semua tahapan (semua putaran)!!!
-		$query = "select a.putaran, c.nama as nama_putaran, a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai 
-				  from cfg_waktu_pelaksanaan a
-				  join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
-                  join cfg_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
-				  where a.tahun_ajaran_id=? and a.putaran=? and a.is_deleted=0
-				  order by a.putaran, b.urutan, a.tahapan_id";
+		$query = "select a.putaran, c.nama as nama_putaran, a.jenjang_id, d.nama as jenjang, a.tahapan_id, b.nama as tahapan, a.tanggal_mulai, a.tanggal_selesai 
+                    from cfg_waktu_pelaksanaan a
+                    join ref_tahapan b on a.tahapan_id=b.tahapan_id and b.is_deleted=0
+                    join cfg_putaran c on c.putaran_id=a.putaran and c.is_deleted=0
+                    left join ref_jenjang d on d.jenjang_id=a.jenjang_id
+                    where a.tahun_ajaran_id=2025 and a.putaran=1 and a.is_deleted=0
+                    order by a.putaran, d.urutan, b.urutan, a.tahapan_id";
 
 		return $this->ro->query($query, array($tahun_ajaran_id, $putaran))->getResultArray();
 	}

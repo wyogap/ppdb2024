@@ -7,6 +7,7 @@ use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mhome;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
 use App\Models\Ppdb\Siswa\Mprofilsiswa;
+use App\Models\Core\Crud\Mpermission;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -380,6 +381,14 @@ class Auth extends AuthController
     }
 
     function resetpassword() {
+        //check for admin's reset password
+        $data = $this->request->getGetPost('data');
+        $mpermission = new Mpermission();
+        if (!empty($data) && $mpermission->is_admin()) {
+            parent::resetpassword();
+            return;
+        }
+
         //TODO
         $code = $this->request->getGetPost('code');
         $pwd1 = $this->request->getGetPost('pwd1');
