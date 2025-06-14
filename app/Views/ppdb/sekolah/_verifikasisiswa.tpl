@@ -7,8 +7,18 @@
             <td><span id="row-span-dokumen-{{daftar_kelengkapan_id}}"><i class="glyphicon glyphicon-edit"></i> </span><b>{{nama}}</span></b></td>
             <td>:</td>
             <td style="width: 50%;">
-                {{#is_tambahan}}
-                Dicocokkan di sekolah tujuan
+                <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input primary dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-1" value="1" {{#verifikasi1}}checked{{/verifikasi1}}>
+                    <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-1" style="margin-bottom: 0px;">SUDAH Benar</label>
+                </div>
+                <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input danger dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-2" value="2" {{#verifikasi2}}checked{{/verifikasi2}}>
+                    <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-2" style="margin-bottom: 0px;">BELUM Benar</label>
+                </div>
+                <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input gray dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-3" value="3" {{#verifikasi3}}checked{{/verifikasi3}}>
+                    <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-3" style="margin-bottom: 0px;">Tidak Ada</label>
+                </div>
                 {{#flag_upload_dokumen}}
                     <img id="dokumen-{{daftar_kelengkapan_id}}" class="img-view-thumbnail" tcg-doc-id="{{daftar_kelengkapan_id}}"
                             src="{{thumbnail_path}}" 
@@ -20,11 +30,7 @@
                         data-editor-field="dokumen_{{daftar_kelengkapan_id}}" data-editor-value="{{dokumen_id}}" >Unggah</button>
                     <div id="msg-dokumen-{{daftar_kelengkapan_id}}" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
                 {{/flag_upload_dokumen}}
-                {{/is_tambahan}}
-                {{^is_tambahan}}
-                {{status}}
-                {{/is_tambahan}}
-            </td>
+             </td>
         </tr>
         {{/dokumen}}
     </table>
@@ -42,7 +48,7 @@
 <script>
 
     var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi'];
-    var flags = ['nilai-un', 'prestasi', 'kip', 'masuk_bdt', 'inklusi'];
+    var flags = ['nilai-un', 'punya_akademik', 'punya_organisasi', 'punya_prestasi', 'kip', 'masuk_bdt', 'inklusi'];
     //var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
 
     var verifikasi = {};
@@ -627,6 +633,11 @@
 				}
 			});
 		});
+
+        $(".dok-pendukung").on("change", function(e) {
+            //TODO: check status all dok-pendukung and update the card colour accordingly
+        });
+
 
     });
 

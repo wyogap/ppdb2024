@@ -127,12 +127,15 @@ class Verifikasi extends PpdbController {
             }
             else if ($v['verifikasi'] == 1) {
                 $dokumenpendukung[ $k ]['status'] = "Sudah BENAR";
+                $dokumenpendukung[ $k ]['verifikasi1'] = 1;
             }
             else if ($v['verifikasi'] == 2) {
                 $dokumenpendukung[ $k ]['status'] = "BELUM Benar";
+                $dokumenpendukung[ $k ]['verifikasi2'] = 1;
             }
             else if ($v['verifikasi'] == 3) {
                 $dokumenpendukung[ $k ]['status'] = "Tidak Ada";
+                $dokumenpendukung[ $k ]['verifikasi3'] = 1;
             }
             //unfortunately moustache treat 0 as true, so we need to convert it to boolean
             $dokumenpendukung[ $k ]['is_tambahan'] = $v['tambahan'] ? true : false;

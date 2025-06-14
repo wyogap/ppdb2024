@@ -96,6 +96,21 @@
         opacity: 1;
     }
 
+    .form-check-input.danger:checked {
+        background-color: var(--bs-danger);
+        border-color: var(--bs-danger);
+    }
+
+    .form-check-input.primary:checked {
+        background-color: var(--primary);;
+        border-color: var(--primary);;
+    }
+
+    .form-check-input.gray:checked {
+        background-color: var(--bs-dark);;
+        border-color: var(--bs-dark);;
+    }
+
     @media only screen and (max-width: 768px) {
         .x-label {
             margin-bottom: 8px;
