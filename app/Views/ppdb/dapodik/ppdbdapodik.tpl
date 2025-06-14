@@ -81,6 +81,12 @@
         border-color: var(--bs-dark);
         color: #999;;
     }
+        
+    [data-theme-version="light"] .form-control:disabled, .form-control[readonly] {
+        background: var(--bs-light);
+        opacity: 1;
+    }
+
 </style>
 
 <body data-typography="cairo" data-theme-version="light" data-sidebar-style="compact" data-layout="horizontal" data-nav-headerbg="color_1" 
@@ -149,6 +155,9 @@
                                         <button onclick=ganti_password() class="dropdown-item ai-icon">
                                             <i class="fas fa-user"></i> <span class="ms-2">Ganti PIN/Password </span>
                                         </button>
+                                        <a href="{$site_url}ppdb/dapodik/profil" class="dropdown-item ai-icon">
+                                            <i class="fas fa-user"></i> <span class="ms-2">Profil Pengguna </span>
+                                        </a>
                                         <a href="{$site_url}auth/logout" class="dropdown-item ai-icon">
                                             <i class="fas fa-sign-out-alt"></i> <span class="ms-2">Logout </span>
                                         </a>

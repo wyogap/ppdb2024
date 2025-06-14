@@ -253,11 +253,18 @@
 	
 	var handleshowPass = function(){
 		jQuery('.show-pass').on('click',function(){
-			jQuery(this).toggleClass('active');
-			if(jQuery('#dlab-password').attr('type') == 'password'){
-				jQuery('#dlab-password').attr('type','text');
-			}else if(jQuery('#dlab-password').attr('type') == 'text'){
-				jQuery('#dlab-password').attr('type','password');
+            dom = jQuery(this);
+            target = dom.attr("target");
+            if (target===undefined || target=='') {
+                target = "dlab-password";
+            }
+            targetdom = jQuery("#" +target);
+
+			dom.toggleClass('active');
+			if(targetdom.attr('type') == 'password'){
+				targetdom.attr('type','text');
+			}else if(targetdom.attr('type') == 'text'){
+				targetdom.attr('type','password');
 			}
 		});
 	}

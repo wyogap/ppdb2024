@@ -151,9 +151,9 @@ class Mauth
 
         //hash password
         //Using the PASSWORD_BCRYPT as the algorithm, will result in the password parameter being truncated to a maximum length of 72 bytes.
-        $valuepair = array(
+        $valuepair = [
             'password' => password_hash($password, PASSWORD_BCRYPT)
-        );
+        ];
 
         //set additional values
         if ($additionalValues != null) {
@@ -176,7 +176,7 @@ class Mauth
         return 0;
     }
 
-    function profile($user_id)
+    function get_profile($user_id)
     {
         $builder = $this->db->table('dbo_users as Users');
         $builder->select('Users.*, Roles.role, Roles.page_role');
@@ -199,7 +199,131 @@ class Mauth
  
         return $user;
     }
+
+    function get_profile_username_or_email($username, $email)
+    {
+        $builder = $this->db->table('dbo_users as Users');
+        $builder->select('Users.*, Roles.role, Roles.page_role');
+        $builder->join('dbo_roles as Roles','Roles.role_id = Users.role_id');
+        $builder->where('Users.is_deleted', 0);
+        $builder->groupStart();
+        $builder->where('Users.user_name', $username);
+        $builder->orWhere('Users.email', $email);
+        $builder->groupEnd();
+        $query = $builder->get();
+        if ($query->getNumRows()>1) return null;
+
+        $user = $query->getResultArray();
+        if ($user == null)  return null;
+ 
+        $user = $user[0];
+        if ($user != null) {
+            unset($user['password']);
+            unset($user['created_on']);
+            unset($user['created_by']);
+            unset($user['updated_on']);
+            unset($user['updated_by']);
+            unset($user['is_deleted']);
+        }
+ 
+        return $user;
+    }
+
+    function has_resetcode($user_id) {
+        $builder = $this->db->table("dbo_reset_password");
+        $builder->select("activation_id");
+        $builder->where('user_id', $user_id);
+        $builder->where('expired_date>', date('Y/m/d H:i:s'));
+        $builder->where('is_deleted=0');
+
+        // $sql = $builder->getCompiledSelect();
+        // echo "SQL:" .$sql; exit;
+
+        $query = $builder->get();
+        if (!$query) return false;
+
+        return true;
+    }
+     
+    function check_resetcode($user_id, $code) {
+        $builder = $this->db->table("dbo_reset_password");
+        $builder->select("user_id");
+        $builder->where('activation_id', $code);
+        $builder->where('user_id', $user_id);
+        $builder->where('expired_date>', date('Y/m/d H:i:s'));
+        $builder->where('is_deleted=0');
+        $query = $builder->get();
+        if (!$query || $query->getNumRows()>1) return null;
+
+        $result = $query->getRowArray();
+        if (!$result) return null;
+
+        return $result['user_id'];
+    }
+
+    function generate_resetcode($user_id) {
+        $code = $this->generate_randomstring(6);
+
+        //disable existing code for this user
+        $sql = "update dbo_reset_password set is_deleted=1 where user_id=?";
+        $this->db->query($sql, array($user_id));
+
+        //create new entry
+        $valuepair = array();
+        $valuepair['user_id'] = $user_id;
+        $valuepair['activation_id'] = $code;
+
+        //expired in 1 hour
+        $timestamp = time() + 60*60;
+        $valuepair['expired_date'] = date('Y/m/d H:i:s', $timestamp);
+
+        $builder = $this->db->table("dbo_reset_password");
+        $result = $builder->insert($valuepair);
+        if (!$result)   return null;
+
+        return $code;
+    }
+
+    private function generate_randomstring($length = 6) {
+        $characters = '0123456789bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ';
+        $len = strlen($characters);
+        $str = '';
     
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $characters[random_int(0, $len - 1)];
+        }
+    
+        return $str;
+    }    
+
+    function disable_resetcode($userid, $code) {
+        $builder = $this->db->table("dbo_reset_password");
+        $valuepair = [
+            'is_deleted' => 1
+        ];
+        $filter = [
+            'user_id' => $userid,
+            'activation_id' => $code    
+        ];
+
+        $builder->where('user_id', $userid);
+        $builder->where('activation_id', $code);
+        $builder->update($valuepair);
+    }
+
+    function update_profile($userid, $data) {
+        unset($data['password']);
+        unset($data['user_id']);
+        unset($data['user_name']);
+
+        $builder = $this->db->table("dbo_users");
+
+        $builder->where('user_id', $userid);
+        $status = $builder->update($data);
+        if (!$status)   return null;
+        
+        return $this->get_profile($userid);
+    }
 }
 
 ?>

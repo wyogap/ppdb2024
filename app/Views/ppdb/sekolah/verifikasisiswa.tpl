@@ -412,6 +412,11 @@
                             <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='' docid=$smarty.const.DOCID_RAPOR_5SEMESTER 
+                                label='Rapor 5 Semester' dok=null}
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='' docid=$smarty.const.DOCID_IJAZAH_SKL 
+                                label='Surat Keterangan Lulus' dok=null}
+                            <!--
                             <tr id="row-dokumen-rapor5semester">
                                 <td style="width: 45%;"><b>Rapor 5 Semester</b></td>
                                 <td>:</td>
@@ -454,6 +459,7 @@
                                     {/if}
                                 </td>
                             </tr>
+                            -->
                             {if $flag_nilai_un|default: FALSE}
                             <tr id="row-dokumen-un" tcg-visible-tag='nilai-un'>
                                 <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
@@ -477,6 +483,8 @@
                                 </td>
                             </tr>
                             {/if}
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='punya_akademik' docid=$smarty.const.DOCID_AKADEMIK 
+                                label='Dokumen Pendukung Prestasi Akademik' dok=null}
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -500,6 +508,31 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
                             <tr>
+                                <td colspan="3" tcg-tag='prestasi' tcg-field-type='input'>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Pengalaman Organisasi :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                        <select class="form-control" 
+                                                tcg-tag='prestasi' tcg-field='organisasi_skoring_id' tcg-field-type='input' tcg-field-submit=1 style="display: none;"
+                                                tcg-edit-action='toggle' tcg-toggle-tag='punya_organisasi'>
+                                            <option value="0">Tidak ada</option>
+                                            {foreach $daftarskoring_organisasi as $skor}
+                                            <option value="{$skor.value}">{$skor.label}</option>
+                                            {/foreach}
+                                        </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 45%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                    <b>Pengalaman Organisasi</b>
+                                </td>
+                                <td tcg-tag='prestasi' tcg-field-type='label'>:</td>
+                                <td style="width: 50%;" tcg-tag='prestasi' tcg-field-type='label'>
+                                <span tcg-tag='prestasi' tcg-field='organisasi_skoring_id' tcg-field-type='label' tcg-init-field='organisasi_skoring_label'></span>
+                                </td>
+                            </tr>
+                            <!--
+                            <tr>
                                 <td colspan="3">
                                     <b>Punya pengalaman organisasi/kejuaraan? </b>
                                     <select class="form-control input-default " id="prestasi-akademis" name="prestasi-akademis" 
@@ -511,16 +544,18 @@
                                     </select>
                                 </td>
                             </tr>
+                            -->
                             <!-- tcg-visible-tag must be in different level from tcg-input-tag -->
                             <!-- tcg-visible-tag will be toggled by profilflag (punya_prestasi) -->
                             <!-- tcg-input-tag will be toggled by status konfirmasi -->
-                            <tr tcg-visible-tag='prestasi'>
+                            <tr>
                                 <td colspan="3" tcg-tag='prestasi' tcg-field-type='input'>
                                     <div class="row">
                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Pengalaman Organisasi/Kejuaraan :</b></div>
                                         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                                         <select class="form-control" 
-                                        tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='input' tcg-field-submit=1 style="display: none;">
+                                                tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='input' tcg-field-submit=1 style="display: none;"
+                                                tcg-edit-action='toggle' tcg-toggle-tag='punya_prestasi'>
                                             <option value="0">Tidak ada</option>
                                             {foreach $daftarskoring_prestasi as $skor}
                                             <option value="{$skor.value}">{$skor.label}</option>
@@ -537,7 +572,7 @@
                                 <span tcg-tag='prestasi' tcg-field='prestasi_skoring_id' tcg-field-type='label' tcg-init-field='prestasi_skoring_label'></span>
                                 </td>
                             </tr>
-                            <tr tcg-visible-tag='prestasi'>
+                            <tr tcg-visible-tag='punya_prestasi'>
                                 <td colspan="3" tcg-tag='prestasi' tcg-field-type='input'>
                                     <div class="row">
                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Beri Uraian Tentang Prestasi Tersebut :</b></div>
@@ -562,7 +597,9 @@
                             <tr id="row-dokumen-header">
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
-                            {include file="./_verifikasisiswa_dokumen.tpl" tag='prestasi' visible_tag='' docid=$smarty.const.DOCID_PRESTASI 
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='prestasi' visible_tag='punya_organisasi' docid=$smarty.const.DOCID_ORGANISASI 
+                                label='Dokumen Pendukung Pengalaman Organisasi' dok=null}
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='prestasi' visible_tag='punya_prestasi' docid=$smarty.const.DOCID_PRESTASI 
                                 label='Bukti Pendukung Prestasi yang Dilegalisir' dok=null}
                         </table>
                     </div>

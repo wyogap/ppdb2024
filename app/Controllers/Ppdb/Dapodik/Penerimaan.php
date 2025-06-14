@@ -38,26 +38,9 @@ class Penerimaan extends PpdbController {
 	{
         $sekolah_id = $this->session->get("sekolah_id");
 
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-        if (empty($profil) || !$profil['ikut_ppdb']) {
-            return $this->notauthorized();
-        }
-        $data['profilsekolah'] = $profil;
-
-        $jenjang_id=JENJANGID_SMP;
-        $nama_jenjang='SMP';
-        if ($profil['bentuk'] == 'SD' || $profil['bentuk'] == 'MI') {
-            $jenjang_id=JENJANGID_SD;
-            $nama_jenjang='SD';
-        }
-        else if ($profil['bentuk'] == 'TK') {
-            $jenjang_id=JENJANGID_TK;
-            $nama_jenjang='TK';
-        }
-        $this->session->set("jenjang_aktif", $jenjang_id);
-        $this->session->set("nama_jenjang_aktif", $nama_jenjang);
-
-        //var_dump($jenjang_id); exit;
+        $data['profilsekolah'] = $this->session->get("profilsekolah");
+        $jenjang_id=$this->session->get("jenjang_aktif");
+        //$nama_jenjang=$this->session->get("nama_jenjang_aktif");
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);

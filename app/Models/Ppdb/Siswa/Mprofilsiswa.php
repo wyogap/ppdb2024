@@ -81,19 +81,22 @@ Class Mprofilsiswa
         if (!empty($values['punya_kip'])            /* dok kip */
                 || !empty($values['masuk_bdt'])     /* dok bdt/surat pengantar dari dinas terkait */
                 || !empty($values['punya_nilai_un'])        /* dok hasil un */
-                || !empty($values['akademik_skoring_id'])   /* rapor atau surat pengantar dari sekolah */
-                || !empty($values['punya_prestasi']) || !empty($values['prestasi_skoring_id'])  /* piagam yang dilegalisir */
-                || !empty($values['kebutuhan_khusus'])      /* pengantar dari psikolog/rsud */
+                || !empty($values['nilai_semester'])        /* rapor 5 semester */
+                || !empty($values['akademik_skoring_id'])   /* surat keterangan dari sekolah */
+                || !empty($values['prestasi_skoring_id'])   /* piagam yang dilegalisir */
+                || !empty($values['organisasi_skoring_id'])     /* surat keterangan dari sekolah */
+                || !empty($values['kebutuhan_khusus'])          /* pengantar dari psikolog/rsud */
         ) {
             //generate/update dokumen pendukung
-            $sql = "call " .SQL_GENERATE_DOK_PENDUKUNG. " (?, ?)";
-            $this->db->query($sql, array( $peserta_didik_id, $this->session->get('user_id') ));
+            $upload_dok = $this->session->get('upload_dokumen');
+            if (!$upload_dok) {
+                $sql = "call " .SQL_GENERATE_DOK_PENDUKUNG. " (?, ?)";
+                $this->db->query($sql, array( $peserta_didik_id, $this->session->get('user_id') ));
+            }
 
             //update kelengkapan berkas
-            if(empty($pendaftaran)) {
-                $sql = "select pendaftaran_id from tcg_pendaftaran where is_deleted=0 and cabut_berkas=0 and peserta_didik_id=?";
-                $pendaftaran = $this->db->query($sql, array($peserta_didik_id))->getResultArray();
-            }
+            $sql = "select pendaftaran_id from tcg_pendaftaran where is_deleted=0 and cabut_berkas=0 and peserta_didik_id=?";
+            $pendaftaran = $this->db->query($sql, array($peserta_didik_id))->getResultArray();
 
             if (!empty($pendaftaran)) {
                 $sql = "call " .SQL_CEK_KELENGKAPANBERKAS. " (?, ?)";
@@ -106,8 +109,9 @@ Class Mprofilsiswa
                 || !empty($values['kode_wilayah'])      /* penalty luar daerah */
                 || !empty($values['tanggal_lahir'])     /* skor usia */
                 || !empty($values['nilai_semester']) || !empty($values['nilai_kelulusan']) || !empty($values['nilai_un'])  /* skor prestas - nilai */
-                || !empty($values['akademik_skoring_id'])   /* skor prestasi - akademik di sekolah */
-                || !empty($values['prestasi_skoring_id'])   /* skor prestasi - organisasi dan kejuaraan */
+                || !empty($values['akademik_skoring_id'])       /* skor prestasi - akademik di sekolah */
+                || !empty($values['prestasi_skoring_id'])       /* skor prestasi - kejuaraan */
+                || !empty($values['organisasi_skoring_id'])     /* skor prestasi - organisasi  */
         ) {
             if(empty($pendaftaran)) {
                 $sql = "select pendaftaran_id from tcg_pendaftaran where is_deleted=0 and cabut_berkas=0 and peserta_didik_id=?";
@@ -147,8 +151,12 @@ Class Mprofilsiswa
         $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
         $builder->select("coalesce(a.nilai_kelulusan,0) as nilai_kelulusan, coalesce(a.nilai_semester,0) as nilai_semester, 
                             a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");
-        $builder->select("coalesce(a.punya_prestasi,0) as punya_prestasi, a.prestasi_skoring_id, a.uraian_prestasi, coalesce(g.nama,'Tidak ada') as prestasi_skoring_label");
-        $builder->select("a.akademik_skoring_id, coalesce(h.nama,'Tidak ada') as akademik_skoring_label");
+        $builder->select("coalesce(g.skoring_id,0) as prestasi_skoring_id, a.uraian_prestasi, coalesce(g.nama,'Tidak ada') as prestasi_skoring_label");
+        $builder->select("coalesce(h.skoring_id,0) as akademik_skoring_id, coalesce(h.nama,'Tidak ada') as akademik_skoring_label");
+        $builder->select("coalesce(j.skoring_id,0) as organisasi_skoring_id, coalesce(j.nama,'Tidak ada') as organisasi_skoring_label");
+        $builder->select("case when coalesce(g.skoring_id,0)=0 then 0 else 1 end as punya_prestasi");
+        $builder->select("case when coalesce(h.skoring_id,0)=0 then 0 else 1 end as punya_akademik");
+        $builder->select("case when coalesce(j.skoring_id,0)=0 then 0 else 1 end as punya_organisasi");
         $builder->select("'' as kode_padukuhan, a.nama_dusun AS padukuhan, a.nama_dusun,
                             c.kode_wilayah_desa as kode_desa, coalesce(c.nama_desa,a.desa_kelurahan) AS desa_kelurahan,
 		                    c.kode_wilayah_kec as kode_kecamatan,c.nama_kec AS kecamatan,
@@ -170,6 +178,7 @@ Class Mprofilsiswa
 		$builder->join('ref_daftar_skoring g','g.skoring_id = a.prestasi_skoring_id and g.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_daftar_skoring h','h.skoring_id = a.akademik_skoring_id and h.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah i','i.sekolah_id = a.lokasi_berkas','LEFT OUTER');
+		$builder->join('ref_daftar_skoring j','j.skoring_id = a.organisasi_skoring_id and j.is_deleted=0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
         $profil = $builder->get()->getRowArray();
@@ -997,10 +1006,10 @@ Class Mprofilsiswa
 		$builder->join('ref_daftar_kelengkapan c','c.daftar_kelengkapan_id = a.daftar_kelengkapan_id AND c.is_deleted=0');
 		$builder->join('tcg_dokumen_pendukung d','d.dokumen_id = a.dokumen_id AND d.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0));
-		$builder->orderBy('c.daftar_kelengkapan_id');
+		$builder->orderBy('c.urutan');
 
         // $sql = $builder->getCompiledSelect();
-        // echo $sql;
+        // echo $sql; exit;
 
 		return $builder->get()->getResultArray();
 	}
@@ -1284,6 +1293,112 @@ Class Mprofilsiswa
 
         //audit trail
         $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, null);
+    }
+
+    function tcg_generate_dok_pendukung($siswa) {
+        //dok wajib
+        $sql = "insert into tcg_dokumen_pendukung (
+                    peserta_didik_id, daftar_kelengkapan_id, filename, berkas_fisik
+                )
+                select 
+                    x.peserta_didik_id, a.daftar_kelengkapan_id, 'no-upload', a.dokumen_fisik
+                from (
+                    select ? as peserta_didik_id
+                ) x
+                join ref_daftar_kelengkapan a on 1=1 and a.wajib=1 and a.is_deleted=0
+                left join tcg_dokumen_pendukung b on b.peserta_didik_id=x.peserta_didik_id and b.daftar_kelengkapan_id=a.daftar_kelengkapan_id
+                    and b.is_deleted=0
+                where b.daftar_kelengkapan_id is null;
+        ";
+        $this->db->query($sql, array($siswa['peserta_didik_id']));
+
+        // DOCID_RAPOR_5SEMESTER
+        if (!empty($siswa['nilai_semester'])) {
+            //add nilai rapor 5 semester
+            $sql = "";
+        }
+        else {
+
+        }
+
+        // DOCID_HASIL_UN
+        if (!empty($siswa['punya_nilai_un'])) {
+            //add skhun
+        }
+        else {
+
+        }
+
+        // DOCID_AKADEMIK
+        if (!empty($siswa['akademik_skoring_id'])) {
+            //add prestasi akademik
+        }
+        else {
+
+        }
+
+        // DOCID_ORGANISASI
+        if (!empty($siswa['organisasi_skoring_id'])) {
+            //add pengalaman organisasi
+        }
+        else {
+
+        }
+
+        // DOCID_PRESTASI
+        if (!empty($siswa['prestasi_skoring_id'])) {
+            //add prestasi kejuaraan
+        }
+        else {
+
+        }
+
+        // DOCID_SUKET_BDT
+        if (!empty($siswa['masuk_bdt'])) {
+            //add bukti bdt
+        }
+        else {
+
+        }
+
+        // DOCID_SUKET_INKLUSI
+        if (!empty($siswa['kebutuhan_khusus']) && strtoupper($siswa['kebutuhan_khusus']) != 'TIDAK ADA') {
+            //add bukti kebutuhan khusus
+        }
+        else {
+
+        }
+
+        // // DOK WAJIB UNTUK JALUR PENDAFTARAN
+        // $sql = "insert into tcg_dokumen_pendukung (
+        //             peserta_didik_id, daftar_kelengkapan_id, filename, berkas_fisik, tambahan
+        //         )
+        //         select a.peserta_didik_id, b.daftar_kelengkapan_id, 'no-upload', c.dokumen_fisik, 1
+        //         from (
+        //             select distinct peserta_didik_id, penerapan_id
+        //             from tcg_pendaftaran 
+        //             where peserta_didik_id=71551 and is_deleted=0 and cabut_berkas=0
+        //         ) a
+        //         join cfg_kelengkapan_penerapan b on b.penerapan_id=a.penerapan_id and b.wajib=1
+        //         join ref_daftar_kelengkapan c on c.daftar_kelengkapan_id=b.daftar_kelengkapan_id and c.is_deleted=0
+        //         left join tcg_dokumen_pendukung d on d.peserta_didik_id=a.peserta_didik_id and d.daftar_kelengkapan_id=b.daftar_kelengkapan_id
+        //             and d.is_deleted=0
+        //         where d.daftar_kelengkapan_id is null";
+        
+        // // DISABLE DOK WAJIB UNTUK JALUR PENDAFTARAN (INVALID)
+        // $sql = "select a.dokumen_id
+        //         from tcg_dokumen_pendukung a 
+        //         left join (
+        //             select a.peserta_didik_id, b.daftar_kelengkapan_id
+        //             from (
+        //                 select distinct peserta_didik_id, penerapan_id
+        //                 from tcg_pendaftaran 
+        //                 where peserta_didik_id=71551 and is_deleted=0
+        //             ) a
+        //             join cfg_kelengkapan_penerapan b on b.penerapan_id=a.penerapan_id and b.wajib=1 and b.is_deleted=0
+        //         ) b on b.daftar_kelengkapan_id=a.daftar_kelengkapan_id and b.peserta_didik_id=a.peserta_didik_id
+        //         where b.daftar_kelengkapan_id is null and a.is_deleted=0 and a.tambahan=1 and a.peserta_didik_id=71551
+        // ";
     }
 
 }

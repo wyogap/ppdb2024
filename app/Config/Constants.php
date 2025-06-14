@@ -159,6 +159,9 @@ defined('DOCID_SUKET_BDT')                  OR define('DOCID_SUKET_BDT', '20');
 defined('DOCID_SUKET_INKLUSI')              OR define('DOCID_SUKET_INKLUSI', '9');
 defined('DOCID_SUKET_KEBENARAN_DOK')        OR define('DOCID_SUKET_KEBENARAN_DOK', '21');
 defined('DOCID_RAPOR_KELAS6')               OR define('DOCID_RAPOR_KELAS6', '26');
+defined('DOCID_RAPOR_5SEMESTER')            OR define('DOCID_RAPOR_5SEMESTER', '27');
+defined('DOCID_AKADEMIK')                   OR define('DOCID_AKADEMIK', '28');
+defined('DOCID_ORGANISASI')                 OR define('DOCID_ORGANISASI', '29');
 
 defined('TAHAPANID_SOSIALISASI')            OR define('TAHAPANID_SOSIALISASI', '1');
 defined('TAHAPANID_REGISTRASI')             OR define('TAHAPANID_REGISTRASI', '2');
@@ -179,8 +182,9 @@ defined('ASALDATA_REGISTRASI')      OR define('ASALDATA_REGISTRASI', '1');
 defined('ASALDATA_DAPODIK')         OR define('ASALDATA_DAPODIK', '2');
 defined('ASALDATA_PENERIMAANSD')    OR define('ASALDATA_PENERIMAANSD', '4');
 
-defined('TIPESKORING_AKADEMIK')                 OR define('TIPESKORING_AKADEMIK', '3');
-defined('TIPESKORING_ORGANISASI_KEJUARAAN')     OR define('TIPESKORING_ORGANISASI_KEJUARAAN', '8');
+defined('TIPESKORING_AKADEMIK')             OR define('TIPESKORING_AKADEMIK', '3');
+defined('TIPESKORING_PRESTASI')             OR define('TIPESKORING_PRESTASI', '8');
+defined('TIPESKORING_ORGANISASI')           OR define('TIPESKORING_ORGANISASI', '9');
 
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
@@ -200,3 +204,7 @@ defined('BASE_URL')                         OR define('BASE_URL',
                                                     : ($_SERVER['SERVER_PORT'] == 443 ? 'https://' 
                                                         : 'http://')) 
                                                 . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');
+
+defined('WA_COUNTRYCODE')                   OR define('WA_COUNTRYCODE', '62');
+defined('WA_APIKEY')                        OR define('WA_APIKEY', 'T3DOAJFMEU9YNUWE');
+defined('WA_NUMBERKEY')                     OR define('WA_NUMBERKEY', 'PLDkC7q7bF7ff9fD');

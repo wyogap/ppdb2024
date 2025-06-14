@@ -530,6 +530,10 @@ class Home extends PpdbController
         $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
 	}
 
+    function updateprofil() {
+
+    }
+
     function lkkecamatan() {
         $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
 		$mdropdown = new \App\Models\Ppdb\Mconfig();

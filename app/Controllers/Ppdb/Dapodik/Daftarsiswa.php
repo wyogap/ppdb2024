@@ -31,13 +31,9 @@ class Daftarsiswa extends PpdbController {
 
 	function index()
 	{
-		$sekolah_id = $this->session->get("sekolah_id");
+		//$sekolah_id = $this->session->get("sekolah_id");
 
-        $profil = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-        if (empty($profil)) {
-            return $this->notauthorized();
-        }
-        $data['profilsekolah'] = $profil;
+        $data['profilsekolah'] = $this->session->get("profilsekolah");;
 
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();

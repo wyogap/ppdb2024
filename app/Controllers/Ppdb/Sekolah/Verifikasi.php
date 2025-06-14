@@ -65,10 +65,11 @@ class Verifikasi extends PpdbController {
             }
             $data['flag_upload_dokumen'] = $this->setting->get('upload_dokumen');
 
-            $data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
+            //$data['daftarskoring'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
 
             $data['daftarskoring_prestasi'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
             $data['daftarskoring_akademik'] = $this->Mconfig->tcg_lookup_daftarskoring_akademik();
+            $data['daftarskoring_organisasi'] = $this->Mconfig->tcg_lookup_daftarskoring_organisasi();
             
             // $data['info'] = $this->session->getFlashdata('info');
         }

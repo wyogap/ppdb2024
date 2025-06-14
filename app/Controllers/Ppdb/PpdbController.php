@@ -4,6 +4,7 @@ namespace App\Controllers\Ppdb;
 use App\Controllers\Core\BaseController;
 
 use App\Models\Ppdb\Mconfig;
+use App\Models\Core\Crud\Mauth;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -319,5 +320,4 @@ class PpdbController extends BaseController {
         $this->smarty->render('ppdb/home/ppdbhome.tpl', $data);	
         
     }
-
 }

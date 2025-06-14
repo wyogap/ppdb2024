@@ -260,7 +260,7 @@ if ( ! function_exists('audit_siswa'))
             foreach ($kelengkapan as $k2 => $i) {
                 $kelengkapan[$k2]['status_ok'] = ($i['verifikasi']==1);
                 $kelengkapan[$k2]['status_notok'] = ($i['verifikasi']==2);
-                $kelengkapan[$k2]['status_tidakada'] = ($i['verifikasi']==3 || ($i['verifikasi']==0 && $i['wajib']==0));
+                $kelengkapan[$k2]['status_tidakada'] = ($i['verifikasi']==3);
                 $kelengkapan[$k2]['status_dalamproses'] = (!$kelengkapan[$k2]['status_ok'] && !$kelengkapan[$k2]['status_notok'] && !$kelengkapan[$k2]['status_tidakada']);
                 $kelengkapan[$k2]['kondisi_khusus'] = ($i['kondisi_khusus']!=0);
             }

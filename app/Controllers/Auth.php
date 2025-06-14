@@ -303,6 +303,8 @@ class Auth extends AuthController
             $this->session->set($s['name'], $s['value']);
         }
 
+        $data = array();
+
         $role_id = $this->session->get('role_id');
         if ($role_id == ROLEID_SISWA) {
             $peserta_didik_id = $this->session->get('peserta_didik_id');
@@ -321,7 +323,56 @@ class Auth extends AuthController
 
             $this->session->set($data);
         }
-        //else if ($role_id == ROLEID_SISWA)
+        else if ($role_id == ROLEID_SEKOLAH) {
+            $sekolah_id = $this->session->get('sekolah_id');
+
+            $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
+            $profil = $msekolah->tcg_profilsekolah($sekolah_id);
+            if (empty($profil) || !$profil['ikut_ppdb']) {
+                return $this->notauthorized();
+            }
+            $data['profilsekolah'] = $profil;
+    
+            $jenjang_id=JENJANGID_SMP;
+            $nama_jenjang='SMP';
+            if ($profil['bentuk'] == 'SD' || $profil['bentuk'] == 'MI') {
+                $jenjang_id=JENJANGID_SD;
+                $nama_jenjang='SD';
+            }
+            else if ($profil['bentuk'] == 'TK') {
+                $jenjang_id=JENJANGID_TK;
+                $nama_jenjang='TK';
+            }
+            $data["jenjang_aktif"] = $jenjang_id;
+            $data["nama_jenjang_aktif"] = $nama_jenjang;
+
+            $this->session->set($data);                
+        }
+        else if ($role_id == ROLEID_DAPODIK) {
+            $sekolah_id = $this->session->get('sekolah_id');
+
+            $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
+            $profil = $msekolah->tcg_profilsekolah($sekolah_id);
+            if (empty($profil)) {
+                return $this->notauthorized();
+            }
+            $data['profilsekolah'] = $profil;
+    
+            $jenjang_id=JENJANGID_SMP;
+            $nama_jenjang='SMP';
+            if ($profil['bentuk'] == 'SD' || $profil['bentuk'] == 'MI') {
+                $jenjang_id=JENJANGID_SD;
+                $nama_jenjang='SD';
+            }
+            else if ($profil['bentuk'] == 'TK') {
+                $jenjang_id=JENJANGID_TK;
+                $nama_jenjang='TK';
+            }
+            $data["jenjang_aktif"] = $jenjang_id;
+            $data["nama_jenjang_aktif"] = $nama_jenjang;
+
+            $this->session->set($data);                
+        }
     }
  
     function changepassword() {
@@ -359,7 +410,7 @@ class Auth extends AuthController
                 $json['error'] = __("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
                 continue;
             } else {
-                $user = $this->Mauth->profile($user_id);
+                $user = $this->Mauth->get_profile($user_id);
                 if ($user != null) {
                     $json['data'] = array();
                     $json['data'][] = $user; 
@@ -370,30 +421,9 @@ class Auth extends AuthController
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
     }
 
-    function sendresetcode() {
-        //TODO
-        $username = $this->request->getGetPost('username');
-    }
 
-    function checkresetcode() {
-        //TODO
-        $code = $this->request->getGetPost('code');
-    }
 
-    function resetpassword() {
-        //check for admin's reset password
-        $data = $this->request->getGetPost('data');
-        $mpermission = new Mpermission();
-        if (!empty($data) && $mpermission->is_admin()) {
-            parent::resetpassword();
-            return;
-        }
 
-        //TODO
-        $code = $this->request->getGetPost('code');
-        $pwd1 = $this->request->getGetPost('pwd1');
-        $pwd1 = $this->request->getGetPost('pwd1');
-    }
 }
 
 ?>

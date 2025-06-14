@@ -301,6 +301,22 @@
             "hideMethod": "fadeOut"
         };
 
+        //toggle password field
+        $('.tcg-show-pass').on('click',function(){
+            dom = $(this);
+            target = dom.attr("target");
+            if (target===undefined || target=='') {
+                target = "dlab-password";
+            }
+            targetdom = $("#" +target);
+
+            dom.toggleClass('active');
+            if(targetdom.attr('type') == 'password'){
+                targetdom.attr('type','text');
+            }else if(targetdom.attr('type') == 'text'){
+                targetdom.attr('type','password');
+            }
+        });      
     });
 
 </script>

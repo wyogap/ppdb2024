@@ -388,7 +388,7 @@
 <script type="text/javascript">
     //profil
     var tags = ['profil', 'lokasi', 'nilai', 'prestasi', 'afirmasi', 'inklusi', 'surat-pernyataan', 'nomer-hp'];
-    var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
+    var flags = ['punya_nilai_un', 'punya_prestasi', 'punya_organisasi', 'punya_akademik', 'punya_kip', 'masuk_bdt', 'kebutuhan_khusus'];
 
     var profil = {$profilsiswa|json_encode};
     var konfirmasi = {};

@@ -3,7 +3,7 @@
 <div class="row" id="profil-dikunci-notif" style="display: none;">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="alert alert-info alert-dismissible" role="alert">
-            <i class="icon glyphicon glyphicon-info-sign"></i>Data profil terkunci karena sudah diverifikasi di Sekolah Tujuan. Untuk memperbaiki data, silahkan menghubungi sekolah tujuan.
+            <i class="icon glyphicon glyphicon-info-sign"></i>Data profil kamu terkunci karena sudah diverifikasi di Sekolah Tujuan. Untuk memperbaiki data, silahkan menghubungi sekolah tujuan.
         </div>
     </div>
 </div>
@@ -387,20 +387,21 @@
                             <tr tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show'>
                                 <td colspan="3">
                                     <div class="row">
-                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Prestasi akademik di sekolah :</b></div>
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Prestasi Akademik di Sekolah :</b></div>
                                         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                            <select class="form-control select2" tcg-input-tag='nilai' tcg-field='akademik_skoring_id'>
-                                            <option value="0" {if empty($profilsiswa.akademik_skoring_id)}selected{/if}>Tidak ada</option>
-                                            {foreach $daftarskoring_akademik as $skor}
-                                            <option value="{$skor.value}" {if ($profilsiswa.akademik_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
-                                            {/foreach}
+                                            <select class="form-control select2" tcg-input-tag='nilai' tcg-field='akademik_skoring_id'
+                                                    tcg-edit-action='toggle' tcg-toggle-tag='punya_akademik'>
+                                                <option value="0" {if empty($profilsiswa.akademik_skoring_id)}selected{/if}>Tidak ada</option>
+                                                {foreach $daftarskoring_akademik as $skor}
+                                                <option value="{$skor.value}" {if ($profilsiswa.akademik_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
+                                                {/foreach}
                                             </select>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide'>
-                                <td style="width: 45%;"><b>Prestasi akademik di sekolah</b></td>
+                                <td style="width: 45%;"><b>Prestasi Akademik di Sekolah</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
                                     <span tcg-field='akademik_skoring_id'>{$profilsiswa.akademik_skoring_label}</span>
@@ -480,6 +481,27 @@
                                 </td>
                             </tr>
                             {/if}
+                            <tr id="row-dokumen-akademik" tcg-visible-tag='punya_akademik'>
+                                <td style="width: 45%;"><b>Dokumen Pendukung Prestasi Akademik</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    {if !($flag_upload_dokumen)}
+                                    Dicocokkan di sekolah tujuan
+                                    {else}
+                                        <img id="dokumen-28" class="img-view-thumbnail" 
+                                                src="{(empty($dokumen[28])) ? '' : $dokumen[28]['thumbnail_path']}" 
+                                                img-path="{(empty($dokumen[28])) ? '' : $dokumen[28]['web_path']}" 
+                                                img-id="{(empty($dokumen[28])) ? '' : $dokumen[28]['dokumen_id']}" 
+                                                img-title="Prestasi Akademik di Sekolah"
+                                                style="display:none; "/>  
+                                        <span>
+                                        <input type="file" class="upload-file" tcg-doc-id="28" id="unggah-profil-28" hidden/>
+                                        <label for="unggah-profil-28" class="btn btn-primary" tcg-input-tag='prestasi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                        </span>
+                                        <div id="msg-dokumen-28" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    {/if}
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -519,6 +541,30 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
                             <tr>
+                                <td colspan="3" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show'>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Pengalaman Organisasi :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                            <select class="form-control select2" tcg-input-tag='prestasi' tcg-field='organisasi_skoring_id'
+                                                    tcg-edit-action='toggle' tcg-toggle-tag='punya_organisasi'>
+                                                <option value="0" {if empty($profilsiswa.organisasi_skoring_id)}selected{/if}>Tidak ada</option>
+                                                {foreach $daftarskoring_organisasi as $skor}
+                                                <option value="{$skor.value}" {if ($profilsiswa.organisasi_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 45%;" tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>
+                                    <b>Pengalaman Organisasi</b>
+                                </td>
+                                <td tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>:</td>
+                                <td style="width: 50%;" tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>
+                                    <span tcg-field='organisasi_skoring_id'>{$profilsiswa.organisasi_skoring_label}</span>
+                                </td>
+                            </tr>
+                            <!--
+                            <tr>
                                 <td colspan="3">
                                     <b>Punya pengalaman organisasi/kejuaraan? </b>
                                     <select class="form-control input-default" id="prestasi-akademis" name="prestasi-akademis" 
@@ -529,25 +575,27 @@
                                     </select>
                                 </td>
                             </tr>
+                            -->
                             <!-- tcg-visible-tag must be in different level from tcg-input-tag -->
                             <!-- tcg-visible-tag will be toggled by profilflag (punya_prestasi) -->
                             <!-- tcg-input-tag will be toggled by status konfirmasi -->
-                            <tr tcg-visible-tag='punya_prestasi'>
+                            <tr>
                                 <td colspan="3" tcg-input-tag='prestasi' tcg-input-true='hide' tcg-input-false='show'>
                                     <div class="row">
-                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Pengalaman Organisasi/Kejuaraan :</b></div>
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Prestasi Kejuaraan/Lomba :</b></div>
                                         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                            <select class="form-control select2" tcg-input-tag='prestasi' tcg-field='prestasi_skoring_id'>
-                                            <option value="0" {if empty($profilsiswa.prestasi_skoring_id)}selected{/if}>Tidak ada</option>
-                                            {foreach $daftarskoring_prestasi as $skor}
-                                            <option value="{$skor.value}" {if ($profilsiswa.prestasi_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
-                                            {/foreach}
+                                            <select class="form-control select2" tcg-input-tag='prestasi' tcg-field='prestasi_skoring_id'
+                                                    tcg-edit-action='toggle' tcg-toggle-tag='punya_prestasi'>
+                                                <option value="0" {if empty($profilsiswa.prestasi_skoring_id)}selected{/if}>Tidak ada</option>
+                                                {foreach $daftarskoring_prestasi as $skor}
+                                                <option value="{$skor.value}" {if ($profilsiswa.prestasi_skoring_id==$skor.value)}selected{/if}>{$skor.label}</option>
+                                                {/foreach}
                                             </select>
                                         </div>
                                     </div>
                                 </td>
                                 <td style="width: 45%;" tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>
-                                    <b>Pengalaman Organisasi/Kejuaraan</b>
+                                    <b>Prestasi Kejuaraan/Lomba</b>
                                 </td>
                                 <td tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>:</td>
                                 <td style="width: 50%;" tcg-input-tag='prestasi' tcg-input-true='show' tcg-input-false='hide'>
@@ -572,13 +620,33 @@
                                     <span tcg-field='uraian_prestasi'>{$profilsiswa.uraian_prestasi}</span>
                                </td>
                             </tr>
-                            </span>
                          </table>
-                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='punya_prestasi'>
-                            <tr id="row-dokumen-prestasi">
+                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='prestasi'>
+                            <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
-                            <tr id="row-dokumen-prestasi">
+                            <tr id="row-dokumen-organisasi" tcg-visible-tag='punya_organisasi'>
+                                <td style="width: 45%;"><b>Dokumen Pendukung Pengalaman Organisasi</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    {if !($flag_upload_dokumen)}
+                                    Dicocokkan di sekolah tujuan
+                                    {else}
+                                        <img id="dokumen-29" class="img-view-thumbnail" 
+                                                src="{(empty($dokumen[29])) ? '' : $dokumen[29]['thumbnail_path']}" 
+                                                img-path="{(empty($dokumen[29])) ? '' : $dokumen[29]['web_path']}" 
+                                                img-id="{(empty($dokumen[29])) ? '' : $dokumen[29]['dokumen_id']}" 
+                                                img-title="Pengalaman Organisasi"
+                                                style="display:none; "/>  
+                                        <span>
+                                        <input type="file" class="upload-file" tcg-doc-id="29" id="unggah-profil-29" hidden/>
+                                        <label for="unggah-profil-29" class="btn btn-primary" tcg-input-tag='prestasi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                        </span>
+                                        <div id="msg-dokumen-29" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    {/if}
+                                </td>
+                            </tr>
+                            <tr id="row-dokumen-prestasi" tcg-visible-tag='punya_prestasi'>
                                 <td style="width: 45%;"><b>Bukti Pendukung Prestasi yang Dilegalisir</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
@@ -589,7 +657,7 @@
                                                 src="{(empty($dokumen[8])) ? '' : $dokumen[8]['thumbnail_path']}" 
                                                 img-path="{(empty($dokumen[8])) ? '' : $dokumen[8]['web_path']}" 
                                                 img-id="{(empty($dokumen[8])) ? '' : $dokumen[8]['dokumen_id']}" 
-                                                img-title="Pengalaman Organisasi / Kejuaraan"
+                                                img-title="Pengalaman Kejuaraan/Lomba"
                                                 style="display:none; "/>  
                                         <span>
                                         <input type="file" class="upload-file" tcg-doc-id="8" id="unggah-profil-8" hidden/>

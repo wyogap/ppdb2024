@@ -34,7 +34,11 @@ class Beranda extends PpdbController {
 		}
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
-        $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        if ($data['impersonasi_sekolah']) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        } else {
+            $data['profil'] = $this->session->get("profilsekolah");
+        }
         
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();

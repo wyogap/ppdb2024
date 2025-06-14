@@ -77,4 +77,37 @@
 
     <link href="{$base_url}ppdb/ppdb.css" rel="stylesheet">
 
+    <style>
+        
+        .tcg-show-pass {
+            cursor: pointer; 
+        }
+        .tcg-show-pass .fa-eye {
+            display: none; 
+        }
+        .tcg-show-pass.active .fa-eye-slash {
+            display: none; 
+        }
+        .tcg-show-pass.active .fa-eye {
+            display: inline-block; 
+        }
+
+        .tcg-show-pass{
+            cursor:pointer;
+            
+            .fa-eye{
+                display:none;
+            }
+            
+            &.active{
+                .fa-eye-slash{
+                    display:none;
+                }
+                .fa-eye{
+                    display:inline-block;
+                }
+            }
+        }    
+
+    </style>
 </head>

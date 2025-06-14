@@ -236,14 +236,12 @@
                                         <i class="fa fa-eye"></i>
                                     </span>
                                 </div>
-                                {if 1==0}
                                 {* TODO *}
                                 <div class="form-row d-flex justify-content-between mt-4 mb-2">
                                     <div class="mb-4" style="flex-grow: 1; text-align: right;">
                                         <a href="#" class="btn-link text-primary pwdreset" id="forgetpwd">Lupa PIN/Password?</a>
                                     </div>
                                 </div>
-                                {/if}
                                 {/if}
                                 <div class="text-center mb-4">
                                     <button type="submit" class="btn btn-primary btn-block" id="login">Masuk</button>
@@ -266,6 +264,7 @@
                                 id="username-reset" name="username-reset" data-validation="required" minlength="8" maxlength="100">
                             </div>
                             <p class="text-center" style="margin-bottom:24px;">Kode reset akan dikirim ke alamat email yang terdaftar dan/atau melalui Whatsapp ke nomor HP yang terdaftar.</p>
+                            <p class="text-center" style="color: red; margin-top:12px; margin-bottom:24px; display:none;" id="username-error"></p>
                             <div class="text-center mb-4">
                                 <button type="submit" class="btn btn-danger btn-block pwdreset" id="sendcode">Kirim Kode Reset</button><br>  
                                 <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel">Batalkan</button>
@@ -282,14 +281,13 @@
                                 <button type="submit" class="btn btn-primary pwdreset" id="checkcode">Cek Kode</button>  
                                 <button type="submit" class="btn btn-danger pwdreset" id="resendcode">Kirim Ulang</button>
                             </div>
-                            <p class="text-center" style="color: red; margin-top:12px; margin-bottom:24px; display:none;" id="kodereset-error">Kode reset salah!</p>
                             <div id='newpwd-div' style="display:none;">
                                 <p class="text-center" style="margin-top:12px; margin-bottom:24px;" id="kodereset-valid">Masukkan PIN/Password Baru:</p>
                                 <div class="mb-4 position-relative">
                                     <!-- <label class="mb-1 text-dark">PIN / Password</label> -->
                                     <input type="password" id="reset-password1" class="form-control form-control"
                                         placeholder="Masukkan PIN / Password Baru" name="reset-password1" data-validation="required">
-                                    <span class="show-pass eye">								
+                                    <span class="tcg-show-pass eye" target='reset-password1'>								
                                         <i class="fa fa-eye-slash"></i>
                                         <i class="fa fa-eye"></i>
                                     </span>
@@ -298,7 +296,7 @@
                                     <!-- <label class="mb-1 text-dark">PIN / Password</label> -->
                                     <input type="password" id="reset-password2" class="form-control form-control"
                                         placeholder="Masukkan Ulang PIN / Password Baru" name="reset-password2" data-validation="required">
-                                    <span class="show-pass eye">								
+                                    <span class="tcg-show-pass eye" target='reset-password2'>								
                                         <i class="fa fa-eye-slash"></i>
                                         <i class="fa fa-eye"></i>
                                     </span>
@@ -307,6 +305,7 @@
                                         <button type="submit" class="btn btn-danger btn-block pwdreset" id="resetpwd">Reset PIN/Password</button>
                                 </div>
                             </div>
+                            <p class="text-center" style="color: red; margin-top:12px; margin-bottom:24px; display:none;" id="kodereset-error">Kode reset salah!</p>
                             <div class="text-center mb-4">
                                 <button type="submit" class="btn btn-primary btn-block cancelreset" id="cancel2">Batalkan</button>
                             </div>
@@ -389,8 +388,17 @@
                                             <div class="accordion-body-text">
                                                 <table class="table">
                                                     <tbody>
+                                                        {assign var="jenjang" value=""}
                                                         {foreach $p.tahapan as $t}
                                                         {if $t.tahapan_id==0 || $t.tahapan_id==99} {continue} {/if} 
+                                                        {if $t.jenjang && $t.jenjang!=$jenjang} 
+                                                            {assign var="jenjang" value=$t.jenjang} 
+                                                            <tr class="" style="padding-top: 10px; padding-bottom: 10px">
+                                                                <td colspan="5" class="text-start">
+                                                                    Jenjang {$jenjang}
+                                                                </td>
+                                                            </tr>
+                                                        {/if}
                                                         <tr class="" style="padding-top: 10px; padding-bottom: 10px">
                                                             <td  class="">{$t.tahapan}</td><td></td>
                                                             {if ($t.tanggal_mulai == $t.tanggal_selesai)}<td class="local-datetime" colspan=3>{$t.tanggal_mulai}</td>
@@ -443,8 +451,9 @@
 
 <script type="text/javascript">
 
-    $counter = 0;
-    $countdown = null;
+    var resetpwd_userid = null;
+    //$counter = 0;
+    var countdown = null;
     $(document).ready(function() {
         //menu
         $('[data-bs-toggle="menu"]').on( "click", function(e) {
@@ -512,91 +521,29 @@
 
         $(".pwdreset").on( "click", function(e) {
             e.preventDefault();
-            $dom = $(this);
-            $id = $dom.attr("id");
+            dom = $(this);
+            id = dom.attr("id");
 
-            if ($id=='forgetpwd') {
+            if (id=='forgetpwd') {
                 $x = $("#login-div"); $x.hide();
                 $x = $("#forgetpwd-div"); $x.show();
                 $x = $("#resetpwd-div"); $x.hide();
             }
-            else if ($id=='sendcode') {
-                $("#login-div").hide();
-                $("#forgetpwd-div").hide();
-                $("#resetpwd-div").show();
-                $("#checkcode-div").show();
-                $('#kodereset-error').hide();
-                $('#newpwd-div').hide();
-
-                //start counter for resend
-                $('#resendcode').prop('disabled', true);
-                $counter_resendcode=60;
-                $('#resendcode').text("Kirim Ulang (" +$counter_resendcode+ ")");
-
-                $countdown = setInterval(countdown_resendcode, 1000);
+            else if (id=='sendcode') {
+                //send code
+                sendcode(dom);
             }
-            else if ($id=='checkcode') {
-                $('#kodereset-error').hide();
-                $('#newpwd-div').hide();
-
-                $dom.prop('disabled', true);
-
-                //TODO: check code
-                // Simulate a long-running task
-                setTimeout(() => {
-                    // Remove the wait cursor after 10 seconds (adjust as needed)
-                    $dom.removeClass('wait-cursor'); 
-                    if ($counter<=3) {
-                        //fail
-                        $('#kodereset-error').show();
-                        $dom.prop('disabled', false);
-                    }
-                    else {
-                        //success
-                        $dom.prop('disabled', false);
-                        clearInterval($countdown);
-                        $("#checkcode-div").hide();
-                        $('#kodereset-error').hide();
-                        $('#newpwd-div').show();
-                    }
-                }, 3000);
-                $counter++;
-
-                // Add the wait cursor immediately
-                $dom.addClass('wait-cursor'); 
+            else if (id=='checkcode') {
+                //check code
+                checkcode(dom);
             }
-            else if ($id=='resendcode') {
-                $('#kodereset-error').hide();
-                $('#newpwd-div').hide();
-
-                $dom.prop('disabled', true);
-
-                //TODO: check code
-                // Simulate a long-running task
-                setTimeout(() => {
-                    // Remove the wait cursor after 10 seconds (adjust as needed)
-                    $dom.removeClass('wait-cursor'); 
-
-                    //start counter for resend
-                    $dom.prop('disabled', true);
-                    $counter_resendcode=60;
-                    $dom.text("Kirim Ulang (" +$counter_resendcode+ ")");
-
-                    $countdown = setInterval(countdown_resendcode, 1000);
-                }, 10000);
-                $counter++;
-
-                // Add the wait cursor immediately
-                $dom.addClass('wait-cursor'); 
+            else if (id=='resendcode') {
+                //resend code
+                resendcode(dom); 
             }
-            else if ($id=='resetpwd') {
-
-                //TODO: reset pwd
-
-                $("#forgetpwd-div").hide();
-                $("#resetpwd-div").hide();
-                $("#login-div").show();
-
+            else if (id=='resetpwd') {
+                //reset password
+                resetpwd(dom);
             }
         });
 
@@ -610,18 +557,217 @@
         //$dbg = $(".pwdreset");
     });
 
-    $counter_resendcode=60;
+    var counter_resendcode=60;
     function countdown_resendcode() {
-        $counter_resendcode--;
-        if ($counter_resendcode<=0) {
-            clearInterval($countdown);
+        counter_resendcode--;
+        if (counter_resendcode<=0) {
+            clearInterval(countdown);
             $('#resendcode').text("Kirim Ulang");
             $('#resendcode').prop('disabled', false);
         }
         else {
-            $('#resendcode').text("Kirim Ulang (" +$counter_resendcode+ ")");
+            $('#resendcode').text("Kirim Ulang (" +counter_resendcode+ ")");
         }
 
     };
+
+    function sendcode(dom) {
+        $('#username-error').hide();
+        dom.prop('disabled', true);
+        $('#login-form').addClass('wait-cursor'); 
+
+        var data = { "key":$("#username-reset").val() };
+        $.ajax({
+            type: "POST",
+            url : "{$site_url}auth/sendresetcode",
+            data: data,
+            dataType: "json",
+            success: function(json){
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+
+                if (json.error!==undefined) {
+                    //toastr.error(json.error);
+                    $('#username-error').html(json.error);
+                    $('#username-error').show();
+                    return;
+                }
+                else if (json.success===undefined) {
+                    //toastr.error("Tidak berhasil mengirim kode.");
+                    $('#username-error').html("Tidak berhasil mengirim kode.");
+                    $('#username-error').show();
+                    return;
+                }
+                
+                //get user id
+                resetpwd_userid = json['userid'];
+
+                //next step
+                $("#login-div").hide();
+                $("#forgetpwd-div").hide();
+                $("#resetpwd-div").show();
+                $("#checkcode-div").show();
+                $('#kodereset-error').hide();
+                $('#newpwd-div').hide();
+
+                //start counter for resend
+                $('#resendcode').prop('disabled', true);
+                counter_resendcode=60;
+                $('#resendcode').text("Kirim Ulang (" +counter_resendcode+ ")");
+
+                countdown = setInterval(countdown_resendcode, 1000);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                //toastr.error("Tidak berhasil menyimpan nomor kontak. " + textStatus);
+                $('#username-error').html("Tidak berhasil mengirim kode. " + textStatus);
+                $('#username-error').show();
+
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+                return;
+            }
+        });
+    }
+
+    function checkcode(dom) {
+        $('#kodereset-error').hide();
+        $('#newpwd-div').hide();
+
+        dom.prop('disabled', true);
+        $('#login-form').addClass('wait-cursor'); 
+
+        var data = { "code":$("#kodereset").val(), "userid": resetpwd_userid };
+        $.ajax({
+            type: "POST",
+            url : "{$site_url}auth/checkresetcode",
+            data: data,
+            dataType: "json",
+            success: function(json){
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+
+                if (json.error!==undefined && json.errorno==-1198) {
+                    $('#kodereset-error').html("Kode reset salah!");
+                    $('#kodereset-error').show();
+                    return;
+                }
+                else if (json.success===undefined) {
+                    $('#kodereset-error').html('Tidak berhasil menvalidasi kode.');
+                    $('#kodereset-error').show();
+                    return;
+                }
+                
+                $("#checkcode-div").hide();
+                $('#kodereset-error').hide();
+                $('#newpwd-div').show();
+                $('#reset-password1').val('');
+                $('#reset-password2').val('');
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#kodereset-error').html("Tidak berhasil menvalidasi kode. " + textStatus);
+                $('#kodereset-error').show();
+
+                $('#login-form').removeClass('wait-cursor');
+                dom.prop('disabled', false);
+                return;
+            }
+        });
+
+    }
+
+    function resendcode(dom) {
+        $('#kodereset-error').hide();
+        dom.prop('disabled', true);
+        $('#login-form').addClass('wait-cursor'); 
+
+        var data = { "key":$("#username-reset").val(), "userid": resetpwd_userid, "resend": 1 };
+        $.ajax({
+            type: "POST",
+            url : "{$site_url}auth/sendresetcode",
+            data: data,
+            dataType: "json",
+            success: function(json){
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+
+                if (json.error!==undefined) {
+                    //toastr.error(json.error);
+                    $('#kodereset-error').html(json.error);
+                    $('#kodereset-error').show();
+                    return;
+                }
+                else if (json.success===undefined) {
+                    //toastr.error("Tidak berhasil mengirim kode.");
+                    $('#kodereset-error').html("Tidak berhasil mengirim kode.");
+                    $('#kodereset-error').show();
+                    return;
+                }
+                
+                //start counter for resend
+                $('#resendcode').prop('disabled', true);
+                counter_resendcode=60;
+                $('#resendcode').text("Kirim Ulang (" +counter_resendcode+ ")");
+
+                countdown = setInterval(countdown_resendcode, 1000);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                //toastr.error("Tidak berhasil menyimpan nomor kontak. " + textStatus);
+                $('#kodereset-error').html("Tidak berhasil mengirim kode. " + textStatus);
+                $('#kodereset-error').show();
+
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+                return;
+            }
+        });
+    }
+
+    function resetpwd(dom) {
+        $('#kodereset-error').hide();
+        dom.prop('disabled', true);
+        $('#login-form').addClass('wait-cursor'); 
+
+        var data = { "code":$("#kodereset").val(), "pwd1":$("#reset-password1").val(), "pwd2":$("#reset-password2").val(), "userid": resetpwd_userid };
+        $.ajax({
+            type: "POST",
+            url : "{$site_url}auth/resetpassword",
+            data: data,
+            dataType: "json",
+            success: function(json){
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+
+                if (json.error!==undefined) {
+                    //toastr.error(json.error);
+                    $('#kodereset-error').html(json.error);
+                    $('#kodereset-error').show();
+                    return;
+                }
+                else if (json.success===undefined) {
+                    //toastr.error("Tidak berhasil mengirim kode.");
+                    $('#kodereset-error').html("Tidak berhasil me-reset password.");
+                    $('#kodereset-error').show();
+                    return;
+                }
+                
+                $("#forgetpwd-div").hide();
+                $("#resetpwd-div").hide();
+                $("#login-div").show();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                //toastr.error("Tidak berhasil menyimpan nomor kontak. " + textStatus);
+                $('#kodereset-error').html("Tidak berhasil me-reset password. " + textStatus);
+                $('#kodereset-error').show();
+
+                $('#login-form').removeClass('wait-cursor'); 
+                dom.prop('disabled', false);
+                return;
+            }
+        });
+    }
+
 
 </script>

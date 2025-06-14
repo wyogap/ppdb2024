@@ -91,6 +91,11 @@
         color: #fff !important;
     }
     
+    [data-theme-version="light"] .form-control:disabled, .form-control[readonly] {
+        background: var(--bs-light);
+        opacity: 1;
+    }
+
     @media only screen and (max-width: 768px) {
         .x-label {
             margin-bottom: 8px;
@@ -165,6 +170,9 @@
                                         <button onclick=ganti_password() class="dropdown-item ai-icon">
                                             <i class="fas fa-user"></i> <span class="ms-2">Ganti PIN/Password </span>
                                         </button>
+                                        <a href="{$site_url}ppdb/sekolah/profil" class="dropdown-item ai-icon">
+                                            <i class="fas fa-user"></i> <span class="ms-2">Profil Pengguna </span>
+                                        </a>
                                         {foreach $daftarputaran as $p}
                                         {if $p.putaran == $putaran}{continue}{/if}
                                         <a href="{$url}putaran={$p.putaran}" class="dropdown-item ai-icon">

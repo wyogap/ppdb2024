@@ -284,6 +284,7 @@ class Siswa extends PpdbController {
 		$data['pendaftaranditerima'] = $pendaftaran_diterima;
 
         $data['daftarskoring_prestasi'] = $this->Mconfig->tcg_lookup_daftarskoring_prestasi();
+        $data['daftarskoring_organisasi'] = $this->Mconfig->tcg_lookup_daftarskoring_organisasi();
         $data['daftarskoring_akademik'] = $this->Mconfig->tcg_lookup_daftarskoring_akademik();
 
         # PENDAFTARAN
@@ -306,8 +307,20 @@ class Siswa extends PpdbController {
         if (empty($profil['kebutuhan_khusus']) || $profil['kebutuhan_khusus']=="0" || $profil['kebutuhan_khusus']=='Tidak ada') {
             $kebutuhan_khusus = 0;
         }
+        
+        if ($kebutuhan_khusus) {
+            //kebutuhan khusus tidak dibatasi usia
+            $data['cek_batasanusia'] = 1;
+        }
 
-        $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], $kebutuhan_khusus, $profil['masuk_bdt']);
+        if (!$data['cek_batasanusia'] && !$kebutuhan_khusus) {
+            //di luar batasan usia dan bukan kebutuhan khusus
+            $data['daftarpenerapan'] = array();
+        }
+        else {
+            //dalam batasan usia atau kebutuhan khusus (kebutuhan khusus tidak dibatasi usia)
+            $data['daftarpenerapan'] = $this->Msiswa->tcg_daftarpenerapan($profil['kode_wilayah'], $kebutuhan_khusus, $profil['masuk_bdt']);
+        }
         
         $daftarpilihan = $this->Mconfig->tcg_daftarpilihan();
         $data['maxpilihan'] = count($daftarpilihan);

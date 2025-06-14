@@ -12,6 +12,7 @@ use App\Models\Core\Crud\Mpages;
 use App\Models\Core\Crud\Mpermission;
 use App\Models\Core\Crud\Msession;
 use App\Models\Core\Crud\Mtable;
+use App\Models\Core\Ext\MWhatsApp;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -68,7 +69,6 @@ abstract class AuthController extends BaseController
         return;
 
     }
-    
     
     /**
      * This function used to log in user
@@ -260,28 +260,23 @@ abstract class AuthController extends BaseController
         theme_403();
 	}
 
-    function resetpassword() {
-
+    private function _resetpassword_byadmin() {
         $json = array();
 
         $data = $this->request->getGetPost('data');
         if ($data == null) {
-            $json['error'] = 'no-data';
-            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            print_json_error("no-data");
             return;
         }
          
         $key = array_keys($data)[0];
         $userid = $this->session->get('user_id');
         $mpermission = new Mpermission();
-
         if (!$mpermission->is_admin() && $key != $userid) {
-            $json['error'] = 'not-authorized';
-            echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+            print_json_error("not-authorized");
             return;
         }
 
-        $error_msg = "";
         foreach ($data as $key => $valuepair) {
             $user_id = $key;
             $pwd1 = $valuepair['pwd1'];
@@ -296,7 +291,7 @@ abstract class AuthController extends BaseController
                 $json['error'] = __("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
                 continue;
             } else {
-                $user = $this->Mauth->profile($user_id);
+                $user = $this->Mauth->get_profile($user_id);
                 if ($user != null) {
                     $json['data'] = array();
                     $json['data'][] = $user; 
@@ -304,7 +299,132 @@ abstract class AuthController extends BaseController
             }
         }
 
+        $json["success"] = 1;
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
+    private function _resetpassword_withcode() {
+
+        $code = $this->request->getGetPost('code');
+        $pwd1 = $this->request->getGetPost('pwd1');
+        $pwd2 = $this->request->getGetPost('pwd2');
+        
+        if (empty($code)) {
+            print_json_error("Invalid code", -1198);
+            return;
+        }
+
+        $userid = $this->request->getGetPost('userid');
+        if(empty($userid)) {
+            print_json_error("Invalid userid", -1199);
+            return;
+        }
+
+        $userid = $this->Mauth->check_resetcode($userid, $code);
+        if (empty($userid)) {
+            print_json_error("Invalid code", -1198);
+            return;
+        }
+
+        $json = array();
+        if ($pwd1 != $pwd2) {
+            print_json_error(__("Password baru tidak sama. Silahkan ulangi kembali."));
+            return;
+        }
+
+        if($this->Mauth->reset_password($userid, $pwd1) == 0) {
+            print_json_error(__("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali."));
+            return;
+        } else {
+            $user = $this->Mauth->get_profile($userid);
+            if ($user != null) {
+                $json = $user;
+            } 
+        }
+
+        //disable the code
+        $this->Mauth->disable_resetcode($userid, $code);
+
+        $json["success"] = 1;
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
+    private function _resetpassword_self() {
+
+        $json = array();
+
+        $data = $this->request->getGetPost('data');
+        if ($data == null) {
+            print_json_error("no-data");
+            return;
+        }
+         
+        $key = array_keys($data)[0];
+        $userid = $this->session->get('user_id');
+        $mpermission = new \App\Models\Core\Crud\Mpermission();
+        if (!$mpermission->is_admin() && $key != $userid) {
+            print_json_error("not-authorized");
+            return;
+        }
+
+        $error_msg = "";
+        $valuepair = $data[0];
+        $pwd1 = $valuepair['pwd1'];
+        $pwd2 = $valuepair['pwd2'];
+
+        if ($pwd1 != $pwd2) {
+            print_json_error(__("Password baru tidak sama. Silahkan ulangi kembali."));
+            return;
+        }
+
+        if($this->Mauth->reset_password($userid, $pwd1, array('ganti_password'=>1)) == 0) {
+            print_json_error(__("Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali."));
+            return;
+        } else {
+            $user = $this->Mauth->get_profile($userid);
+            if ($user != null) {
+                $json['data'] = array();
+                $json['data'][] = $user; 
+            } 
+        }
+
+        $json["success"] = 1;
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
+    function changepassword() {
+        $this->_resetpassword_self();
+    }
+
+    function resetpassword() {
+        $code = $this->request->getGetPost('code');
+        if (!empty($code)) {
+            $this->_resetpassword_withcode();
+            return;
+        }
+
+        $key = $this->request->getGetPost('key');
+        if (empty($key)) {
+            $data = $this->request->getGetPost('data');
+            if (!empty($data)) {
+                $key = array_keys($data)[0];
+            }    
+        }
+
+        $userid = $this->session->get('user_id');
+        if ($key == $userid) {
+            $this->_resetpassword_self();
+            return;
+        }
+
+        $mpermission = new Mpermission();
+        if ($mpermission->is_admin()) {
+            $this->_resetpassword_byadmin();
+            return;
+        }
+
+        print_json_error("not-implemented");
+        return;
     }
 
 	function check_recaptcha_v2($captcha) {
@@ -347,6 +467,155 @@ abstract class AuthController extends BaseController
 		}
 		
 	}
+
+    function sendresetcode() {
+
+        //get user profile from username or email
+        $username_or_email = $this->request->getGetPost('key');
+        $user = $this->Mauth->get_profile_username_or_email($username_or_email, $username_or_email);
+        if(empty($user)) {
+            print_json_error("Invalid username/email");
+            return;
+        }
+
+        $email = $user['email'];
+        $hp = $user['handphone'];
+        if (empty($email) && empty($hp)) {
+            print_json_error("Invalid email and handphone");
+            return;
+        }
+
+        //check existing code
+        $resend = $this->request->getGetPost('resend');
+
+        $existing = 0;
+        if (!$resend) {
+            $existing = $this->Mauth->has_resetcode($user['user_id']);
+        }
+
+        if (!$existing || $resend) {
+            //generate code
+            $code = $this->Mauth->generate_resetcode($user['user_id']);
+            if(empty($code)) {
+                print_json_error("Fail to generate code");
+                return;
+            }
+
+            $app_name = $this->setting->get('app_name');
+            $message = "Your code is " .$code. ". From " .$app_name;
+
+            //var_dump($email); exit;
+
+            //send email
+            if (!empty($email)) {
+                $status = $this->send_email($email, "Reset Password", $message);
+                if (!$status) {
+                    print_json_error("Fail to send email");
+                    return;
+                }
+            }
+
+            //send whatsapp
+            if (!empty($hp)) {
+                //add country code if necessary
+                if (substr($hp,0,1)=='0') {
+                    $hp = WA_COUNTRYCODE .substr($hp, 1, strlen($hp)-1);
+                }
+                $response = $this->send_whatsapp($hp, $message);
+            }
+        }
+
+        $json = array();
+        $json['key'] = $username_or_email;
+        $json['userid'] = $user['user_id'];
+        $json['email'] = $email;
+        $json['hp'] = $hp;
+        $json['success'] = 1;
+        
+        if ($existing && !$resend) {
+            $json['existing'] = 1;
+        }
+
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
+    function checkresetcode() {
+        $code = $this->request->getGetPost('code');
+        if (empty($code)) {
+            print_json_error("Invalid code", -1198);
+            return;
+        }
+        
+        $userid = $this->request->getGetPost('userid');
+        if(empty($userid)) {
+            print_json_error("Invalid userid", -1199);
+            return;
+        }
+
+        $userid = $this->Mauth->check_resetcode($userid, $code);
+        if (empty($userid)) {
+            print_json_error("Invalid code", -1198);
+            return;
+        }
+
+        $json = array();
+        $json['success'] = 1;
+
+        echo json_encode($json, JSON_INVALID_UTF8_IGNORE);
+    }
+
+    /** 
+     * Email sender
+    */
+    protected function send_email($to, $subject, $message) {
+        $email = service('email');
+
+        $email->setTo($to);        
+        $email->setSubject($subject);
+        $email->setMessage($message);
+        
+        $status = $email->send();
+        // if (!$status) {
+        //     $data = $email->printDebugger('[header]');
+        //     echo($data); exit;
+        // }
+
+        return $status;
+    }
+
+    /**
+     * WHATSAPP sender 
+     */
+    protected function send_whatsapp($wa_number, $message_out) {
+        $dataSending = Array();
+        $dataSending["api_key"] = WA_APIKEY;
+        $dataSending["number_key"] = WA_NUMBERKEY;
+        $dataSending["phone_no"] = $wa_number;
+        $dataSending["message"] = $message_out;
+        $dataSending["wait_until_send"] = "1"; //This is an optional parameter, if you use this parameter the response will appear after sending the message is complete
+
+        //var_dump($dataSending); exit;
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.watzap.id/v1/send_message',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($dataSending),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        echo $response;
+        exit;
+    }
 
     /**
      * This function used to load forgot password view

@@ -40,7 +40,6 @@ class Mcrud_ext extends Mcrud_tablemeta
 
         $this->init(static::$TABLE_ID, true);
     }
-
 }
 
   

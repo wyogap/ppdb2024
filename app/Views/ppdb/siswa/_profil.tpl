@@ -60,7 +60,18 @@
                 }
             }
 
-            //special case: kebutuhan khusu
+            //special case: prestasi
+            if (toggletag == 'punya_prestasi' || toggletag == 'punya_organisasi') {
+                elements = $("[tcg-visible-tag='prestasi']");
+                if (!profilflag['punya_prestasi'] && !profilflag['punya_organisasi']) {
+                    elements.hide();
+                }
+                else {
+                    elements.show();
+                }
+            }
+
+            //special case: kebutuhan khusus
             if (toggletag == 'kebutuhan_khusus') {
                 if (value == 0) {
                     $('select[tcg-field="kebutuhan_khusus"]').val("Tidak ada");
