@@ -422,6 +422,7 @@
                                 <div class="col-12"> -->
                                 <div class="accordion accordion-primary-solid" id="accordion-2">
                                 {foreach $petunjuk_pelaksanaan as $p}
+                                    {if strlen(trim($p.text)) == 0} {continue} {/if}
                                     <div class="accordion-item">
                                         <div class="accordion-header rounded-lg collapsed text-center" id="accord2-{$p.id}" data-bs-toggle="collapse" data-bs-target="#collapse2-{$p.id}" aria-controls="collapse2-{$p.id}" aria-expanded="true" role="button">
                                             <span class="accordion-header-icon"></span>
