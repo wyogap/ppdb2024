@@ -760,6 +760,8 @@
                 $("#forgetpwd-div").hide();
                 $("#resetpwd-div").hide();
                 $("#login-div").show();
+
+                toastr.info("Reset password berhasil. Silahkan coba masuk dengan password baru.");
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 //toastr.error("Tidak berhasil menyimpan nomor kontak. " + textStatus);
