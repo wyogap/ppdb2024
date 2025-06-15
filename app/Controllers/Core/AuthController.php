@@ -493,6 +493,8 @@ abstract class AuthController extends BaseController
             $existing = $this->Mauth->has_resetcode($user['user_id']);
         }
 
+        // echo 'Testing:' .($existing?1:0); exit;
+
         if (!$existing || $resend) {
             //generate code
             $code = $this->Mauth->generate_resetcode($user['user_id']);

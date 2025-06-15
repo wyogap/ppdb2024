@@ -242,7 +242,7 @@ class Mauth
         $query = $builder->get();
         if (!$query) return false;
 
-        return true;
+        return ($query->getNumRows()>0 ? true : false);
     }
      
     function check_resetcode($user_id, $code) {
