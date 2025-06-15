@@ -576,7 +576,8 @@
         dom.prop('disabled', true);
         $('#login-form').addClass('wait-cursor'); 
 
-        var data = { "key":$("#username-reset").val() };
+        var key = $("#username-reset").val().trim();
+        var data = { "key":key };
         $.ajax({
             type: "POST",
             url : "{$site_url}auth/sendresetcode",
@@ -637,7 +638,8 @@
         dom.prop('disabled', true);
         $('#login-form').addClass('wait-cursor'); 
 
-        var data = { "code":$("#kodereset").val(), "userid": resetpwd_userid };
+        var kode = $("#kodereset").val().trim();
+        var data = { "code":kode, "userid": resetpwd_userid };
         $.ajax({
             type: "POST",
             url : "{$site_url}auth/checkresetcode",
@@ -682,7 +684,8 @@
         dom.prop('disabled', true);
         $('#login-form').addClass('wait-cursor'); 
 
-        var data = { "key":$("#username-reset").val(), "userid": resetpwd_userid, "resend": 1 };
+        var key = $("#username-reset").val().trim();
+        var data = { "key": key, "userid": resetpwd_userid, "resend": 1 };
         $.ajax({
             type: "POST",
             url : "{$site_url}auth/sendresetcode",
@@ -730,7 +733,8 @@
         dom.prop('disabled', true);
         $('#login-form').addClass('wait-cursor'); 
 
-        var data = { "code":$("#kodereset").val(), "pwd1":$("#reset-password1").val(), "pwd2":$("#reset-password2").val(), "userid": resetpwd_userid };
+        var kode = $("#kodereset").val().trim();
+        var data = { "code": kode, "pwd1":$("#reset-password1").val(), "pwd2":$("#reset-password2").val(), "userid": resetpwd_userid };
         $.ajax({
             type: "POST",
             url : "{$site_url}auth/resetpassword",

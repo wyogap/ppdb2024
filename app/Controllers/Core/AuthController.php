@@ -613,8 +613,7 @@ abstract class AuthController extends BaseController
         ));
         $response = curl_exec($curl);
         curl_close($curl);
-        echo $response;
-        exit;
+        return $response;
     }
 
     /**
