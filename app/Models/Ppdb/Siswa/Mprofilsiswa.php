@@ -137,7 +137,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('tcg_peserta_didik a');
 		$builder->select("
-            a.peserta_didik_id,a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah,a.diterima,
+            a.peserta_didik_id,a.diverifikasi,a.diterima,
             a.nik,a.nisn,a.nomor_ujian,a.nama,a.jenis_kelamin,a.tempat_lahir,a.tanggal_lahir,a.nama_ibu_kandung,a.nama_ayah,a.nama_wali,
             a.alamat,a.kode_wilayah,a.lintang,a.bujur,a.asal_data,a.nomor_kontak,a.rt,a.rw,
             a.cabut_berkas,a.hapus_pendaftaran,a.ubah_pilihan,a.ubah_sekolah,a.ubah_jalur,a.batal_verifikasi,
@@ -148,6 +148,7 @@ Class Mprofilsiswa
             i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
         //$builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
+        $builder->select("a.sekolah_id,b.sekolah_dapodik_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah");
         $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
         $builder->select("coalesce(a.nilai_kelulusan,0) as nilai_kelulusan, coalesce(a.nilai_semester,0) as nilai_semester, 
                             a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");
@@ -169,7 +170,6 @@ Class Mprofilsiswa
                             f.filename as nama_surat_pernyataan, f.path as path_surat_pernyataan,f.web_path as img_surat_pernyataan,
                             f.thumbnail_path as thumbnail_surat_pernyataan,f.created_on as tanggal_surat_pernyataan', false);
         $builder->select("a.masuk_bdt, a.sumber_bdt");
-        $builder->select("a.diverifikasi");
         $builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
 		$builder->join('dbo_users d','a.peserta_didik_id = d.peserta_didik_id AND d.is_deleted = 0','LEFT OUTER');

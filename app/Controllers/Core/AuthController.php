@@ -474,14 +474,14 @@ abstract class AuthController extends BaseController
         $username_or_email = $this->request->getGetPost('key');
         $user = $this->Mauth->get_profile_username_or_email($username_or_email, $username_or_email);
         if(empty($user)) {
-            print_json_error("Invalid username/email");
+            print_json_error("Invalid username/email", -2002);
             return;
         }
 
         $email = $user['email'];
         $hp = $user['handphone'];
         if (empty($email) && empty($hp)) {
-            print_json_error("Invalid email and handphone");
+            print_json_error("Invalid email and handphone", -2001);
             return;
         }
 
@@ -523,6 +523,12 @@ abstract class AuthController extends BaseController
                 if (substr($hp,0,1)=='0') {
                     $hp = WA_COUNTRYCODE .substr($hp, 1, strlen($hp)-1);
                 }
+                else if (substr($hp,0,1)=='8') {
+                    $hp = WA_COUNTRYCODE .$hp;
+                }
+                else if (substr($hp,0,1)=='+') {
+                    $hp = substr($hp, 1, strlen($hp)-1);
+                }
                 $response = $this->send_whatsapp($hp, $message);
             }
         }
@@ -531,7 +537,7 @@ abstract class AuthController extends BaseController
         $json['key'] = $username_or_email;
         $json['userid'] = $user['user_id'];
         $json['email'] = $email;
-        $json['hp'] = $hp;
+        $json['hp'] = str_pad(substr($hp,strlen($hp)-3),strlen($hp),'*', STR_PAD_LEFT);
         $json['success'] = 1;
         
         if ($existing && !$resend) {

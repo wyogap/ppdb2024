@@ -589,6 +589,12 @@
 
                 if (json.error!==undefined) {
                     //toastr.error(json.error);
+                    if (json.errorno == -2001) {
+                        json.error = "Tidak ada alamat email/handphone yang terdaftar untuk akun ini."
+                    }
+                    else if (json.errorno == -2002) {
+                        json.error = "Akun/email tidak ditemukan."
+                    }
                     $('#username-error').html(json.error);
                     $('#username-error').show();
                     return;
@@ -602,6 +608,13 @@
                 
                 //get user id
                 resetpwd_userid = json['userid'];
+
+                if (json['email'] !== undefined && json['email'] != '') {
+                    toastr.info("Reset code dikirim ke email: " +json['email']);
+                }
+                if (json['hp'] !== undefined && json['hp'] != '') {
+                    toastr.info("Reset code dikirim ke nomor hp: " +json['hp']);
+                }
 
                 //next step
                 $("#login-div").hide();

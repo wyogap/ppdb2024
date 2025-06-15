@@ -32,7 +32,7 @@
                         <p>(<b>{$profilsiswa.npsn}</b>) {$profilsiswa.sekolah}</p>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <a href="http://sekolah.data.kemdikbud.go.id/index.php/chome/profil/{$profilsiswa.sekolah_id}" target="_blank" class="btn btn-primary">Profil Sekolah Asal</a>
+                        <a href="http://sekolah.data.kemdikbud.go.id/index.php/chome/profil/{$profilsiswa.sekolah_dapodik_id}" target="_blank" class="btn btn-primary">Profil Sekolah Asal</a>
                     </div>
                     {else}
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
