@@ -126,6 +126,23 @@ Class Mprofilsiswa
             }
         }
 
+        if (isset($values['nomor_kontak'])) {
+            //update user profile
+            $hp = $values['nomor_kontak'];
+            //add country code if necessary
+            if (substr($hp,0,1)=='0') {
+                $hp = WA_COUNTRYCODE .substr($hp, 1, strlen($hp)-1);
+            }
+            else if (substr($hp,0,1)=='8') {
+                $hp = WA_COUNTRYCODE .$hp;
+            }
+            else if (substr($hp,0,1)=='+') {
+                $hp = substr($hp, 1, strlen($hp)-1);
+            }
+            $sql = "update dbo_users set handphone=? where user_name=?";
+            $this->db->query($sql, array($hp, $oldvalues['nisn']));
+        }
+
         //audit trail
         $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, $oldvalues);
 
@@ -148,7 +165,7 @@ Class Mprofilsiswa
             i.nama as lokasi_berkas, a.tutup_akses, a.akses_ubah_data
 		");
         //$builder->select("coalesce(a.punya_kip,0) as punya_kip,coalesce(a.masuk_bdt,0) as masuk_bdt,coalesce(a.no_kip,'') as no_kip,coalesce(a.no_bdt,'') as no_bdt");
-        $builder->select("a.sekolah_id,b.sekolah_dapodik_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah");
+        $builder->select("a.sekolah_id,b.dapodik_id as sekolah_dapodik_id,b.npsn,b.nama AS sekolah,b.bentuk as bentuk_sekolah");
         $builder->select("coalesce(a.punya_nilai_un,0) as punya_nilai_un,a.nilai_un, a.nilai_bin, a.nilai_mat, a.nilai_ipa");
         $builder->select("coalesce(a.nilai_kelulusan,0) as nilai_kelulusan, coalesce(a.nilai_semester,0) as nilai_semester, 
                             a.nilai_kelas4_sem1, a.nilai_kelas4_sem2, a.nilai_kelas5_sem1, a.nilai_kelas5_sem2, a.nilai_kelas6_sem1, a.nilai_kelas6_sem2");

@@ -485,6 +485,20 @@ abstract class AuthController extends BaseController
             return;
         }
 
+        //format nomor hp
+        if (!empty($hp)) {
+            //add country code if necessary
+            if (substr($hp,0,1)=='0') {
+                $hp = WA_COUNTRYCODE .substr($hp, 1, strlen($hp)-1);
+            }
+            else if (substr($hp,0,1)=='8') {
+                $hp = WA_COUNTRYCODE .$hp;
+            }
+            else if (substr($hp,0,1)=='+') {
+                $hp = substr($hp, 1, strlen($hp)-1);
+            }
+        }
+
         //check existing code
         $resend = $this->request->getGetPost('resend');
 
@@ -519,16 +533,6 @@ abstract class AuthController extends BaseController
 
             //send whatsapp
             if (!empty($hp)) {
-                //add country code if necessary
-                if (substr($hp,0,1)=='0') {
-                    $hp = WA_COUNTRYCODE .substr($hp, 1, strlen($hp)-1);
-                }
-                else if (substr($hp,0,1)=='8') {
-                    $hp = WA_COUNTRYCODE .$hp;
-                }
-                else if (substr($hp,0,1)=='+') {
-                    $hp = substr($hp, 1, strlen($hp)-1);
-                }
                 $response = $this->send_whatsapp($hp, $message);
             }
         }
@@ -537,7 +541,7 @@ abstract class AuthController extends BaseController
         $json['key'] = $username_or_email;
         $json['userid'] = $user['user_id'];
         $json['email'] = $email;
-        $json['hp'] = str_pad(substr($hp,strlen($hp)-3),strlen($hp),'*', STR_PAD_LEFT);
+        $json['hp'] = substr($hp,0,4) .str_pad(substr($hp,strlen($hp)-3),strlen($hp)-4,'*', STR_PAD_LEFT);
         $json['success'] = 1;
         
         if ($existing && !$resend) {
