@@ -90,7 +90,7 @@ class Mpages extends Mcrud_ext
         $filter['is_deleted'] = 0;
 
         //use view if specified
-        $table_name = 'dbo_crud_pages_subtables';
+        $table_name = 'dbo_crud_page_subtables';
         $builder = $this->db->table($table_name);
 
         $builder->select('*');
@@ -123,7 +123,7 @@ class Mpages extends Mcrud_ext
         $filter = array();
 
         //use view if specified
-        $table_name = 'dbo_crud_pages_subtables';
+        $table_name = 'dbo_crud_page_subtables';
         $builder = $this->db->table($table_name);
 
         $filter[$table_name. '.page_id'] = $id;
@@ -131,7 +131,7 @@ class Mpages extends Mcrud_ext
         $filter[$table_name. '.is_deleted'] = 0;
 
         $builder->select($table_name. '.*, lookup2.name as subtable_name');
-        //$builder->join('dbo_crud_tables lookup1', 'lookup1.id=dbo_crud_pages_subtables.table_id AND lookup1.is_deleted=0', 'LEFT OUTER');
+        //$builder->join('dbo_crud_tables lookup1', 'lookup1.id=dbo_crud_page_subtables.table_id AND lookup1.is_deleted=0', 'LEFT OUTER');
         $builder->join('dbo_crud_tables lookup2', 'lookup2.id=' .$table_name. '.subtable_id AND lookup2.is_deleted=0', 'LEFT OUTER');
         $builder->orderBy($table_name. '.order_no asc');
         $builder->where($filter);

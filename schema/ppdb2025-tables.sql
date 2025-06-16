@@ -699,7 +699,7 @@ CREATE TABLE `dbo_crud_pages` (
   UNIQUE KEY `uq_pages_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `dbo_crud_pages_subtables` (
+CREATE TABLE `dbo_crud_page_subtables` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` int(11) NOT NULL,
   `subtable_id` int(11) NOT NULL,
