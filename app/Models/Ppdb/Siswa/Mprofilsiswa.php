@@ -403,7 +403,7 @@ Class Mprofilsiswa
         $putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->ro->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,
+		$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,c.nama AS jalur,
 							a.nomor_pendaftaran,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,
 							a.peringkat,a.skor,a.kelengkapan_berkas,a.status_penerimaan_final,a.peringkat_final,
 							a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,b.status as status_sekolah,
@@ -454,7 +454,7 @@ Class Mprofilsiswa
         //SEMUA PUTARAN
 
 		$builder = $this->ro->table('tcg_pendaftaran a');
-		$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,d.nama AS jalur,
+		$builder->select('a.pendaftaran_id,a.penerapan_id,d.jalur_id,c.nama AS jalur,
 							a.nomor_pendaftaran,a.jenis_pilihan,a.status_penerimaan,a.cabut_berkas,a.masuk_jenis_pilihan,
 							a.peringkat,a.skor,a.kelengkapan_berkas,a.status_penerimaan_final,a.peringkat_final,
 							a.sekolah_id,b.npsn,b.nama AS sekolah,b.bentuk,b.status as status_sekolah,

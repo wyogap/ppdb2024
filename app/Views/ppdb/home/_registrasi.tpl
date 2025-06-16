@@ -102,6 +102,8 @@
 
         $('select[name="kode_kabupaten"]').on('change', function() {
             let val = $("#kode_kabupaten").val();
+            if (val === undefined || val == null || val == '') return;
+
             var data = { kode_wilayah:val };
             $.ajax({
                 type: "POST",
@@ -119,6 +121,8 @@
 
         $('select[name="kode_kecamatan"]').on('change', function() {
             let val = $("#kode_kecamatan").val();
+            if (val === undefined || val == null || val == '') return;
+
             var data = { kode_wilayah:val };
             $.ajax({
                 type: "POST",

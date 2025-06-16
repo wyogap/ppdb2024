@@ -301,10 +301,11 @@ if ( ! function_exists('audit_siswa'))
 
         $client = new \GuzzleHttp\Client(['verify' => false ]);
         $req = $client->request('GET', $url);
+
         $resp = $req->getBody();
 
         if ($resp == null) {
-            print_json_error("Tidak berhasil mendapatkan data dapodik.");
+            print_json_error("Tidak berhasil mendapatkan data DAPODIK.");
         }
 
         $profil = json_decode($resp);
@@ -342,11 +343,20 @@ if ( ! function_exists('audit_siswa'))
 
                 $resp = (string) $req->getBody();
                 $html = str_get_html($resp);
-                
+
                 $tabs = $html->find('.tabby-tab');
                 if (empty($tabs) || !is_array($tabs)) continue;
 
-                $tab = $tabs[0];
+                //get tab identitas
+                foreach($tabs as $t) {
+                    if ($t->find("#tab-1") != null) {
+                        $tab = $t;
+                        break;
+                    }
+                }
+				if (empty($tab) || !is_array($tab)) continue;
+
+                //get data
                 $tr = $tab->find("tr");
                 foreach($tr as $row) {
                     $td = $row->find("td");
@@ -359,8 +369,6 @@ if ( ! function_exists('audit_siswa'))
                     $arr[$field] = $value;
                 }
 
-                $tab = $html->find('.tabby-tab')[4];
-                $tr = $tab->find("tr");
             }
             catch(Exception $ex) {
                 continue;
@@ -369,7 +377,7 @@ if ( ! function_exists('audit_siswa'))
         while ($status_code != 200 && $retry < 3);
 
         if (empty($arr))    return null;
-
+        
         try {
             $str = $arr['NPSN'];
             $pos1 = strpos($str, "/profil/");

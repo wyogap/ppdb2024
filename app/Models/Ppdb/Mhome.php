@@ -389,14 +389,20 @@ Class Mhome
 	// 	return $this->ro->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
 	// }
 
-    //dipakai untuk registrasi sisw
+    //dipakai untuk registrasi siswa
 	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id=null,$alamat=null) {
 		//$uuid = $this->uuid();
 
         //get data wilayah
         $sql = "select * from ref_wilayah where kode_wilayah=? and is_deleted=0";
         $wilayah = $this->ro->query($sql, array($kode_wilayah))->getRowArray();
-        if ($wilayah == null)   return '';
+        if ($wilayah == null)   {
+            $wilayah = array();
+            $wilayah['nama_kec'] = null;
+            $wilayah['kode_wilayah_kec'] = null;
+            $wilayah['nama_kab'] = null;
+            $wilayah['kode_wilayah_kab'] = null;
+        };
 
 		$valuepair = array (
 			"nama" => $nama_sekolah,
@@ -437,10 +443,29 @@ Class Mhome
 	}    
 
     function tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa) {
-        $sql = "select kode_wilayah from ref_wilayah where nama_prov=? and nama_kab=? and nama_kec=? and nama_desa=? and is_deleted=0";
+        $nama_prov = strtoupper($nama_prov);
+        $nama_prov = str_replace($nama_prov, 'PROV.', '');
+        $nama_prov = str_replace($nama_prov, 'D.K.I.', '');     //Jakarta
+        $nama_prov = str_replace($nama_prov, 'DKI', '');        //Jakarta
+        $nama_prov = trim($nama_prov);
+        $nama_prov = '%' .$nama_prov. '%';
+        $nama_kab = strtoupper($nama_kab);
+        $nama_kab = str_replace($nama_kab, 'KOTA ADM.', '');    //Jakarta
+        $nama_kab = str_replace($nama_kab, 'KOTA', '');         //Kota
+        $nama_kab = str_replace($nama_kab, 'KAB.', '');         //Kabupaten
+        $nama_kab = trim($nama_kab);
+        $nama_kab = '%' .$nama_kab. '%';
+        $nama_kec = strtoupper($nama_kec);
+        $nama_kec = str_replace($nama_kec, 'KEC.', '');     //kecamatan
+        $nama_kec = str_replace($nama_kec, 'KEP.', '');     //kepanewon
+        $nama_kec = trim($nama_kec);
+        $nama_kec = '%' .$nama_kec. '%';
 
-        $result = $this->ro->query($sql, array($nama_prov, $nama_kab, $nama_kec, $nama_desa))->getRowArray();
-        if ($result == null) return null;
+        $sql = "select kode_wilayah from ref_wilayah where upper(nama_prov) like ? and upper(nama_kab) like ? and upper(nama_kec) like ? and upper(nama_desa)=? and is_deleted=0";
+        
+        $query = $this->ro->query($sql, array($nama_prov, $nama_kab, $nama_kec, $nama_desa));
+        $result = $query->getRowArray();
+        if ($result == null) return '000000';   //default: indonesia
 
         return $result['kode_wilayah'];
     }
