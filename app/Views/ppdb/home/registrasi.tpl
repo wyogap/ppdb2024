@@ -33,6 +33,15 @@
             height: 40px;
             padding: 0.5rem 1.5rem;
         }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--bs-gray-dark);
+        }
+
+        [data-theme-version="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: white;
+        }
+
     </style>
 
     <div class="row page-titles">

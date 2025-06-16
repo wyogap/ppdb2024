@@ -222,12 +222,13 @@ class Home extends PpdbController
 
         $profil = get_data_dapodik($nisn, $npsn);
         if ($profil == null) {
-            print_json_error("Tidak berhasil mendapatkan data siswa dari dapodik.", -91);
+            print_json_error("Tidak berhasil mendapatkan data siswa dari DAPODIK.", -91);
         }
 
+        //get data sekolah from local db
         $sekolah = get_profilsekolah_from_npsn($npsn);
         if ($sekolah == null) {
-            print_json_error("Tidak berhasil mendapatkan profil sekolah dari dapodik.", -92);
+            print_json_error("Tidak berhasil mendapatkan profil sekolah dari DAPODIK.", -92);
         }
 
         $profil['nama_sekolah'] = $sekolah['nama'];
@@ -330,23 +331,18 @@ class Home extends PpdbController
 
             //TODO: check for existing sekolah with the same npsn
             $sekolah = get_profilsekolah_from_npsn($data['npsn_sekolah']);
-            //$sekolah = $this->Mhome->tcg_profilsekolah_from_npsn($data['npsn_sekolah']);
-
-			if (empty($sekolah)) {
-				$npsn_sekolah = empty($data['npsn_sekolah']) ? "00000000" : $data['npsn_sekolah'];
-				$status_sekolah = 'S';
-                $kode_wilayah_sekolah = empty($data['kode_kabupaten_sekolah']) ? "030500" : $data['kode_kabupaten_sekolah'];
-                //echo $kode_wilayah_sekolah; exit;
-				//create sekolah id first
-				$data['sekolah_id'] = $this->Mhome->tcg_sekolah_baru($data['nama_sekolah'],$kode_wilayah_sekolah,$data['bentuk_sekolah'],$npsn_sekolah,$status_sekolah);
-				if ($data['sekolah_id'] == "") {
-                    $this->session->setFlashdata('error', "Tidak berhasil menambahkan data sekolah.");
-					break;
-				}
-			}
-            else {
-                $data['sekolah_id'] = $sekolah['sekolah_id'];
+            if (empty($sekolah)) {
+                $msg = "Tidak berhasil mendapatkan data sekolah dari DAPODIK. Pastikan NPSN sekolah sudah benar.";
+                $msg .= "<ul style='padding: inherit;'>";
+                $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah sudah benar, silahkan reload/refresh halaman ini untuk mencoba lagi.</li>";
+                $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah tidak diketahui, masukkan 00000000 untuk NPSN dan nama sekolah sesuai di ijazah kelulusan untuk Nama Sekolah.</li>";
+                $msg .= "<li style='list-style: inherit;'>Apabila calon siswa belum pernah sekolah, masukkan 00000000 untuk NPSN dan 'Belum Pernah Sekolah' untuk Nama Sekolah.</li>";
+                $msg .= "</ul>";
+                $this->session->setFlashdata('error', $msg);
+                break;
             }
+
+            $data['sekolah_id'] = $sekolah['sekolah_id'];
 
             $user = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
                                                                     $data['tempat_lahir'], $data['tanggal_lahir'], $data['nama_ibu_kandung'], $data['kebutuhan_khusus'], 
@@ -383,11 +379,11 @@ class Home extends PpdbController
             $data['cek_sosialisasi'] = 1;
         }
 
-        $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
-        if (!empty($batasanusia)) {
-            $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
-            $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
-        }
+        // $batasanusia = $this->Mconfig->tcg_batasanusia("SMP");
+        // if (!empty($batasanusia)) {
+        //     $data['maxtgllahir'] = $batasanusia['maksimal_tanggal_lahir'];
+        //     $data['mintgllahir'] = $batasanusia['minimal_tanggal_lahir'];
+        // }
 
         if (!$data['cek_registrasi']) {
             $data['waktu_registrasi'] = $this->Mconfig->tcg_wakturegistrasi();

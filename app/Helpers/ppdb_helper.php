@@ -318,26 +318,35 @@ if ( ! function_exists('audit_siswa'))
 
     function get_profilsekolah_from_npsn($npsn) {
         helper("dom");
+
         $mhome = new \App\Models\Ppdb\Mhome();
         $sekolah = $mhome->tcg_profilsekolah_from_npsn($npsn);
+        if (!empty($sekolah)) {
+            return $sekolah;
+        }
         
-        if (empty($sekolah)) {
-            $url = "https://referensi.data.kemdikbud.go.id/tabs.php?npsn=" .$npsn;
+        $url = "https://referensi.data.kemdikbud.go.id/tabs.php?npsn=" .$npsn;
 
-            $retry = 0;
-            $arr = array();
-            do {
+        $retry = 0;
+        $arr = array();
+        do {
+            $retry++;
+            $status_code = 0;
+
+            try {
                 $client = new \GuzzleHttp\Client(['verify' => false ]);
                 $req = $client->request('GET', $url, ['http_errors' => false]);
                 $status_code = $req->getStatusCode();
-                $retry++;
-    
+
                 if ($status_code != 200) continue;
-    
+
                 $resp = (string) $req->getBody();
                 $html = str_get_html($resp);
-    
-                $tab = $html->find('.tabby-tab')[0];
+                
+                $tabs = $html->find('.tabby-tab');
+                if (empty($tabs) || !is_array($tabs)) continue;
+
+                $tab = $tabs[0];
                 $tr = $tab->find("tr");
                 foreach($tr as $row) {
                     $td = $row->find("td");
@@ -352,10 +361,16 @@ if ( ! function_exists('audit_siswa'))
 
                 $tab = $html->find('.tabby-tab')[4];
                 $tr = $tab->find("tr");
-
+            }
+            catch(Exception $ex) {
+                continue;
             } 
-            while ($status_code != 200 && $retry < 3);
-    
+        } 
+        while ($status_code != 200 && $retry < 3);
+
+        if (empty($arr))    return null;
+
+        try {
             $str = $arr['NPSN'];
             $pos1 = strpos($str, "/profil/");
             $pos2 = strpos($str, "\">", $pos1+8);
@@ -371,12 +386,15 @@ if ( ! function_exists('audit_siswa'))
             $nama_kab = $arr['Kab.-Kota/Negara (LN)'];
             $nama_prov = trim(str_replace("PROV.", "", $arr['Propinsi/Luar Negeri (LN)']));
             $kode_wilayah = $mhome->tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa);
+        }
+        catch(Exception $ex) {
+            return null;
+        } 
 
-            //buat sekolah baru
-            $sekolah_id = $mhome->tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id,$alamat);
-            if ($sekolah_id > 0) {
-                $sekolah = $mhome->tcg_profilsekolah_from_npsn($npsn);
-            }
+        //buat sekolah baru
+        $sekolah_id = $mhome->tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id,$alamat);
+        if ($sekolah_id > 0) {
+            $sekolah = $mhome->tcg_profilsekolah_from_npsn($npsn);
         }
 
         return $sekolah;
