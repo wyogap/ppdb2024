@@ -186,12 +186,14 @@
 						<span class="nav-text">Daftar Siswa</span>
 						</a>
                     </li>
+                    {if $profilsekolah.ikut_ppdb}
                     <li data-bs-toggle="tooltip" data-bs-placement="right" title="Penerimaan">
                         <a id="menu-hasil" class="ai-icon" href="{$site_url}ppdb/dapodik/penerimaan" aria-expanded="false" >
 							<i class="flaticon-012-checkmark"></i>
 							<span class="nav-text">Penerimaan</span>
 						</a>
                     </li>
+                    {/if}
                 </ul>
 				<div class="copyright">
                     <p><strong>Copyright &copy; 2020 <a href="javascript:void(0)">{$nama_wilayah}</a>.</strong> All rights reserved.</p>

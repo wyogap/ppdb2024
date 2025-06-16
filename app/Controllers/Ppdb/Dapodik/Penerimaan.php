@@ -37,8 +37,16 @@ class Penerimaan extends PpdbController {
 	function index()
 	{
         $sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
 
         $data['profilsekolah'] = $this->session->get("profilsekolah");
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
+
         $jenjang_id=$this->session->get("jenjang_aktif");
         //$nama_jenjang=$this->session->get("nama_jenjang_aktif");
 
@@ -64,7 +72,6 @@ class Penerimaan extends PpdbController {
         }
 
         //$data['kuota'] = $this->Msekolah->tcg_kuota_sd($sekolah_id);
-        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
 
         //debugging
         if (__DEBUGGING__) {

@@ -64,15 +64,16 @@ class Dinas extends CrudController {
 
         $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
         $profilsekolah = $msekolah->tcg_profilsekolah($impersonasi_sekolah_id);
-        if ($profilsekolah['bentuk'] == 'SD' or $profilsekolah['bentuk'] == 'MI') {
-            return redirect()->to(site_url() ."ppdb/dapodik/penerimaan");
+        if ($profilsekolah['bentuk'] == 'SMP') {
+            return redirect()->to(site_url() ."ppdb/sekolah/beranda");
         }
-        else if ($profilsekolah['bentuk'] == 'SMP') {
-            return redirect()->to(site_url() ."ppdb/sekolah/verifikasi");
+        else if ($profilsekolah['bentuk'] == 'SD' or $profilsekolah['bentuk'] == 'MI' or $profilsekolah['bentuk'] == 'TK') {
+            return redirect()->to(site_url() ."ppdb/dapodik/daftarsiswa");
         }
         else {
-            theme_404_with_navigation($this->navigation);
-            return;
+            return redirect()->to(site_url() ."ppdb/dapodik/daftarsiswa");
+            // theme_404_with_navigation($this->navigation);
+            // return;
         }
 	}
 

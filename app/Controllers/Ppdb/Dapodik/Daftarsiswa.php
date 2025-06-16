@@ -31,9 +31,18 @@ class Daftarsiswa extends PpdbController {
 
 	function index()
 	{
-		//$sekolah_id = $this->session->get("sekolah_id");
+		$sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
 
         $data['profilsekolah'] = $this->session->get("profilsekolah");;
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
+
+        //var_dump($data['profilsekolah']); exit;
 
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
@@ -41,7 +50,6 @@ class Daftarsiswa extends PpdbController {
 
         $data['kabupaten'] = $this->Mconfig->tcg_kabupaten();
 
-        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
 		$data['cek_waktusosialisasi'] = $this->Mconfig->tcg_cek_waktusosialisasi();
 		$data['cek_waktuperbaikandata'] = $this->Mconfig->tcg_cek_waktuperbaikandata();
 
