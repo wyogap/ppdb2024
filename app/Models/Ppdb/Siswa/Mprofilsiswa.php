@@ -1312,6 +1312,7 @@ Class Mprofilsiswa
         $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, null);
     }
 
+    /*
     function tcg_generate_dok_pendukung($siswa) {
         //dok wajib
         $sql = "insert into tcg_dokumen_pendukung (
@@ -1417,6 +1418,6 @@ Class Mprofilsiswa
         //         where b.daftar_kelengkapan_id is null and a.is_deleted=0 and a.tambahan=1 and a.peserta_didik_id=71551
         // ";
     }
-
+    */
 }
 
