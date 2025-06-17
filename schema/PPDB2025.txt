@@ -26,21 +26,40 @@ x Configure jalur penerimaan SMP:
   -> tidak ada jalur khusus swasta
 x Retest: api untuk cek siswa/sekolah dari dapodik di proses registrasi
 - Add notifikasi WA untuk status registrasi
-- Add notifikasi WA untuk reset password
+x Add notifikasi WA untuk reset password
 - Daftar panitia SPMB SMP
-- Daftar SMP swasta yang ikut SPMB
+x Daftar SMP swasta yang ikut SPMB
 x Configure GCP infrastructure with load balancer and autoscaling
-- Redirect DNS
+x Redirect DNS
 - Test load balancer and autoscaling
 
 Test admin sd: sdn2klirong
 Test admin smp: smpn1klirong@ppdb.go.id
-Test siswa: nisn: 3121349137, id: 28680
+Test siswa: nisn: 3121349137, id: 28680, npsn=20305593
+test siswa afirmasi: nisn: 3113800459, id=8196
+id=71551, nisn=1234567898
 
 nilai rapor - rata-rata 5 semester atau hanya kelas 6?
 dok pendukung untuk juara sekolah.
 TODO:
 x Kata Zonasi -> domisili
-- Buka akses untuk masukkan data afirmasi di profil siswa (yang belum masuk database terpadu)
-- Update perhitungan prestasi smp
+x Buka akses untuk masukkan data afirmasi di profil siswa (yang belum masuk database terpadu)
+x Update perhitungan prestasi smp
 x Perlu update jarak ring domisili
+
+#!/usr/bin/bash
+cd /var/www/spmb
+git fetch
+git reset --hard HEAD
+git merge '@{u}'
+mv app/Config/Database.php app/Config/Database.php.bak
+ln -s Database-spmb2025.php app/Config/Database.php
+
+sudo apt-get install php8.2-gd
+
+gcloud beta sql instances patch spmb-replica2 --node-count=1
+
+gcloud sql instances delete spmb-replica1
+
+https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=16F236D8-1153-4B69-B9EF-CC99FEDE2D65&nisn=3137107748
+&npsn=20105082
