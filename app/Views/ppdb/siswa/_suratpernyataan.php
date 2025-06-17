@@ -46,7 +46,7 @@
 
 		<img src="<?php echo $base64; ?>" height="50px" width="50px">
 		<div align="center">
-			<b>SURAT PERNYATAAN KEBENARAN DOKUMEN<br>PENERIMAAN PESERTA DIDIK BARU (PPDB) ONLINE <?php echo strtoupper($wilayah_aktif);?><br>TAHUN <?php echo $nama_tahun_ajaran_aktif; ?></b>
+			<b>SURAT PERNYATAAN KEBENARAN DOKUMEN<br>SISTEM PENERIMAAN MURID BARU (SPMB) ONLINE <?php echo strtoupper($wilayah_aktif);?><br>TAHUN <?php echo $nama_tahun_ajaran_aktif; ?></b>
 		</div><br>
 		<p>Yang bertanda tangan di bawah ini :</p>
 		<table>
