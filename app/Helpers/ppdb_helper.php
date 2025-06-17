@@ -258,7 +258,7 @@ if ( ! function_exists('audit_siswa'))
             //kelengkapan
             $kelengkapan = $msiswa->tcg_kelengkapanpendaftaran($pendaftaran_id);
             foreach ($kelengkapan as $k2 => $i) {
-                $kelengkapan[$k2]['status_ok'] = ($i['verifikasi']==1);
+                $kelengkapan[$k2]['status_ok'] = ($i['verifikasi']==1 || $i['verifikasi']==4);
                 $kelengkapan[$k2]['status_notok'] = ($i['verifikasi']==2);
                 $kelengkapan[$k2]['status_tidakada'] = ($i['verifikasi']==3);
                 $kelengkapan[$k2]['status_dalamproses'] = (!$kelengkapan[$k2]['status_ok'] && !$kelengkapan[$k2]['status_notok'] && !$kelengkapan[$k2]['status_tidakada']);

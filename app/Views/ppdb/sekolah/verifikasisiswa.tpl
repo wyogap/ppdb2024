@@ -815,7 +815,7 @@
             tcg-field='punya_dokumen_pendukung' tcg-field-type='toggle' tcg-field-false='hide' tcg-field-true='show'>
         <div class="accordion-header rounded-lg collapsed" id="dokumen-header" data-bs-toggle="collapse" data-bs-target="#dokumen-content" aria-controls="dokumen-content" aria-expanded="true" role="button">
             <span class="accordion-header-icon"></span>
-        <span class="accordion-header-text">Dokumen Pendukung</span>
+        <span class="accordion-header-text">Dokumen Pendukung <span class='status'></span></span>
         <span class="accordion-header-indicator"></span>
         </div>
         <div id="dokumen-content" class="collapse accordion__body" aria-labelledby="dokumen-header" data-bs-parent="#profil-siswa" style="">

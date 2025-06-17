@@ -125,7 +125,7 @@ class Verifikasi extends PpdbController {
             if ($v['verifikasi'] == 0) {
                 $dokumenpendukung[ $k ]['status'] = "Belum Diverifikasi";
             }
-            else if ($v['verifikasi'] == 1) {
+            else if ($v['verifikasi'] == 1 || $v['verifikasi'] == 4) {
                 $dokumenpendukung[ $k ]['status'] = "Sudah BENAR";
                 $dokumenpendukung[ $k ]['verifikasi1'] = 1;
             }
@@ -162,14 +162,15 @@ class Verifikasi extends PpdbController {
 
 		//only can verify within the specified timeframe
 		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
         $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
 
         //debugging
         if (__DEBUGGING__) {
-            $cek_waktuverifikasi = 1;
+            $cek_waktusosialisasi = 1;
         }
 
-        if ($cek_waktuverifikasi != 1 && $impersonasi_sekolah != 1) {
+        if ($cek_waktuverifikasi != 1 && $cek_waktusosialisasi != 1 && $impersonasi_sekolah != 1) {
             print_json_error("Tidak sedang tahapan verifikasi");
         }
 

@@ -7,28 +7,35 @@
             <td><span id="row-span-dokumen-{{daftar_kelengkapan_id}}"><i class="glyphicon glyphicon-edit"></i> </span><b>{{nama}}</span></b></td>
             <td>:</td>
             <td style="width: 50%;">
+                {{^flag_upload_dokumen}}
+                Dicocokkan di sekolah tujuan
+                {{/flag_upload_dokumen}}
+                {{#flag_upload_dokumen}}
+                <span tcg-doc-id="{{daftar_kelengkapan_id}}" class="dok-value" style="display: none;">{{verifikasi}}</span>
                 <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
-                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input primary dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-1" value="1" {{#verifikasi1}}checked{{/verifikasi1}}>
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input primary dok-pendukung" type="radio" tcg-doc-value="{{verifikasi}}"
+                        name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-1" value="1" {{#verifikasi1}}checked{{/verifikasi1}}>
                     <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-1" style="margin-bottom: 0px;">SUDAH Benar</label>
                 </div>
                 <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
-                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input danger dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-2" value="2" {{#verifikasi2}}checked{{/verifikasi2}}>
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input danger dok-pendukung" type="radio" tcg-doc-value="{{verifikasi}}"
+                        name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-2" value="2" {{#verifikasi2}}checked{{/verifikasi2}}>
                     <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-2" style="margin-bottom: 0px;">BELUM Benar</label>
                 </div>
                 <div class="form-check form-check-inline" style="align-items: center; display: inline-flex;">
-                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input gray dok-pendukung" type="radio" name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-3" value="3" {{#verifikasi3}}checked{{/verifikasi3}}>
+                    <input tcg-doc-id="{{daftar_kelengkapan_id}}" class="form-check-input gray dok-pendukung" type="radio" tcg-doc-value="{{verifikasi}}" 
+                        name="dok-{{daftar_kelengkapan_id}}" id="dok-{{daftar_kelengkapan_id}}-3" value="3" {{#verifikasi3}}checked{{/verifikasi3}}>
                     <label class="form-check-label" for="dok-{{daftar_kelengkapan_id}}-3" style="margin-bottom: 0px;">Tidak Ada</label>
                 </div>
-                {{#flag_upload_dokumen}}
-                    <img id="dokumen-{{daftar_kelengkapan_id}}" class="img-view-thumbnail" tcg-doc-id="{{daftar_kelengkapan_id}}"
-                            src="{{thumbnail_path}}" 
-                            img-path="{{web_path}}" 
-                            img-title="{{nama}}"
-                            img-id="{{dokumen_id}}" 
-                            style="display:none; "/>  
-                    <button id="unggah-dokumen-{{daftar_kelengkapan_id}}" tcg-doc-id="{{daftar_kelengkapan_id}}" class="img-view-button" 
-                        data-editor-field="dokumen_{{daftar_kelengkapan_id}}" data-editor-value="{{dokumen_id}}" >Unggah</button>
-                    <div id="msg-dokumen-{{daftar_kelengkapan_id}}" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                <img id="dokumen-{{daftar_kelengkapan_id}}" class="img-view-thumbnail" tcg-doc-id="{{daftar_kelengkapan_id}}"
+                        src="{{thumbnail_path}}" 
+                        img-path="{{web_path}}" 
+                        img-title="{{nama}}"
+                        img-id="{{dokumen_id}}" 
+                        style="display:none; "/>  
+                <button id="unggah-dokumen-{{daftar_kelengkapan_id}}" tcg-doc-id="{{daftar_kelengkapan_id}}" class="img-view-button" 
+                    data-editor-field="dokumen_{{daftar_kelengkapan_id}}" data-editor-value="{{dokumen_id}}" >Unggah</button>
+                <div id="msg-dokumen-{{daftar_kelengkapan_id}}" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
                 {{/flag_upload_dokumen}}
              </td>
         </tr>
@@ -634,13 +641,64 @@
 			});
 		});
 
-        $(".dok-pendukung").on("change", function(e) {
-            //TODO: check status all dok-pendukung and update the card colour accordingly
-        });
 
 
     });
 
+    function dokpendukung_onchange(e) {
+        if (!this.checked)  return;
+
+        //check status all dok-pendukung and update the card colour accordingly
+        el = $(this);
+        val = el.val();
+
+        let card = $("#dokumen");
+        if (val == 2 || val == 3) {
+            card.removeClass("status-warning");
+            card.addClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Lengkap*');
+            return;
+        }
+
+        sudahlengkap = 1;
+        belumverifikasi = 1;
+
+        values = $(".dok-value");
+        elements = $(".dok-pendukung");
+        values.each(function(dom) {
+            el = $(this);
+            let docid = el.attr('tcg-doc-id');
+
+            //el = $(".dok-pendukung[tcg-doc-id='" +docid+ "']:checked"); //
+            //Important: jquery.find() only return first match, and somehow it doesnt work well with attribute search
+            el = elements.filter("[tcg-doc-id='" +docid+ "']:checked");
+            if (el.length == 0) {
+                sudahlengkap = 0;
+                return;
+            }
+
+            val = el.val();
+            if (val!=1 && val!=4) sudahlengkap = 0;
+            if (val!=0) belumverifikasi = 0;
+        });
+
+        if (belumverifikasi) {
+            card.addClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
+        }
+        else if (sudahlengkap){
+            card.removeClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('');
+        }
+        else {
+            card.removeClass("status-warning");
+            card.addClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Lengkap*');
+        }
+    }
+    
     function show_profile(profil, dokumen) {
  
         //additional fields
@@ -772,6 +830,9 @@
  
             let parent = $("#daftar-dokumen-wrapper");
             parent.html(dom);
+            
+            //event handler
+            parent.on('change', '.dok-pendukung', dokpendukung_onchange);
 
             $("#dokumen").show();
         }
@@ -926,6 +987,53 @@
 
         });
         
+        //dokumen pendukung
+        {if $flag_upload_dokumen}
+        //show status verifikasi
+        sudahlengkap = 1;
+        belumverifikasi = 1;
+
+        values = $(".dok-value");
+        elements = $(".dok-pendukung");
+        values.each(function(dom) {
+            el = $(this);
+            let docid = el.attr('tcg-doc-id');
+
+            //Important: jquery.find() only return first match, and somehow it doesnt work well with attribute search
+            el = elements.filter("[tcg-doc-id='" +docid+ "']:checked");
+            if (el.length == 0) {
+                sudahbenar = 0;
+                return;
+            }
+
+            val = el.val();
+            if (val!=1 && val!=4) sudahlengkap = 0;
+            if (val!=0) belumverifikasi = 0;
+        });
+
+        let card = $("#dokumen");
+        if (belumverifikasi) {
+            card.addClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Diverifikasi*');
+        }
+        else if (sudahlengkap){
+            card.removeClass("status-warning");
+            card.removeClass("status-danger");
+            card.find(".accordion-header-text .status").html('');
+        }
+        else {
+            card.removeClass("status-warning");
+            card.addClass("status-danger");
+            card.find(".accordion-header-text .status").html('*Belum Lengkap*');
+        }
+        {else}
+        let card = $("#dokumen");
+        card.removeClass("status-warning");
+        card.removeClass("status-danger");
+        card.find(".accordion-header-text .status").html('');
+        {/if}
+
         // //special case
         // dtprestasi.buttons( 0, null ).container().hide();
 
@@ -1072,7 +1180,7 @@
         tosubmit = true;
 
         tags.forEach(function(key) {
-            let elements = $("[tcg-tag='" +key+ "']");
+            elements = $("[tcg-tag='" +key+ "']");
             elements.each(function(idx) {
                 el = $(this);
 
@@ -1080,8 +1188,8 @@
                 let field = el.attr('tcg-field');
                 if (field == null || field == '') return;
 
-                let tosubmit = el.attr("tcg-field-submit");
-                if (!tosubmit || tosubmit == 0) return;
+                let submit = el.attr("tcg-field-submit");
+                if (!submit || submit == 0) return;
 
                 val = el.val();
                 oldval = profil[field];
@@ -1141,7 +1249,37 @@
             return false;
         }
 
-        if (Object.keys(updated).length == 0) {
+        //check verifikasi dokumen pendukung
+        dokumen = {};
+
+        {if $flag_upload_dokumen}
+        values = $(".dok-value");
+        elements = $(".dok-pendukung");
+        values.each(function(dom) {
+            el = $(this);
+            let docid = el.attr('tcg-doc-id');
+
+            //get old/original value
+            oldval = el.text();
+            if (oldval === undefined || isNaN(oldval))   oldval = 0
+            else oldval = parseInt(oldval);
+
+            //get current value
+            val = 0;
+            el = elements.filter("[tcg-doc-id='" +docid+ "']:checked");
+            if (el.length > 0) {
+                val = el.val();
+            }
+
+            //only send updated value
+            if (val != oldval) {
+                dokumen[docid] = val;
+            }
+        });
+        {/if}
+
+        //Important: must use Object.keys(updated).length because updated.length == undefined
+        if (Object.keys(updated).length == 0 && Object.keys(dokumen).length == 0) {
             toastr.info("Tidak ada perubahan data verifikasi an. " +profil['nama']);
             close_verifikasi();
             return true;
@@ -1152,7 +1290,7 @@
         json['peserta_didik_id'] = profil['peserta_didik_id'];
         json['data'] = {};
         json['data']['profil'] = updated;
-        json['data']['dokumen'] = null;
+        json['data']['dokumen'] = dokumen;
 
         //console.log(json);
 
