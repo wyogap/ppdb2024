@@ -13,6 +13,7 @@ class Profil extends PpdbController {
     protected static $ROLE_ID = ROLEID_DAPODIK;      
 
     protected $Mauth;
+    protected $Msekolah;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -24,7 +25,7 @@ class Profil extends PpdbController {
 
         //load model
         $this->Mauth = new Mauth();
-
+        $this->Msekolah = new Mprofilsekolah();
     }
 
 	function index()
@@ -33,6 +34,17 @@ class Profil extends PpdbController {
         if (empty($user_id)) {
 			return $this->notauthorized();
 		}
+
+        $sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+			return $this->notauthorized();
+		}
+
+        $data['profilsekolah'] = $this->session->get("profilsekolah");
+        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        if ($data['impersonasi_sekolah'] == 1) {
+            $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
 
         $jenjang_id = $this->session->get('jenjang_aktif');
         $data['profil'] = $this->Mauth->get_profile($user_id);
