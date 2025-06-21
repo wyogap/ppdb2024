@@ -47,8 +47,22 @@ class Penerimaan extends PpdbController {
             $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
 
-        $jenjang_id=$this->session->get("jenjang_aktif");
-        //$nama_jenjang=$this->session->get("nama_jenjang_aktif");
+        $jenjang_id=JENJANGID_SMP;
+        $nama_jenjang='SMP';
+        if ($data['profilsekolah']['bentuk'] == 'SD' || $data['profilsekolah']['bentuk'] == 'MI') {
+            $jenjang_id=JENJANGID_SD;
+            $nama_jenjang='SD';
+        }
+        else if ($data['profilsekolah']['bentuk'] == 'TK') {
+            $jenjang_id=JENJANGID_TK;
+            $nama_jenjang='TK';
+        }
+
+        //enforce
+        $this->session->set("jenjang_aktif", $jenjang_id);
+        $this->session->get("nama_jenjang_aktif", $nama_jenjang);
+
+        $data['nama_jenjang'] = $nama_jenjang;
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
@@ -63,6 +77,7 @@ class Penerimaan extends PpdbController {
         else {
             $data['cek_waktupendaftaran'] = ($data['waktupendaftaran']['aktif'] == 1) ? 1 : 0;
         }
+
         $data['waktusosialisasi'] = $this->Mconfig->tcg_waktusosialisasi();
         if (empty($data['waktusosialisasi'])) {
             $data['cek_waktusosialisasi'] = 0;
@@ -70,12 +85,21 @@ class Penerimaan extends PpdbController {
         else {
             $data['cek_waktusosialisasi'] = ($data['waktusosialisasi']['aktif'] == 1) ? 1 : 0;
         }
+        
+        $data['waktudaftarulang'] = $this->Mconfig->tcg_waktudaftarulang();
+        if (empty($data['waktudaftarulang'])) {
+            $data['cek_waktudaftarulang'] = 0;
+        }
+        else {
+            $data['cek_waktudaftarulang'] = ($data['waktudaftarulang']['aktif'] == 1) ? 1 : 0;
+        }
 
         //$data['kuota'] = $this->Msekolah->tcg_kuota_sd($sekolah_id);
 
         //debugging
         if (__DEBUGGING__) {
             $data['cek_waktusosialisasi']=1;
+            //$data['cek_waktudaftarulang']=1;
         }
 
         // var_dump($jenjang_id);
@@ -139,7 +163,15 @@ class Penerimaan extends PpdbController {
                 }
             }
 
-			print_json_output($result, 1);
+			$info = $this->Msekolah->tcg_infopenerapan($sekolah_id, $penerapan_id);
+            if ($info == null) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    print_json_error($error);
+                }
+            }
+
+			print_json_output($result, 1, $info);
 		}
         else if ($action=='remove') {
 			$sekolah_id = $this->session->get("sekolah_id");
@@ -191,6 +223,42 @@ class Penerimaan extends PpdbController {
             }
 
             print_json_output($daftar, 1);
+        }
+        else if ($action=='daftarulang') {
+			$sekolah_id = $this->session->get("sekolah_id");
+            $pendaftaran_id = $this->request->getPostGet('pendaftaran_id');
+
+            $status = $this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,1);
+            if (!$status) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    print_json_error($error);
+                } else {
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+            }
+
+            //audit trail -> already done in tcg_ubah_daftarulang()
+
+			print_json_output(array());
+        }
+        else if ($action=='bataldu') {
+			$sekolah_id = $this->session->get("sekolah_id");
+            $pendaftaran_id = $this->request->getPostGet('pendaftaran_id');
+
+            $status = $this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,0);
+            if (!$status) {
+                $error = $this->Msekolah->get_error_message();
+                if (!empty($error)) {
+                    print_json_error($error);
+                } else {
+                    print_json_error('Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.');
+                }
+            }
+
+            //audit trail -> already done in tcg_ubah_daftarulang()
+
+			print_json_output(array());
         }
 		else {
 			$data['error'] = "not-implemented"; 
@@ -514,10 +582,14 @@ class Penerimaan extends PpdbController {
         //     $penerapan_id = 0;
         // };
 
+        $sekolah_id = $this->session->get("sekolah_id");
+        if (empty($sekolah_id)) {
+            print_json_error("not-authorized");
+		}
+
         $jenjang_id = $this->session->get("jenjang_aktif");
         // $nama_jenjang = $this->session->get("nama_jenjang_aktif");
 
-        $sekolah_id = $this->session->get("sekolah_id");
         $daftarpenerapan = $this->session->get("daftarpenerapan");
 
         $values = $this->request->getPost("data");
@@ -567,9 +639,11 @@ class Penerimaan extends PpdbController {
             }
 
             //batasan usia
-            //var_dump($jenjang_id); exit;
             $batasan_usia = $this->Mconfig->tcg_batasanusia($jenjang_id);
             $siswa = $this->Msiswa->tcg_profilsiswa($peserta_didik_id);
+
+            // var_dump($jenjang_id); 
+            // var_dump($batasan_usia); exit;
 
             if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
                 print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
@@ -580,12 +654,13 @@ class Penerimaan extends PpdbController {
             }            
 
             //kalau pakai jalur afirmasi, cek masuk data afirmasi
-            if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
-                $nik = $siswa['nik'];
-                if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
-                    print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
-                }
-            }
+            //important: data afirmasi yand di sistem tidak mengcover semua data afirmasi
+            // if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+            //     $nik = $siswa['nik'];
+            //     if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+            //         print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+            //     }
+            // }
 
             $pendaftaran = $this->Msekolah->tcg_terima_pendaftar_sd($sekolah_id, $peserta_didik_id, $penerapan_id);
             if (!$pendaftaran) {

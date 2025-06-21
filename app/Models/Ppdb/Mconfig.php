@@ -40,7 +40,9 @@ Class Mconfig
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -69,7 +71,9 @@ Class Mconfig
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -101,7 +105,9 @@ Class Mconfig
         }
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -139,7 +145,9 @@ Class Mconfig
         }
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -174,7 +182,9 @@ Class Mconfig
         }
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -210,7 +220,9 @@ Class Mconfig
         }
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -242,7 +254,9 @@ Class Mconfig
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
+		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
+		$builder->select('ADDTIME(a.tanggal_selesai,"'.APP_GMTOFFSET.'") as tanggal_selesai_aktif');
+		$builder->select('a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
 		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
@@ -267,34 +281,11 @@ Class Mconfig
 	}
 
 	function tcg_waktupendaftaran_sd(){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		$putaran = $this->session->get('putaran_aktif');
-		$jenjang_id = $this->session->get('jenjang_aktif');
-
-		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
-		$builder->select('a.tanggal_mulai as tanggal_mulai_aktif,a.tanggal_selesai as tanggal_selesai_aktif, a.notifikasi_umum, a.notifikasi_siswa, a.notifikasi_sekolah');
-		$builder->select('case when a.tanggal_mulai < now() and a.tanggal_selesai < now() then 0 
-                                when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
-                                else 1 end as aktif');
-		$builder->where(array('a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.putaran'=>$putaran,'a.jenjang_id'=>$jenjang_id,'a.tahapan_id'=>TAHAPANID_PENDAFTARAN,'a.is_deleted'=>0));
-		return $builder->get()->getRowArray();
+		return $this->tcg_waktupendaftaran(JENJANGID_SD);
 	}
 
 	function tcg_cek_waktupendaftaran_sd(){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		$putaran = $this->session->get('putaran_aktif');
-		$jenjang_id = $this->session->get('jenjang_aktif');
-
-		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
-				  where a.tahapan_id=" .TAHAPANID_PENDAFTARAN. " and a.is_deleted=0 and a.tahun_ajaran_id='$tahun_ajaran_id' and a.putaran='$putaran'
-						 and a.jenjang_id='$jenjang_id' and a.tanggal_mulai <= now() and a.tanggal_selesai >= now()";
-		
-		$dalamperiode=0;
-		foreach($this->ro->query($query)->getResult() as $row):
-			$dalamperiode = $row->jumlah;
-		endforeach;
-
-		return $dalamperiode;
+		return $this->tcg_cek_waktupendaftaran_sd(JENJANGID_SD);;
 	}
 
 	function tcg_batasanusia($jenjang_id=0){
@@ -314,7 +305,6 @@ Class Mconfig
 
 		return $this->ro->query($query)->getRowArray();
 	}
-
     
 	function tcg_batasanperubahan(){
 		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');

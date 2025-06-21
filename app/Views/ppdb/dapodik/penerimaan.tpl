@@ -8,10 +8,10 @@
     </ol>
 </div>
 
-{if $cek_waktupendaftaran!=1 && !empty($waktupendaftaran_sd)}
+{if $cek_waktupendaftaran!=1 && !empty($waktupendaftaran)}
 <div class="alert alert-secondary" role='alert'>
-    Periode pendaftaran SD adalah dari tanggal <b><span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
-        <span class='tgl-indo'>{$waktupendaftaran_sd.tanggal_selesai_aktif}</span></b>.      
+    Periode pendaftaran {$nama_jenjang} adalah dari tanggal <b><span class='tgl-indo'>{$waktupendaftaran.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b>
+        <span class='tgl-indo'>{$waktupendaftaran.tanggal_selesai_aktif}</span></b>.      
 </div>
 {/if}
 
@@ -21,7 +21,12 @@
 </div>
 {/if}
 
-{if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+{if $cek_waktupendaftaran!=1 && $cek_waktusosialisasi!=1 && $cek_waktudaftarulang!=1}
+<div class="alert alert-primary" role="alert">
+    <b>TIDAK DALAM PERIODE PENDAFTARAN/DAFTAR ULANG. DATA TIDAK DAPAT DIUBAH. </b>        
+</div>
+{/if}
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center justify-content-center" id="loading2" style="position: absolute; margin-top: 24px; margin-left: -12px;">
     <div class="loader" role="status">
         <span class="sr-only">Loading...</span>
@@ -39,10 +44,14 @@
             <a class="nav-link {if $idx==0 && empty($show_all_pendaftar)}active{/if}" href="#p{$row.penerapan_id}" data-bs-toggle="tab" style="min-height: 68px">
                 <span class="text-nowrap" {if !empty($row.tooltip)}data-bs-toggle="tooltip" title="{$row.tooltip}" data-placement="top" data-bs-html="true"{/if}>{$row.jalur}</span><br>
                 <span class="text-nowrap" style="color: #fff; ">
-                <span class="badge badge-secondary" data-bs-toggle="tooltip" title="Jumlah Kuota" data-placement="bottom" style="color: #000; ">{$row.kuota}</span>
-                {if $row.tambahan_kuota>0}<span class='badge badge-warning' data-bs-toggle="tooltip" title="Tambahan Kuota" data-placement="bottom" style="color: #000; ">{$row.tambahan_kuota}</span>{/if}
-                <span class="badge badge-primary" data-bs-toggle="tooltip" title="Jumlah Diterima" data-placement="bottom" style="color: #000; ">{$row.diterima}</span>
-                <span class="badge badge-light" data-bs-toggle="tooltip" title="Total Pendaftar" data-placement="bottom" style="color: #000; ">{$row.total_pendaftar}</span>
+                <span class="badge badge-secondary" data-bs-toggle="tooltip" title="Jumlah Kuota" data-placement="bottom" style="color: #000; "
+                    data-penerapan-id="{$row.penerapan_id}" data-tag="kuota">{$row.kuota}</span>
+                <span class='badge badge-warning' data-bs-toggle="tooltip" title="Tambahan Kuota" data-placement="bottom" style="color: #000; {if $row.tambahan_kuota==0}display: none;{/if}"
+                    data-penerapan-id="{$row.penerapan_id}" data-tag="tambahan_kuota">{$row.tambahan_kuota}</span>
+                <span class="badge badge-primary" data-bs-toggle="tooltip" title="Jumlah Diterima" data-placement="bottom" style="color: #000; "
+                    data-penerapan-id="{$row.penerapan_id}" data-tag="diterima">{$row.diterima}</span>
+                <span class="badge badge-light" data-bs-toggle="tooltip" title="Total Pendaftar" data-placement="bottom" style="color: #000; "
+                    data-penerapan-id="{$row.penerapan_id}" data-tag="total_pendaftar">{$row.total_pendaftar}</span>
                 </span>
             </a>
         </li>
@@ -67,7 +76,7 @@
                         <td class="text-center" data-priority="6">Sekolah Asal</td>
                         <td class="text-center" data-priority="5">Jalur</td>
                         <td class="text-center" data-priority="3">Status</td>
-                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktudaftarulang==1}
                         <td class="text-center" data-priority="2"></td>
                         {/if}
                     </tr>
@@ -108,6 +117,8 @@
     </div>
 </div>
 
+{* Tampilkan search selama masa pendaftaran, masa sosialisasi atau ketika masa pendaftaran belum mulai *}
+{if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $waktupendaftaran['aktif']==2}
 <div class="card box-solid">
     <div class="card-header">
     <h3 class="box-title">Pencarian</h3>
@@ -156,8 +167,10 @@
                             <td class="text-center">Jenis Kelamin</td>
                             <td class="text-center" data-priority="3">NISN</td>
                             <td class="text-center">NIK</td>
-                            <td class="text-center" data-priority="5">Tanggal Lahir</td>
+                            <td class="text-center" data-priority="6">Tanggal Lahir</td>
                             <td class="text-center">Asal Sekolah</td>
+                            <td class="text-center" data-priority="5">Afirmasi</td>
+                            <td class="text-center">Sumber Data BDT</td>
                             <td class="text-center" data-priority="4">Mendaftar Di</td>
                             {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
                             <td class="text-center" data-priority="2"></td>

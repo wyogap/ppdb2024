@@ -43,6 +43,7 @@ class Profil extends PpdbController {
         $data['profilsekolah'] = $this->session->get("profilsekolah");
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
         if ($data['impersonasi_sekolah'] == 1) {
+            //$sekolah_id = $this->request->getGetPost("sekolah_id");
             $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
 

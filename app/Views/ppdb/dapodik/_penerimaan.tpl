@@ -733,7 +733,7 @@
 					}
 
                 },
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktudaftarulang==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -743,8 +743,25 @@
 							return "";
 						}
 
-                        let str = "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
+                        let str = "";
+
+                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                        str += "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
 						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
+                        {/if}
+
+                        {if $cek_waktudaftarulang==1}
+                        //row['status_penerimaan_final']=3;
+                        //row['status_daftar_ulang']=1;
+                        if (row['status_penerimaan_final']==1 || row['status_penerimaan_final']==3) {
+                            if (row['status_daftar_ulang']==1) {
+					            str += "<button onclick='event.stopPropagation(); batal_du(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs me-1'>Batal DU</button>";
+                            }
+                            else {
+						        str += "<button onclick='event.stopPropagation(); daftar_ulang(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs me-1'>Daftar Ulang</button>";
+                            }
+                        }
+                        {/if}
 
 						return str;
 						// return "<button href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-danger'>Hapus</button>";
@@ -815,7 +832,7 @@
                 ],
                 "ajax": {
                     "type" : "POST",
-                    "url" : "{$site_url}ppdb/dapodik/penerimaan/json?penerapan_id="+{$row.penerapan_id},
+                    "url" : "{$site_url}ppdb/dapodik/penerimaan/json?penerapan_id={$row.penerapan_id}",
                     "dataSrc": function ( json ) {
                         //hide loader
                         $("#loading2").hide();
@@ -825,6 +842,25 @@
                             alert(json.error);
                             return [];
                         }
+
+                        //update the count in tab header
+                        if (json.ext!==undefined) {
+                            let el = $('[data-penerapan-id="{$row.penerapan_id}"][data-tag="kuota"]');
+                            el.text(json.ext.kuota);
+                            el = $('[data-penerapan-id="{$row.penerapan_id}"][data-tag="tambahan_kuota"]');
+                            if (json.ext.tambahan_kuota > 0) {
+                                el.text(json.ext.tambahan_kuota);
+                                el.show();
+                            }
+                            else {
+                                el.text(json.ext.tambahan_kuota);
+                                el.hide();
+                            }
+                            el = $('[data-penerapan-id="{$row.penerapan_id}"][data-tag="diterima"]');
+                            el.text(json.ext.diterima);
+                            el = $('[data-penerapan-id="{$row.penerapan_id}"][data-tag="total_pendaftar"]');
+                            el.text(json.ext.total_pendaftar);
+                        }                        
 
                         return json.data;
                     }       
@@ -1049,10 +1085,16 @@
 				//hide loader
 				//$("#loading2").show();
 				dt_siswa.ajax.reload();
-                
-                {foreach $daftarpenerapan as $row}
-                dt_{$row.penerapan_id}.ajax.reload();
-                {/foreach}
+
+                //update penerapan table if necessary
+                if (dt.settings()[0].sTableId == dt_siswa.settings()[0].sTableId) {
+                    {foreach $daftarpenerapan as $row}
+                    dt_{$row.penerapan_id}.ajax.reload();
+                    {/foreach}
+                }
+                else {
+                    dt.ajax.reload();
+                }
 				
                 //reload the search if necessary
                 cari_peserta_didik();
@@ -1180,6 +1222,93 @@
 			}
 		});
 	}
+
+	function daftar_ulang(row_id, dt, key) {
+		// add assoc key values, this will be posts values
+        let data = dt.rows(row_id).data();
+        var nama = data[0]['nama'];
+        var pendaftaran_id = data[0]['pendaftaran_id'];
+        var peserta_didik_id = data[0]['peserta_didik_id'];
+
+        // add assoc key values, this will be posts values
+		var formData = new FormData();
+		formData.append("pendaftaran_id", pendaftaran_id);
+		formData.append("peserta_didik_id", peserta_didik_id);
+		formData.append("action", "daftarulang");
+
+		$.ajax({
+			type: "POST",
+			url: "{$site_url}/ppdb/dapodik/penerimaan/json",
+			async: true,
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			timeout: 60000,
+			dataType: 'json',
+			success: function(json) {
+				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+					toastr.error("Tidak berhasil melakukan daftar ulang. " +json.error);
+					return;
+				}
+
+				//hide loader
+				//$("#loading2").show();
+				dt_siswa.ajax.reload();
+				
+                toastr.success("Daftar ulang an. " +nama+ " berhasil.");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error("Tidak berhasil melakukan daftar ulang. " +textStatus);
+
+				return;
+			}
+		});
+	}
+
+	function batal_du(row_id, dt, key) {
+		// add assoc key values, this will be posts values
+        let data = dt.rows(row_id).data();
+        var nama = data[0]['nama'];
+        var pendaftaran_id = data[0]['pendaftaran_id'];
+        var peserta_didik_id = data[0]['peserta_didik_id'];
+
+        // add assoc key values, this will be posts values
+		var formData = new FormData();
+		formData.append("pendaftaran_id", pendaftaran_id);
+		formData.append("peserta_didik_id", peserta_didik_id);
+		formData.append("action", "bataldu");
+
+		$.ajax({
+			type: "POST",
+			url: "{$site_url}/ppdb/dapodik/penerimaan/json",
+			async: true,
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			timeout: 60000,
+			dataType: 'json',
+			success: function(json) {
+				if (typeof json.error !== 'undefined' && json.error != "" && json.error != null) {
+					toastr.error("Tidak berhasil menghapus daftar ulang. " +json.error);
+					return;
+				}
+
+				//hide loader
+				//$("#loading2").show();
+				dt_siswa.ajax.reload();
+				
+                toastr.success("Daftar ulang an. " +nama+ " berhasil dihapus.");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+                toastr.error("Tidak berhasil menghapus daftar ulang. " +textStatus);
+
+				return;
+			}
+		});
+	}
+
 </script>
 
 <script>
@@ -1247,6 +1376,18 @@
 				},
 				{ data: "tanggal_lahir", className: 'dt-body-center text-nowrap' },
 				{ data: "sekolah", className: 'dt-body-left' },
+				{ 
+                    data: "masuk_bdt", className: 'dt-body-center',
+					render: function(data, type, row, meta) {
+						if(type != 'display') {
+							return data;
+						}
+
+						return (data == 1) ? "YA" : "TIDAK";
+					}
+
+                },
+				{ data: "sumber_bdt", className: 'dt-body-center' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
 				//{ data: "penerapan_id", className: 'dt-body-left' },
                 {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}

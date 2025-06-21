@@ -156,11 +156,14 @@ if ( ! function_exists('audit_siswa'))
         exit;
     }
 
-    function print_json_output($data, $enforce = 0) {
+    function print_json_output($data, $enforce = 0, $ext = null) {
         $json = array();
         $json["status"] = 1;
         if (!empty($data) || $enforce) {
             $json['data'] = $data;
+        }
+        if (!empty($ext)) {
+            $json['ext'] = $ext;
         }
 
         echo json_encode($json, JSON_INVALID_UTF8_IGNORE); 

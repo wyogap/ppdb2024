@@ -39,10 +39,24 @@ class Daftarsiswa extends PpdbController {
         $data['profilsekolah'] = $this->session->get("profilsekolah");;
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
         if ($data['impersonasi_sekolah'] == 1) {
+            //$sekolah_id = $this->request->getGetPost("sekolah_id");
             $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
 
-        //var_dump($data['profilsekolah']); exit;
+        $jenjang_id=JENJANGID_SMP;
+        $nama_jenjang='SMP';
+        if ($data['profilsekolah']['bentuk'] == 'SD' || $data['profilsekolah']['bentuk'] == 'MI') {
+            $jenjang_id=JENJANGID_SD;
+            $nama_jenjang='SD';
+        }
+        else if ($data['profilsekolah']['bentuk'] == 'TK') {
+            $jenjang_id=JENJANGID_TK;
+            $nama_jenjang='TK';
+        }
+
+        //enforce
+        $this->session->set("jenjang_aktif", $jenjang_id);
+        $this->session->get("nama_jenjang_aktif", $nama_jenjang);
 
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();

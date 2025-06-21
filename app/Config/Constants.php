@@ -188,6 +188,7 @@ defined('TIPESKORING_ORGANISASI')           OR define('TIPESKORING_ORGANISASI', 
 
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
 defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
+defined('APP_GMTOFFSET')                    OR define('APP_GMTOFFSET', '07:00');
 
 defined('COL_SOFT_DELETE')                  OR define('COL_SOFT_DELETE', 'is_deleted');
 defined('COL_CREATED_ON')                   OR define('COL_CREATED_ON', 'created_on');
@@ -208,3 +209,4 @@ defined('BASE_URL')                         OR define('BASE_URL',
 defined('WA_COUNTRYCODE')                   OR define('WA_COUNTRYCODE', '62');
 defined('WA_APIKEY')                        OR define('WA_APIKEY', 'T3DOAJFMEU9YNUWE');
 defined('WA_NUMBERKEY')                     OR define('WA_NUMBERKEY', 'PLDkC7q7bF7ff9fD');
+
