@@ -651,10 +651,10 @@ Class Mprofilsekolah
 				  left join ref_sekolah e on e.sekolah_id=d.sekolah_id and e.is_deleted=0 
 				  ";
 
-		$where = "a.is_deleted=0 and (a.jenjang in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB', 'TPA') or a.asal_data=" .ASALDATA_PENERIMAANSD. ")";
+		$where = "a.is_deleted=0 and (a.jenjang in ('TK', 'RA', 'PAUD', 'KB', 'SPS', 'SKB', 'TPA', 'PKBM') or a.asal_data=" .ASALDATA_PENERIMAANSD. ")";
 		if (!empty($nama)) {
 			$filter = 1;
-			$where .= " AND a.nama like '%" . $nama . "%'";
+			$where .= " AND upper(a.nama) like '%" . strtoupper($nama) . "%'";
 		}
 		if (!empty($nisn)) {
 			$filter = 1;
