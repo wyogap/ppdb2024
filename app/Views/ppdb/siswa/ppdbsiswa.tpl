@@ -84,7 +84,12 @@
     }
 
     .jconfirm .form-control {
-        margin-bottom: 0px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .jconfirm .table td, .jconfirm .table td {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
     }
 
     [data-theme-version="dark"] .btn-danger {

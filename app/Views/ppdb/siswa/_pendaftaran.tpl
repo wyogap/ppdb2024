@@ -12,7 +12,7 @@
             <div class="card-body">
                 {{jalur.keterangan}}
             </div>
-            <div class="card-footer">
+            <div class="card-footer" {{#tutup_akses}}style="display: none;"{{/tutup_akses}}>
                 <button onclick=pilih_sekolah({{idx}}) 
                 class="btn btn-primary" {{#tutup_akses}}disabled{{/tutup_akses}}>Klik disini untuk mendaftar</button>
             </div>
@@ -73,7 +73,7 @@
     function update_pendaftaran_layout(redraw_jalur = true) {
         
         parent = $("#jalur-pendaftaran");
-        if (pendaftarandikunci || !kelengkapan_data) {
+        if (!kelengkapan_data) {
             parent.hide();
         } else {
             parent.show();
@@ -171,6 +171,10 @@
 
                 tutup_akses = false;
                 if (!flag_negeri && !flag_swasta) {
+                    tutup_akses = true;
+                }
+
+                if (pendaftarandikunci) {
                     tutup_akses = true;
                 }
 

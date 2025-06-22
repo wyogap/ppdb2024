@@ -587,9 +587,10 @@
     function ganti_password() {
         $.confirm({
             title: 'Ganti PIN/Password',
-            content: "<div style='overflow: hidden;'><input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
+            content: "<div style='overflow: hidden;'>"
+                        +"<input type='password' class='form-control' placeholder='PIN / Password Baru' id='password' name='password' data-validation='required'>"
                         +"<input type='password' class='form-control' placeholder='Masukkan Lagi' id='password2' name='password2' data-validation='required'>"
-                        +"<span id='error-msg'>&nbsp</span></div>",
+                        +"<div id='error-msg' style='display: none;'>&nbsp</div></div>",
             closeIcon: true,
             columnClass: 'medium',
             //type: 'purple',
@@ -610,12 +611,14 @@
                         if (el1.val().length < 6) {
                             let msg = this.$content.find('#error-msg');
                             msg.html("PIN/Password harus minimal 6 huruf.");
+                            msg.show();
                             el1.addClass('border-red');
                             return false;
                         }
                         else if (el1.val() != el2.val()) {
                             let msg = this.$content.find('#error-msg');
                             msg.html("PIN/Password baru tidak sama.");
+                            msg.show();
                             el2.addClass('border-red');
                             return false;
                         }

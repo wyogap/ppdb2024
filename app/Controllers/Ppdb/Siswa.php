@@ -953,6 +953,12 @@ class Siswa extends PpdbController {
         $pendaftaran_id = $this->request->getPostGet("pendaftaran_id");
         $peserta_didik_id = $this->session->get('peserta_didik_id');
 
+        $cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+        $cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        if (!$cek_waktupendaftaran && !$cek_waktusosialisasi) {
+            print_json_error("Terkunci. Bukan periode pendaftaran.");
+        }
+
         $diterima = $this->session->get("diterima");
         if ($diterima) {
             print_json_error("Sudah diterima.");
@@ -1062,6 +1068,12 @@ class Siswa extends PpdbController {
 		$sekolah_id = $this->request->getPostGet("sekolah_id");
 		$penerapan_id = $this->request->getPostGet("penerapan_id");
 		$jenis_pilihan = $this->request->getPostGet("jenis_pilihan");
+
+        $cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+        $cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        if (!$cek_waktupendaftaran && !$cek_waktusosialisasi) {
+            print_json_error("Terkunci. Bukan periode pendaftaran.");
+        }
 
         $diterima = $this->session->get("diterima");
         if ($diterima) {
@@ -1198,6 +1210,12 @@ class Siswa extends PpdbController {
 
     //hapus pendaftaran
     function hapus() {
+
+        $cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+        $cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        if (!$cek_waktupendaftaran && !$cek_waktusosialisasi) {
+            print_json_error("Terkunci. Bukan periode pendaftaran.");
+        }
 
         $diterima = $this->session->get("diterima");
         if ($diterima) {

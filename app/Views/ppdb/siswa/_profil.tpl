@@ -397,7 +397,9 @@
 
         //update flag pendaftaran dikunci
         flag = 0
-        if (!kelengkapan_data || siswa_tutup_akses || tutup_akses==1 || diterima==1) {
+        if (!kelengkapan_data || siswa_tutup_akses || tutup_akses==1 || diterima==1
+            || (!cek_waktupendaftaran && !cek_waktusosialisasi)
+        ) {
             flag = 1;
         }
 
