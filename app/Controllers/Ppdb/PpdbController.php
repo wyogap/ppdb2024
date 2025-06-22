@@ -19,7 +19,7 @@ class PpdbController extends BaseController {
     protected $nama_wilayah = "";
     protected $kode_wilayah = "";
     protected $nama_tahun_ajaran = "";
-    protected $tahun_ajaran_id = "";
+    protected $tahun_ajaran_id = TAHUN_AJARAN_ID;
     protected $nama_putaran = "";
     protected $putaran = "";
 
@@ -115,77 +115,11 @@ class PpdbController extends BaseController {
             $this->smarty->assign($val['name'], $val['value']);
         }
 
-        // //common vars
-        // $nama_wilayah = "";
-		// $kode_wilayah = "";
-
-		// //get from GET or POST
-		// $kode_wilayah = $this->request->getPostGet("kode_wilayah"); 
-
-        // //get from session if necessary
-        // if (empty($kode_wilayah)) {
-        //     $kode_wilayah = $this->session->get('kode_wilayah_aktif');
-		// 	$nama_wilayah = $this->session->get('nama_wilayah_aktif');
-        // }
-
-        // //get from database
-        // if (empty($kode_wilayah)) {
-        //     $kode_wilayah = $this->setting->get("kode_wilayah");
-        //     //make sure it is kabupaten level
-        //     $kode_wilayah = substr($kode_wilayah, 0, 4) ."00";
-        //     $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
-        // }
-
-        // if (!empty($kode_wilayah) && empty($nama_wilayah)) {
-        //     $nama_wilayah = $this->Mconfig->tcg_nama_wilayah($kode_wilayah);
-        // }
-
-		// //set from session if necessary
-		// if ($this->session->get('kode_wilayah_aktif') != $kode_wilayah) {
-        //     $this->session->set('kode_wilayah_aktif', $kode_wilayah);
-        //     $this->session->set('nama_wilayah_aktif', $nama_wilayah);
-		// }
-
-		// //replace global var if necessary
-        // $this->kode_wilayah = $kode_wilayah;
-        // $this->nama_wilayah = $nama_wilayah;
-
-		// //tahun ajaran
-		// $nama_tahun_ajaran = "";
-		// $tahun_ajaran_id = "";
-
-        // //get from GET or POST
-        // $tahun_ajaran_id = $this->request->getPostGet("tahun_ajaran"); 
- 
-        // //get from session if necessary
-        // if (empty($tahun_ajaran_id)) {
-        //     $tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		// 	$nama_tahun_ajaran = $this->session->get('nama_tahun_ajaran_aktif');
-        // }
-
-		// //get from database
-		// if (empty($tahun_ajaran_id)) {
-		// 	$tahun_ajaran_id = $this->setting->get("tahun_ajaran");
-		// }
-
-        // if (!empty($tahun_ajaran_id) && empty($nama_tahun_ajaran)) {
-        //     $nama_tahun_ajaran = $this->Mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
-        // }
-
-		// if ($this->session->get('tahun_ajaran_aktif') != $tahun_ajaran_id) {
-        //     $this->session->set('tahun_ajaran_aktif', $tahun_ajaran_id);
-        //     $this->session->set('nama_tahun_ajaran_aktif', $nama_tahun_ajaran);
-		// }
-
-		// //replace global var if necessary
-        // $this->tahun_ajaran_id = $tahun_ajaran_id;
-        // $this->nama_tahun_ajaran = $nama_tahun_ajaran;
-
 		//replace global var if necessary
         $this->kode_wilayah = $this->session->get('kode_wilayah_aktif');
         $this->nama_wilayah = $this->session->get('nama_wilayah_aktif');
-        $this->tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-        $this->nama_tahun_ajaran = $this->session->get('nama_tahun_ajaran_aktif');
+        $this->tahun_ajaran_id = TAHUN_AJARAN_ID;
+        $this->nama_tahun_ajaran = NAMA_TAHUN_AJARAN;
 
         $nama_putaran = "";
 		$putaran = "";

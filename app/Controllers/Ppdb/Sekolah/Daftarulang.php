@@ -65,7 +65,7 @@ class Daftarulang extends PpdbController {
         
 			//$data['inklusi']=$data['profil']['inklusi'];
 			
-			$data['tahun_ajaran_aktif'] = $this->session->get('tahun_ajaran_aktif');
+			$data['tahun_ajaran_aktif'] = TAHUN_AJARAN_ID;
 			$data['putaran_aktif'] = $this->session->get('putaran_aktif');
 	
 			$data['info'] = $this->session->getFlashdata('info');
@@ -218,8 +218,8 @@ class Daftarulang extends PpdbController {
 	{
 		$pengguna_id = $this->session->get('user_id');
 		$sekolah_id = $this->session->get('sekolah_id');
-		$peran_id = $this->session->get('peran_id');
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
+		// $peran_id = $this->session->get('peran_id');
+		// $tahun_ajaran_id = $this->tahun_ajaran_id;
 
 		$peserta_didik_id = $_POST["peserta_didik_id"] ?? null; 
 		$pendaftaran_id = $_POST["pendaftaran_id"] ?? null; 
@@ -283,10 +283,7 @@ class Daftarulang extends PpdbController {
 			$peserta_didik_id = $this->session->get("user_id");
 		}
 	
-		$tahun_ajaran_id = $_GET["tahun_ajaran_id"] ?? null; 
-		if (empty($tahun_ajaran_id)) {
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
-		}
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $qrcode = new QRCodeLibrary();
 		$config['cacheable'] = true; //boolean, the default is true

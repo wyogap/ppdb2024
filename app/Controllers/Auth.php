@@ -27,10 +27,8 @@ class Auth extends AuthController
     }
 
     function index() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id)) {
-			$tahun_ajaran_id = $this->setting->get('tahun_ajaran');
-		}
+		$tahun_ajaran_id = TAHUN_AJARAN_ID;
+        $nama_tahun_ajaran = NAMA_TAHUN_AJARAN;
 		
 		$putaran = $_GET["putaran"] ?? null; 
 		if (empty($putaran)) {
@@ -53,7 +51,6 @@ class Auth extends AuthController
         //$bentuk_sekolah_aktif = "SMP";
 
 		$mconfig = new \App\Models\Ppdb\Mconfig();
-        $nama_tahun_ajaran = $mconfig->tcg_nama_tahunajaran($tahun_ajaran_id);
         $nama_wilayah = $mconfig->tcg_nama_wilayah($kode_wilayah_aktif);
         $nama_putaran = $mconfig->tcg_nama_putaran($putaran);
         $bentuk_sekolah_aktif = $mconfig->tcg_nama_jenjang($jenjang_aktif);
@@ -62,7 +59,7 @@ class Auth extends AuthController
         $daftarjenjang = $mconfig->tcg_jenjang();
 
 		$sessiondata = array(
-			'tahun_ajaran_aktif'=>$tahun_ajaran_id,
+			'tahun_ajaran_aktif'=>TAHUN_AJARAN_ID,
             'nama_tahun_ajaran_aktif'=>$nama_tahun_ajaran,
 			'kode_wilayah_aktif'=>$kode_wilayah_aktif,
             'nama_wilayah_aktif'=>$nama_wilayah,

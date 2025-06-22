@@ -82,9 +82,7 @@ class Daftarsiswa extends PpdbController {
 
 	function json() {
 		$sekolah_id = $this->session->get('sekolah_id');
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {

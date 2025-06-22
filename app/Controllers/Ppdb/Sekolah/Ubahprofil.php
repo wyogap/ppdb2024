@@ -125,27 +125,5 @@ class Ubahprofil extends PpdbController {
 		print_json_output($profil);
 	}
 	
-	// function pendaftaran() {
-	// 	$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-	// 	if (empty($tahun_ajaran_id)) {
-	// 		$tahun_ajaran_id = $this->tahun_ajaran_id;
-	// 	}
-
-	// 	$daftar = $this->Mdinas->tcg_daftar_pendaftaran($tahun_ajaran_id);
-
-	// 	//manual echo json file to avoid memory exhausted
-	// 	echo '{"data":[';
-	// 	$first = true;
-	// 	while ($row = $daftar->unbuffered_row())
-	// 	{
-	// 		if ($first) {
-	// 			echo json_encode($row);
-	// 			$first = false;
-	// 		} else {
-	// 			echo ",". json_encode($row);
-	// 		}
-	// 	}
-	// 	echo ']}';
-	// }
 }
 ?>

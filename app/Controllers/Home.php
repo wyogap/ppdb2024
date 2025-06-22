@@ -428,7 +428,8 @@ class Home extends PpdbController
         if ($this->session->has('daftarjenjang')) {
             $data['daftarjenjang'] = $this->session->get('daftarjenjang');
         }
-        else {
+        
+        if (empty($data['daftarjenjang'])){
             $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
             $this->session->set('daftarjenjang', $data['daftarjenjang']);
         }
@@ -454,7 +455,7 @@ class Home extends PpdbController
                 $this->session->set('putaran_aktif', $data['putaran_aktif']);
             }
         }
- 
+
         //jenjang aktif
 		$data['jenjang_aktif'] = $_GET["jenjang"] ?? null; 
         if ($data['jenjang_aktif']) {
@@ -466,8 +467,12 @@ class Home extends PpdbController
                     break;
                 }
             }
+            if(empty($data['nama_jenjang_aktif'])) {
+                //not found. use default
+                $data['jenjang_aktif'] = null;
+            }
         }
-        else {
+        if (empty($data['jenjang_aktif'])) {
             if ($this->session->has('jenjang_aktif')) {
                 $data['jenjang_aktif'] = $this->session->get('jenjang_aktif');
             }

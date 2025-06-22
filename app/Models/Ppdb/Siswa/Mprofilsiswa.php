@@ -9,7 +9,6 @@ Class Mprofilsiswa
     protected $ro;
     protected $session;
     protected $audittrail;
-    protected $tahun_ajaran_id;
 
     protected $error_message = null;
 
@@ -17,7 +16,6 @@ Class Mprofilsiswa
         $this->db = \Config\Database::connect();
         $this->ro = \Config\Database::connect("ro");
         $this->session = \Config\Services::session();
-        $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
         $this->audittrail = new \App\Libraries\AuditTrail();
 
@@ -290,7 +288,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('cfg_penerapan a');
 		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.kategori_susulan,a.kategori_inklusi');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
+		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID,'a.putaran'=>$putaran,'a.is_deleted'=>0));
         $builder->where("a.jenjang_id", $jenjang_id);
 		
 		if(substr($kode_wilayah,0,4)!=substr($kode_wilayah_aktif,0,4)){
@@ -357,7 +355,7 @@ Class Mprofilsiswa
 
 		$builder = $this->ro->table('cfg_penerapan a');
 		$builder->select('count(*) as jumlah');
-		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
+		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID,'a.putaran'=>$putaran,'a.is_deleted'=>0));
         $builder->where("penerapan_id", $penerapan_id);
 
         $result = $builder->get()->getRowArray();
@@ -385,7 +383,7 @@ Class Mprofilsiswa
 		$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id and f.putaran=a.putaran AND f.is_deleted=0','LEFT OUTER');
 		$builder->join('tcg_peserta_didik g','g.peserta_didik_id = a.peserta_didik_id AND g.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
-        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         //diterima 
         $builder->where('a.status_penerimaan_final in (1,3)');
@@ -417,7 +415,7 @@ Class Mprofilsiswa
 		$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id and f.putaran=a.putaran AND f.is_deleted=0','LEFT OUTER');
 		$builder->join('tcg_peserta_didik g','g.peserta_didik_id = a.peserta_didik_id AND g.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
-        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         //additional filters
         if ($filters!=null) {
@@ -468,7 +466,7 @@ Class Mprofilsiswa
 		$builder->join('cfg_jenis_pilihan f','f.jenis_pilihan = a.masuk_jenis_pilihan AND f.tahun_ajaran_id=a.tahun_ajaran_id and f.putaran=a.putaran AND f.is_deleted=0','LEFT OUTER');
 		$builder->join('tcg_peserta_didik g','g.peserta_didik_id = a.peserta_didik_id AND g.is_deleted = 0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0));
-        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         $builder->where('a.pendaftaran_id', $pendaftaran_id);
 
@@ -581,7 +579,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id, 'a.cabut_berkas'=>0,'a.is_deleted'=>0));
-        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.tahun_ajaran_id", TAHUN_AJARAN_ID);
         $builder->where("a.putaran", $putaran);
 
         if ($filters != null) {
@@ -603,7 +601,7 @@ Class Mprofilsiswa
         $builder->join('cfg_penerapan b', 'b.penerapan_id=a.penerapan_id and b.is_deleted=0', 'LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id, 'a.cabut_berkas'=>0, 'a.is_deleted'=>0));
         $builder->where("a.sekolah_id", $sekolah_id);
-        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.tahun_ajaran_id", TAHUN_AJARAN_ID);
         $builder->where("a.putaran", $putaran);
 
         //penerapan pendaftaran mungkin beda dengan perangkingan nya
@@ -639,7 +637,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('ref_sekolah a');
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi,b.kuota_total');
-		$builder->join('cfg_kuota_sekolah b','b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='.$this->tahun_ajaran_id);
+		$builder->join('cfg_kuota_sekolah b','b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='.TAHUN_AJARAN_ID);
 		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
 
 		return $builder->get()->getRowArray();
@@ -650,7 +648,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'sekolah_negeri'=>1,'sekolah_swasta'=>0,'tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'sekolah_negeri'=>1,'sekolah_swasta'=>0,'tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -664,7 +662,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('ref_sekolah c','a.sekolah_id = c.sekolah_id AND c.status = "N"', 'inner join');
-		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -677,7 +675,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'sekolah_swasta'=>1,'sekolah_negeri'=>0,'tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'sekolah_swasta'=>1,'sekolah_negeri'=>0,'tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -691,7 +689,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('ref_sekolah c','a.sekolah_id = c.sekolah_id AND c.status = "S"', 'inner join');
-		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -704,7 +702,7 @@ Class Mprofilsiswa
         
 		$builder = $this->ro->table('cfg_jenis_pilihan');
 		$builder->select('COUNT(1) AS jumlah');
-		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('pendaftaran'=>1,'expired_date'=>NULL,'tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -718,7 +716,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select('COUNT(1) AS jumlah');
 		$builder->join('cfg_penerapan b','a.penerapan_id = b.penerapan_id AND b.expired_date IS NULL AND b.pendaftaran = 1', 'inner join');
-		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id));
+		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.cabut_berkas'=>0,'a.is_deleted'=>0,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID));
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -918,7 +916,7 @@ Class Mprofilsiswa
 
 		$valuepair = array(
 			'peserta_didik_id' => $peserta_didik_id,
-			//'tahun_ajaran_id' => $this->tahun_ajaran_id,
+			//'tahun_ajaran_id' => TAHUN_AJARAN_ID,
 			'verifikator_id' => $user_id,
 			'verifikasi' => $verifikasi,
 			'catatan_kekurangan' => $catatan
@@ -931,7 +929,7 @@ Class Mprofilsiswa
 			$timestamp = gmdate("Y/m/d H:i:s");
 			$filter = array(
 				'peserta_didik_id' => $peserta_didik_id,
-				//'tahun_ajaran_id' => $this->tahun_ajaran_id,
+				//'tahun_ajaran_id' => TAHUN_AJARAN_ID,
 				'is_deleted' => 0,
 				'cabut_berkas' => 0
 			);	
@@ -1175,7 +1173,7 @@ Class Mprofilsiswa
 			a.updated_on = now()
 		where d.peserta_didik_id=? and d.tahun_ajaran_id=? and a.dokumen_id=? and a.is_deleted=0";
 
-		$this->db->query($query, array($verifikasi, $verifikator_id, $peserta_didik_id, $this->tahun_ajaran_id, $dokumen_id));
+		$this->db->query($query, array($verifikasi, $verifikator_id, $peserta_didik_id, TAHUN_AJARAN_ID, $dokumen_id));
 
 		$retval = $this->db->affectedRows();
 		if ($retval > 0) {
@@ -1240,11 +1238,10 @@ Class Mprofilsiswa
 	function tcg_verifikasidinas_baru($peserta_didik_id, $tipe_data, $kelengkapan_id, $catatan) {
 		$user_id = $this->session->get('user_id');
 		$sekolah_id = $this->session->get('sekolah_id');
-		$this->tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
 
 		$valuepair = array(
 			'peserta_didik_id' 	=> $peserta_didik_id,
-			'tahun_ajaran_id'	=> $this->tahun_ajaran_id,
+			'tahun_ajaran_id'	=> TAHUN_AJARAN_ID,
 			'pengguna_sekolah'	=> $user_id,
 			'sekolah_id'		=> $sekolah_id,
 			'tipe_data'			=> $tipe_data,
@@ -1290,7 +1287,7 @@ Class Mprofilsiswa
         $builder->select("a.penerapan_id, a.kuota");
         $builder->where("a.is_deleted=0");
         $builder->where("a.sekolah_id", $sekolah_id);
-        $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+        $builder->where("a.tahun_ajaran_id", TAHUN_AJARAN_ID);
         $builder->where("a.putaran", $putaran);
 
         $result = $builder->get()->getResultArray();

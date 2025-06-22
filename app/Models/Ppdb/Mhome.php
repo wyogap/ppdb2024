@@ -9,7 +9,6 @@ Class Mhome
     protected $db;
     protected $ro;
     protected $session;
-    protected $tahun_ajaran_id;
     protected $putaran;
     protected $jenjang;
 
@@ -17,7 +16,6 @@ Class Mhome
         $this->db = \Config\Database::connect();
         $this->ro = \Config\Database::connect('ro');
         $this->session = \Config\Services::session();
-        $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 		$this->putaran = $this->session->get("putaran_aktif");
 		$this->jenjang = $this->session->get("jenjang_aktif");
     }
@@ -34,11 +32,9 @@ Class Mhome
 	}
 
 	function tcg_dashboard_summary($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-
 		$builder = $this->ro->table('rpt_rekapitulasi_wilayah a');
 		$builder->select('a.*');
-		$builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
+		$builder->where('a.tahun_ajaran_id',TAHUN_AJARAN_ID);
 
         if (!empty($jenjang_id)) {
             $builder->where('a.jenjang_id',$jenjang_id);
@@ -72,7 +68,7 @@ Class Mhome
 
         //var_dump($result);
         //var_dump($retval); exit;
-        $retval["tahun_ajaran_id"] = $tahun_ajaran_id;
+        $retval["tahun_ajaran_id"] = TAHUN_AJARAN_ID;
         $retval["jenjang_id"] = $jenjang_id;
         $retval["putaran"] = $putaran;
         $retval["penerapan_id"] = $penerapan_id;
@@ -100,8 +96,6 @@ Class Mhome
 	}
 
 	function tcg_dashboard_pendaftarharian($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah){
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		
 		$day0 = date("Y-m-d") ;
 		$nextday = date("Y-m-d", strtotime("+1 days"));
 		$day1 = date("Y-m-d", strtotime("-1 days"));
@@ -126,7 +120,7 @@ Class Mhome
         ");
 		$builder->join('cfg_putaran b',"b.putaran=a.putaran and b.is_deleted=0");
         $builder->join('ref_sekolah c',"c.sekolah_id=a.sekolah_id and c.is_deleted=0");
-        $builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id',TAHUN_AJARAN_ID);
 		$builder->where(array('a.is_deleted'=>0, 'a.cabut_berkas'=>0));
  
         if (!empty($jenjang_id)) {
@@ -154,8 +148,6 @@ Class Mhome
 	}    
 
     function tcg_dashboard_daftarpendaftaran($jenjang_id, $status, $putaran, $penerapan_id, $kode_wilayah) {
-		$tahun_ajaran_id = $this->session->get('tahun_ajaran_aktif');
-		
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select("a.*, c.nama as sekolah, e.nama, e.lintang, e.bujur, f.nama as penerapan, g.nama as jalur");
 		$builder->join('cfg_putaran b',"b.putaran=a.putaran and b.is_deleted=0");
@@ -168,7 +160,7 @@ Class Mhome
         $builder->join('tcg_peserta_didik e',"e.peserta_didik_id=a.peserta_didik_id and e.is_deleted=0");
         $builder->join('cfg_penerapan f',"f.penerapan_id=a.penerapan_id and f.is_deleted=0");
         $builder->join('ref_jalur g',"g.jalur_id=f.jalur_id and g.is_deleted=0");
-        $builder->where('a.tahun_ajaran_id',$tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id',TAHUN_AJARAN_ID);
 		$builder->where(array('a.is_deleted'=>0, 'a.cabut_berkas'=>0));
  
         if (!empty($jenjang_id)) {
@@ -198,15 +190,11 @@ Class Mhome
 		return $result;
     }
 
-	function tcg_rapor_mutu($tahun_ajaran_id=null){
-		if (empty($tahun_ajaran_id)) {
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
-		}
-
+	function tcg_rapor_mutu(){
 		$builder = $this->ro->table('cfg_nilai_mutu_sekolah a');
 		$builder->select('a.*, b.nama');
 		$builder->join('ref_sekolah b', 'a.sekolah_id=b.sekolah_id', 'left outer');
-        $builder->where('tahun_ajaran_id', $tahun_ajaran_id);
+        $builder->where('tahun_ajaran_id', TAHUN_AJARAN_ID);
 		return $builder->get()->getResultArray();
 	}    
 
@@ -305,90 +293,6 @@ Class Mhome
 		return $builder->get()->getRowArray();
 	}
 
-	// function tcg_login($username, $password){
-	// 	$builder = $this->ro->table('dbo_users a');
-	// 	$builder->select('count(*) as jumlah');
-	// 	$builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
-	// 	$builder->join('tcg_peserta_didik c','a.peserta_didik_id = c.peserta_didik_id','LEFT OUTER');
-	// 	$builder->where(array('a.password'=>md5($password),'a.approval'=>1,'a.is_deleted'=>0));
-	// 	$builder->groupStart()->orWhere('a.user_name', "$username")->orWhere('c.nisn',"$username")->orWhere('c.nik',"$username")->groupEnd();
-
-	// 	$login=0;
-	// 	foreach($builder->get()->getResult() as $row):
-	// 		$login=$row->jumlah;
-	// 	endforeach;
-
-	// 	if ($login > 0) {
-	// 		$this->tcg_audit_trail("","",'login','Login','','');
-	// 	}
-
-	// 	return $login;
-	// }
-
-	// function tcg_cek_ikutppdb($sekolah_id, $tahun_ajaran_id) {
-	// 	// TODO: buka akses kalau nggak ikut ppdb tahap 2
-	// 	$builder = $this->ro->table('cfg_kuota_sekolah a');
-	// 	$builder->select('a.ikut_ppdb');
-	// 	$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$tahun_ajaran_id,'a.is_deleted'=>0));
-
-	// 	$ikut_ppdb=0;
-	// 	foreach($builder->get()->getResult() as $row):
-	// 		$ikut_ppdb=$row->ikut_ppdb;
-	// 	endforeach;
-
-	// 	return $ikut_ppdb;
-	// }
-
-	// function tcg_ubahpassword($password)
-	// {
-	// 	$user_id = $this->session->get("user_id");
-
-	// 	$data = array(
-	// 		'password' => md5($password),
-	// 		'ganti_password' => 1,
-	// 		'updated_on' => gmdate("Y/m/d")
-	// 	);
-
-	// 	$builder = $this->ro->table('dbo_users');
-    //     $builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
-	// 	$retval = $builder($data);
-
-	// 	if ($retval > 0) {
-	// 		//put in audit trail
-	// 		$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
-	// 	}
-
-	// 	return $retval;
-	// }
-
-	// function tcg_resetpassword($user_id, $password)
-	// {
-	// 	$data = array(
-	// 		'password' => md5($password),
-	// 		'ganti_password' => 0,
-	// 		'updated_on' => gmdate("Y/m/d")
-	// 	);
-        
-	// 	$builder = $this->ro->table('dbo_pengguna');
-	// 	$builder->where(array('user_id' => $user_id, 'is_deleted' => 0));
-	// 	$retval = $builder->update($data);
-
-	// 	if ($retval > 0) {
-	// 		//put in audit trail
-	// 		$this->tcg_audit_trail("dbo_users",$user_id,'update','Update password','','');
-	// 	}
-
-	// 	return $retval;
-	// }
-
-    // //dipakai untuk registrasi siswa
-	// function tcg_audit_trail($table, $reference, $action, $description, $old_values, $new_values) {
-	// 	$user_id = $this->session->get("user_id");
-
-	// 	$query = "CALL usp_audit_trail(?,?,?,?,?,?,?,?)";
-	// 	return $this->ro->query($query, array($table,$reference,$action,$user_id,$description,null,$new_values,$old_values));
-	// }
-
     //dipakai untuk registrasi siswa
 	function tcg_sekolah_baru($nama_sekolah,$kode_wilayah,$bentuk,$npsn,$status,$dapodik_id=null,$alamat=null) {
 		//$uuid = $this->uuid();
@@ -439,7 +343,7 @@ Class Mhome
         if ($jenjang_id==0) {
             $jenjang_id = $this->jenjang;
         }
-		return $this->ro->query($sql, array($this->tahun_ajaran_id, $putaran_id, $jenjang_id))->getResultArray();	
+		return $this->ro->query($sql, array(TAHUN_AJARAN_ID, $putaran_id, $jenjang_id))->getResultArray();	
 	}    
 
     function tcg_kode_wilayah($nama_prov, $nama_kab, $nama_kec, $nama_desa) {
@@ -479,7 +383,7 @@ Class Mhome
 		$builder->select('a.sekolah_id,a.npsn,a.nama,a.bentuk as bentuk_pendidikan,a.bentuk,a.status,a.alamat_jalan,a.desa_kelurahan,a.kecamatan,a.kabupaten,a.lintang,a.bujur,a.inklusi');
         $builder->select('a.dapodik_id');
         $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');
-		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$this->tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
+		$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='" .TAHUN_AJARAN_ID. "' and b.putaran='$putaran'",'LEFT OUTER');
 		$builder->where(array('a.npsn'=>$npsn, 'a.is_deleted'=>0));
 
 		return $builder->get()->getRowArray();

@@ -10,14 +10,12 @@ Class Mprofilsekolah
     protected $session;
     protected $audittrail;
     
-    protected $tahun_ajaran_id;
     protected $error_message;
 
     function __construct() {
         $this->db = \Config\Database::connect();
         $this->ro = \Config\Database::connect('ro');
         $this->session = \Config\Services::session();
-        $this->tahun_ajaran_id = $this->session->get("tahun_ajaran_aktif");
 
         $this->audittrail = new \App\Libraries\AuditTrail();
 
@@ -39,7 +37,7 @@ Class Mprofilsekolah
             select a.tahun_ajaran_id, a.sekolah_id,
                     sum(a.kuota_total) as kuota_total, max(ikut_ppdb) as ikut_ppdb
             from cfg_kuota_sekolah a
-            where a.tahun_ajaran_id=" .secure($this->tahun_ajaran_id). "
+            where a.tahun_ajaran_id=" .secure(TAHUN_AJARAN_ID). "
             group by a.tahun_ajaran_id, a.sekolah_id";
 
 		$builder = $this->ro->table('ref_sekolah a');
@@ -48,7 +46,7 @@ Class Mprofilsekolah
         $builder->select('a.dapodik_id');
         $builder->select('coalesce(b.ikut_ppdb,0) as ikut_ppdb, coalesce(b.kuota_total,0) as kuota_total');
         $builder->join("($subquery) as b", "b.sekolah_id = a.sekolah_id",'LEFT OUTER');
-		//$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='$this->tahun_ajaran_id' and b.putaran='$putaran'",'LEFT OUTER');
+		//$builder->join('cfg_kuota_sekolah b',"b.sekolah_id = a.sekolah_id and b.is_deleted=0 and b.tahun_ajaran_id='" .TAHUN_AJARAN_ID. "' and b.putaran='$putaran'",'LEFT OUTER');
 		$builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
 
 		return $builder->get()->getRowArray();
@@ -135,7 +133,7 @@ Class Mprofilsekolah
 		where a.aktif=1 and a.is_deleted=0 and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=?
 		order by a.urutan";
 
-		return $this->ro->query($query, array($sekolah_id, $this->tahun_ajaran_id, $putaran, $sekolah_id, $this->tahun_ajaran_id, $putaran))->getResultArray();
+		return $this->ro->query($query, array($sekolah_id, TAHUN_AJARAN_ID, $putaran, $sekolah_id, TAHUN_AJARAN_ID, $putaran))->getResultArray();
 	}
 
     
@@ -160,7 +158,7 @@ Class Mprofilsekolah
 		where a.aktif=1 and a.is_deleted=0 and a.perankingan=1 and d.sekolah_id=? and a.tahun_ajaran_id=? and a.putaran=? and a.penerapan_id=?
 		order by a.urutan";
 
-		return $this->ro->query($query, array($sekolah_id, $this->tahun_ajaran_id, $putaran, $penerapan_id, $sekolah_id, $this->tahun_ajaran_id, $putaran, $penerapan_id))->getRowArray();
+		return $this->ro->query($query, array($sekolah_id, TAHUN_AJARAN_ID, $putaran, $penerapan_id, $sekolah_id, TAHUN_AJARAN_ID, $putaran, $penerapan_id))->getRowArray();
 	}
 
 	function tcg_daftarkuota($sekolah_id){
@@ -170,7 +168,7 @@ Class Mprofilsekolah
 		$builder->select('c.jalur_id,c.nama AS jalur,a.kuota,b.nama as penerapan');
 		$builder->join('cfg_penerapan b','a.penerapan_id = b.penerapan_id AND b.aktif = 1 AND b.is_deleted=0 and b.perankingan=1');
 		$builder->join('ref_jalur c','b.jalur_id = c.jalur_id AND c.is_deleted=0');
-		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>$this->tahun_ajaran_id,'a.putaran'=>$putaran,'a.is_deleted'=>0));
+		$builder->where(array('a.sekolah_id'=>$sekolah_id,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID,'a.putaran'=>$putaran,'a.is_deleted'=>0));
 		$builder->orderBy('b.urutan');
 		return $builder->get()->getResultArray();
 	}
@@ -196,7 +194,7 @@ Class Mprofilsekolah
         $builder->join('dbo_users i','i.user_id = b.sedang_verifikasi_oleh and i.is_deleted = 0','LEFT OUTER');		
         $builder->join('dbo_users k','k.user_id = b.terakhir_verifikasi_oleh and k.is_deleted = 0','LEFT OUTER');		
         $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0));
-        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         if (!empty($sekolah_id)) {
             $builder->where('a.sekolah_id', $sekolah_id);
@@ -251,7 +249,7 @@ Class Mprofilsekolah
 				where a.sekolah_id=? and a.tahun_ajaran_id=?
 		";
 
-		return $this->ro->query($sql, array($sekolah_id, $this->tahun_ajaran_id));
+		return $this->ro->query($sql, array($sekolah_id, TAHUN_AJARAN_ID));
 	}
 
 	function tcg_pendaftarditerima($sekolah_id, $penerapan_id){
@@ -287,7 +285,7 @@ Class Mprofilsekolah
         $builder->join('dbo_users i','i.user_id = b.sedang_verifikasi_oleh and i.is_deleted = 0','LEFT OUTER');		
         $builder->join('dbo_users k','k.user_id = b.terakhir_verifikasi_oleh and k.is_deleted = 0','LEFT OUTER');		
         $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0));
-        $builder->where('a.tahun_ajaran_id', $this->tahun_ajaran_id);
+        $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         if (!empty($sekolah_id)) {
             $builder->where('a.sekolah_id', $sekolah_id);
@@ -525,7 +523,7 @@ Class Mprofilsekolah
 
 		$valuepair = array(
 			'peserta_didik_id' 	=> $peserta_didik_id,
-			'tahun_ajaran_id'	=> $this->tahun_ajaran_id,
+			'tahun_ajaran_id'	=> TAHUN_AJARAN_ID,
 			'pengguna_sekolah'	=> $pengguna_id,
 			'sekolah_id'		=> $sekolah_id,
 			'tipe_data'			=> $tipe_data,
@@ -802,7 +800,7 @@ Class Mprofilsekolah
                     ) d on d.peserta_didik_id=a.peserta_didik_id
 					where a.sekolah_id=? and a.tahun_ajaran_id=? and a.is_deleted=0 and a.asal_data!=" .ASALDATA_PENERIMAANSD;
 
-		return $this->ro->query($query, array($this->tahun_ajaran_id, $putaran, $sekolah_id, $this->tahun_ajaran_id))->getResultArray();
+		return $this->ro->query($query, array(TAHUN_AJARAN_ID, $putaran, $sekolah_id, TAHUN_AJARAN_ID))->getResultArray();
 	}
 
 	function tcg_ubah_daftarulang($pendaftaran_id,$status,$pengguna_id=null) {
@@ -890,7 +888,7 @@ Class Mprofilsekolah
 	// 	// $builder = $this->ro->table('cfg_penerapan_sekolah a');
     //     // $builder->select("a.kuota");
 	// 	// $builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
-    //     // $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+    //     // $builder->where("a.tahun_ajaran_id", TAHUN_AJARAN_ID);
     //     // $builder->where("a.penerapan_id", PENERAPANID_SD);
     //     // $builder->where("a.putaran", PUTARAN_SD);
 
@@ -906,7 +904,7 @@ Class Mprofilsekolah
 	// 	// $builder = $this->ro->table('tcg_pendaftaran a');
     //     // $builder->select("count(a.pendaftaran_id) as cnt");
 	// 	// $builder->where(array('a.sekolah_id'=>$sekolah_id, 'a.is_deleted'=>0));
-    //     // $builder->where("a.tahun_ajaran_id", $this->tahun_ajaran_id);
+    //     // $builder->where("a.tahun_ajaran_id", TAHUN_AJARAN_ID);
     //     // $builder->where("a.penerapan_id", PENERAPANID_SD);
     //     // $builder->where("a.putaran", PUTARAN_SD);
 

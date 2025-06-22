@@ -49,9 +49,7 @@ class Berkasdisekolah extends PpdbController {
 	}
 
 	function json() {
-		// $tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		// if (empty($tahun_ajaran_id))
-		// 	$tahun_ajaran_id = $this->tahun_ajaran_id;
+		// $tahun_ajaran_id = $this->tahun_ajaran_id;
 
 		$sekolah_id = $_GET["sekolah_id"] ?? null; 
 		if (empty($sekolah_id)) {

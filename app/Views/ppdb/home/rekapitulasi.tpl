@@ -8,7 +8,7 @@
     {if $show_jenjang}
     <div class="page-tabs">
         {foreach $daftarjenjang as $row}
-        <span class="btn btn-xs btn-secondary" tcg-jenjang-id="{$row.jenjang_id}" {if $row.jenjang_id==$jenjang_aktif}style="display:none;"{/if}><a onclick="show_rekapitulasi({$row.jenjang_id},'{$row.nama}');">{$row.nama}</a></span>
+        <span class="btn btn-xs btn-secondary btn-jenjang" tcg-jenjang-id="{$row.jenjang_id}" {if $row.jenjang_id==$jenjang_aktif}style="display:none;"{/if}>{$row.nama}</span>
         {/foreach}
     </div>
     {/if}
@@ -16,6 +16,7 @@
  
 <div class="page-titles" style="margin-top: -16px;">
     <div>Untuk melihat perangkingan sekolah, silahkan cari sekolah yang dituju lalu klik di tombol <span class="btn btn-xs btn-primary">Peringkat</span> di sebelah kanan.</div>
+    <div>Untuk pencarian yang lebih presisi, gunakan tanda kutip pada nama yang dicari. Sebagai contoh: "SMP NEGERI 1 KEBUMEN" (dengan tanda kutip "").</div>
 </div>
 
 <div class="card box-solid">

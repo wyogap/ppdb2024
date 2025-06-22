@@ -104,6 +104,10 @@
         .home .content-body {
             padding-top: 5rem !important;
         }
+
+        div#tdaftarpendaftar_filter input {
+            width: 200px;
+        }
     }        
 
     @media only screen and (min-width: 768px) {
@@ -132,6 +136,10 @@
         .home .app-name-long {
             display: block !important;
         } 
+
+        div#tdaftarpendaftar_filter input {
+            width: 300px;
+        }
     }
 
     /* @media only screen and (min-width: 992px) { */

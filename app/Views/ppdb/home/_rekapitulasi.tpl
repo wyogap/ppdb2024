@@ -55,6 +55,15 @@
             ],
             order: [ 1, 'asc' ],
         });
+
+        $(".btn-jenjang").on('click', function(e) {
+            e.preventDefault();
+            
+            let el = $(this);
+            let jenjang_id = el.attr('tcg-jenjang-id');
+
+            window.location.href = "{$site_url}/home/rekapitulasi?jenjang=" +jenjang_id;
+        })
     });
 
     /* Recalculates the size of the resposive DataTable */
@@ -65,17 +74,21 @@
         //$($.fn.dataTable.tables(true)).DataTable().responsive.recalc();
     }
 
-    function show_rekapitulasi($jenjang_id, $nama) {
-        //alert($nama);
+    // function show_rekapitulasi(jenjang_id, nama) {
+    //     //alert($nama);
 
-        $("#nama-jenjang").text($nama);
-        $('.page-tabs .btn').each(function(i, obj) {
-            if ($(this).attr('tcg-jenjang-id') == $jenjang_id) {
-                $(this).hide();
-            }
-            else {
-                $(this).show();
-            }
-        });
-    }
+    //     //login ulang
+    //     window.location.href = "{$site_url}/home/rekapitulasi?jenjang=" +jenjang_id;
+
+    //     //TODO: dynamic loading
+    //     // $("#nama-jenjang").text(nama);
+    //     // $('.page-tabs .btn').each(function(i, obj) {
+    //     //     if ($(this).attr('tcg-jenjang-id') == jenjang_id) {
+    //     //         $(this).hide();
+    //     //     }
+    //     //     else {
+    //     //         $(this).show();
+    //     //     }
+    //     // });
+    // }
 </script>

@@ -4,6 +4,9 @@ namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
+defined('TAHUN_AJARAN_ID') || define('TAHUN_AJARAN_ID', 2025);
+defined('NAMA_TAHUN_AJARAN') || define('NAMA_TAHUN_AJARAN', '2025/2026');
+
 class App extends BaseConfig
 {
     /**

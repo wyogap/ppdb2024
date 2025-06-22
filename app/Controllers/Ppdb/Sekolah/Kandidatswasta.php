@@ -25,9 +25,7 @@ class Kandidatswasta extends PpdbController {
 
 	function index()
 	{
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 	
         $sekolah_id = $this->session->get('sekolah_id');
         if (empty($sekolah_id)) {
@@ -51,9 +49,7 @@ class Kandidatswasta extends PpdbController {
 	}
 
 	function json() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null; 
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		$tahun_ajaran_id = $this->tahun_ajaran_id;
 
 		$sekolah_id = $this->session->get("sekolah_id");
 

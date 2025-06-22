@@ -49,11 +49,14 @@ x Perlu update jarak ring domisili
 
 #!/usr/bin/bash
 cd /var/www/spmb
+export HOME=/home/wyogap
+git config --global --add safe.directory /var/www/spmb
 git fetch
 git reset --hard HEAD
 git merge '@{u}'
 mv app/Config/Database.php app/Config/Database.php.bak
 ln -s Database-spmb2025.php app/Config/Database.php
+chown -R wyogap:wyogap /var/www/spmb/app
 
 sudo apt-get install php8.2-gd
 
@@ -63,3 +66,9 @@ gcloud sql instances delete spmb-replica1
 
 https://pelayanan.data.kemdikbud.go.id/vci/index.php/CPelayananData/getSiswa?kode_wilayah=030500&token=16F236D8-1153-4B69-B9EF-CC99FEDE2D65&nisn=3137107748
 &npsn=20105082
+
+103.157.97.159
+
+GRANT CREATE ON *.* TO 'lms'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'lms'@'%';

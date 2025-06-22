@@ -137,17 +137,15 @@ class Penerimaan extends PpdbController {
 	}
 
 	function json() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $penerapan_id = $_GET["penerapan_id"] ?? null;
 		if (empty($penerapan_id)) {
             $penerapan_id = 0;
         };
 
-        $jenjang_id = $this->session->get("jenjang_aktif");
-        $nama_jenjang = $this->session->get("nama_jenjang_aktif");
+        // $jenjang_id = $this->session->get("jenjang_aktif");
+        // $nama_jenjang = $this->session->get("nama_jenjang_aktif");
 
         $action = $this->request->getPostGet("action");
 		if (empty($action) || $action=='view') {
@@ -267,9 +265,7 @@ class Penerimaan extends PpdbController {
 	}
 
     function ubahdata() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         $sekolah_id = $this->session->get("sekolah_id");
         $daftarpenerapan = $this->session->get("daftarpenerapan");
@@ -499,9 +495,7 @@ class Penerimaan extends PpdbController {
     }
 
 	function ubahjalur() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         // $penerapan_id = $_GET["penerapan_id"] ?? null;
 		// if (empty($penerapan_id)) {
@@ -573,9 +567,7 @@ class Penerimaan extends PpdbController {
     }
 
     function daftar() {
-		$tahun_ajaran_id = $_GET["tahun_ajaran"] ?? null;
-		if (empty($tahun_ajaran_id))
-			$tahun_ajaran_id = $this->tahun_ajaran_id;
+		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
         // $penerapan_id = $_GET["penerapan_id"] ?? null;
 		// if (empty($penerapan_id)) {
