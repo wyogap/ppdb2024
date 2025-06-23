@@ -1,7 +1,7 @@
 <?php
 
 // DEVELOPMENT
-$_SERVER['CI_ENVIRONMENT'] = 'development';
+$_SERVER['CI_ENVIRONMENT'] = 'production';
 
 /*
  *---------------------------------------------------------------
