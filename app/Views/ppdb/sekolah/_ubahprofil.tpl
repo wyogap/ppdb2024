@@ -4,13 +4,13 @@
 
     $(document).ready(function() {
 		//Peta
-		var map_profil = L.map('peta-profil',{ zoomControl:false }).setView([{$profilsekolah.lintang},{$profilsekolah.bujur}],16);
+		var map_profil = L.map('peta-profil',{ zoomControl:false }).setView([{$profil.lintang},{$profil.bujur}],16);
 		L.tileLayer(
 			'{$map_streetmap}',{ maxZoom: 18,attribution: '{$app_short_name} {$nama_wilayah}',id: 'mapbox.streets' }
 		).addTo(map_profil);
 
-		L.marker([{$profilsekolah.lintang},{$profilsekolah.bujur}]).addTo(map_profil)
-            .bindPopup("{$profilsekolah.alamat_jalan}, {$profilsekolah.desa_kelurahan}, {$profilsekolah.kecamatan}");
+		L.marker([{$profil.lintang},{$profil.bujur}]).addTo(map_profil)
+            .bindPopup("{$profil.alamat_jalan}, {$profil.desa_kelurahan}, {$profil.kecamatan}");
 
 		var streetmap   = L.tileLayer('{$map_streetmap}', { id: 'mapbox.light', attribution: '' }),
 			satelitemap  = L.tileLayer('{$map_satelitemap}', { id: 'mapbox.streets', attribution: '' });
@@ -27,7 +27,7 @@
 		new L.Control.Zoom({ position:'bottomright' }).addTo(map_profil);
 
         new L.Control.EasyButton( '<span class="map-button" style="font-size: 30px;">&curren;</span>', function(){
-            map_profil.setView([{$profilsekolah.lintang},{$profilsekolah.bujur}],10);
+            map_profil.setView([{$profil.lintang},{$profil.bujur}],10);
         }, { position: 'topleft' }).addTo(map_profil);
 
         var greenMarker = new L.Icon({

@@ -22,22 +22,22 @@
 						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 								<div class="form-group has-feedback">
 									<label for="nisn">NPSN</label>
-									<input id="nisn" name="nisn" type="text" class="form-control" aria-describedby="basic-addon1" data-validation="required" placeholder="NPSN" minlength="10" maxlength="10" value="{$profilsekolah.npsn}" disabled>
+									<input id="nisn" name="nisn" type="text" class="form-control" aria-describedby="basic-addon1" data-validation="required" placeholder="NPSN" minlength="10" maxlength="10" value="{$profil.npsn}" disabled>
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 								<div class="form-group has-feedback">
 									<label for="inklusi">Inklusi</label>
 									<select id="inklusi" name="inklusi" class="form-control select2" data-validation="required">
-										<option value="0" {if (0==$profilsekolah.inklusi)}selected="true"{/if}>Tidak</option>
-										<option value="1" {if (1==$profilsekolah.inklusi)}selected="true"{/if}>Ya</option>
+										<option value="0" {if (0==$profil.inklusi)}selected="true"{/if}>Tidak</option>
+										<option value="1" {if (1==$profil.inklusi)}selected="true"{/if}>Ya</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 								<div class="form-group has-feedback">
 									<label for="alamat">Alamat</label>
-									<input id="alamat_jalan" name="alamat_jalan" type="text" class="form-control" aria-describedby="basic-addon1" data-validation="required" value="{$profilsekolah.alamat_jalan}">
+									<input id="alamat_jalan" name="alamat_jalan" type="text" class="form-control" aria-describedby="basic-addon1" data-validation="required" value="{$profil.alamat_jalan}">
 								</div>
 							</div>
 						<!-- </div> -->
@@ -50,13 +50,13 @@
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<div class="form-group has-feedback">
 								<label for="lintang">Lintang</label>
-								<input type="text" class="form-control" id="lintang" name="lintang" placeholder="Lintang" data-validation="required" value="{$profilsekolah.lintang}">
+								<input type="text" class="form-control" id="lintang" name="lintang" placeholder="Lintang" data-validation="required" value="{$profil.lintang}">
 							</div>
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<div class="form-group has-feedback">
 								<label for="bujur">Bujur</label>
-								<input type="text" class="form-control" id="bujur" name="bujur" placeholder="Bujur" data-validation="required" value="{$profilsekolah.bujur}">
+								<input type="text" class="form-control" id="bujur" name="bujur" placeholder="Bujur" data-validation="required" value="{$profil.bujur}">
 							</div>
 						</div>
 					</div>
