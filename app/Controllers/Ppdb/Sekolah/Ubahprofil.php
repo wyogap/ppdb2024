@@ -32,11 +32,10 @@ class Ubahprofil extends PpdbController {
 		}
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
-        if ($data['impersonasi_sekolah']) {
-            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-        } else {
-            $data['profil'] = $this->session->get("profilsekolah");
-        }
+ 
+        //untuk ubah data -> always get latest value from db
+        $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        $this->session->set("profilsekolah", $data['profil']);
 
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
