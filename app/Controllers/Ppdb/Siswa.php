@@ -80,7 +80,10 @@ class Siswa extends PpdbController {
         }
 
         $jenjang_id = 0;
-        if ($profil['bentuk_sekolah'] == 'SD' || $profil['bentuk_sekolah'] == 'MI') {
+        if ($profil['asal_data'] == ASALDATA_REGISTRASI) {
+            $jenjang_id = JENJANGID_SMP;
+        }
+        else if ($profil['bentuk_sekolah'] == 'SD' || $profil['bentuk_sekolah'] == 'MI') {
             $jenjang_id = JENJANGID_SMP;
         }
         else if ($profil['bentuk_sekolah'] == 'TK' || $profil['bentuk_sekolah'] == 'RA' || $profil['bentuk_sekolah'] == 'KB') {
