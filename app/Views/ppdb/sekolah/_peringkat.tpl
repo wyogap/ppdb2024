@@ -69,24 +69,32 @@
 				},
                 ],
                 "columnDefs": [ 
-                {
-                    "searchable": false,
-                    "orderable": false,
-                    "targets": 0
-                },
-                {
-                    "targets": 7,
-                    className: "text-end",
-                    render: function (data, type, row, meta) {
-						if (type=='display') {
-							return $.fn.dataTable.render.number('.', ',', 2, '').display(data);
-						}
-						return data;
-                    }
-                },
-                { type: 'num', targets: [ 1, 7, 8 ] },
+                    {
+                        "searchable": false,
+                        "orderable": false,
+                        "targets": 0
+                    },
+                    {
+                        "targets": 7,
+                        className: "text-end",
+                        render: function (data, type, row, meta) {
+                            if (type=='display') {
+                                return $.fn.dataTable.render.number('.', ',', 2, '').display(data);
+                            }
+                            return data;
+                        }
+                    },
+                {if $row.jenjang_id = $smarty.const.JENJANGID_SMP}
+                    { type: 'num', targets: [ 1, 7 ] },
+                {else}
+                    { type: 'num', targets: [ 1, 7, 8 ] },
+                {/if}
                 ],
+                {if $row.jenjang_id = $smarty.const.JENJANGID_SMP}
+                "order": [[ 7, 'desc' ], [ 1, 'asc']]
+                {else}
                 "order": [[ 7, 'desc' ], [ 8, 'desc'], [ 1, 'asc']]
+                {/if}
             });
 
             // dt_{$row.penerapan_id}.on('order.dt search.dt', function () {
