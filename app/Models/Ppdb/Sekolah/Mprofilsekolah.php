@@ -119,7 +119,8 @@ Class Mprofilsekolah
         select a.penerapan_id,c.jalur_id,a.nama AS jalur,a.tooltip,d.kuota, coalesce(e.tambahan_kuota,0) as tambahan_kuota, 
             coalesce(e.memenuhi_syarat,0) as memenuhi_syarat, coalesce(e.masuk_kuota,0) as masuk_kuota, coalesce(e.daftar_tunggu,0) as daftar_tunggu, 
             coalesce(e.diterima,0) as diterima, coalesce(g.cnt_pendaftaran,0) as total_pendaftar,
-            ((d.kuota + coalesce(e.tambahan_kuota,0)) - coalesce(e.masuk_kuota,0)) as sisa_kuota
+            ((d.kuota + coalesce(e.tambahan_kuota,0)) - coalesce(e.masuk_kuota,0)) as sisa_kuota,
+            a.jenjang_id
         from cfg_penerapan a
         join ref_jalur c on a.jalur_id = c.jalur_id AND c.is_deleted=0
         join cfg_penerapan_sekolah d on a.penerapan_id = d.penerapan_id AND a.tahun_ajaran_id=d.tahun_ajaran_id AND d.is_deleted = 0
@@ -184,6 +185,7 @@ Class Mprofilsekolah
         $builder->select('e.nama AS sekolah_asal,f.nama AS lokasi_berkas,g.keterangan as label_masuk_pilihan,h.keterangan as label_jenis_pilihan,i.nama as sedang_verifikasi');
         $builder->select('d.jalur_id,d.nama AS jalur, b.nomor_kontak');
         $builder->select('case when a.status_daftar_ulang = 1 then a.tanggal_daftar_ulang else NULL end as tanggal_daftar_ulang', false);
+        $builder->select('a.skor_jarak, a.skor_usia');
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');

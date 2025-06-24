@@ -84,8 +84,9 @@
 						return data;
                     }
                 },
+                { type: 'num', targets: [ 1, 7, 8 ] },
                 ],
-                "order": [[ 7, 'desc' ], [ 1, 'asc']]
+                "order": [[ 7, 'desc' ], [ 8, 'desc'], [ 1, 'asc']]
             });
 
             // dt_{$row.penerapan_id}.on('order.dt search.dt', function () {

@@ -148,6 +148,9 @@
                             <th class="text-center">Jenis Pilihan</th>
                             <th class="text-center">Tanggal Pembukuan</th>
                             <th class="text-center" data-priority="3">Skor</th>
+                            {if $row.jenjang_id != $smarty.const.JENJANGID_SMP}
+                            <th class="text-center">Skor Usia</th>
+                            {/if}
                         </tr>
                     </thead>
                     <tbody>
@@ -182,9 +185,9 @@
                                 {elseif ($row2.status_penerimaan==2)}
                                 <td class="text-center bg-red">Tidak Masuk Kuota</td>
                                 {elseif ($row2.status_penerimaan==3)}
-                                <td class="text-center bg-yellow">{if $row2.peringkat_final<10}0{$row2.peringkat_final}{else}{$row2.peringkat_final}{/if}</td>
+                                <td class="text-center bg-yellow">{$row2.peringkat_final}</td>
                                 {else}
-                                <td class="text-center bg-green">{if $row2.peringkat_final<10}0{$row2.peringkat_final}{else}{$row2.peringkat_final}{/if}</td>
+                                <td class="text-center bg-green">{$row2.peringkat_final}</td>
                                 {/if}
                             {/if}
                             <td class="text-center">{$row2.nomor_pendaftaran}</td>
@@ -195,6 +198,9 @@
                             <td class="text-center">{$row2.label_jenis_pilihan}</td>
                             <td class="text-center">{$row2.created_on}</td>
                             <td class="text-end">{$row2.skor}</td>
+                            {if $row.jenjang_id != $smarty.const.JENJANGID_SMP}
+                            <td class="text-end">{$row2.skor_usia}</td>
+                            {/if}
                         </tr>
                         {/foreach}
 
