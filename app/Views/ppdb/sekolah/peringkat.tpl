@@ -182,9 +182,9 @@
                                 {elseif ($row2.status_penerimaan==2)}
                                 <td class="text-center bg-red">Tidak Masuk Kuota</td>
                                 {elseif ($row2.status_penerimaan==3)}
-                                <td class="text-center bg-yellow">{$row2.peringkat_final}</td>
+                                <td class="text-center bg-yellow">{if $row2.peringkat_final<10}0{$row2.peringkat_final}{else}{$row2.peringkat_final}{/if}</td>
                                 {else}
-                                <td class="text-center bg-green">{$row2.peringkat_final}</td>
+                                <td class="text-center bg-green">{if $row2.peringkat_final<10}0{$row2.peringkat_final}{else}{$row2.peringkat_final}{/if}</td>
                                 {/if}
                             {/if}
                             <td class="text-center">{$row2.nomor_pendaftaran}</td>

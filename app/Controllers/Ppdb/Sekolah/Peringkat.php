@@ -34,10 +34,13 @@ class Peringkat extends PpdbController {
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
         $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
-        if ($data['impersonasi_sekolah'] == 1) {
+        if ($data['impersonasi_sekolah']) {
             $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        } else {
+            $data['profil'] = $this->session->get("profilsekolah");
         }
         
+        $data['inklusi'] = $data['profil']['inklusi'];
 		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
         
         //pendaftar per penerapan
