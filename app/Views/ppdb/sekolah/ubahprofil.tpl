@@ -3,7 +3,7 @@
 <div class="row page-titles">
     <ol class="breadcrumb">
         {if $impersonasi_sekolah|default: FALSE} 
-        <li class="breadcrumb-item active">[{$profilsekolah['nama']}]</li>
+        <li class="breadcrumb-item active">[{$profil['nama']}]</li>
         {/if}
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
         <li class="breadcrumb-item"><a href="javascript:void(0)">Ubah Profil</a></li>
