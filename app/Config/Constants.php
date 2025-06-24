@@ -142,7 +142,8 @@ defined('ROLEID_SEKOLAH')                   OR define('ROLEID_SEKOLAH', '12');
 defined('ROLEID_DINAS')                     OR define('ROLEID_DINAS', '13');
 defined('ROLEID_DAPODIK')                   OR define('ROLEID_DAPODIK', '14');
 
-defined('JALURID_INKLUSI')                  OR define('JALURID_INKLUSI', '7');
+//defined('JALURID_INKLUSI')                  OR define('JALURID_INKLUSI', '7');
+defined('JALURID_INKLUSI')                  OR define('JALURID_INKLUSI', '9');
 defined('JALURID_ZONASI')                   OR define('JALURID_ZONASI', '1');
 defined('JALURID_PRESTASI')                 OR define('JALURID_PRESTASI', '2');
 defined('JALURID_AFIRMASI')                 OR define('JALURID_AFIRMASI', '9');
