@@ -329,24 +329,29 @@ class Home extends PpdbController
                 break;
 			}
 
-            //TODO: check for existing sekolah with the same npsn
+            //check for existing sekolah with the same npsn
             $sekolah = get_profilsekolah_from_npsn($data['npsn_sekolah']);
             if (empty($sekolah)) {
-                $msg = "Tidak berhasil mendapatkan data sekolah dari DAPODIK. Pastikan NPSN sekolah sudah benar.";
-                $msg .= "<ul style='padding: inherit;'>";
-                $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah sudah benar, silahkan reload/refresh halaman ini untuk mencoba lagi.</li>";
-                $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah tidak diketahui, masukkan 00000000 untuk NPSN dan nama sekolah sesuai di ijazah kelulusan untuk Nama Sekolah.</li>";
-                $msg .= "<li style='list-style: inherit;'>Apabila calon siswa belum pernah sekolah, masukkan 00000000 untuk NPSN dan 'Belum Pernah Sekolah' untuk Nama Sekolah.</li>";
-                $msg .= "</ul>";
-                $this->session->setFlashdata('error', $msg);
-                break;
+                $sekolah = $this->Mhome->tcg_profilsekolah_from_npsn(DEFAULT_NPSN_SEKOLAH);
+                if (empty($sekolah)) {
+                    $msg = "Tidak berhasil mendapatkan data sekolah dari DAPODIK. Pastikan NPSN sekolah sudah benar.";
+                    $msg .= "<ul style='padding: inherit;'>";
+                    $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah sudah benar, silahkan reload/refresh halaman ini untuk mencoba lagi.</li>";
+                    $msg .= "<li style='list-style: inherit;'>Apabila NPSN sekolah tidak diketahui, masukkan " .DEFAULT_NPSN_SEKOLAH. " untuk NPSN dan nama sekolah sesuai di ijazah kelulusan untuk Nama Sekolah.</li>";
+                    $msg .= "<li style='list-style: inherit;'>Apabila calon siswa belum pernah sekolah, masukkan " .DEFAULT_NPSN_SEKOLAH. " untuk NPSN dan 'Belum Pernah Sekolah' untuk Nama Sekolah.</li>";
+                    $msg .= "</ul>";
+                    $this->session->setFlashdata('error', $msg);
+                    break;
+                }
             }
 
             $data['sekolah_id'] = $sekolah['sekolah_id'];
 
             $user = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
                                                                     $data['tempat_lahir'], $data['tanggal_lahir'], $data['nama_ibu_kandung'], $data['kebutuhan_khusus'], 
-                                                                    $data['alamat'], $data['kode_wilayah'], $data['lintang'], $data['bujur'], $data['nomor_kontak']);
+                                                                    $data['alamat'], $data['kode_wilayah'], $data['lintang'], $data['bujur'], $data['nomor_kontak'],
+                                                                    $data['npsn_sekolah'], $data['nama_sekolah']
+                                                                );
             if ($user == null) {						
                 $this->session->setFlashdata('error', "Terjadi permasalahan sehingga data gagal tersimpan. Silahkan ulangi kembali.");
                 break;

@@ -211,3 +211,4 @@ defined('WA_COUNTRYCODE')                   OR define('WA_COUNTRYCODE', '62');
 defined('WA_APIKEY')                        OR define('WA_APIKEY', 'T3DOAJFMEU9YNUWE');
 defined('WA_NUMBERKEY')                     OR define('WA_NUMBERKEY', 'PLDkC7q7bF7ff9fD');
 
+defined('DEFAULT_NPSN_SEKOLAH')             OR define('DEFAULT_NPSN_SEKOLAH', '00000000');

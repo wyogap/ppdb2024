@@ -306,6 +306,14 @@ class Penerimaan extends PpdbController {
                 //dont use '0000'
                 if (!empty($npsn_sekolah_asal)) {
                     $asal_sekolah = get_profilsekolah_from_npsn($npsn_sekolah_asal);
+                    if (empty($asal_sekolah)) {
+                        $mhome = new \App\Models\Ppdb\Mhome();
+                        $asal_sekolah = $mhome->tcg_profilsekolah_from_npsn(DEFAULT_NPSN_SEKOLAH);
+                        if (empty($asal_sekolah)) {
+                            print_json_error("NPSN sekolah asal tidak valid.");
+                            break;
+                        }
+                    }
                     $siswa['sekolah_id'] = $asal_sekolah['sekolah_id'];
                 }
                 else {
@@ -345,13 +353,13 @@ class Penerimaan extends PpdbController {
                     break;
                 }
             
-                //kalau pakai jalur afirmasi, cek masuk data afirmasi
-                if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
-                    $nik = $siswa['nik'];
-                    if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
-                        print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
-                    }
-                }
+                // //kalau pakai jalur afirmasi, cek masuk data afirmasi
+                // if ($penerapan['jalur_id'] == JALURID_AFIRMASI) {
+                //     $nik = $siswa['nik'];
+                //     if (!$this->Msekolah->tcg_cek_dataafirmasi($nik)) {
+                //         print_json_error("NIK siswa tidak terdaftar di data afirmasi.");
+                //     }
+                // }
                 
                 //buat peserta-didik
 				$peserta_didik_id = $this->Msekolah->tcg_tambah_pendaftar_sd($siswa);
