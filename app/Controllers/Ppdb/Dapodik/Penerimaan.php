@@ -63,6 +63,7 @@ class Penerimaan extends PpdbController {
         $this->session->get("nama_jenjang_aktif", $nama_jenjang);
 
         $data['nama_jenjang'] = $nama_jenjang;
+        $data['inklusi'] = $data['profilsekolah']['inklusi'];
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
 		$data['daftarsekolah'] = $mdropdown->tcg_sekolah_tk_ra($this->kode_wilayah);
