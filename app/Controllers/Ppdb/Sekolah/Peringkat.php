@@ -79,7 +79,7 @@ class Peringkat extends PpdbController {
         $mhome = new Mhome();
 		$job = $mhome->tcg_job_peringkatpendaftaran();
 		if ($job != null) {
-			$data['last_execution_date'] = $job['last_execution_end'];
+			$data['last_execution_date'] = $job['last_execution_start'];
 			$data['next_execution_date'] = $job['next_execution'];
         }
 		

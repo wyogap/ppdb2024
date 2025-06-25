@@ -334,7 +334,7 @@ Class Mhome
 	}
 
 	function tcg_job_peringkatpendaftaran() {
-		$query = "select next_execution, last_execution_end from dbo_jobs where name='proses_peringkat_pendaftaran'";
+		$query = "select next_execution, last_execution_start, last_execution_end from dbo_jobs where name='proses_peringkat_pendaftaran'";
 		return $this->ro->query($query)->getRowArray();
 	}
 
