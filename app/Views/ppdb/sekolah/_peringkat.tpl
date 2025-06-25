@@ -84,13 +84,13 @@
                             return data;
                         }
                     },
-                {if $row.jenjang_id = $smarty.const.JENJANGID_SMP}
+                {if $row.jenjang_id == $smarty.const.JENJANGID_SMP}
                     { type: 'num', targets: [ 1, 7 ] },
                 {else}
                     { type: 'num', targets: [ 1, 7, 8 ] },
                 {/if}
                 ],
-                {if $row.jenjang_id = $smarty.const.JENJANGID_SMP}
+                {if $row.jenjang_id == $smarty.const.JENJANGID_SMP}
                 "order": [[ 7, 'desc' ], [ 1, 'asc']]
                 {else}
                 "order": [[ 7, 'desc' ], [ 8, 'desc'], [ 1, 'asc']]
