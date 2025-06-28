@@ -1034,8 +1034,26 @@
         card.find(".accordion-header-text .status").html('');
         {/if}
 
-        // //special case
-        // dtprestasi.buttons( 0, null ).container().hide();
+        //kunci data?
+        if (cek_waktuverifikasi==1 || cek_waktusosialisasi==1 || impersonasi_sekolah==1) {
+            $(".status-verifikasi").attr('disabled', false);
+            $(".btn-kembalikan").attr('disabled', false);
+            $(".btn-batal").attr('disabled', false);
+            $(".btn-simpan").attr('disabled', false);
+            $(".ctx-simpan").attr('disabled', false);
+            $(".ctx-simpan").show();
+            $(".ctx-batal").text(' Batal ');
+        }
+        else {
+            $(".status-verifikasi").attr('disabled', true);
+            $(".btn-kembalikan").attr('disabled', true);
+            $(".btn-batal").attr('disabled', true);
+            $(".btn-simpan").attr('disabled', true);
+            $(".ctx-simpan").attr('disabled', true);
+            $(".ctx-simpan").hide();
+            $(".ctx-batal").text(' Tutup ');
+        }
+
 
     }       
 

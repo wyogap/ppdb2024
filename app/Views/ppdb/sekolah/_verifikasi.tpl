@@ -34,6 +34,10 @@
     var dt_belum, dt_sedang, dt_sudah, dt_berkas;
     var verifikasi_siswa = 0;
 
+    var cek_waktuverifikasi = {$cek_waktuverifikasi|default: 0};
+    var cek_waktusosialisasi = {$cek_waktusosialisasi|default: 0};
+    var impersonasi_sekolah = {$impersonasi_sekolah|default: 0};
+
     $(document).ready(function() {
  
         //all datatable must be responsive
@@ -207,7 +211,6 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -218,10 +221,13 @@
                             return data;
                         }
 
-                        return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
+                        if (cek_waktuverifikasi==1 || cek_waktusosialisasi==1 || impersonasi_sekolah==1) {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
+                        } else {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Profil</a>';
+                        }
                     }
                 },
-                {/if}
             ],
             order: [ [5, 'asc'] ],
             // initComplete: function() {
@@ -380,7 +386,6 @@
                     className: "text-center",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -391,10 +396,13 @@
                             return data;
                         }
 
-                        return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
+                        if (cek_waktuverifikasi==1 || cek_waktusosialisasi==1 || impersonasi_sekolah==1) {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi</a>';
+                        } else {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Profil</a>';
+                        }
                     }
                 },
-                {/if}
             ],
             order: [ [5, 'asc'] ],
             // initComplete: function() {
@@ -548,7 +556,6 @@
                     className: "text-left",
                     orderable: 'true',
                 },
-                {if $cek_waktuverifikasi==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                 {
                     data: null,
                     className: "text-center",
@@ -559,10 +566,13 @@
                             return data;
                         }
 
-                        return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi Ulang</a>';
+                        if (cek_waktuverifikasi==1 || cek_waktusosialisasi==1 || impersonasi_sekolah==1) {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Verifikasi Ulang</a>';
+                        } else {
+                            return '<a onclick=verifikasi_pendaftaran(' +row['pendaftaran_id']+ ') href="#" class="btn btn-xs btn-primary">Profil</a>';
+                        }
                     }
                 },
-                {/if}
             ],
             order: [ [0, 'asc'] ],
             // initComplete: function() {

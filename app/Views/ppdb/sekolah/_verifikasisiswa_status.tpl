@@ -6,16 +6,13 @@
         <td class="verifikasi-manual" colspan="1">
             <b>Apakah data {$tag_label} di atas sudah benar? </b>
             <select class="form-control input-default status-verifikasi" 
-                tcg-tag='{$tag}'
-                tcg-field='verifikasi_{$tag}' tcg-field-type='status' tcg-field-submit=1>
+                    tcg-tag='{$tag}'
+                    tcg-field='verifikasi_{$tag}' tcg-field-type='status' tcg-field-submit=1>
                 <option value="0">Belum Diverifikasi</option>
                 <option value="1">SUDAH Benar</option>
                 <option value="2">BELUM Benar</option>
                 <option value="3">Perbaikan Data</option>
             </select>
-            {if 1==0}
-            <button class="btn btn-secondary btn-perbaikan" tcg-tag='{$tag}' style="display: none">Perbaiki Data</button>
-            {/if}
             <button class="btn btn-primary btn-kembalikan" style="display: none;" tcg-tag='{$tag}'>Data Awal</button>
             <button class="btn btn-primary btn-batal" style="display: none;" tcg-tag='{$tag}'>Batalkan</button>
             <button class="btn btn-danger btn-simpan" style="display: none;" tcg-tag='{$tag}'>Konfirmasi</button>

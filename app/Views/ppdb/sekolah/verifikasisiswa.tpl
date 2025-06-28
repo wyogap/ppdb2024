@@ -911,7 +911,7 @@
 <div class="ctx">
     <a href="#" class="btn btn-danger ctx-simpan">
         Simpan
-    </a>  
+    </a>
     <a href="#" class="btn btn-primary ctx-batal">
         Batal
     </a>
