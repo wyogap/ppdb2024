@@ -176,6 +176,16 @@ class Penerimaan extends PpdbController {
 			$sekolah_id = $this->session->get("sekolah_id");
             $peserta_didik_id = $this->request->getPostGet('peserta_didik_id');
 
+            //only can verify within the specified timeframe
+            $cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+            $cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+            $cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+            $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+            if ($cek_waktupendaftaran != 1 && $cek_waktuverifikasi != 1 && $cek_waktusosialisasi != 1 && $impersonasi_sekolah != 1) {
+                print_json_error("Tidak sedang tahapan pendaftaran");
+            }
+
             //pendaftaran lama
             $pendaftaran = $this->Msekolah->tcg_penerimaan_sd_siswa($peserta_didik_id);
             if ($sekolah_id != $pendaftaran['sekolah_id']) {
@@ -227,6 +237,14 @@ class Penerimaan extends PpdbController {
 			$sekolah_id = $this->session->get("sekolah_id");
             $pendaftaran_id = $this->request->getPostGet('pendaftaran_id');
 
+            //only can verify within the specified timeframe
+            $cek_waktudaftarulang = $this->Mconfig->tcg_cek_waktudaftarulang();
+            $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+            if ($cek_waktudaftarulang != 1 && $impersonasi_sekolah != 1) {
+                print_json_error("Tidak sedang tahapan daftar ulang");
+            }
+
             $status = $this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,1);
             if (!$status) {
                 $error = $this->Msekolah->get_error_message();
@@ -244,6 +262,14 @@ class Penerimaan extends PpdbController {
         else if ($action=='bataldu') {
 			$sekolah_id = $this->session->get("sekolah_id");
             $pendaftaran_id = $this->request->getPostGet('pendaftaran_id');
+
+            //only can verify within the specified timeframe
+            $cek_waktudaftarulang = $this->Mconfig->tcg_cek_waktudaftarulang();
+            $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+            if ($cek_waktudaftarulang != 1 && $impersonasi_sekolah != 1) {
+                print_json_error("Tidak sedang tahapan daftar ulang");
+            }
 
             $status = $this->Msekolah->tcg_ubah_daftarulang($pendaftaran_id,0);
             if (!$status) {
@@ -267,6 +293,16 @@ class Penerimaan extends PpdbController {
 
     function ubahdata() {
 		//$tahun_ajaran_id = $this->tahun_ajaran_id;
+
+		//only can verify within the specified timeframe
+		$cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+        if ($cek_waktupendaftaran != 1 && $cek_waktuverifikasi != 1 && $cek_waktusosialisasi != 1 && $impersonasi_sekolah != 1) {
+            print_json_error("Tidak sedang tahapan pendaftaran");
+        }
 
         $sekolah_id = $this->session->get("sekolah_id");
         $daftarpenerapan = $this->session->get("daftarpenerapan");
@@ -506,10 +542,15 @@ class Penerimaan extends PpdbController {
 	function ubahjalur() {
 		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-        // $penerapan_id = $_GET["penerapan_id"] ?? null;
-		// if (empty($penerapan_id)) {
-        //     $penerapan_id = 0;
-        // };
+		//only can verify within the specified timeframe
+		$cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+        if ($cek_waktupendaftaran != 1 && $cek_waktuverifikasi != 1 && $cek_waktusosialisasi != 1 && $impersonasi_sekolah != 1) {
+            print_json_error("Tidak sedang tahapan pendaftaran");
+        }
 
         // $jenjang_id = $this->session->get("jenjang_aktif");
         // $nama_jenjang = $this->session->get("nama_jenjang_aktif");
@@ -578,10 +619,15 @@ class Penerimaan extends PpdbController {
     function daftar() {
 		//$tahun_ajaran_id = $this->tahun_ajaran_id;
 
-        // $penerapan_id = $_GET["penerapan_id"] ?? null;
-		// if (empty($penerapan_id)) {
-        //     $penerapan_id = 0;
-        // };
+		//only can verify within the specified timeframe
+		$cek_waktupendaftaran = $this->Mconfig->tcg_cek_waktupendaftaran();
+		$cek_waktuverifikasi = $this->Mconfig->tcg_cek_waktuverifikasi();
+		$cek_waktusosialisasi = $this->Mconfig->tcg_cek_waktusosialisasi();
+        $impersonasi_sekolah = $this->session->get("impersonasi_sekolah");
+
+        if ($cek_waktupendaftaran != 1 && $cek_waktuverifikasi != 1 && $cek_waktusosialisasi != 1 && $impersonasi_sekolah != 1) {
+            print_json_error("Tidak sedang tahapan pendaftaran");
+        }
 
         $sekolah_id = $this->session->get("sekolah_id");
         if (empty($sekolah_id)) {
