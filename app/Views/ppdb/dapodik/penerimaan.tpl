@@ -76,7 +76,7 @@
                         <td class="text-center" data-priority="6">Sekolah Asal</td>
                         <td class="text-center" data-priority="5">Jalur</td>
                         <td class="text-center" data-priority="3">Status</td>
-                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktudaftarulang==1}
+                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktuverifikasi==1 || $cek_waktudaftarulang==1 || $impersonasi_sekolah==1}
                         <td class="text-center" data-priority="2"></td>
                         {/if}
                     </tr>
@@ -104,7 +104,7 @@
                             <td class="text-center">NPSN Sekolah Asal</td>
                             <td class="text-center">Sekolah Asal</td>
                             <td class="text-center" data-priority="5">Skor</td>
-                            {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktuverifikasi==1 || $impersonasi_sekolah==1}
                             <td class="text-center" data-priority="3"></td>
                             {/if}
                         </tr>
@@ -118,7 +118,7 @@
 </div>
 
 {* Tampilkan search selama masa pendaftaran, masa sosialisasi atau ketika masa pendaftaran belum mulai *}
-{if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $waktupendaftaran['aktif']==2}
+{if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $waktupendaftaran['aktif']==2 || $impersonasi_sekolah==1}
 <div class="card box-solid">
     <div class="card-header">
     <h3 class="box-title">Pencarian</h3>
@@ -172,7 +172,7 @@
                             <td class="text-center" data-priority="5">Afirmasi</td>
                             <td class="text-center">Sumber Data BDT</td>
                             <td class="text-center" data-priority="4">Mendaftar Di</td>
-                            {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                            {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
                             <td class="text-center" data-priority="2"></td>
                             {/if}
                         </tr>

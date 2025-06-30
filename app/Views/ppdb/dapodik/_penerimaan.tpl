@@ -14,6 +14,12 @@
     var kode_wilayah_kab=kode_wilayah_kec=kode_wilayah=null;
     var onchange_flag=onchange_flag1=onchange_flag2=false;
 
+    var cek_waktupendaftaran = {$cek_waktupendaftaran|default: 0};
+    var cek_waktuverifikasi = {$cek_waktuverifikasi|default: 0};
+    var cek_waktusosialisasi = {$cek_waktusosialisasi|default: 0};
+    var cek_waktudaftarulang = {$cek_waktudaftarulang|default: 0};
+    var impersonasi_sekolah = {$impersonasi_sekolah|default: 0};
+
 	$(document).ready(function() {
 		$.extend( $.fn.dataTable.defaults, { 
             responsive: true, 
@@ -654,7 +660,7 @@
 						},
 					},
 				},
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
 				{ 
 					extend: "create", 
                     text: "Siswa Baru (Luar Daerah/Belum Sekolah)",
@@ -733,7 +739,7 @@
 					}
 
                 },
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktudaftarulang==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktuverifikasi==1 || $cek_waktudaftarulang==1 || $impersonasi_sekolah==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
@@ -745,23 +751,23 @@
 
                         let str = "";
 
-                        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
-                        str += "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
-						str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
-                        {/if}
+                        if (cek_waktupendaftaran==1 || cek_waktusosialisasi==1 || cek_waktuverifikasi==1 || impersonasi_sekolah==1) {
+                            str += "<button onclick='event.stopPropagation(); ubah_data(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pen'></i></button>";
+                            str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
+                        }
 
-                        {if $cek_waktudaftarulang==1}
-                        //row['status_penerimaan_final']=3;
-                        //row['status_daftar_ulang']=1;
-                        if (row['status_penerimaan_final']==1 || row['status_penerimaan_final']==3) {
-                            if (row['status_daftar_ulang']==1) {
-					            str += "<button onclick='event.stopPropagation(); batal_du(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs me-1'>Batal DU</button>";
-                            }
-                            else {
-						        str += "<button onclick='event.stopPropagation(); daftar_ulang(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs me-1'>Daftar Ulang</button>";
+                        if (cek_waktudaftarulang==1 || impersonasi_sekolah==1) {
+                            //row['status_penerimaan_final']=3;
+                            //row['status_daftar_ulang']=1;
+                            if (row['status_penerimaan_final']==1 || row['status_penerimaan_final']==3) {
+                                if (row['status_daftar_ulang']==1) {
+                                    str += "<button onclick='event.stopPropagation(); batal_du(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs me-1'>Batal DU</button>";
+                                }
+                                else {
+                                    str += "<button onclick='event.stopPropagation(); daftar_ulang(" +meta.row+ ", dt_siswa, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs me-1'>Daftar Ulang</button>";
+                                }
                             }
                         }
-                        {/if}
 
 						return str;
 						// return "<button href='#' onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_siswa, \"" +row['peserta_didik_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-sm btn-danger'>Hapus</button>";
@@ -892,7 +898,7 @@
                     { data: "npsn_sekolah_asal", className: 'dt-body-center' },
                     { data: "nama_sekolah_asal", className: 'dt-body-left' },
                     { data: "skor", className: 'dt-body-center' },
-                    {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                    {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktuverifikasi==1 || $impersonasi_sekolah==1}
                     {
                         data: null,
                         className: 'text-end inline-flex text-nowrap inline-actions',
@@ -902,7 +908,9 @@
                                 return "";
                             }
 
-                            let str = "<button onclick='event.stopPropagation(); ubah_jalur(" +meta.row+ ", dt_{$row.penerapan_id}, editor_{$row.penerapan_id}, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-share'></i></button>";
+                            let str = "";
+
+                            str += "<button onclick='event.stopPropagation(); ubah_jalur(" +meta.row+ ", dt_{$row.penerapan_id}, editor_{$row.penerapan_id}, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-share'></i></button>";
                             str += "<button onclick='event.stopPropagation(); hapus_penerimaan(" +meta.row+ ", dt_{$row.penerapan_id}, \"" +row['pendaftaran_id']+ "\");' data-tag='" +meta.row+ "' class='btn btn-danger shadow btn-xs sharp me-1'><i class='fa fa-trash'></i></button>";
 
                             return str;
@@ -1390,7 +1398,7 @@
 				{ data: "sumber_bdt", className: 'dt-body-center' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
 				//{ data: "penerapan_id", className: 'dt-body-left' },
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
