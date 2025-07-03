@@ -8,7 +8,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
-class Kandidatswasta extends PpdbController {
+class Kandidatsiswa extends PpdbController {
 
     protected static $ROLE_ID = ROLEID_SEKOLAH;      
 
@@ -41,7 +41,7 @@ class Kandidatswasta extends PpdbController {
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
         //content template
-        $data['content_template'] = 'kandidatswasta.tpl';
+        $data['content_template'] = 'kandidatsiswa.tpl';
 
         $data['page_title'] = 'Kandidat Siswa';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
@@ -55,7 +55,7 @@ class Kandidatswasta extends PpdbController {
 
 		$action = $_POST["action"] ?? null;
 		if (empty($action) || $action=='view') {
-			$data['data'] = $this->Msekolah->tcg_kandidatswasta($sekolah_id, $tahun_ajaran_id)->getResultArray(); 
+			$data['data'] = $this->Msekolah->tcg_kandidatsiswa($sekolah_id, $tahun_ajaran_id)->getResultArray(); 
 			echo json_encode($data);	
 		}
 		else {

@@ -239,15 +239,12 @@ Class Mprofilsekolah
         return $this->tcg_daftarpendaftaran($sekolah_id, $filters, $orderby);
 	}
 
-	function tcg_kandidatswasta($sekolah_id) {
+	function tcg_kandidatsiswa($sekolah_id) {
 
         $sql = "select
-					a.peserta_didik_id, b.nama, RPAD(SUBSTR(b.nisn, 1, 6), Length(b.nisn), '*') as nisn, c.nama as sekolah, 
-					concat(d.nama_desa, ' ', d.nama_kec, ' ', d.nama_kab) as alamat, a.jarak
-				from rpt_kandidat_swasta a
-				join tcg_peserta_didik b on b.peserta_didik_id=a.peserta_didik_id and b.is_deleted=0
-				left join ref_sekolah c on c.sekolah_id=b.sekolah_id and c.is_deleted=0
-				join ref_wilayah d on d.kode_wilayah=b.kode_wilayah and d.is_deleted=0
+					a.peserta_didik_id, a.nama, RPAD(SUBSTR(a.nisn, 1, 6), Length(a.nisn), '*') as nisn, a.asal_sekolah as sekolah, 
+					a.alamat, a.jarak, a.pendaftaran
+				from tcg_kandidat_siswa a
 				where a.sekolah_id=? and a.tahun_ajaran_id=?
 		";
 

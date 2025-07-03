@@ -70,7 +70,7 @@
 					},
 				},
             ],
-            ajax: "{$site_url}ppdb/sekolah/kandidatswasta/json?tahun_ajaran={$tahun_ajaran_id}",
+            ajax: "{$site_url}ppdb/sekolah/kandidatsiswa/json?tahun_ajaran={$tahun_ajaran_id}",
             columns: [{
                     "data": "id",
                     orderable: false,
@@ -82,7 +82,12 @@
                     data: "nama",
                     className: 'dt-body-left readonly-column',
                     render: function(data, type, row, meta) {
-                        return '{$site_url}home/detailpendaftaran?peserta_didik_id=' + row['peserta_didik_id'] + '" target="_blank">' + data + '</a>';
+                        if (row['pendaftaran']=='1') {
+                            return '<a href="{$site_url}home/detailpendaftaran?peserta_didik_id=' + row['peserta_didik_id'] + '" target="_blank">' + data + ' <i class="fa fas fa-external-link-alt"></i></a>';
+                        }
+                        else {
+                            return data;
+                        }
                     }
                 },
                 {
@@ -100,6 +105,13 @@
                 {
                     data: "alamat",
                     className: 'dt-body-left'
+                },
+                {
+                    data: "pendaftaran",
+                    className: 'dt-body-center',
+                    render: function(data, type, row, meta) {
+                        return (data=='1' ? "YA" : "TIDAK");
+                    }
                 }
             ],
             order: [

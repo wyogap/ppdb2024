@@ -22,6 +22,7 @@
                             <th class="text-center" data-priority="4">Asal Sekolah</th>
                             <th class="text-center">Jarak (Meter)</th>
                             <th class="text-center">Alamat</th>
+                            <th class="text-center">Pendaftaran</th>
                         </tr>
                     </thead>
                 </table>

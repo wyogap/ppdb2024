@@ -248,7 +248,7 @@
                             <li><a href="{$site_url}ppdb/sekolah/ubahprofil">Ubah Profil Sekolah</a></li>
                             <li><a href="{$site_url}ppdb/sekolah/pengajuanakun">Pengajuan Akun</a></li>
                             <li><a href="{$site_url}ppdb/sekolah/pencarian">Pencarian Siswa</a></li>
-                            <li><a href="{$site_url}ppdb/sekolah/kandidatswasta">Kandidat Siswa</a></li>
+                            <li><a href="{$site_url}ppdb/sekolah/kandidatsiswa">Kandidat Siswa</a></li>
                             <li><a href="{$site_url}ppdb/sekolah/berkasdisekolah">Berkas Di Sekolah</a></li>
                         </ul>
                     </li>
