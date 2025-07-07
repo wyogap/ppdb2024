@@ -92,13 +92,13 @@ class Auth extends AuthController
 		$data['cek_sosialisasi'] = $mconfig->tcg_cek_waktusosialisasi();
 		$data['cek_pendaftaran'] = $mconfig->tcg_cek_waktupendaftaran();
 
-		$data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
-        foreach($data['tahapan_aktif'] as $tahapan) {
-            if ($tahapan['tahapan_id'] == 0 || $tahapan['tahapan_id'] == 99) {
-                $data['cek_registrasi'] = 0;
-                break;
-            }
-        }
+		// $data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
+        // foreach($data['tahapan_aktif'] as $tahapan) {
+        //     if ($tahapan['tahapan_id'] == 0 || $tahapan['tahapan_id'] == 99) {
+        //         $data['cek_registrasi'] = 0;
+        //         break;
+        //     }
+        // }
 		$data['pengumuman'] = $mconfig->tcg_pengumuman();
 
         $putaran = $mconfig->tcg_putaran();
@@ -141,10 +141,10 @@ class Auth extends AuthController
 
         $rekapitulasi = intval($this->setting->get('rekapitulasi', '0'));
         $data['rekapitulasi'] = $rekapitulasi;
-
-        if (__DEBUGGING__) {
-            $data['cek_registrasi'] = 1;
-        }
+        
+        // if (__DEBUGGING__) {
+        //     $data['cek_registrasi'] = 1;
+        // }
 
 		$this->smarty->render('ppdb/home/login.tpl',$data);
     }
