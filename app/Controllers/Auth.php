@@ -92,13 +92,9 @@ class Auth extends AuthController
 		$data['cek_sosialisasi'] = $mconfig->tcg_cek_waktusosialisasi();
 		$data['cek_pendaftaran'] = $mconfig->tcg_cek_waktupendaftaran();
 
-		// $data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
-        // foreach($data['tahapan_aktif'] as $tahapan) {
-        //     if ($tahapan['tahapan_id'] == 0 || $tahapan['tahapan_id'] == 99) {
-        //         $data['cek_registrasi'] = 0;
-        //         break;
-        //     }
-        // }
+        //pengumuman di tiap tahapan aktif (tahapan.notifikasi_umum)
+		$data['tahapan_aktif'] = $mconfig->tcg_tahapan_pelaksanaan_aktif();
+        //pengumuman lain
 		$data['pengumuman'] = $mconfig->tcg_pengumuman();
 
         $putaran = $mconfig->tcg_putaran();
