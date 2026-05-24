@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col-12 col-md-3">
                     <select id="jenjang" name="jenjang" class="form-control select2" style="width:100%;">
-                        <option value="">-- Jenjang --</option>
+                        <option value="" selected>-- Jenjang --</option>
                         <option value="smp-negeri">SMP Negeri</option>
                         <option value="smp-swasta">SMP Swasta</option>
                         <option value="sd-negeri">SD Negeri</option>
@@ -446,7 +446,8 @@
             let select = $("#putaran");
             let val = select.val();
             if (val === undefined || val == null) {
-                val = select.attr('DefaultValue');
+                //val = select.attr('DefaultValue');
+                val = "";
             }
             select.empty();
 
