@@ -93,6 +93,14 @@ define('EVENT_PRIORITY_NORMAL', 100);
  */
 define('EVENT_PRIORITY_HIGH', 10);
 
+/**
+ * ------------------------------------------------------------------------
+ * Tahun ajaran aktif
+ * ------------------------------------------------------------------------
+ */
+defined('TAHUN_AJARAN_ID') || define('TAHUN_AJARAN_ID', 2026);
+defined('NAMA_TAHUN_AJARAN') || define('NAMA_TAHUN_AJARAN', '2026/2027');
+
 /*
 |--------------------------------------------------------------------------
 | SQL Procedures
