@@ -26,7 +26,7 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => '34.128.112.48',
+        'hostname'     => '34.101.252.197',
         'username'     => 'root',
         'password'     => 'C00l@dmin',
         'database'     => 'ppdb_2026',
@@ -37,7 +37,7 @@ class Database extends Config
         'charset'      => 'utf8mb4',
         'DBCollat'     => 'utf8mb4_general_ci',
         'swapPre'      => '',
-        'encrypt'      => false,
+        'encrypt'      => true,
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],
@@ -52,7 +52,7 @@ class Database extends Config
 
     public array $ro = [
         'DSN'          => '',
-        'hostname'     => '34.128.112.48',
+        'hostname'     => '34.101.252.197',
         'username'     => 'root',
         'password'     => 'C00l@dmin',
         'database'     => 'ppdb_2026',
@@ -63,7 +63,7 @@ class Database extends Config
         'charset'      => 'utf8mb4',
         'DBCollat'     => 'utf8mb4_general_ci',
         'swapPre'      => '',
-        'encrypt'      => false,
+        'encrypt'      => true,
         'compress'     => false,
         'strictOn'     => false,
         'failover'     => [],

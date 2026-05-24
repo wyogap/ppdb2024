@@ -175,11 +175,10 @@
 					<div class="login-form">
 						<div class="app-title text-center"">
 							<h3 class="title">{$app_name}</h3>
-                            {if $show_putaran}
-							<p>Tahun {$nama_tahun_ajaran} {$nama_putaran}</p>
-                            {else} 
+                            {* Jangan tampilkan label putaran di halaman login. Putaran untuk tiap jenjang bisa berbeda. *}
+                            {* Label putaran bisa ditampilkan setelah login sesuai user yang login *}
+                            {* Atau dimunculkan di pengumuman. *}
                             <p>Tahun {$nama_tahun_ajaran}</p>
-                            {/if}
 						</div>
 
                         <div id='login-div'>
