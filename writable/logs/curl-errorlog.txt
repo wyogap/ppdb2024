@@ -1,0 +1,41 @@
+*   Trying 35.227.244.9:443...
+* Connected to api.spl.kemendikdasmen.go.id (35.227.244.9) port 443
+* ALPN: curl offers h2,http/1.1
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=api.spl.kemendikdasmen.go.id
+*  start date: May  2 11:33:15 2026 GMT
+*  expire date: Jul 31 12:27:49 2026 GMT
+*  issuer: C=US; O=Google Trust Services; CN=WR3
+*  SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://api.spl.kemendikdasmen.go.id/spl/service/token
+* [HTTP/2] [1] [:method: POST]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: api.spl.kemendikdasmen.go.id]
+* [HTTP/2] [1] [:path: /spl/service/token]
+* [HTTP/2] [1] [user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36]
+* [HTTP/2] [1] [content-type: application/json]
+* [HTTP/2] [1] [accept: application/json]
+* [HTTP/2] [1] [content-length: 123]
+> POST /spl/service/token HTTP/2
+Host: api.spl.kemendikdasmen.go.id
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36
+Content-Type: application/json
+Accept: application/json
+Content-Length: 123
+
+* old SSL session ID is stale, removing
+< HTTP/2 200 
+< content-type: application/json
+< x-request-id: 34acba9a4bb469b19e54b29975c998a7
+< date: Wed, 27 May 2026 12:39:52 GMT
+< content-length: 283
+< x-envoy-upstream-service-time: 2
+< x-source-ip: 35.191.51.93
+< server: envoy
+< via: 1.1 google
+< alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #0 to host api.spl.kemendikdasmen.go.id left intact
