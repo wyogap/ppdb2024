@@ -46,6 +46,12 @@ class MDapodik
             $this->set_error("Gagal mendapatkan referensi wilayah.", 500, 1);
         }
 
+        $msekolah = new MDapodikSekolah();
+        $msiswa = new MDapodikSiswa(); 
+
+        $msekolah->truncate();
+        $msiswa->truncate();
+
         foreach ($wilayah as $w) {
             $this->logger->log('info', "Tarik data sekolah di wilayah: " . $w['nama']);
 
@@ -58,10 +64,15 @@ class MDapodik
             }
 
             //simpan data sekolah ke database
-            $msekolah = new MDapodikSekolah();
             $msekolah->addbatch($sekolah);
 
             foreach ($sekolah as $s) {
+                //skip data siswa SMP
+                if ($s['bentuk_pendidikan_id'] == 6) {
+                    $this->logger->log('info', "Lewati tarik data siswa untuk sekolah: " . $s['nama']);
+                    continue;
+                }
+
                 $this->logger->log('info', "Tarik data siswa di sekolah: " . $s['nama']);
                 $siswa = $this->getSiswaBySekolah($s['npsn']);
                 if (empty($siswa)) {
@@ -72,7 +83,6 @@ class MDapodik
                 }
 
                 //simpan data siswa ke database
-                $msiswa = new MDapodikSiswa(); 
                 $msiswa->addbatch($siswa);
             }
         }
@@ -80,12 +90,92 @@ class MDapodik
         return 1;
     }
 
+    public function tarikulang_datasiswa() {
+        $this->reset_error();
+
+        $msekolah = new MDapodikSekolah();
+        $msiswa = new MDapodikSiswa(); 
+
+        $sekolah = $msekolah->sekolah_tidakadasiswa();
+
+        if (empty($sekolah)) {
+            $this->logger->log('info', "Semua sekolah sudah memiliki data siswa");
+            return 1;
+        } 
+            
+        $this->logger->log('info', "Jumlah sekolah yang belum memiliki data siswa: " . count($sekolah));
+ 
+        foreach ($sekolah as $s) {
+            $this->logger->log('info', "Tarik data siswa di sekolah: " . $s['nama']);
+            $siswa = $this->getSiswaBySekolah($s['npsn']);
+            if (empty($siswa)) {
+                $this->logger->log('warning', "Gagal mendapatkan daftar siswa untuk sekolah: " . $s['nama']);
+                continue;
+            } else {
+                $this->logger->log('info', "Jumlah siswa di sekolah: " . count($siswa));
+            }
+
+            //simpan data siswa ke database
+            $msiswa->addbatch($siswa);
+        }
+ 
+        return 1;
+    }
+
+    public function tarikdatasiswa_tambahan() {
+        $this->reset_error();
+
+        $msekolah = new MDapodikSekolah();
+        $msiswa = new MDapodikSiswa(); 
+
+        $sekolah = $msekolah->missing_sekolah();
+
+        if (empty($sekolah)) {
+            $this->logger->log('info', "Tidak ada sekolah tambahan");
+            return 1;
+        } 
+            
+        $this->logger->log('info', "Jumlah sekolah tambahan: " . count($sekolah));
+ 
+        foreach ($sekolah as $s) {
+            $this->logger->log('info', "Tarik data siswa di sekolah: " . $s['nama']);
+            $siswa = $this->getSiswaBySekolah($s['npsn']);
+            if (empty($siswa)) {
+                $this->logger->log('warning', "Gagal mendapatkan daftar siswa untuk sekolah: " . $s['nama']);
+                continue;
+            } else {
+                $this->logger->log('info', "Jumlah siswa di sekolah: " . count($siswa));
+            }
+
+            //simpan data siswa ke database
+            if (!empty($siswa)) {
+                $msiswa->addbatch($siswa);
+            }
+        }
+ 
+        return 1;
+    }
+
     public function tarikdatatka() {
+        $mnilaitka = new MDapodikTka();
+        $mnilaitka->truncate();
+
+        //get sekolah SD
+        $this->tarikdatatka_sd();
+        $this->tarikdatatka_mi();
+
+        return 1;
+    }
+
+    public function tarikdatatka_sd() {
         //get sekolah SD
         $filter = array();
         $filter["bentuk_pendidikan_id"] = 5; //SD
         $msekolah = new MDapodikSekolah();
         $sekolah = $msekolah->list(0, null, $filter);
+
+        $msiswa = new MDapodikSiswa();
+        $mnilaitka = new MDapodikTka();
 
         foreach ($sekolah as $s) {
             $this->logger->log('info', "Tarik data TKA di sekolah: " . $s['nama']);
@@ -93,7 +183,6 @@ class MDapodik
             //get daftar siswa
             $filter = array();
             $filter['sekolah_id'] = $s['sekolah_id'];
-            $msiswa = new MDapodikSiswa();
             $siswa = $msiswa->list(0, null, $filter);
 
             if (empty($siswa)) {
@@ -113,7 +202,6 @@ class MDapodik
                 }
 
                 //simpan data sekolah ke database
-                $mnilaitka = new MDapodikTka();
                 $mnilaitka->addbatch($nilaitka);
             }
         }
@@ -121,20 +209,22 @@ class MDapodik
         return 1;
     }
 
-    public function tarikdataprestasi() {
+    public function tarikdatatka_mi() {
         //get sekolah SD
         $filter = array();
-        $filter["bentuk_pendidikan_id"] = 5; //SD
+        $filter["bentuk_pendidikan_id"] = 9; //MI
         $msekolah = new MDapodikSekolah();
         $sekolah = $msekolah->list(0, null, $filter);
 
+        $msiswa = new MDapodikSiswa();
+        $mnilaitka = new MDapodikTka();
+
         foreach ($sekolah as $s) {
-            $this->logger->log('info', "Tarik data Prestasi di sekolah: " . $s['nama']);
+            $this->logger->log('info', "Tarik data TKA di sekolah: " . $s['nama']);
 
             //get daftar siswa
             $filter = array();
             $filter['sekolah_id'] = $s['sekolah_id'];
-            $msiswa = new MDapodikSiswa();
             $siswa = $msiswa->list(0, null, $filter);
 
             if (empty($siswa)) {
@@ -147,17 +237,218 @@ class MDapodik
             foreach ($siswa as $p) {
                 //$this->logger->log('info', "Tarik data TKA untuk siswa: " . $p['nama']);
 
-                $prestasi = $this->getPrestasiSiswa($p['nisn']);
-                if (!empty($nilaitka)) {
-                    $str_prestasi = json_encode($prestasi, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    $this->logger->log('warning', "Prestasi untuk siswa " . $p['nama'] . ":" . $str_prestasi);
+                $nilaitka = $this->getTkaSiswa($p['nisn'], $p['tanggal_lahir']);
+                if (empty($nilaitka)) {
+                    $this->logger->log('warning', "Tidak ada data nilai TKA untuk siswa: " . $p['nama']);
                     continue;
                 }
 
                 //simpan data sekolah ke database
-                $mprestasi = new MDapodikPrestasi();
+                $mnilaitka->addbatch($nilaitka);
+            }
+        }
+
+        return 1;
+    }
+
+    protected function tarikdatatka_all() {
+        //get sekolah SD
+
+        $msekolah = new MDapodikSekolah();
+        $msiswa = new MDapodikSiswa();
+        $mnilaitka = new MDapodikTka();
+
+        $sekolah = $msekolah->sekolah_tidakadatka();
+
+        foreach ($sekolah as $s) {
+            $this->logger->log('info', "Tarik data TKA di sekolah: " . $s['nama']);
+
+            //get daftar siswa
+            $filter = array();
+            $filter['sekolah_id'] = $s['sekolah_id'];
+            $siswa = $msiswa->list(0, null, $filter);
+
+            if (empty($siswa)) {
+                $this->logger->log('warning', "Gagal mendapatkan daftar siswa untuk sekolah: " . $s['nama']);
+                continue;
+            } else {
+                $this->logger->log('info', "Jumlah siswa di sekolah: " . count($siswa));
+            }
+
+            foreach ($siswa as $p) {
+                //$this->logger->log('info', "Tarik data TKA untuk siswa: " . $p['nama']);
+
+                $nilaitka = $this->getTkaSiswa($p['nisn'], $p['tanggal_lahir']);
+                if (empty($nilaitka)) {
+                    $this->logger->log('warning', "Tidak ada data nilai TKA untuk siswa: " . $p['nama']);
+                    continue;
+                }
+
+                //simpan data sekolah ke database
+                $mnilaitka->addbatch($nilaitka);
+            }
+        }
+
+        return 1;
+    }
+
+    public function tarikulang_datatka() {
+
+        $msiswa = new MDapodikSiswa();
+        $mnilaitka = new MDapodikTka();
+
+        $siswa = $msiswa->siswa_tidakadatka();
+
+        if (empty($siswa)) {
+            $this->logger->log('info', "Semua siswa sudah memiliki data TKA");
+            return 1;
+        } 
+            
+        $this->logger->log('info', "Jumlah siswa yang belum memiliki data TKA: " . count($siswa));
+
+        foreach ($siswa as $p) {
+            $this->logger->log('info', "Tarik data TKA untuk siswa: " . $p['nama']);
+
+            $nilaitka = $this->getTkaSiswa($p['nisn'], $p['tanggal_lahir']);
+            if (empty($nilaitka)) {
+                $this->logger->log('warning', "Tidak ada data nilai TKA untuk siswa: " . $p['nama']);
+                continue;
+            }
+
+            //simpan data sekolah ke database
+            $mnilaitka->addbatch($nilaitka);
+        }
+
+        return 1;
+    }
+
+    public function tarikdataprestasi() {
+        $mprestasi = new MDapodikPrestasi();
+        $mprestasi->truncate();
+
+        //get sekolah SD
+        $this->tarikdataprestasi_sd();
+        $this->tarikdataprestasi_mi();
+
+        return 1;
+    }
+
+    public function tarikdataprestasi_sd() {
+        //get sekolah SD
+        $filter = array();
+        $filter["bentuk_pendidikan_id"] = 5; //SD
+        // $filter['like::kode_wilayah'] = '030512%'; 
+        $msekolah = new MDapodikSekolah();
+        $sekolah = $msekolah->list(0, null, $filter);
+
+        $msiswa = new MDapodikSiswa();
+        $mprestasi = new MDapodikPrestasi();
+
+        foreach ($sekolah as $s) {
+            $this->logger->log('info', "Tarik data Prestasi di sekolah: " . $s['nama']);
+
+            //get daftar siswa
+            $filter = array();
+            $filter['sekolah_id'] = $s['sekolah_id'];
+            $siswa = $msiswa->list(0, null, $filter);
+
+            if (empty($siswa)) {
+                $this->logger->log('warning', "Gagal mendapatkan daftar siswa untuk sekolah: " . $s['nama']);
+                continue;
+            } else {
+                $this->logger->log('info', "Jumlah siswa di sekolah: " . count($siswa));
+            }
+
+            foreach ($siswa as $p) {
+                $this->logger->log('debug', "Tarik data Prestasi untuk siswa: " . $p['nama']);
+
+                $prestasi = $this->getPrestasiSiswa($p['nisn'], $s['npsn']);
+                if (empty($prestasi) || 
+                        (count($prestasi) == 1 && isset($prestasi[0]['nama_ajang']) && $prestasi[0]['nama_ajang'] == "NA")) {
+                    $this->logger->log('debug', "Tidak ada data prestasi untuk siswa: " . $p['nama']);
+                }
+                else {
+                    $this->logger->log('info', "Data prestasi ditemukan untuk siswa: " . $p['nama']);
+                }
+
+                //simpan data sekolah ke database
                 $mprestasi->addbatch($prestasi);
             }
+        }
+
+        return 1;
+    }
+
+    public function tarikdataprestasi_mi() {
+        //get sekolah MI
+        $filter = array();
+        $filter["bentuk_pendidikan_id"] = 9; //MI
+        $msekolah = new MDapodikSekolah();
+        $sekolah = $msekolah->list(0, null, $filter);
+
+        $msiswa = new MDapodikSiswa();
+        $mprestasi = new MDapodikPrestasi();
+
+        foreach ($sekolah as $s) {
+            $this->logger->log('info', "Tarik data Prestasi di sekolah: " . $s['nama']);
+
+            //get daftar siswa
+            $filter = array();
+            $filter['sekolah_id'] = $s['sekolah_id'];
+            $siswa = $msiswa->list(0, null, $filter);
+
+            if (empty($siswa)) {
+                $this->logger->log('warning', "Gagal mendapatkan daftar siswa untuk sekolah: " . $s['nama']);
+                continue;
+            } else {
+                $this->logger->log('info', "Jumlah siswa di sekolah: " . count($siswa));
+            }
+
+            foreach ($siswa as $p) {
+                $this->logger->log('debug', "Tarik data Prestasi untuk siswa: " . $p['nama']);
+
+                $prestasi = $this->getPrestasiSiswa($p['nisn'], $s['npsn']);
+                if (empty($prestasi) || 
+                        (count($prestasi) == 1 && isset($prestasi[0]['nama_ajang']) && $prestasi[0]['nama_ajang'] == "NA")) {
+                    $this->logger->log('debug', "Tidak ada data prestasi untuk siswa: " . $p['nama']);
+                }
+                else {
+                    $this->logger->log('info', "Data prestasi ditemukan untuk siswa: " . $p['nama']);
+                }
+ 
+                //simpan data sekolah ke database
+                $mprestasi->addbatch($prestasi);
+            }
+        }
+
+        return 1;
+    }
+
+    public function tarikulang_dataprestasi() {
+
+        $msiswa = new MDapodikSiswa();
+        $mprestasi = new MDapodikPrestasi();
+
+        $siswa = $msiswa->siswa_belumtarikprestasi();
+
+        if (empty($siswa)) {
+            $this->logger->log('info', "Semua siswa sudah tarik data prestasi");
+            return 1;
+        } 
+            
+        $this->logger->log('info', "Jumlah siswa yang belum tarik data prestasi: " . count($siswa));
+
+        foreach ($siswa as $p) {
+            $this->logger->log('info', "Tarik data Prestasi untuk siswa: " . $p['nama']);
+
+            $prestasi = $this->getPrestasiSiswa($p['nisn'], $p['npsn']);
+            if (empty($prestasi)) {
+                $this->logger->log('warning', "Tidak ada data Prestasi untuk siswa: " . $p['nama']);
+                continue;
+            }
+
+            //simpan data sekolah ke database
+            $mprestasi->addbatch($prestasi);
         }
 
         return 1;
@@ -224,7 +515,7 @@ class MDapodik
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp);
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -322,13 +613,13 @@ class MDapodik
             return $this->getReferensiWilayah();
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
 
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -338,7 +629,7 @@ class MDapodik
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -434,13 +725,13 @@ class MDapodik
             return $this->getSekolahByWilayah($kodewilayah);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -450,7 +741,7 @@ class MDapodik
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -546,13 +837,13 @@ class MDapodik
             return $this->getSiswaBySekolah($npsn);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -561,8 +852,8 @@ class MDapodik
         
         $json = json_decode($resp, true);
         if (empty($json)) {
-            $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->logger->log('debug', "RESPONSE: \n" .$resp, array("API"));
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -570,7 +861,14 @@ class MDapodik
         $this->logger->log('debug', "RESPONSE: \n" .$prettystr, array("MIF"));
 
         if (isset($json['status']) && $json['status'] === 200 && isset($json['data'])) {
-            return $json['data'];
+            $data = $json['data'];
+            if (count($data) == 1 && count($data[0]) == 1 && isset($data[0]['keterangan'])) {
+                $errmsg = $data[0]['keterangan'];
+                $this->logger->log('debug', "ERROR: " .$errmsg, array("API"));
+                $this->set_error('API error: ' .$errmsg, -1, 0);
+                return null;
+            }
+            return $data;
         } else {
             return null;
         }
@@ -659,13 +957,13 @@ class MDapodik
             return $this->getSiswaByNisnDanTglLahir($nisn, $tgllahir);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -675,7 +973,7 @@ class MDapodik
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -772,13 +1070,13 @@ class MDapodik
             return $this->getSiswaByNisnDanNpsn($nisn, $npsn);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -788,7 +1086,7 @@ class MDapodik
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
@@ -832,7 +1130,7 @@ class MDapodik
         //build the full URL with the query string
         $url .= '?' . http_build_query($queryParams);
 
-        $this->logger->log('info', "GET: \n" .$url);
+        $this->logger->log('debug', "GET: \n" .$url);
 
         //send
         $curl = curl_init();
@@ -885,13 +1183,13 @@ class MDapodik
             return $this->getTkaSiswa($nisn, $tgllahir);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -900,13 +1198,13 @@ class MDapodik
         
         $json = json_decode($resp, true);
         if (empty($json)) {
-            $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->logger->log('debug', "RESPONSE: \n" .$resp, array($nisn));
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
         $prettystr = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $this->logger->log('debug', "RESPONSE: \n" .$prettystr, array("MIF"));
+        $this->logger->log('debug', "RESPONSE: \n" .$prettystr, array($nisn));
 
         if (isset($json['status']) && $json['status'] === 200 && isset($json['data'])) {
             return $json['data'];
@@ -915,7 +1213,7 @@ class MDapodik
         }
     }
 
-    public function getPrestasiSiswa(string $nisn, string $token = "") {
+    public function getPrestasiSiswa(string $nisn, string $npsn, string $token = "") {
         $this->reset_error();
         
         if (empty($token)) {
@@ -937,14 +1235,13 @@ class MDapodik
         $url = "https://api.spl.kemendikdasmen.go.id/layanan/peserta-didik/spmb/prestasi-siswa";
 
         $queryParams = [
-            'api_key' => API_KEY,
             'nisn' => $nisn
         ];
 
         //build the full URL with the query string
         $url .= '?' . http_build_query($queryParams);
 
-        $this->logger->log('info', "GET: \n" .$url);
+        $this->logger->log('debug', "GET: \n" .$url);
 
         //send
         $curl = curl_init();
@@ -994,16 +1291,16 @@ class MDapodik
             //not authorized, token might be expired or invalid
             //try to re-call the function but force to re-authenticate and get new token
             $this->token = "";
-            return $this->getPrestasiSiswa($nisn);
+            return $this->getPrestasiSiswa($nisn, $npsn);
         }
         else if ($http_code !== 200) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         
         // Check the return value of curl_exec(), too
         if ($resp === false) {
-            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 1);
+            $this->set_error('API error: ' .curl_error($curl), curl_errno($curl), 0);
             return null;
         }
         curl_close($curl);
@@ -1012,18 +1309,27 @@ class MDapodik
         
         $json = json_decode($resp, true);
         if (empty($json)) {
-            $this->logger->log('debug', "RESPONSE: \n" .$resp, array("MIF"));
-            $this->set_error('API error: invalid response', -1, 1);
+            $this->logger->log('debug', "RESPONSE: \n" .$resp, array($nisn));
+            $this->set_error('API error: invalid response', -1, 0);
             return null;
         }
 
         $prettystr = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $this->logger->log('debug', "RESPONSE: \n" .$prettystr, array("MIF"));
+        $this->logger->log('debug', "RESPONSE: \n" .$prettystr, array($nisn));
 
-        if (isset($json['status']) && $json['status'] === 200 && isset($json['data'])) {
+        if (isset($json['status']) && $json['status'] === 200 && isset($json['data']) && count($json['data']) > 0) {
             return $json['data'];
         } else {
-            return null;
+            $dummy = array(
+                "nisn" => $nisn,
+                "npsn" => $npsn,
+                "nama_ajang" => "NA", 
+                "achievement_description" => "NA", 
+                "tingkat" => "NA"
+            );
+            $retval = array();
+            $retval[] = $dummy;
+            return $retval;
         }
     }
 
@@ -1033,9 +1339,9 @@ class MDapodik
 
         $this->logger->log('error', $message);
 
-        if ($throwexception) {
-            throw new Exception($message, $code);
-        }
+        // if ($throwexception) {
+        //     throw new Exception($message, $code);
+        // }
     }
 
     protected function reset_error() {

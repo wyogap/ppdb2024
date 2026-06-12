@@ -97,6 +97,15 @@ class Routing extends BaseRouting
     public bool $autoRoute = true;
 
     /**
+     * If TRUE, the system will look for attributes on controller
+     * class and methods that can run before and after the
+     * controller/method.
+     *
+     * If FALSE, will ignore any attributes.
+     */
+    public bool $useControllerAttributes = true;
+
+    /**
      * For Defined Routes.
      * If TRUE, will enable the use of the 'prioritize' option
      * when defining routes.
@@ -125,8 +134,7 @@ class Routing extends BaseRouting
      *
      * @var array<string, string>
      */
-    public array $moduleRoutes = [
-    ];
+    public array $moduleRoutes = [];
 
     /**
      * For Auto Routing (Improved).

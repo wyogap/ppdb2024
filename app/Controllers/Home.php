@@ -33,6 +33,7 @@ class Home extends PpdbController
 
 	function index()
 	{	
+        echo site_url(); exit;
         return redirect()->to(site_url());
 	}
 

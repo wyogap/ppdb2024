@@ -5,7 +5,6 @@ namespace Config;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Session\Handlers\BaseHandler;
 use CodeIgniter\Session\Handlers\FileHandler;
-use CodeIgniter\Session\Handlers\DatabaseHandler;
 
 class Session extends BaseConfig
 {
@@ -15,6 +14,7 @@ class Session extends BaseConfig
      * --------------------------------------------------------------------------
      *
      * The session storage driver to use:
+     * - `CodeIgniter\Session\Handlers\ArrayHandler` (for testing)
      * - `CodeIgniter\Session\Handlers\FileHandler`
      * - `CodeIgniter\Session\Handlers\DatabaseHandler`
      * - `CodeIgniter\Session\Handlers\MemcachedHandler`
@@ -59,7 +59,6 @@ class Session extends BaseConfig
      * IMPORTANT: You are REQUIRED to set a valid save path!
      */
     public string $savePath = WRITEPATH . 'session';
-    //public string $savePath = 'dbo_ci_sessions';
 
     /**
      * --------------------------------------------------------------------------

@@ -443,7 +443,7 @@
 <div class="row" id="daftar-pendaftaran-notif">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="alert alert-info alert-dismissible" role="alert">
-            <i class="icon glyphicon glyphicon-info-sign"></i>Kamu tidak mempunya pendaftaran aktif.
+            <i class="icon glyphicon glyphicon-info-sign"></i>Tidak ada pendaftaran aktif.
         </div>
     </div>
 </div>

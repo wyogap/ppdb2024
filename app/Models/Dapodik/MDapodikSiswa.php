@@ -26,6 +26,53 @@ class MDapodikSiswa extends MCrud5
         $builder = $this->db->table($this->TABLE_NAME);
         $builder->truncate();
     }
+
+    function siswa_tidakadatka() {
+        $sql = "
+            select a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir
+            from (
+                SELECT 
+                    a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir,
+                    a.sekolah_id, b.nama as nama_sekolah, c.nama_kec as kec_sekolah, c.nama_desa as desa_sekolah,
+                    d.ikut_tka, d.nopes, d.nm_mapel_1, d.nm_mapel_2, d.nilai_1, d.nilai_2 
+                FROM ppdb_2026.dapodik_siswa a
+                join ppdb_2026.dapodik_sekolah b on b.sekolah_id=a.sekolah_id
+                    and b.bentuk_pendidikan_id in (5,9)
+                left join ppdb_2026.ref_wilayah c on c.kode_wilayah=b.kode_wilayah
+                left join ppdb_2026.dapodik_tka d on d.nisn=a.nisn
+            ) a
+            where a.ikut_tka is null
+        ";
+
+        $query = $this->db->query($sql);
+        if (empty($query)) return null;
+        
+        return $query->getResultArray();
+    }    
+
+    function siswa_belumtarikprestasi() {
+        $sql = "
+            select a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir, a.npsn
+            from (
+                SELECT 
+                    a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir, b.npsn,
+                    coalesce(d.cnt, 0) as cnt
+                FROM ppdb_2026.dapodik_siswa a
+                join ppdb_2026.dapodik_sekolah b on b.sekolah_id=a.sekolah_id
+                    and b.bentuk_pendidikan_id in (5,9)
+                left join ppdb_2026.ref_wilayah c on c.kode_wilayah=b.kode_wilayah
+                left join (
+                    select a.nisn, count(*) as cnt from ppdb_2026.dapodik_prestasi a group by a.nisn
+                ) d on d.nisn=a.nisn
+            ) a
+            where a.cnt = 0
+        ";
+
+        $query = $this->db->query($sql);
+        if (empty($query)) return null;
+        
+        return $query->getResultArray();
+    }    
 }
 
   

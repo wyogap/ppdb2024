@@ -96,7 +96,7 @@ class Typography
 
         // HTML comment tags don't conform to patterns of normal tags, so pull them out separately, only if needed
         $htmlComments = [];
-        if (str_contains($str, '<!--') && preg_match_all('#(<!\-\-.*?\-\->)#s', $str, $matches)) {
+        if (str_contains($str, '<!--') && preg_match_all('#(<!\-\-.*?\-\->)#s', $str, $matches) >= 1) {
             for ($i = 0, $total = count($matches[0]); $i < $total; $i++) {
                 $htmlComments[] = $matches[0][$i];
                 $str            = str_replace($matches[0][$i], '{@HC' . $i . '}', $str);
@@ -171,7 +171,7 @@ class Typography
         }
 
         // No opening block level tag? Add it if needed.
-        if (! preg_match('/^\s*<(?:' . $this->blockElements . ')/i', $str)) {
+        if (preg_match('/^\s*<(?:' . $this->blockElements . ')/i', $str) !== 1) {
             $str = preg_replace('/^(.*?)<(' . $this->blockElements . ')/i', '<p>$1</p><$2', $str);
         }
 
@@ -214,7 +214,7 @@ class Typography
         ];
 
         // Do we need to reduce empty lines?
-        if ($reduceLinebreaks === true) {
+        if ($reduceLinebreaks) {
             $table['#<p>\n*</p>#'] = '';
         } else {
             // If we have empty paragraph tags we add a non-breaking space
@@ -331,7 +331,7 @@ class Typography
         $docTypes = new DocTypes();
 
         for ($ex = explode('pre>', $str), $ct = count($ex), $i = 0; $i < $ct; $i++) {
-            $xhtml = ! ($docTypes->html5 ?? false);
+            $xhtml = ! $docTypes->html5;
             $newstr .= (($i % 2) === 0) ? nl2br($ex[$i], $xhtml) : $ex[$i];
 
             if ($ct - 1 !== $i) {

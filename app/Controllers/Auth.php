@@ -35,6 +35,8 @@ class Auth extends AuthController
 			$putaran = $this->setting->get('putaran');
 		}
 		
+        //TODO: determine putaran aktif based on login user
+        
 		$kode_wilayah_aktif = $_GET["kode_wilayah"] ?? null; 
 		if (empty($kode_wilayah_aktif)) {
 			$kode_wilayah_aktif = $this->setting->get('kode_wilayah');

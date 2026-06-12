@@ -438,8 +438,21 @@ class MCrud5 implements ICrudModel5
 
         //filter
         if (!empty($filters)) {
-            foreach($filters as $key => $val) {
-                $builder->where($key, $val);
+            if (is_array($filters)) {
+                foreach($filters as $key => $val) {
+                    //check for like keyword
+                    $keyword = substr($key, 0, 6);
+                    if (strtolower($keyword) == "like::") {
+                        $key = substr($key, 6);
+                        $builder->like($key, $val, 'none');
+                    }
+                    else {
+                        $builder->where($key, $val);
+                    }
+                }
+            }
+            else {
+                $builder->where($filters);
             }
         }
 

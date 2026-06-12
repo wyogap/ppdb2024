@@ -6,7 +6,7 @@
         <li class="breadcrumb-item active">[{$profilsekolah['nama']}]</li>
         {/if}
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Sekolah</a></li>
-        <li class="breadcrumb-item"><a href="javascript:void(0)">Daftar Siswa Kelas 6</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Daftar Siswa Kelas Akhir</a></li>
     </ol>
 </div>
 

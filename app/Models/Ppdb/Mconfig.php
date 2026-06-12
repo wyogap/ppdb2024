@@ -2,16 +2,20 @@
 
 namespace App\Models\Ppdb;
 
+use App\Libraries\Setting;
+
 Class Mconfig 
 {
     protected $db;
     protected $ro;
     protected $session;
+    protected Setting $setting;
 
     function __construct() {
         $this->db = \Config\Database::connect();
         $this->ro = \Config\Database::connect('ro');
         $this->session = \Config\Services::session();
+		$this->setting = new Setting();
     }
 
 	function tcg_lookup_jenjang() {
@@ -35,6 +39,9 @@ Class Mconfig
 
 	function tcg_waktusosialisasi(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
@@ -49,6 +56,9 @@ Class Mconfig
 
 	function tcg_cek_waktusosialisasi(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_SOSIALISASI. " and a.is_deleted=0 and a.tahun_ajaran_id='" .TAHUN_AJARAN_ID. "' and a.putaran='$putaran' 
@@ -64,6 +74,9 @@ Class Mconfig
 
 	function tcg_wakturegistrasi(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
@@ -78,6 +91,9 @@ Class Mconfig
 
 	function tcg_cek_wakturegistrasi(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_REGISTRASI. " and a.is_deleted=0 and a.tahun_ajaran_id='" .TAHUN_AJARAN_ID. "' and a.putaran='$putaran' 
@@ -93,6 +109,10 @@ Class Mconfig
 
 	function tcg_waktupendaftaran($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -113,7 +133,11 @@ Class Mconfig
 
 	function tcg_cek_waktupendaftaran($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
-        if ($jenjang_id==0) {
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
+		if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
 
@@ -131,7 +155,11 @@ Class Mconfig
 
 	function tcg_waktuverifikasi($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
-        if ($jenjang_id==0) {
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
+		if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
 
@@ -148,6 +176,10 @@ Class Mconfig
 
 	function tcg_cek_waktuverifikasi($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+		
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -166,6 +198,10 @@ Class Mconfig
 
 	function tcg_waktudaftarulang($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -183,6 +219,10 @@ Class Mconfig
 
 	function tcg_cek_waktudaftarulang($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -202,6 +242,10 @@ Class Mconfig
 
 	function tcg_waktupendaftaransusulan($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+		
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -219,6 +263,10 @@ Class Mconfig
 
 	function tcg_cek_waktupendaftaransusulan($jenjang_id=0){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
+
         if ($jenjang_id==0) {
             $jenjang_id = $this->session->get('jenjang_aktif');
         }
@@ -237,6 +285,9 @@ Class Mconfig
 
 	function tcg_waktuperbaikandata(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$builder = $this->ro->table('cfg_waktu_pelaksanaan a');
 		$builder->select('ADDTIME(a.tanggal_mulai,"'.APP_GMTOFFSET.'") as tanggal_mulai_aktif');
@@ -251,6 +302,9 @@ Class Mconfig
 
 	function tcg_cek_waktuperbaikandata(){
 		$putaran = $this->session->get('putaran_aktif');
+		if (empty($putaran)) {
+			$putaran = $this->setting->get('putaran');
+		}
 
 		$query = "select count(*) as jumlah from cfg_waktu_pelaksanaan a 
 				  where a.tahapan_id=" .TAHAPANID_PERBAIKANDATA. " and a.is_deleted=0 and a.tahun_ajaran_id='" .TAHUN_AJARAN_ID. "' and a.putaran='$putaran'

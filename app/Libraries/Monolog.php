@@ -70,7 +70,7 @@ class Monolog extends AbstractLogger
 
         // Create the RotatingFileHandler, specifying the log file path
         // The handler automatically appends the date to the filename (e.g., app-2026-02-11.log)
-        $handler = new RotatingFileHandler(WRITEPATH . 'logs/' .APP_SHORT_NAME. '.log', Level::Debug);
+        $handler = new RotatingFileHandler(WRITEPATH . 'logs/' .APP_SHORT_NAME. '.log', 5, Level::Debug);
 
         // Optional: Customize the log format
         $formatter = new LineFormatter(
@@ -85,7 +85,7 @@ class Monolog extends AbstractLogger
         $logger->pushHandler($handler);
 
         if (!isset($_SERVER['HTTP_HOST'])) 
-            $logger->pushHandler(new StreamHandler('php://stdout', Level::Debug));
+            $logger->pushHandler(new StreamHandler('php://stdout', Level::Info));
 
         return $logger;
     }    

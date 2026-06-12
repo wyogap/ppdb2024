@@ -1,7 +1,7 @@
 <?php
 
-defined('APP_NAME')             || define('APP_NAME', 'NEL1902 Checklist Upload Tool');   
-defined('APP_SHORT_NAME')       || define('APP_SHORT_NAME', "NEL1902");   
+defined('APP_NAME')             || define('APP_NAME', 'System Penerimaan Murid Baru Kabupaten Kebumen');   
+defined('APP_SHORT_NAME')       || define('APP_SHORT_NAME', "SPMB");   
 defined('APP_LOGO')             || define('APP_LOGO', "images/checklist.png");   
 defined('APP_ICON')             || define('APP_ICON', "images/checklist.png");   
 defined('APP_VERSION')          || define('APP_VERSION', "1.0"); 

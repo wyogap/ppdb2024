@@ -14,15 +14,15 @@ class TestDbConnection extends BaseCommand
     public function run(array $params)
     {
         //output log to console
-        //service('logger')->addStdoutHandler();
+        $logger = new \App\Libraries\Monolog();
 
         $msetting = new \App\Models\Core\Crud\MSetting();
         $cnt = $msetting->count();
 
         if ($cnt >= 0) {
-            log_message('info', "Database connection successful.");
+            $logger->info("Database connection successful.");
         } else {
-            log_message('error', "Database connection failed.");
+            $logger->error("Database connection failed.");
         }
 
     }
