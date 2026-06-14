@@ -155,7 +155,6 @@ defined('COL_EXPIRED_ON')                   OR define('COL_EXPIRED_ON', 'expired
 defined('__DEBUGGING__')                    OR define('__DEBUGGING__', 0);
 defined('__USE_CDN__')                      OR define('__USE_CDN__', 1);
 
-
 defined('WA_COUNTRYCODE')                   OR define('WA_COUNTRYCODE', '62');
 defined('WA_APIKEY')                        OR define('WA_APIKEY', 'T3DOAJFMEU9YNUWE');
 defined('WA_NUMBERKEY')                     OR define('WA_NUMBERKEY', 'PLDkC7q7bF7ff9fD');

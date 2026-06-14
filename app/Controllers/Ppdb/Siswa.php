@@ -356,6 +356,11 @@ class Siswa extends PpdbController {
         $data['use_leaflet'] = 1;
         $data['use_datatable'] = 1;
 
+        //SPMB2026: tidak menggunakan nilai kelulusan/nilai rapor
+        //SPMB2025: menggunakan nilai TKA (~ nilai UN)
+        $data['flag_nilai_kelulusan'] = 0;
+        $data['flag_nilai_un'] = 1;
+
         //debugging
         if (__DEBUGGING__) {
             $data['cek_waktupendaftaran'] = 1;

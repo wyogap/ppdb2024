@@ -314,8 +314,9 @@
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
-                        <table class="table table-striped" style="margin-bottom: 20px !important;">
+                    {if $flag_nilai_kelulusan|default: FALSE}
+                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3"{else}class="col-12 mb-3"{/if}>
+                        <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Rapor 5 Semester (0-100)</b></td>
                                 <td>:</td>
@@ -338,38 +339,53 @@
                             {/if}
                         </table>
                     </div>
+                    {/if}
                     {if $flag_nilai_un|default: FALSE}
-                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
-                        <table class="table table-striped" style="margin-bottom: 0px !important;">
+                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3"{else}class="col-12 mb-3"{/if}>
+                        <table class="table table-striped" style="margin-bottom: 0px !important;">                            
                             <tr>
                                 <td colspan="3">
-                                    <b>Nilai Ujian Nasional? </b>
+                                    {if $profilsiswa.asal_data==ASALDATA_DAPODIK}
+                                    <b>Nilai Tes Kemampuan Akademik (TKA)</b><br><small>Data sesuai sistem. Untuk perbaikan data, silahkan hubungi Panitia {$app_short_name} di dinas terkait.</small>
+                                    {else}
+                                    <b>Nilai Tes Kemampuan Akademik? </b>
                                     <select class="form-control input-default " id="nilai-un" name="nilai-un" 
                                         tcg-input-tag='nilai' tcg-input-true='disable' tcg-input-false='enable' tcg-field='punya_nilai_un'
                                         tcg-edit-action='toggle' tcg-toggle-tag='punya_nilai_un'>
                                     <option value="0" {if empty($profilsiswa.punya_nilai_un)}selected{/if}>Tidak</option>
                                     <option value="1" {if ($profilsiswa.punya_nilai_un==1)}selected{/if}>YA</option>
                                     </select>
+                                    {/if}
                                 </td>
                             </tr>
                             <tr id="row-un-bin" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_bin'>
                                 <td style="width: 45%;"><b>Bahasa Indonesia (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
+                                    {if $profilsiswa.asal_data!=ASALDATA_DAPODIK}
                                     <span><input class="form-control" id="nilai-bin-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_bin}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_bin' style="display: none;"></input></span>
-                                    <span id="nilai-bin" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_bin'>{$profilsiswa.nilai_bin}</span>
+                                    {/if}
+                                    <span id="nilai-bin" 
+                                        {if $profilsiswa.asal_data!=ASALDATA_DAPODIK}tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide'{/if} 
+                                        tcg-field='nilai_bin'>{$profilsiswa.nilai_bin}</span>
                                 </td>
                             </tr>
                             <tr id="row-un-mat" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_mat'>
                                 <td><b>Matematika (0-100)</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
+                                    {if $profilsiswa.asal_data!=ASALDATA_DAPODIK}
                                     <span><input class="form-control" id="nilai-mat-input" type="number" tcg-min=0 tcg-max=100 onkeyup=impose_min_max(this) value="{$profilsiswa.nilai_mat}"
                                         tcg-input-tag='nilai' tcg-input-true='hide' tcg-input-false='show' tcg-field='nilai_mat' style="display: none;"></input></span>
-                                    <span id="nilai-mat" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_mat'>{$profilsiswa.nilai_mat}</span>
+                                    {/if}
+                                    <span id="nilai-mat" 
+                                        {if $profilsiswa.asal_data!=ASALDATA_DAPODIK}tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide'{/if} 
+                                        tcg-field='nilai_mat'>{$profilsiswa.nilai_mat}</span>
                                 </td>
                             </tr>
+                            {if 1==0}
+                            {* TKA tidak ada nilai IPA *}
                             <tr id="row-un-ipa" tcg-visible-tag='punya_nilai_un' tcg-field='nilai_ipa'>
                                 <td><b>IPA (0-100)</b></td>
                                 <td>:</td>
@@ -379,6 +395,7 @@
                                     <span id="nilai-ipa" tcg-input-tag='nilai' tcg-input-true='show' tcg-input-false='hide' tcg-field='nilai_ipa'>{$profilsiswa.nilai_ipa}</span>
                                 </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
                     {/if}
@@ -416,6 +433,28 @@
                             <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
+                            <tr id="row-dokumen-skl">
+                                <td style="width: 45%;"><b>Surat Keterangan Lulus</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;">
+                                    {if !($flag_upload_dokumen)}
+                                    Diserahkan dan dicocokkan di sekolah tujuan
+                                    {else}
+                                        <img id="dokumen-2" class="img-view-thumbnail" 
+                                                src="{(empty($dokumen[2])) ? '' : $dokumen[2]['thumbnail_path']}" 
+                                                img-path="{(empty($dokumen[2])) ? '' : $dokumen[2]['web_path']}" 
+                                                img-id="{(empty($dokumen[2])) ? '' : $dokumen[2]['dokumen_id']}" 
+                                                img-title="Ijazah / Surat Keterangan Lulus"
+                                                style="display:none; "/>  
+                                        <span>
+                                        <input type="file" class="upload-file" tcg-doc-id="2" id="unggah-profil-2" hidden/>
+                                        <label for="unggah-profil-2" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
+                                        </span>
+                                        <div id="msg-dokumen-2" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {if $flag_nilai_kelulusan|default: FALSE}
                             <tr id="row-dokumen-rapor5semester">
                                 <td style="width: 45%;"><b>Rapor 5 Semester</b></td>
                                 <td>:</td>
@@ -437,30 +476,11 @@
                                     {/if}
                                 </td>
                             </tr>
-                            <tr id="row-dokumen-skl">
-                                <td style="width: 45%;"><b>Surat Keterangan Lulus</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    {if !($flag_upload_dokumen)}
-                                    Dicocokkan di sekolah tujuan
-                                    {else}
-                                        <img id="dokumen-2" class="img-view-thumbnail" 
-                                                src="{(empty($dokumen[2])) ? '' : $dokumen[2]['thumbnail_path']}" 
-                                                img-path="{(empty($dokumen[2])) ? '' : $dokumen[2]['web_path']}" 
-                                                img-id="{(empty($dokumen[2])) ? '' : $dokumen[2]['dokumen_id']}" 
-                                                img-title="Ijazah / Surat Keterangan Lulus"
-                                                style="display:none; "/>  
-                                        <span>
-                                        <input type="file" class="upload-file" tcg-doc-id="2" id="unggah-profil-2" hidden/>
-                                        <label for="unggah-profil-2" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
-                                        </span>
-                                        <div id="msg-dokumen-2" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
-                                    {/if}
-                                </td>
-                            </tr>
+                            {/if}
                             {if $flag_nilai_un|default: FALSE}
+                            {if $profilsiswa.asal_data!=ASALDATA_DAPODIK}
                             <tr id="row-dokumen-un" tcg-visible-tag='punya_nilai_un'>
-                                <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
+                                <td><span id="row-span-dokumen-skhun"><b>Hasil Tes Kemampuan Akademik</b></td>
                                 <td>:</td>
                                 <td>
                                     {if !($flag_upload_dokumen)}
@@ -470,7 +490,7 @@
                                                 src="{(empty($dokumen[3])) ? '' : $dokumen[3]['thumbnail_path']}" 
                                                 img-path="{(empty($dokumen[3])) ? '' : $dokumen[3]['web_path']}" 
                                                 img-id="{(empty($dokumen[3])) ? '' : $dokumen[3]['dokumen_id']}" 
-                                                img-title="Surat Keterangan Hasil Ujian Nasional"
+                                                img-title="Hasil Tes Kemampuan Akademik"
                                                 style="display:none; "/>  
                                         <span>
                                         <input type="file" class="upload-file" tcg-doc-id="3" id="unggah-profil-3" hidden/>
@@ -480,6 +500,7 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {/if}
                             {/if}
                             <tr id="row-dokumen-akademik" tcg-visible-tag='punya_akademik'>
                                 <td style="width: 45%;"><b>Dokumen Pendukung Prestasi Akademik</b></td>
@@ -701,8 +722,10 @@
         <div id="afirmasi-content" class="collapse accordion__body" aria-labelledby="afirmasi-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
+                    {if 1==0}
+                    {* SPMB2026: KIP tidak jadi acuan afirmasi *}
+                    {if $flag_kip|default: FALSE}
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        {if $flag_kip|default: FALSE}
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
@@ -725,7 +748,10 @@
                                 </td>
                             </tr>
                         </table>
-                        {/if}
+                    </div>
+                    {/if}
+                    {/if}
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important;">
                             <tr>
                                 <td colspan="3">
@@ -738,13 +764,32 @@
                                     </select>
                                 </td>
                             </tr>
+                            {if 1==0}
+                            {* Hanya 1 sumber data yang diakui: DTSEN *}
                             <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
                                 <td style="width: 45%;"><b>Sumber Data Afirmasi</b></td>
                                 <td>:</td>
                                 <td style="width: 50%;">
-                                <span><input class="form-control" id="nomor-bdt-input" type="text" value="{$profilsiswa.sumber_bdt}"
+                                    <span><input class="form-control" id="nomor-bdt-input" type="text" value="{$profilsiswa.sumber_bdt}"
                                         tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='hide' tcg-field='sumber_bdt' style="display: none;"></input></span>
-                                    <span id="sumber-bdt" tcg-input-tag='afirmasi' tcg-input-false='hide' tcg-input-true='show' tcg-field='no_bdt'>{$profilsiswa.sumber_bdt}</span>
+                                    <span id="sumber-bdt" tcg-input-tag='afirmasi' tcg-input-false='show' tcg-input-true='show' tcg-field='sumber_bdt'>{$profilsiswa.sumber_bdt}</span>
+                                </td>
+                            </tr>
+                            {/if}
+                            <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
+                                <td style="width: 45%;"><b>DESIL Basis Data Terpadu</b></td>
+                                <td>:</td>
+                                <td style="width: 50%;" tcg-input-tag='afirmasi' tcg-input-true='hide' tcg-input-false='show'>
+                                    <select class="form-control select2" id="desil-bdt-input" name="desil_bdt" 
+                                        tcg-input-tag='afirmasi' tcg-field='desil_bdt'>
+                                        <option value="DESIL 1" {if ($profilsiswa.desil_bdt == 'DESIL 1')}selected{/if}>DESIL 1</option>
+                                        <option value="DESIL 2" {if ($profilsiswa.desil_bdt == 'DESIL 2')}selected{/if}>DESIL 2</option>
+                                        <option value="DESIL 3" {if ($profilsiswa.desil_bdt == 'DESIL 3')}selected{/if}>DESIL 3</option>
+                                        <option value="DESIL 4" {if ($profilsiswa.desil_bdt == 'DESIL 4')}selected{/if}>DESIL 4</option>
+                                    </select>
+                                </td>
+                                <td style="width: 50%;" tcg-input-tag='afirmasi' tcg-input-true='show' tcg-input-false='hide'>
+                                    <span tcg-input-tag='afirmasi' tcg-field='desil_bdt'>{$profilsiswa.desil_bdt}</span>
                                 </td>
                             </tr>
                         </table>

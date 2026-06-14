@@ -184,7 +184,7 @@ Class Mprofilsiswa
         $builder->select('case when f.dokumen_id is null then 0 else a.surat_pernyataan_kebenaran_dokumen end as surat_pernyataan_kebenaran_dokumen,
                             f.filename as nama_surat_pernyataan, f.path as path_surat_pernyataan,f.web_path as img_surat_pernyataan,
                             f.thumbnail_path as thumbnail_surat_pernyataan,f.created_on as tanggal_surat_pernyataan', false);
-        $builder->select("a.masuk_bdt, a.sumber_bdt");
+        $builder->select("a.masuk_bdt, a.sumber_bdt, a.desil_bdt");
         $builder->join('ref_sekolah b','a.sekolah_id = b.sekolah_id','LEFT OUTER');
 		$builder->join('ref_wilayah c','a.kode_wilayah = c.kode_wilayah AND c.is_deleted=0','LEFT OUTER');
 		$builder->join('dbo_users d','a.peserta_didik_id = d.peserta_didik_id AND d.is_deleted = 0','LEFT OUTER');
