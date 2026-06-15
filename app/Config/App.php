@@ -20,7 +20,7 @@ class App extends BaseConfig
      * E.g., http://example.com/
      */
     //public string $baseURL = 'http://localhost/spmb2026/';
-    public string $baseURL = BASE_URL;
+    public string $baseURL = 'https://ppdb2024-app-1044164028195.asia-southeast2.run.app/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

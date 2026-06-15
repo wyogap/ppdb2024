@@ -26,7 +26,7 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => '34.101.252.197',
+        'hostname'     => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1',
         'username'     => 'root',
         'password'     => 'C00l@dmin',
         'database'     => 'ppdb_2026',
@@ -47,12 +47,13 @@ class Database extends Config
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
-        ],
+        ],        
+        'socket'   => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1',
     ];
 
     public array $ro = [
         'DSN'          => '',
-        'hostname'     => '34.101.252.197',
+        'hostname'     => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1-read-pool',
         'username'     => 'root',
         'password'     => 'C00l@dmin',
         'database'     => 'ppdb_2026',
@@ -74,6 +75,8 @@ class Database extends Config
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
+        //added
+        'socket'   => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1-read-pool',
     ];
 
     //    /**
@@ -188,7 +191,7 @@ class Database extends Config
      */
     public array $tests = [
         'DSN'         => '',
-        'hostname'    => '127.0.0.1',
+        'hostname'    => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1',
         'username'    => '',
         'password'    => '',
         'database'    => ':memory:',
@@ -211,6 +214,8 @@ class Database extends Config
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
+        //added
+        'socket'   => '/cloudsql/ppdb-kebumen:asia-southeast2:ppdb1',
     ];
 
     public function __construct()
