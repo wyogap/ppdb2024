@@ -332,7 +332,7 @@ class Siswa extends PpdbController {
         $data['maxpilihanswasta'] = 0;
         foreach($daftarpilihan as $row) {
             if ($row['sekolah_negeri'] == 1 && $row['sekolah_swasta'] == 1) {
-                $data['maxpilihanumum']++;
+                //$data['maxpilihanumum']++;
                 $data['maxpilihannegeri']++;
                 $data['maxpilihanswasta']++;
             }
@@ -769,8 +769,16 @@ class Siswa extends PpdbController {
                 return null;
             }
     
-            //tidak dalam zonasi. daftar semua penerapan kecuali penerapan awal
-            $tanggal_lahir = $profil['tanggal_lahir'];
+            //cek luar daerah atau bukan
+            $kode_wilayah_siswa = $profil['kode_wilayah'];
+            $luar_daerah = (substr($kode_wilayah_siswa, 0, 4) != substr(KODE_WILAYAH, 0, 4)) ? 1 : 0;
+
+            //cek dalam zonasi atau tidak
+            $sekolah_id = $pendaftaran['sekolah_id'];
+            $dalam_zonasi = $this->Msiswa->tcg_cek_dalamzonasi($peserta_didik_id, $sekolah_id);
+
+            //daftar semua penerapan kecuali penerapan awal
+            //$tanggal_lahir = $profil['tanggal_lahir'];
             $kode_wilayah = $profil['kode_wilayah'];
     
             $kebutuhan_khusus = 1;
@@ -778,11 +786,15 @@ class Siswa extends PpdbController {
                 $kebutuhan_khusus = 0;
             }
     
+            //echo "$kode_wilayah, $kebutuhan_khusus, " . $profil['masuk_bdt'] . ", $parent_penerapan_id, $luar_daerah, $dalam_zonasi";
+            //exit;
+
+            //kalau ada parent penerapan id, ubah di level parent 
             if ($parent_penerapan_id) {
-                $data = $this->Msiswa->tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $profil['masuk_bdt'], $parent_penerapan_id);
+                $data = $this->Msiswa->tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $profil['masuk_bdt'], $parent_penerapan_id, $luar_daerah, $dalam_zonasi);
             }
             else {
-                $data = $this->Msiswa->tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $profil['masuk_bdt'], $penerapan_id);
+                $data = $this->Msiswa->tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $profil['masuk_bdt'], $penerapan_id, $luar_daerah, $dalam_zonasi);
             }
             
             //check kuota di sekolah tujuan

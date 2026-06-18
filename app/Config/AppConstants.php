@@ -50,6 +50,7 @@ defined('APP_DEBUGGING')               || define('APP_DEBUGGING', 0);
  */
 defined('TAHUN_AJARAN_ID') || define('TAHUN_AJARAN_ID', 2026);
 defined('NAMA_TAHUN_AJARAN') || define('NAMA_TAHUN_AJARAN', '2026/2027');
+defined('KODE_WILAYAH') || define('KODE_WILAYAH', '030500');
 
 /*
 |--------------------------------------------------------------------------

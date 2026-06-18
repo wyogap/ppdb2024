@@ -275,7 +275,7 @@ Class Mprofilsiswa
 		return $this->ro->query($query, array($peserta_didik_id, $pendaftaran_id))->getResultArray();
 	}
 
-	function tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $afirmasi, $selain_penerapan_id=0){
+	function tcg_daftarpenerapan($kode_wilayah, $kebutuhan_khusus, $afirmasi, $selain_penerapan_id=0, $luar_daerah=-1, $dalam_zonasi=-1){
         $this->error_message = null;
         
         //IMPORTANT: Perhitungan berdasarkan tanggal lahir sekarang dilakukan secara global!
@@ -328,6 +328,20 @@ Class Mprofilsiswa
             }
         }
 		
+        if ($luar_daerah == 1) {
+            $builder->where("a.luar_wilayah_administrasi", 1);
+        }
+        else if ($luar_daerah == 0) {
+            $builder->where("a.dalam_wilayah_administrasi", 1);
+        }
+
+        if ($dalam_zonasi == 1) {
+            $builder->where("a.dalam_zonasi", 1);
+        }
+        else if ($dalam_zonasi == 0) {
+            $builder->where("a.luar_zonasi", 1);
+        }
+
  		// if ($afirmasi==0) {
 		// 	$builder->where('a.kategori_afirmasi',0);
 		// 	$builder->where('c.jalur_id !=',9);
@@ -586,6 +600,9 @@ Class Mprofilsiswa
             $builder->where($filters);
         }
 
+        // $sql = $builder->getCompiledSelect();
+        // echo $sql; exit;
+
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
 
@@ -611,6 +628,9 @@ Class Mprofilsiswa
         $builder->where("a.penerapan_id", $penerapan_id);
         $builder->orWhere("b.parent_id", $penerapan_id);
         $builder->groupEnd();
+
+        $sql = $builder->getCompiledSelect();
+        echo $sql; exit;
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
@@ -1307,6 +1327,26 @@ Class Mprofilsiswa
 
         //audit trail
         $this->audittrail->update('tcg_peserta_didik', $peserta_didik_id, array_keys($values), $values, null);
+    }
+
+    public function tcg_cek_dalamzonasi($peserta_didik_id, $sekolah_id) {
+        $query = "select 
+                    case when d1.zona_wilayah_id is not null then 1 else 0 end as dalam_zonasi
+                FROM tcg_peserta_didik a 
+                JOIN ref_sekolah b ON b.sekolah_id=?
+                left join cfg_zona_wilayah d1 
+                    on d1.kode_zona=left(a.kode_wilayah,6)
+                    and d1.kode_wilayah=b.kode_wilayah_kec 
+                    and d1.tahun_ajaran_id=?
+                where a.peserta_didik_id=?";
+
+		$query = $this->ro->query($query, array($sekolah_id, TAHUN_AJARAN_ID, $peserta_didik_id));
+        if (!$query) return 0;
+
+        $result = $query->getRowArray();
+        if (empty($result)) return 0;
+
+		return $result['dalam_zonasi'];
     }
 
     /*
