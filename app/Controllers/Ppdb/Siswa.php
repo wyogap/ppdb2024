@@ -333,6 +333,8 @@ class Siswa extends PpdbController {
         foreach($daftarpilihan as $row) {
             if ($row['sekolah_negeri'] == 1 && $row['sekolah_swasta'] == 1) {
                 $data['maxpilihanumum']++;
+                $data['maxpilihannegeri']++;
+                $data['maxpilihanswasta']++;
             }
             else if ($row['sekolah_negeri'] == 1) {
                 $data['maxpilihannegeri']++;

@@ -286,7 +286,7 @@ Class Mprofilsiswa
 		//$bentuk_sekolah = secure("SMP");
 
 		$builder = $this->ro->table('cfg_penerapan a');
-		$builder->select('a.penerapan_id,a.nama,a.keterangan,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.kategori_susulan,a.kategori_inklusi');
+		$builder->select('a.penerapan_id,a.nama,a.keterangan,a.keterangan2,c.jalur_id,c.nama AS jalur,a.sekolah_negeri,a.sekolah_swasta,a.kategori_susulan,a.kategori_inklusi');
 		$builder->join('ref_jalur c','a.jalur_id = c.jalur_id AND c.is_deleted=0');
 		$builder->where(array('a.pendaftaran'=>1,'a.tahun_ajaran_id'=>TAHUN_AJARAN_ID,'a.putaran'=>$putaran,'a.is_deleted'=>0));
         $builder->where("a.jenjang_id", $jenjang_id);

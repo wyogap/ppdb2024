@@ -10,7 +10,8 @@
                 </div>
             </div>
             <div class="card-body">
-                {{jalur.keterangan}}
+                <p>{{jalur.keterangan}}</p>                
+                {{#jalur.keterangan2}}<p>{{jalur.keterangan2}}</p>{{/jalur.keterangan2}}
             </div>
             <div class="card-footer" {{#tutup_akses}}style="display: none;"{{/tutup_akses}}>
                 <button onclick=pilih_sekolah({{idx}}) 
