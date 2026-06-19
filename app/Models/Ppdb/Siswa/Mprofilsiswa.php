@@ -629,8 +629,8 @@ Class Mprofilsiswa
         $builder->orWhere("b.parent_id", $penerapan_id);
         $builder->groupEnd();
 
-        $sql = $builder->getCompiledSelect();
-        echo $sql; exit;
+        // $sql = $builder->getCompiledSelect();
+        // echo $sql; exit;
 
         $result = $builder->get()->getRowArray();
         if ($result == null)    return 0;
