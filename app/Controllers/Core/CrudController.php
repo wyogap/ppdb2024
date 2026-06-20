@@ -1162,8 +1162,15 @@ abstract class CrudController extends BaseController {
 			if (substr($key, 0, 2) != "f_") continue;
 			$filters[substr($key, 2)] = $val;
 		}
+
+		//query string
+		$search = $_POST["search"] ?? '';
+        if (empty($search)) {
+            $search = $_GET["search"] ?? '';
+        }
+		$search = trim($search);
 		
-		$json['data'] = $model->lookup($filters);
+		$json['data'] = $model->lookup($filters, $search);
 
 		echo json_encode($json, JSON_INVALID_UTF8_IGNORE);	
 	}

@@ -24,6 +24,10 @@
 				conf.attr.ajax = conf.ajax;
 			}
 
+			if (typeof conf.autocomplete !== 'undefined' && conf.autocomplete != null && conf.autocomplete != "") {
+				conf.attr.autocomplete = conf.autocomplete;
+			}
+
 			//force read-only (if any)
 			if (typeof conf.readonly !== 'undefined' && conf.readonly != null && conf.readonly != "") {
 				conf.attr.readonly = conf.readonly;

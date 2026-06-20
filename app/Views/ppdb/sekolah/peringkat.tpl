@@ -65,7 +65,6 @@
                         <th class="text-center">Sekolah Asal</th>
                         <th class="text-center" data-priority="6">Jalur</th>
                         <th class="text-center">Jenis Pilihan</th>
-                        <th class="text-center">Skor</th>
                         <th class="text-center" data-priority="4">Tanggal Pembukuan</th>
                         <th class="text-center" data-priority="3">Status</th>
                     </tr>
@@ -81,7 +80,6 @@
                         <td>{$row.sekolah_asal}</td>
                         <td class="text-center">{$row.jalur}</td>
                         <td class="text-center">{$row.label_jenis_pilihan}</td>
-                        <td class="text-end">{$row.skor}</td>
                         <td class="text-center">{$row.created_on}</td>
                         {*
                             status_penerimaan == 0  => belum diperingkat

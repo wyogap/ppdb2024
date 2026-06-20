@@ -1550,7 +1550,7 @@ class Mcrud_tablemeta implements ICrudModel
         return $arr;
     }
 
-    function lookup($filter = null) {
+    function lookup($filter = null, $search = null) {
         $this->reset_error();
         
         if (!$this->initialized)   return null;
@@ -1579,9 +1579,24 @@ class Mcrud_tablemeta implements ICrudModel
             }
         }
 
+        //group search filter
+        if (!empty($search)) {
+            if (count($this->search_columns)>0) {
+                //use predefined list of columns
+                $builder->groupStart();
+                foreach($this->search_columns as $key => $val) {
+                    $builder->orLike($val, $search);
+                }
+                $builder->groupEnd();
+            }
+        }
+
         if ($this->table_metas['soft_delete'])   $builder->where('is_deleted', 0);
         if (!empty($this->table_metas['where_clause']))   
             $builder->where($this->table_metas['where_clause']);
+
+        // $str = $builder->getCompiledSelect();
+        // echo($str); exit;
 
         $builder->select($this->table_metas['lookup_column'] .' as label, '. $this->table_metas['key_column'] .' as value');
         return $builder->get()->getResultArray();

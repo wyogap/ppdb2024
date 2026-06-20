@@ -179,13 +179,34 @@ Class Mprofilsekolah
 
 		$builder = $this->ro->table('tcg_pendaftaran a');
 		$builder->select('a.pendaftaran_id,a.sekolah_id,a.peserta_didik_id,a.penerapan_id,a.nomor_pendaftaran,a.kelengkapan_berkas,a.created_on');
-        $builder->select('b.jenis_kelamin, b.tanggal_lahir, b.terakhir_verifikasi_timestamp as tanggal_verifikasi, k.nama as verifikasi_oleh');
-		$builder->select('b.nisn,b.nama,a.jenis_pilihan,b.lintang,b.bujur,a.status_penerimaan,a.masuk_jenis_pilihan,a.status_penerimaan_final,a.skor,a.peringkat,a.peringkat_final');
+        $builder->select('b.jenis_kelamin, b.tanggal_lahir, b.terakhir_verifikasi_timestamp as tanggal_verifikasi, j.nama as verifikasi_oleh');
+		$builder->select('b.nisn,b.nama,a.jenis_pilihan,b.lintang,b.bujur,a.skor,a.peringkat,a.peringkat_final');
 		$builder->select('b.nilai_kelulusan,coalesce(b.nilai_un,0) as nilai_usbn, a.status_daftar_ulang');
         $builder->select('e.nama AS sekolah_asal,f.nama AS lokasi_berkas,g.keterangan as label_masuk_pilihan,h.keterangan as label_jenis_pilihan,i.nama as sedang_verifikasi');
-        $builder->select('d.jalur_id,d.nama AS jalur, b.nomor_kontak');
+        $builder->select('d.jalur_id, b.nomor_kontak');
         $builder->select('case when a.status_daftar_ulang = 1 then a.tanggal_daftar_ulang else NULL end as tanggal_daftar_ulang', false);
-        $builder->select('a.skor_jarak, a.skor_usia');
+        $builder->select("case when m.nama is not null then concat(d.nama, concat(', ', m.nama)) else d.nama end as jalur", false);
+        $builder->select("case 
+            when a.status_penerimaan=0 then 0
+            when a.status_penerimaan=1 or k.status_penerimaan=1 then 1
+            when a.status_penerimaan=2 and k.status_penerimaan=2 then 2
+            when a.status_penerimaan=4 or k.status_penerimaan=4 then 4
+            when a.status_penerimaan=3 or k.status_penerimaan=3 then 3
+            else a.status_penerimaan
+        end as status_penerimaan", false);
+        $builder->select("case 
+            when a.status_penerimaan_final=0 then 0
+            when a.status_penerimaan_final=1 or k.status_penerimaan_final=1 then 1
+            when a.status_penerimaan_final=2 and k.status_penerimaan_final=2 then 2
+            when a.status_penerimaan_final=4 or k.status_penerimaan_final=4 then 4
+            when a.status_penerimaan_final=3 or k.status_penerimaan_final=3 then 3
+            else a.status_penerimaan_final
+        end as status_penerimaan_final", false);
+        $builder->select("case 
+            when a.status_penerimaan_final=1 or a.status_penerimaan_final=4 then a.masuk_jenis_pilihan
+            when k.status_penerimaan_final=1 or k.status_penerimaan_final=4 then k.masuk_jenis_pilihan
+            else a.masuk_jenis_pilihan
+        end as masuk_jenis_pilihan", false);
 		$builder->join('tcg_peserta_didik b','a.peserta_didik_id = b.peserta_didik_id AND b.is_deleted = 0');
 		$builder->join('cfg_penerapan c','a.penerapan_id = c.penerapan_id AND c.aktif = 1 and c.tahun_ajaran_id=a.tahun_ajaran_id and c.putaran=a.putaran AND c.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_jalur d','c.jalur_id = d.jalur_id AND d.is_deleted=0','LEFT OUTER');
@@ -194,8 +215,11 @@ Class Mprofilsekolah
 		$builder->join('cfg_jenis_pilihan g','a.masuk_jenis_pilihan = g.jenis_pilihan and g.tahun_ajaran_id=a.tahun_ajaran_id and g.putaran=a.putaran AND g.is_deleted=0','LEFT OUTER');
 		$builder->join('cfg_jenis_pilihan h','a.jenis_pilihan = h.jenis_pilihan and h.tahun_ajaran_id=a.tahun_ajaran_id and h.putaran=a.putaran AND h.is_deleted=0','LEFT OUTER');
         $builder->join('dbo_users i','i.user_id = b.sedang_verifikasi_oleh and i.is_deleted = 0','LEFT OUTER');		
-        $builder->join('dbo_users k','k.user_id = b.terakhir_verifikasi_oleh and k.is_deleted = 0','LEFT OUTER');		
-        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0));
+        $builder->join('dbo_users j','j.user_id = b.terakhir_verifikasi_oleh and j.is_deleted = 0','LEFT OUTER');		
+        $builder->join('tcg_pendaftaran k','k.ref_pendaftaran_id=a.pendaftaran_id','LEFT OUTER');		
+        $builder->join('cfg_penerapan l','l.penerapan_id=k.penerapan_id AND l.aktif = 1 and l.tahun_ajaran_id=a.tahun_ajaran_id and l.putaran=a.putaran AND l.is_deleted=0','LEFT OUTER');		
+        $builder->join('ref_jalur m','m.jalur_id = l.jalur_id AND m.is_deleted=0','LEFT OUTER');		
+        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1));
         $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         if (!empty($sekolah_id)) {

@@ -299,8 +299,9 @@
         <div id="nilai-content" class="collapse accordion__body" aria-labelledby="nilai-header" data-bs-parent="#profil-siswa" style="">
             <div class="accordion-body-text">
                 <div class="row">
-                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
-                        <table class="table table-striped" style="margin-bottom: 20px !important;">
+                    {if $flag_nilai_kelulusan|default: FALSE}
+                    <div {if $flag_nilai_un|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3"{else}class="col-12 mb-3"{/if}>
+                        <table class="table table-striped"">
                             <tr>
                                 <td style="width: 45%;"><b>Nilai Rata-rata Rapor 5 Semester (0-100)</b></td>
                                 <td>:</td>
@@ -327,12 +328,17 @@
                             {/if}
                         </table>
                     </div>
+                    {/if}
                     {if $flag_nilai_un|default: FALSE}
-                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12"{else}class="col-12"{/if}>
-                        <table class="table table-striped" style="margin-bottom: 0px !important;">
+                    <div {if $flag_nilai_kelulusan|default: FALSE}class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mb-3"{else}class="col-12 mb-3"{/if}>
+                        <table class="table table-striped">
                             <tr>
                                 <td colspan="3">
-                                    <b>Nilai Ujian Nasional? </b>
+                                    <span id='tka-by-system' style='display: none;'>
+                                    <b>Nilai Tes Kemampuan Akademik (TKA)</b><br><small>Data sesuai sistem. Untuk perbaikan data, silahkan hubungi Panitia {$app_short_name} di dinas terkait.</small>
+                                    </span>
+                                    <span id='tka-input'>
+                                    <b>Nilai Tes Kemampuan Akademik? </b>
                                     <select class="form-control input-default " id="nilai-un" name="nilai-un" 
                                         tcg-tag='nilai'
                                         tcg-field='punya_nilai_un' tcg-field-type='toggle' tcg-field-submit=1
@@ -340,6 +346,7 @@
                                     <option value="0">Tidak</option>
                                     <option value="1">YA</option>
                                     </select>
+                                    </span>
                                 </td>
                             </tr>
                             <tr id="row-un-bin" tcg-visible-tag='nilai-un' tcg-field='nilai_bin'>
@@ -364,6 +371,8 @@
                                     <span id="nilai-mat" tcg-tag='nilai' tcg-field='nilai_mat' tcg-field-type='label'></span>
                                 </td>
                             </tr>
+                            {if 1==0}
+                            {* TKA tidak ada nilai IPA *}
                             <tr id="row-un-ipa" tcg-visible-tag='nilai-un' tcg-field='nilai_ipa'>
                                 <td><b>IPA</b></td>
                                 <td>:</td>
@@ -375,6 +384,7 @@
                                     <span id="nilai-ipa" tcg-tag='nilai' tcg-field='nilai_ipa' tcg-field-type='label'></span>
                                 </td>
                             </tr>
+                            {/if}
                         </table>
                     </div>
                     {/if}
@@ -412,57 +422,15 @@
                             <tr>
                                 <td colspan="3"><b>Dokumen Pendukung</b></td>
                             </tr>
-                            {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='' docid=$smarty.const.DOCID_RAPOR_5SEMESTER 
-                                label='Rapor 5 Semester' dok=null}
                             {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='' docid=$smarty.const.DOCID_IJAZAH_SKL 
                                 label='Surat Keterangan Lulus' dok=null}
-                            <!--
-                            <tr id="row-dokumen-rapor5semester">
-                                <td style="width: 45%;"><b>Rapor 5 Semester</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    {if !($flag_upload_dokumen)}
-                                    Dicocokkan di sekolah tujuan
-                                    {else}
-                                    <img id="dokumen-27" class="img-view-thumbnail" 
-                                            src="{(empty($dokumen[27])) ? '' : $dokumen[27]['thumbnail_path']}" 
-                                            img-path="{(empty($dokumen[27])) ? '' : $dokumen[27]['web_path']}" 
-                                            img-id="{(empty($dokumen[27])) ? '' : $dokumen[27]['dokumen_id']}" 
-                                            img-title="Rapor 5 Semester"
-                                            style="display:none; "/>  
-                                    <span>
-                                    <input type="file" class="upload-file" tcg-doc-id="27" id="unggah-profil-27" hidden/>
-                                    <label for="unggah-profil-27" class="btn btn-primary" tcg-input-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
-                                    </span>
-                                    <div id="msg-dokumen-27" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
-                                    {/if}
-                                </td>
-                            </tr>
-                            <tr id="row-dokumen-skl">
-                                <td style="width: 45%;"><b>Surat Keterangan Lulus</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    {if !($flag_upload_dokumen)}
-                                    Dicocokkan di sekolah tujuan
-                                    {else}
-                                        <img id="dokumen-2" class="img-view-thumbnail" tcg-doc-id='{$smarty.const.DOCID_IJAZAH_SKL}'
-                                                src="" 
-                                                img-path="" 
-                                                img-id="" 
-                                                img-title="Ijazah / Surat Keterangan Lulus"
-                                                style="display:none; "/>  
-                                        <span>
-                                        <input type="file" class="upload-file" tcg-doc-id="{$smarty.const.DOCID_IJAZAH_SKL}"" id="unggah-profil-2" hidden/>
-                                        <label for="unggah-profil-2" class="btn btn-primary" tcg-tag='inklusi' tcg-input-false='show' tcg-input-true='hide'>Unggah</label>
-                                        </span>
-                                        <div id="msg-dokumen-2" class="box-red" style="margin-top: 5px; padding-left: 5px; padding-right: 5px; display: none;"></div>
-                                    {/if}
-                                </td>
-                            </tr>
-                            -->
+                            {if $flag_nilai_kelulusan|default: FALSE}
+                            {include file="./_verifikasisiswa_dokumen.tpl" tag='nilai' visible_tag='' docid=$smarty.const.DOCID_RAPOR_5SEMESTER 
+                                label='Rapor 5 Semester' dok=null}
+                            {/if}
                             {if $flag_nilai_un|default: FALSE}
                             <tr id="row-dokumen-un" tcg-visible-tag='nilai-un'>
-                                <td><span id="row-span-dokumen-skhun"><b>Hasil Ujian Nasional</b></td>
+                                <td><span id="row-span-dokumen-skhun"><b>Hasil Tes Kemampuan Akademik</b></td>
                                 <td>:</td>
                                 <td>
                                     {if !($flag_upload_dokumen)}
@@ -472,7 +440,7 @@
                                                 src="" 
                                                 img-path="" 
                                                 img-id="" 
-                                                img-title="Surat Keterangan Hasil Ujian Nasional"
+                                                img-title="Hasil Tes Kemampuan Akademik"
                                                 style="display:none; "/>  
                                         <span>
                                         <input type="file" class="upload-file" tcg-doc-id="{$smarty.const.DOCID_HASIL_UN}" id="unggah-profil-3" hidden/>
@@ -660,6 +628,8 @@
                                     </select>
                                 </td>
                             </tr>
+                            {if 1==0}
+                            {* SPMB2026: Hanya 1 sumber data yang diakui: DTSEN *}
                             <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
                                 <td style="width: 45%;"><b>Sumber Data Afirmasi</b></td>
                                 <td>:</td>
@@ -671,6 +641,29 @@
                                     <span id="sumber-bdt" tcg-tag='afirmasi' tcg-field='sumber_bdt' tcg-field-type='label'></span>
                                 </td>
                             </tr>
+                            {/if}
+                            <tr tcg-visible-tag='masuk_bdt'>
+                                <td colspan="3" tcg-field-type='input' style="display: none;">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>DESIL Basis Data Terpadu :</b></div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                            <select class="form-control select2" tcg-tag='nilai' tcg-field='akademik_skoring_id'
+                                            tcg-field-type='input' tcg-field-submit=1>
+                                                <option value="DESIL 1">DESIL 1</option>
+                                                <option value="DESIL 2">DESIL 2</option>
+                                                <option value="DESIL 3">DESIL 3</option>
+                                                <option value="DESIL 4">DESIL 4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 45%;" tcg-field-type='label'><b>DESIL Basis Data Terpadu</b></td>
+                                <td tcg-field-type='label'>:</td>
+                                <td style="width: 50%;" tcg-field-type='label'>
+                                    <span tcg-tag='afirmasi' tcg-field='desil_bdt' tcg-field-type='label'></span>
+                                </td>
+                            </tr>
+
                         </table>
                         <table class="table table-striped dokumen-pendukung" style="margin-bottom: 0px !important;" tcg-visible-tag='afirmasi'>
                             <tr id="row-dokumen-afirmasi">

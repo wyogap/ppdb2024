@@ -164,7 +164,7 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <div class="form-group has-feedback">
-                                <label for="nomor_ujian">Nomor Ujian (Apabila Ada)</label>
+                                <label for="nomor_ujian">Nomor Ujian/TKA (Apabila Ada)</label>
                                 <input type="text" class="form-control form-control-sm" id="nomor_ujian" name="nomor_ujian" placeholder="Nomor Ujian" minlength="3" maxlength="20">
                             </div>
                         </div>
@@ -227,7 +227,7 @@
 
             <div class="card box-solid">
                 <div class="card-header with-border">
-                    <h3 class="card-title text-primary"><i class="glyphicon glyphicon-road"></i><b>Pengisian Alamat Siswa</b></h3>
+                    <h3 class="card-title text-primary"><i class="glyphicon glyphicon-road"></i><b>Pengisian Alamat Siswa (Sesuai KK)</b></h3>
                 </div>
                 <div class="card-body">
                     <div class="row">

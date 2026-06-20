@@ -221,23 +221,24 @@ class Home extends PpdbController
         //     print_json_error("Data akun siswa dengan nisn tersebut sudah ada.", -90);
         // }
 
-        $profil = get_data_dapodik($nisn, $npsn);
+        $mdapodik = new \App\Models\Dapodik\Mdapodik();
+        $profil = $mdapodik->getSiswaByNisnDanNpsn($nisn, $npsn);
         if ($profil == null) {
             print_json_error("Tidak berhasil mendapatkan data siswa dari DAPODIK.", -91);
         }
 
-        //get data sekolah from local db
-        $sekolah = get_profilsekolah_from_npsn($npsn);
-        if ($sekolah == null) {
-            print_json_error("Tidak berhasil mendapatkan profil sekolah dari DAPODIK.", -92);
-        }
+        // //get data sekolah from local db
+        // $sekolah = get_profilsekolah_from_npsn($npsn);
+        // if ($sekolah == null) {
+        //     print_json_error("Tidak berhasil mendapatkan profil sekolah dari DAPODIK.", -92);
+        // }
 
-        $profil['nama_sekolah'] = $sekolah['nama'];
-        $profil['sekolah_dapodik_id'] = $sekolah['dapodik_id'];
-        $profil['sekolah_id'] = $sekolah['sekolah_id'];
-        $profil['npsn_sekolah'] = $sekolah['npsn'];
+        // $profil['nama_sekolah'] = $sekolah['nama'];
+        // $profil['sekolah_dapodik_id'] = $sekolah['dapodik_id'];
+        // $profil['sekolah_id'] = $sekolah['sekolah_id'];
+        // $profil['npsn_sekolah'] = $sekolah['npsn'];
     
-        print_json_output($profil);
+        print_json_output($profil[0]);
     }
 
     function registrasi() {

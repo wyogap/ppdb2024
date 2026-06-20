@@ -765,7 +765,7 @@
                                 </td>
                             </tr>
                             {if 1==0}
-                            {* Hanya 1 sumber data yang diakui: DTSEN *}
+                            {* SPMB2026: Hanya 1 sumber data yang diakui: DTSEN *}
                             <tr id="row-bdt" tcg-visible-tag='masuk_bdt'>
                                 <td style="width: 45%;"><b>Sumber Data Afirmasi</b></td>
                                 <td>:</td>

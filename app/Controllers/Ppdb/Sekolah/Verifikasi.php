@@ -82,7 +82,9 @@ class Verifikasi extends PpdbController {
             $data['cek_waktuverifikasi'] = 1;
         }
 
-        $data['flag_nilai_kelulusan'] = 1;
+        $data['flag_nilai_kelulusan'] = 0;
+        $data['flag_nilai_un'] = 1;
+        $data['ASALDATA_DAPODIK'] = ASALDATA_DAPODIK;
 
         $data['use_datatable'] = 1;
         $data['use_leaflet'] = 1;

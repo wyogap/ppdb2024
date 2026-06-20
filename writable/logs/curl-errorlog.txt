@@ -16,21 +16,21 @@
 *   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
 * Connected to api.spl.kemendikdasmen.go.id (35.227.244.9) port 443
 * using HTTP/2
-* [HTTP/2] [1] OPENED stream for https://api.spl.kemendikdasmen.go.id/layanan/peserta-didik/spmb/peserta-didik-by-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&npsn=69833507
+* [HTTP/2] [1] OPENED stream for https://api.spl.kemendikdasmen.go.id/layanan/peserta-didik/spmb/peserta-didik-by-nisn-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&nisn=3133512336&npsn=20247240
 * [HTTP/2] [1] [:method: GET]
 * [HTTP/2] [1] [:scheme: https]
 * [HTTP/2] [1] [:authority: api.spl.kemendikdasmen.go.id]
-* [HTTP/2] [1] [:path: /layanan/peserta-didik/spmb/peserta-didik-by-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&npsn=69833507]
+* [HTTP/2] [1] [:path: /layanan/peserta-didik/spmb/peserta-didik-by-nisn-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&nisn=3133512336&npsn=20247240]
 * [HTTP/2] [1] [user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36]
 * [HTTP/2] [1] [accept: */*]
-* [HTTP/2] [1] [authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODA3NDQ1NjAsIm5iZiI6MTc4MDc0MDk2MCwiaWF0IjoxNzgwNzQwOTYwLCJTZXJ2aWNlSUQiOjI0LCJDbGllbnRJRCI6IjgwNDA4YjYzNzhkMDNhNDlkN2MwYTZkNSJ9.JNEQj1v2AdZSK2R0RZ35OPPxs9Zu1AlNsVyMrpiQiWQ]
+* [HTTP/2] [1] [authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODE5ODU5OTQsIm5iZiI6MTc4MTk4MjM5NCwiaWF0IjoxNzgxOTgyMzk0LCJTZXJ2aWNlSUQiOjI0LCJDbGllbnRJRCI6IjgwNDA4YjYzNzhkMDNhNDlkN2MwYTZkNSJ9.JCBvlvYB-gnGoK_rMqdYk-t41NvbQeKVJzANqvnxNjk]
 * [HTTP/2] [1] [content-type: application/json]
 * [HTTP/2] [1] [x-client-id: 80408b6378d03a49d7c0a6d5]
-> GET /layanan/peserta-didik/spmb/peserta-didik-by-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&npsn=69833507 HTTP/2
+> GET /layanan/peserta-didik/spmb/peserta-didik-by-nisn-npsn?api_key=7EAC850A-CDA0-4140-A308-06FA0024B625&nisn=3133512336&npsn=20247240 HTTP/2
 Host: api.spl.kemendikdasmen.go.id
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36
 Accept: */*
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODA3NDQ1NjAsIm5iZiI6MTc4MDc0MDk2MCwiaWF0IjoxNzgwNzQwOTYwLCJTZXJ2aWNlSUQiOjI0LCJDbGllbnRJRCI6IjgwNDA4YjYzNzhkMDNhNDlkN2MwYTZkNSJ9.JNEQj1v2AdZSK2R0RZ35OPPxs9Zu1AlNsVyMrpiQiWQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODE5ODU5OTQsIm5iZiI6MTc4MTk4MjM5NCwiaWF0IjoxNzgxOTgyMzk0LCJTZXJ2aWNlSUQiOjI0LCJDbGllbnRJRCI6IjgwNDA4YjYzNzhkMDNhNDlkN2MwYTZkNSJ9.JCBvlvYB-gnGoK_rMqdYk-t41NvbQeKVJzANqvnxNjk
 Content-Type: application/json
 X-Client-Id: 80408b6378d03a49d7c0a6d5
 
@@ -38,13 +38,13 @@ X-Client-Id: 80408b6378d03a49d7c0a6d5
 < HTTP/2 200 
 < content-type: application/json
 < x-cache-status: HIT
-< x-request-id: 75335a36d4c9b627074c5ea5f3eedff5
-< date: Sat, 06 Jun 2026 10:16:08 GMT
-< content-length: 114
+< x-request-id: 20186d83a85eecfaf2437f3fdd232e44
+< date: Sat, 20 Jun 2026 19:06:34 GMT
+< content-length: 864
 < x-envoy-upstream-service-time: 6
-< x-source-ip: 35.191.51.94
+< x-source-ip: 35.191.51.118
 < server: envoy
 < via: 1.1 google
-< alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< alt-svc: h3=":443"; ma=2592000
 < 
 * Connection #0 to host api.spl.kemendikdasmen.go.id left intact

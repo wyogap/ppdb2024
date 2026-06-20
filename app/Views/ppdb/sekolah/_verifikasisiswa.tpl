@@ -62,6 +62,7 @@
     var profilflag = {};
     var perbaikan = {};
     var tutup_akses = 1;
+    var asaldata = 0;
 
     var profil = {};
     var dokumen = {};
@@ -234,6 +235,15 @@
                 //catatan
                 elements.filter(".catatan").show();
             }
+     
+            //special case: nilai -> sesuai asal data
+            if (submittag == 'nilai' && asaldata == {ASALDATA_DAPODIK}) {
+                $('#nilai-bin').show();
+                $('#nilai-bin-input').hide();
+                $('#nilai-mat').show();
+                $('#nilai-mat-input').hide();
+            }
+
         });
 
         $("[tcg-field-type='toggle']").on("change", function(evt) {
@@ -266,49 +276,6 @@
             //     }
             // }
         });
-
-        // $(".btn-perbaikan").on("click", function(e) {
-        //     btn = $(this);
-        //     tag = btn.attr("tcg-tag");
-
-        //     //val: set to false to edit
-        //     flagval = false;
-
-        //     //show input element
-        //     let elements = $("[tcg-tag='" +tag+ "']");
-        //     elements.each(function(idx) {
-        //         //action
-        //         el = $(this);
-        //         type = el.attr('tcg-field-type');
-
-        //         if (type == 'input') el.show();
-        //         else if (type == 'label') el.hide();
-        //         else if (type == 'toggle')  el.attr('disabled', false);
- 
-        //         //save default value in case we need to revert
-        //         if (el.is('input') || el.is('select')) {
-        //             this.defaultValue = this.value;
-        //         }
-        //     });
-
-        //     elements.filter(".btn-kembalikan").hide();
-
-        //     //show btn save
-        //     elements.filter(".btn-simpan").show();
-        //     elements.filter(".btn-batal").show();
-
-        //     //hide btn perbaikan
-        //     btn.hide();
-
-        //     //special case
-        //     if (tag == 'lokasi') {
-        //         map_enable_edit = true;
-        //     }
-
-        //     //disable the status flag
-        //     elements.filter(".status-verifikasi").attr("disabled", true);
-
-        // });
 
         $(".btn-kembalikan").on("click", function(e) {
             btn = $(this);
@@ -392,7 +359,6 @@
                     },
                 }
             });
-
 
         });
 
@@ -641,8 +607,6 @@
 			});
 		});
 
-
-
     });
 
     function dokpendukung_onchange(e) {
@@ -726,6 +690,8 @@
         profilflag['inklusi'] = profil['kebutuhan_khusus'] == 'Tidak ada' ? 0 : 1;
 
         flag_provinsi = flag_kabupaten = flag_kecamatan = flag_desa = 0;
+        
+        asaldata = parseInt(profil['asal_data']);
 
         //set dom field value
         keys.forEach(function(key) {
@@ -1054,6 +1020,18 @@
             $(".ctx-batal").text(' Tutup ');
         }
 
+        //asal data
+        if (asaldata == {ASALDATA_DAPODIK}) {
+            $('#tka-by-system').show();
+            $('#tka-input').hide();
+            $('#row-dokumen-un').hide();
+        }
+        else {
+            $('#tka-by-system').hide();
+            $('#tka-input').show();
+            $('#row-dokumen-un').hide();
+        }
+        
 
     }       
 

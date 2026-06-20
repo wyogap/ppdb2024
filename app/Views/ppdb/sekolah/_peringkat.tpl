@@ -130,18 +130,8 @@
 				},
                 ],
                 "columnDefs": [ 
-                {
-                    "targets": 8,
-                    className: "text-end",
-                    render: function (data, type, row, meta) {
-						if (type=='display') {
-							return $.fn.dataTable.render.number('.', ',', 2, '').display(data);
-						}
-						return data;
-                    }
-                },
                 ],
-                "order": [[ 9, 'asc' ]]
+                "order": [[ 8, 'asc' ]]
             });
 
             els = $('.local-datetime');

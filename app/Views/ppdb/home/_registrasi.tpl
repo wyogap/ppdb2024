@@ -16,6 +16,7 @@
     var kode_kabupaten_sekolah = "{$kode_kabupaten_sekolah|default:''}";
     var sekolah_id = "{$sekolah_id|default:''}";
     var bentuk_sekolah = "{$bentuk_sekolah|default:''}";
+    var status_sekolah = "{$status_sekolah|default:''}";
     var nik = "{$nik|default:''}";
     var nisn = "{$nisn|default:''}";
     var nomor_ujian = "{$nomor_ujian|default:''}";
@@ -402,27 +403,28 @@
                 }
 
                 if (data != null) {
-                    kode_kabupaten_sekolah = data['kode_wilayah_sekolah'];
+                    kode_kabupaten_sekolah = data['kode_wilayah'].substring(0, 4) +'00';
                     sekolah_id = data['sekolah_id'];
-                    bentuk_sekolah = data['bentuk'];
+                    nama_sekolah = data['nama_sekolah'];
+                    bentuk_sekolah = data['bentuk_pendidikan'];
+                    status_sekolah = data['status_sekolah'] == 1 ? 'N' : '';
+                    npsn = data['npsn'];
                     nik = data['nik'];
                     nisn = data['nisn'];
                     nomor_ujian = "";
                     nama = data['nama'];
                     jenis_kelamin = data['jenis_kelamin'];
                     tempat_lahir = data['tempat_lahir'];
-                    tanggal_lahir = data['tanggal_lahir'];
+                    tanggal_lahir = data['tanggal_lahir'].substring(0, 10);
                     nama_ibu_kandung = data['nama_ibu_kandung'];
                     kebutuhan_khusus = data['kebutuhan_khusus'];
-                    alamat = data['alamat'];
+                    alamat = data['alamat_jalan'];
                     kode_kabupaten = data['kode_wilayah'].substring(0, 4) +'00';
                     kode_kecamatan = data['kode_wilayah'].substring(0, 6);
                     kode_desa = data['kode_wilayah'];
                     kode_wilayah = data['kode_wilayah'];
                     lintang = data['lintang'] == null ? '' : data['lintang'];
                     bujur = data['bujur'] == null ? '' : data['bujur'];
-                    nama_sekolah = data['nama_sekolah'];
-                    npsn = data['npsn_sekolah'];
                     nomor_kontak = "";    
                     
                     $("#status-tarik-data").removeClass('alert-danger');

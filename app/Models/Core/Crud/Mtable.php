@@ -143,14 +143,14 @@ class Mtable
         return null;
     }
 
-    public function lookup($filter = null) {
+    public function lookup($filter = null, $search = null) {
         if (!$this->initialized)   return null;
 
         if ($filter == null)    $filter = array();
 
         //use data model
         if ($this->data_model != null) {
-            return $this->data_model->lookup($filter);
+            return $this->data_model->lookup($filter, $search);
         }
 
         return null;
