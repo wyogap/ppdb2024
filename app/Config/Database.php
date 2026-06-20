@@ -52,7 +52,7 @@ class Database extends Config
 
     public array $ro = [
         'DSN'          => '',
-        'hostname'     => '34.128.112.48',
+        'hostname'     => '34.101.81.242',
         'username'     => 'root',
         'password'     => 'C00l@dmin',
         'database'     => 'ppdb_2026',
