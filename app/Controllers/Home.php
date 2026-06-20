@@ -241,6 +241,13 @@ class Home extends PpdbController
         print_json_output($profil[0]);
     }
 
+    function updateregistrasisiswa() {
+        $mdapodik = new \App\Models\Dapodik\MDapodik();
+        $mdapodik->update_registrasisiswa();
+
+        print_json_output(array("status"=>"success"));
+    }
+    
     function registrasi() {
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 

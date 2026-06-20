@@ -454,6 +454,82 @@ class MDapodik
         return 1;
     }
 
+    public function update_registrasisiswa() {
+        $msiswa = new MPesertaDidik();
+        $msekolah = new MSekolah();
+
+        //echo "Testing";
+        $siswa = $msiswa->siswa_registrasi();
+
+        if (empty($siswa)) {
+            //$this->logger->log('info', "Tidak ada siswa registrasi");
+            echo "Tidak ada siswa registrasi" . PHP_EOL;
+            return 1;
+        } 
+            
+        //$this->logger->log('info', "Jumlah siswa registrasi: " . count($siswa));
+        echo "Jumlah siswa registrasi: " . count($siswa) . PHP_EOL;
+
+        foreach ($siswa as $p) {
+            //$this->logger->log('info', "Update siswa: " . $p['nama']);
+            echo "Update siswa: " . $p['nama'] . PHP_EOL;
+
+            $profil = $this->getSiswaByNisnDanNpsn($p['nisn'], $p['npsn_sekolah_asal']);
+            if (empty($profil)) {
+                $profil = $this->getSiswaByNisnDanTglLahir($p['nisn'], $p['tanggal_lahir']);
+                if (empty($profil)) {
+                    $this->logger->log('warning', "Tidak ada data siswa: " . $p['nama']);
+                    continue;
+                }
+            }
+
+            if (empty($profil)) continue;
+
+            $profil = $profil[0];
+
+            //update data sekolah
+            $updated = array();
+            $updated['npsn'] = $profil['npsn'];
+            $updated['nama'] = $profil['nama_sekolah'];
+            $updated['bentuk'] = $profil['bentuk_pendidikan'];
+            $updated['status'] = $profil['status_sekolah'] == 1 ? 'N' : 'S';
+            $updated['jenjang_id'] = 2;
+            $updated['kode_wilayah'] = $profil['kode_wilayah']; 
+            $updated['dapodik_id'] = $profil['sekolah_id']; 
+
+            $sekolah_id = $msekolah->getSekolahIdByNpsn($profil['npsn']);
+            if (empty($sekolah_id)) {
+                //create new entry sekolah
+                //$this->logger->log('info', "Create new sekolah: " . $updated['nama']);
+                echo "Create new sekolah: " . $updated['nama'] . PHP_EOL;
+
+                $result = $msekolah->add($updated);
+                $sekolah_id = $result['sekolah_id'];
+            }
+            else {
+                //update data sekolah
+                $msekolah->update($sekolah_id, $updated);
+            }
+
+            //update data siswa ke database
+            $updated = array();
+            $updated['nama'] = $profil['nama'];
+            $updated['jenis_kelamin'] = $profil['jenis_kelamin'];
+            $updated['nama_ibu_kandung'] = $profil['nama_ibu_kandung'];
+            $updated['tanggal_lahir'] = substr($profil['tanggal_lahir'], 0, 10);
+            $updated['tempat_lahir'] = $profil['tempat_lahir'];
+            $updated['sekolah_id'] = $sekolah_id;
+            $updated['kebutuhan_khusus'] = $profil['kebutuhan_khusus'];
+            $updated['npsn_sekolah_asal'] = $profil['npsn'];
+            $updated['nama_sekolah_asal'] = $profil['nama_sekolah'];
+
+            $msiswa->update($p['peserta_didik_id'], $updated);
+        }
+
+        return 1;
+
+    }
+
     public function getToken() {
         $this->reset_error();
         

@@ -16,6 +16,8 @@ class MPesertaDidik extends MCrud5
                                 'dapodik_id', 'sekolah_dapodik_id', 'npsn_sekolah_asal', 'nama_sekolah_asal');
     protected $COMPULSORY_COLUMNS = array('nama', 'tanggal_lahir', 'jenis_kelamin');
 
+    protected $PRIMARY_KEY = "peserta_didik_id";
+
     function __construct() {
         parent::__construct();
     }
@@ -26,11 +28,17 @@ class MPesertaDidik extends MCrud5
     }
 
     function siswa_registrasi() {
-        $filters = [
-            'asal_data' => 1
-        ];
+        $sql = "select * from tcg_peserta_didik where asal_data=1 and (sekolah_id is null or sekolah_id = '' or sekolah_id = 5421)";
+        $query = $this->db->query($sql);
+        $result = $query->getResultArray();
 
-        return $this->list();
+        return $result;
+
+        // $filters = [
+        //     'asal_data' => 1
+        // ];
+
+        // return $this->list(0, null, $filters);
     }
 }
 

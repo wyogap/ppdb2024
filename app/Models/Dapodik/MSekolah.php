@@ -16,6 +16,8 @@ class MSekolah extends MCrud5
                                 'kabupaten', 'kode_wilayah_kab');
     protected $COMPULSORY_COLUMNS = array('nama', 'npsn');
 
+    protected $PRIMARY_KEY = "sekolah_id";
+
     function __construct() {
         parent::__construct();
     }
