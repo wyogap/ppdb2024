@@ -39,7 +39,7 @@
 
         {assign var="idx" value=0}
         {foreach $daftarpenerapan as $row}
-        {if $row.jalur_id == $smarty.const.JALURID_INKLUSI && !$inklusi}{continue}{/if}
+        {if $row.kategori_inklusi == 1 && !$inklusi}{continue}{/if}
         <li class=" nav-item">
             <a class="nav-link {if $idx==0 && empty($show_all_pendaftar)}active{/if}" href="#p{$row.penerapan_id}" data-bs-toggle="tab" style="min-height: 68px">
                 <span class="text-nowrap" {if !empty($row.tooltip)}data-bs-toggle="tooltip" title="{$row.tooltip}" data-placement="top" data-bs-html="true"{/if}>{$row.jalur}</span><br>
