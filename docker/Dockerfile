@@ -13,6 +13,7 @@ ENV LUAJIT_INC=/usr/include/luajit-2.1
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
 
+
 # INstall nginx + lua and devel kit
 RUN apk add --no-cache nginx \
     nginx-mod-http-lua \
@@ -126,6 +127,7 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
+
 #    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 	sed -i \
@@ -143,11 +145,11 @@ ADD scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-#ADD src/ /var/www/html/
-#ADD errors/ /var/www/errors
+ADD src/ /var/www/html/
+ADD errors/ /var/www/errors
 
 # Copy all source code into the container
-ADD ../ /var/www/html/
+COPY ../. /var/www/html/
 
 # Create the qrcode folder and set 777 permissions
 RUN mkdir -p /var/www/html/writable/qrcode \
@@ -158,7 +160,6 @@ RUN mkdir -p /var/www/html/writable/qrcode \
 RUN mkdir -p /var/www/html/app/cache/smarty_templates_cache \
     && chown -R www-data:www-data /var/www/html/app/cache/smarty_templates_cache \
     && chmod -R 777 /var/www/html/app/cache/smarty_templates_cache
-
 EXPOSE 443 80
 
 WORKDIR "/var/www/html"
