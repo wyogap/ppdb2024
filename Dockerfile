@@ -13,11 +13,11 @@ COPY . /var/www/html/
 
 RUN sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
-        -e "s/pm.max_children = 5/pm.max_children = 25/g" \
-        -e "s/pm.start_servers = 2/pm.start_servers = 5/g" \
-        -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 5/g" \
-        -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 10/g" \
-        -e "s/;pm.max_requests = 500/pm.max_requests = 1000/g" \
+        -e "s/pm.max_children = 5/pm.max_children = 150/g" \
+        -e "s/pm.start_servers = 2/pm.start_servers = 35/g" \
+        -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 20/g" \
+        -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 50/g" \
+        -e "s/;pm.max_requests = 500/pm.max_requests = 500/g" \
         -e "s/user = www-data/user = nginx/g" \
         -e "s/group = www-data/group = nginx/g" \
         -e "s/;listen.mode = 0660/listen.mode = 0666/g" \
