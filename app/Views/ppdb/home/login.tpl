@@ -245,6 +245,7 @@
                                 <div class="text-center mb-4">
                                     <button type="submit" class="btn btn-primary btn-block" id="login">Masuk</button>
                                 </div>
+                                {if $smarty.const.ADMIN_ONLY_ACCESS == 0}
                                 <h6 class="login-title"><span>ATAU</span></h6>
                                 {if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE || $cek_pendaftaran|default: FALSE}
                                 <div class="text-center mb-4">
@@ -252,6 +253,7 @@
                                 </div>
                                 {else}
                                 <p class="text-center">Registrasi untuk siswa dari <b class="text-red">Luar Daerah</b> belum dibuka.</p>
+                                {/if}
                                 {/if}
                             </form>
                         </div>
