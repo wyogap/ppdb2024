@@ -160,6 +160,7 @@ RUN mkdir -p /var/www/html/writable/qrcode \
 RUN mkdir -p /var/www/html/app/cache/smarty_templates_cache \
     && chown -R www-data:www-data /var/www/html/app/cache/smarty_templates_cache \
     && chmod -R 777 /var/www/html/app/cache/smarty_templates_cache
+    
 EXPOSE 443 80
 
 WORKDIR "/var/www/html"

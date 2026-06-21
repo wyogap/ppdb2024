@@ -5,6 +5,9 @@ FROM richarvey/nginx-php-fpm:latest
 COPY docker/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 COPY docker/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 
+#RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+#RUN ln -s /etc/nginx/sites-available/default-ssl.conf /etc/nginx/sites-enabled/default-ssl.conf
+
 # Copy all source code into the container
 COPY . /var/www/html/
 
@@ -27,9 +30,9 @@ RUN sed -i \
 ENV SKIP_COMPOSER=1
 ENV ENABLE_XDEBUG=0
 
-#ENV GIT_USERNAME 
-#ENV GIT_PERSONAL_TOKEN 
-#ENV GIT_REPO 
+#RUN mkdir -p /etc/letsencrypt/live/spmb2026 
+#COPY docker/ssl/fullchain.pem /etc/letsencrypt/live/spmb2026/fullchain.pem
+#COPY docker/ssl/privkey.pem /etc/letsencrypt/live/spmb2026/privkey.pem
 
 # Create the qrcode folder and set 777 permissions
 RUN mkdir -p /var/www/html/writable/qrcode \

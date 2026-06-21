@@ -247,7 +247,7 @@ class Home extends PpdbController
 
         print_json_output(array("status"=>"success"));
     }
-    
+
     function registrasi() {
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 
@@ -528,6 +528,9 @@ class Home extends PpdbController
     function rekapitulasi(){
         // $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
         // $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
+
+        // //redirect to home
+        // return $this->index()
 
         $data = $this->_parse_paramaters();
 

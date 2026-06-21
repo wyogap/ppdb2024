@@ -508,31 +508,34 @@ Class Mconfig
 	}
 
     function tcg_lookup_daftarskoring_prestasi() {
-        $query = "select a.skoring_id as value, b.nama as label 
-                  from cfg_daftar_nilai_skoring a 
-                  join ref_daftar_skoring b on b.skoring_id=a.skoring_id and b.is_deleted=0
-                  where a.tahun_ajaran_id=? and b.kunci=0 and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_PRESTASI. "
-                  order by b.urutan";
+        $query = "select a.skoring_id as value, a.nama as label 
+                  from cfg_daftar_skoring a 
+                  where a.tahun_ajaran_id=? and a.kunci=0 
+				  	and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_PRESTASI. "
+					and coalesce(a.nilai,0) > 0
+                  order by a.urutan";
 
         return $this->ro->query($query, array(TAHUN_AJARAN_ID))->getResultArray();
     }
 
     function tcg_lookup_daftarskoring_organisasi() {
-        $query = "select a.skoring_id as value, b.nama as label 
-                  from cfg_daftar_nilai_skoring a 
-                  join ref_daftar_skoring b on b.skoring_id=a.skoring_id and b.is_deleted=0
-                  where a.tahun_ajaran_id=? and b.kunci=0 and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_ORGANISASI. "
-                  order by b.urutan";
+        $query = "select a.skoring_id as value, a.nama as label 
+                  from cfg_daftar_skoring a 
+                  where a.tahun_ajaran_id=? and a.kunci=0 
+				  	and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_ORGANISASI. "
+					and coalesce(a.nilai,0) > 0
+                  order by a.urutan";
 
         return $this->ro->query($query, array(TAHUN_AJARAN_ID))->getResultArray();
     }
 
     function tcg_lookup_daftarskoring_akademik() {
-        $query = "select a.skoring_id as value, b.nama as label 
-                  from cfg_daftar_nilai_skoring a 
-                  join ref_daftar_skoring b on b.skoring_id=a.skoring_id and b.is_deleted=0
-                  where a.tahun_ajaran_id=? and b.kunci=0 and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_AKADEMIK. "
-                  order by b.urutan";
+        $query = "select a.skoring_id as value, a.nama as label 
+                  from cfg_daftar_skoring a 
+                  where a.tahun_ajaran_id=? and a.kunci=0 
+				  	and a.jalur_id=" .JALURID_PRESTASI. " and a.tipe_skoring_id=" .TIPESKORING_AKADEMIK. "
+					and coalesce(a.nilai,0) > 0
+                  order by a.urutan";
 
         return $this->ro->query($query, array(TAHUN_AJARAN_ID))->getResultArray();
     }

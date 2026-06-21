@@ -190,10 +190,10 @@ Class Mprofilsiswa
 		$builder->join('dbo_users d','a.peserta_didik_id = d.peserta_didik_id AND d.is_deleted = 0','LEFT OUTER');
 		$builder->join('dbo_users e','a.verifikator_id = e.user_id AND e.is_deleted = 0','LEFT OUTER');
 		$builder->join('tcg_dokumen_pendukung f','a.surat_pernyataan_kebenaran_dokumen = f.dokumen_id AND a.peserta_didik_id=f.peserta_didik_id AND f.is_deleted = 0','LEFT OUTER');
-		$builder->join('ref_daftar_skoring g','g.skoring_id = a.prestasi_skoring_id and g.is_deleted=0','LEFT OUTER');
-		$builder->join('ref_daftar_skoring h','h.skoring_id = a.akademik_skoring_id and h.is_deleted=0','LEFT OUTER');
+		$builder->join('cfg_daftar_skoring g','g.skoring_id = a.prestasi_skoring_id and g.is_deleted=0','LEFT OUTER');
+		$builder->join('cfg_daftar_skoring h','h.skoring_id = a.akademik_skoring_id and h.is_deleted=0','LEFT OUTER');
 		$builder->join('ref_sekolah i','i.sekolah_id = a.lokasi_berkas','LEFT OUTER');
-		$builder->join('ref_daftar_skoring j','j.skoring_id = a.organisasi_skoring_id and j.is_deleted=0','LEFT OUTER');
+		$builder->join('cfg_daftar_skoring j','j.skoring_id = a.organisasi_skoring_id and j.is_deleted=0','LEFT OUTER');
 		$builder->where(array('a.peserta_didik_id'=>$peserta_didik_id,'a.is_deleted'=>0));
 
         $profil = $builder->get()->getRowArray();
@@ -909,12 +909,12 @@ Class Mprofilsiswa
 		select a.prestasi_id, a.skoring_id, b.nama as prestasi, a.uraian, a.dokumen_pendukung,
 				c.filename as nama_dokumen, c.path, c.web_path, c.thumbnail_path, 
 				c.verifikasi, c.catatan, c.created_on as tanggal_upload,
-                coalesce(d.nilai,0) as nilai
+                coalesce(b.nilai,0) as nilai
 		from tcg_prestasi a
-		join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+		join cfg_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+            and b.tahun_ajaran_id=a.tahun_ajaran_id
+            and coalesce(b.nilai,0)>0
 		left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
-        left join cfg_daftar_nilai_skoring d on d.daftar_nilai_skoring_id = a.skoring_id 
-            and d.tahun_ajaran_id=a.tahun_ajaran_id and d.nilai > 0 and d.is_deleted=0 
 		where a.is_deleted=0 and a.peserta_didik_id=?";
 
 		return $this->ro->query($query, array($peserta_didik_id))->getResultArray();
@@ -1023,7 +1023,7 @@ Class Mprofilsiswa
 		$builder = $this->ro->table('tcg_skoring_pendaftaran a');
 		$builder->select('a.skoring_pendaftaran_id,c.nama AS keterangan,round(a.nilai,2) as nilai');
 		$builder->join('tcg_pendaftaran b','a.pendaftaran_id = b.pendaftaran_id AND b.cabut_berkas = 0 AND b.is_deleted = 0');
-		$builder->join('ref_daftar_skoring c','a.skoring_id = c.skoring_id AND c.is_deleted=0');
+		$builder->join('cfg_daftar_skoring c','a.skoring_id = c.skoring_id AND c.is_deleted=0');
 		//$builder->join('cfg_daftar_nilai_skoring d','a.skoring_id = d.skoring_id and b.tahun_ajaran_id=d.tahun_ajaran_id AND c.is_deleted=0');
 		$builder->where(array('a.pendaftaran_id'=>$pendaftaran_id,'a.is_deleted'=>0));
 		$builder->orderBy('c.urutan');
@@ -1089,7 +1089,7 @@ Class Mprofilsiswa
 				c.filename, c.filesize, c.path, c.web_path, c.thumbnail_path, c.created_on as tanggal_upload,
 				c.path as path, c.catatan
 		from tcg_prestasi a
-		join ref_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
+		join cfg_daftar_skoring b on a.skoring_id=b.skoring_id and b.is_deleted=0
 		left join tcg_dokumen_pendukung c on a.dokumen_pendukung=c.dokumen_id and c.is_deleted=0
 		where a.is_deleted=0 and a.prestasi_id=?";
 
