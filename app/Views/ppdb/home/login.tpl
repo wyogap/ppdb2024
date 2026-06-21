@@ -245,7 +245,9 @@
                                 <div class="text-center mb-4">
                                     <button type="submit" class="btn btn-primary btn-block" id="login">Masuk</button>
                                 </div>
-                                {if $smarty.const.ADMIN_ONLY_ACCESS == 0}
+                                {if $smarty.const.ADMIN_ONLY_ACCESS}
+                                <h6 class="login-title"><span>*** ADMIN ACCESS ONLY ***</span></h6>
+                                {else}
                                 <h6 class="login-title"><span>ATAU</span></h6>
                                 {if $cek_registrasi|default: FALSE || $cek_sosialisasi|default: FALSE || $cek_pendaftaran|default: FALSE}
                                 <div class="text-center mb-4">
