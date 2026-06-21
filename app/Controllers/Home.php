@@ -249,6 +249,11 @@ class Home extends PpdbController
     }
 
     function registrasi() {
+        if (ADMIN_ONLY_ACCESS) {
+            //login page
+            return $this->index();
+        }
+
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 
         $mdropdown = new \App\Models\Ppdb\Mconfig();
@@ -529,8 +534,10 @@ class Home extends PpdbController
         // $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
         // $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
 
-        // //redirect to home
-        // return $this->index()
+        if (ADMIN_ONLY_ACCESS) {
+            //login page
+            return $this->index();
+        }
 
         $data = $this->_parse_paramaters();
 

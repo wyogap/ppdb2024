@@ -162,5 +162,6 @@ defined('WA_NUMBERKEY')                     OR define('WA_NUMBERKEY', 'PLDkC7q7b
 
 defined('DEFAULT_NPSN_SEKOLAH')             OR define('DEFAULT_NPSN_SEKOLAH', '00000000');
 
+defined('ADMIN_ONLY_ACCESS')                OR define('ADMIN_ONLY_ACCESS', 0);
 
 ?>

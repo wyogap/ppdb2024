@@ -175,17 +175,19 @@ class Auth extends AuthController
     protected function do_additional_checks($result, $json) {
         $role_id = $result['role_id'];
 
-        // if ($role_id == ROLEID_SISWA) {
-        //     $error = 'Silahkan masuk menggunakan halaman https://spmb.disdikpora.kebumenkab.go.id';
-        //     if ($json == 1) {
-        //         $data = array('status'=>'0', 'error'=>$error);
-        //         echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
-        //     }
-        //     else {
-        //         $this->session->setFlashdata('error', $error);	
-        //     }
-        //     return false;
-        // }
+        if (ADMIN_ONLY_ACCESS) {
+            if ($role_id == ROLEID_SISWA) {
+                $error = 'Hanya untuk Admin dan Sekolah. Akses login anda ditolak!';
+                if ($json == 1) {
+                    $data = array('status'=>'0', 'error'=>$error);
+                    echo json_encode($data, JSON_INVALID_UTF8_IGNORE);
+                }
+                else {
+                    $this->session->setFlashdata('error', $error);	
+                }
+                return false;
+            }
+        }
 
         if ($role_id == ROLEID_SISWA) {
             $peserta_didik_id = $result['peserta_didik_id'];
