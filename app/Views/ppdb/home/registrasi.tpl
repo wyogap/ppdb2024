@@ -227,7 +227,7 @@
 
             <div class="card box-solid">
                 <div class="card-header with-border">
-                    <h3 class="card-title text-primary"><i class="glyphicon glyphicon-road"></i><b>Pengisian Alamat Siswa (Sesuai KK)</b></h3>
+                    <h3 class="card-title text-primary"><i class="glyphicon glyphicon-road"></i><b>Pengisian Alamat Siswa</b></h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
