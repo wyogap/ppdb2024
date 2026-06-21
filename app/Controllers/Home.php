@@ -82,6 +82,11 @@ class Home extends PpdbController
 	}
 
 	function peringkat() {
+        if (ADMIN_ONLY_ACCESS) {
+            //login page
+			return redirect()->to(site_url() .'auth');
+        }
+
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
 
 		$sekolah_id = $this->request->getPostGet("sekolah_id");
@@ -251,7 +256,7 @@ class Home extends PpdbController
     function registrasi() {
         if (ADMIN_ONLY_ACCESS) {
             //login page
-            return $this->index();
+			return redirect()->to(site_url() .'auth');
         }
 
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
@@ -536,7 +541,7 @@ class Home extends PpdbController
 
         if (ADMIN_ONLY_ACCESS) {
             //login page
-            return $this->index();
+			return redirect()->to(site_url() .'auth');
         }
 
         $data = $this->_parse_paramaters();
