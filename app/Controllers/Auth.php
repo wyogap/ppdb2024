@@ -144,6 +144,10 @@ class Auth extends AuthController
         //     $data['cek_registrasi'] = 1;
         // }
 
+        if (ADMIN_ONLY_ACCESS) {
+            $data['cek_registrasi'] = 0;
+        }
+
 		$this->smarty->render('ppdb/home/login.tpl',$data);
     }
 
