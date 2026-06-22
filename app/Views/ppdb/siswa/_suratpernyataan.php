@@ -103,7 +103,7 @@
 		</table>
 		<p>Dengan sungguh-sungguh menyatakan bahwa : </p>
 		<ol>
-			<li>Seluruh pernyataan data dan informasi beserta seluruh dokumen yang saya lampirkan dalam berkas pendaftaran Seleksi Penerimaan Peserta Didik Baru (PPDB) tahun <?php echo $tahun_ajaran_aktif; ?> adalah benar.</li>
+			<li>Seluruh pernyataan data dan informasi beserta seluruh dokumen yang saya lampirkan dalam berkas pendaftaran System Penerimaan Murid Baru (SPMB) tahun <?php echo $tahun_ajaran_aktif; ?> adalah benar.</li>
 			<li>Apabila diperlukan, saya bersedia memberikan informasi lebih lanjut untuk melengkapi dokumen pendaftaran ini.</li>
 		</ol>
 		<p>Demikian pernyataan ini saya buat dengan sebenarnya dan penuh rasa tanggung jawab. Apabila dikemudian hari ditemukan bahwa data/dokumen yang saya sampaikan tidak benar dan/atau ada  pemalsuan, maka seluruh keputusan yang telah ditetapkan berdasarkan berkas  tersebut  batal  berdasarkan hukum dan saya bersedia dikenakan sanksi sesuai ketentuan peraturan yang berlaku.</p>
