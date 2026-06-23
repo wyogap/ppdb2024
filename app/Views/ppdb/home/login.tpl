@@ -182,6 +182,10 @@
 						</div>
 
                         <div id='login-div'>
+                           <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert" style="margin-top: -32px">
+                                <center>Rekapitulasi hasil pendaftaran <a href='https://spmb.disdikpora.kebumenkab.go.id/home/rekapitulasi'>DI SINI</a>.</center>
+                            </div>
+
                             {if !empty($info_message)}
                             <div class="alert alert-info alert-dismissible" id="alert-info" role="alert" style="margin-top: -32px">
                                 {$error_message}        
