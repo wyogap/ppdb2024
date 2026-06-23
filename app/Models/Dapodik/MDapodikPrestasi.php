@@ -7,7 +7,7 @@ use App\Models\Core\MCrud5;
 
 class MDapodikPrestasi extends MCrud5
 {
-    protected $TABLE_NAME = "dapodik_prestasi";
+    protected $TABLE_NAME = "ppdb2026.dapodik_prestasi";
     protected $COLUMNS = array('nisn', 'npsn', 'nama_ajang', 'penyelenggara', 'ajang_puspresnas', 'nama_cabang', 
                                 'bidang', 'sub_bidang', 'achievement_description', 'predikat', 'rating_ajang', 'tingkat', 
                                 'tahun', 'link_cv');

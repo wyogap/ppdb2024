@@ -7,7 +7,7 @@ use App\Models\Core\MCrud5;
 
 class MDapodikSiswa extends MCrud5
 {
-    protected $TABLE_NAME = "dapodik_siswa";
+    protected $TABLE_NAME = "ppdb2026.dapodik_siswa";
     protected $COLUMNS = array('alamat_jalan', 'bujur', 'desa_kelurahan', 'jenis_kelamin', 'kebutuhan_khusus', 'kode_wilayah', 'last_update', 
                                 'lintang', 'nama', 'nama_ayah', 'nama_dusun', 'nama_ibu_kandung', 'nama_wali', 'nik', 
                                 'nisn', 'no_KIP', 'no_kk', 'pekerjaan_ayah', 'pekerjaan_ibu', 'peserta_didik_id',
@@ -35,11 +35,11 @@ class MDapodikSiswa extends MCrud5
                     a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir,
                     a.sekolah_id, b.nama as nama_sekolah, c.nama_kec as kec_sekolah, c.nama_desa as desa_sekolah,
                     d.ikut_tka, d.nopes, d.nm_mapel_1, d.nm_mapel_2, d.nilai_1, d.nilai_2 
-                FROM ppdb_2026.dapodik_siswa a
-                join ppdb_2026.dapodik_sekolah b on b.sekolah_id=a.sekolah_id
-                    and b.bentuk_pendidikan_id in (5,9)
+                FROM ppdb2026.dapodik_siswa a
+                join ppdb_2026.ref_sekolah b on b.dapodik_id=a.sekolah_id
+                    and b.bentuk in ('SD','MI')
                 left join ppdb_2026.ref_wilayah c on c.kode_wilayah=b.kode_wilayah
-                left join ppdb_2026.dapodik_tka d on d.nisn=a.nisn
+                left join ppdb2026.dapodik_tka d on d.nisn=a.nisn
             ) a
             where a.ikut_tka is null
         ";
@@ -57,12 +57,12 @@ class MDapodikSiswa extends MCrud5
                 SELECT 
                     a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir, b.npsn,
                     coalesce(d.cnt, 0) as cnt
-                FROM ppdb_2026.dapodik_siswa a
-                join ppdb_2026.dapodik_sekolah b on b.sekolah_id=a.sekolah_id
-                    and b.bentuk_pendidikan_id in (5,9)
+                FROM ppdb2026.dapodik_siswa a
+                join ppdb_2026.ref_sekolah b on b.dapodik_id=a.sekolah_id
+                    and b.bentuk in ('SD','MI')
                 left join ppdb_2026.ref_wilayah c on c.kode_wilayah=b.kode_wilayah
                 left join (
-                    select a.nisn, count(*) as cnt from ppdb_2026.dapodik_prestasi a group by a.nisn
+                    select a.nisn, count(*) as cnt from ppdb2026.dapodik_prestasi a group by a.nisn
                 ) d on d.nisn=a.nisn
             ) a
             where a.cnt = 0

@@ -7,7 +7,7 @@ use App\Models\Core\MCrud5;
 
 class MDapodikSekolah extends MCrud5
 {
-    protected $TABLE_NAME = "dapodik_sekolah";
+    protected $TABLE_NAME = "ppdb2026.dapodik_sekolah";
     protected $COLUMNS = array('alamat_jalan', 'bentuk_pendidikan_id', 'bujur', 'desa_kelurahan', 'kode_wilayah', 'last_update', 
                                 'lintang', 'nama', 'npsn', 'rt', 'rw', 'sekolah_id', 'status_sekolah');
     protected $INSERT_COLUMNS = array('alamat_jalan', 'bentuk_pendidikan_id', 'bujur', 'desa_kelurahan', 'kode_wilayah', 'last_update', 
@@ -28,10 +28,10 @@ class MDapodikSekolah extends MCrud5
             select a.*
             from (
                 SELECT a.sekolah_id, a.bentuk_pendidikan_id, a.npsn, a.nama, c.nama_kec, c.nama_desa, coalesce(b.cnt,0) as cnt
-                FROM ppdb_2026.dapodik_sekolah a
+                FROM ppdb2026.dapodik_sekolah a
                 left join (
                     select sekolah_id, count(*) cnt
-                    from ppdb_2026.dapodik_siswa
+                    from ppdb2026.dapodik_siswa
                     group by sekolah_id
                 ) b on b.sekolah_id=a.sekolah_id
                 left join ppdb_2026.ref_wilayah c on c.kode_wilayah=a.kode_wilayah
@@ -81,10 +81,10 @@ class MDapodikSekolah extends MCrud5
             select rs.npsn, rs.nama, rs.kode_wilayah
             from ppdb_2026.ref_sekolah rs 
             join ppdb_2026.ref_wilayah rw on rw.kode_wilayah=rs.kode_wilayah 
-            left join ppdb_2026.dapodik_sekolah ds on ds.npsn=rs.npsn 
+            left join ppdb2026.dapodik_sekolah ds on ds.npsn=rs.npsn 
             left join (
                 select sekolah_id, count(*) cnt
-                from ppdb_2026.dapodik_siswa
+                from ppdb2026.dapodik_siswa
                 group by sekolah_id
             ) b on b.sekolah_id=rs.dapodik_id
             where rw.kode_wilayah_kab = '030500'
