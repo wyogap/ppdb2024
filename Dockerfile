@@ -11,6 +11,9 @@ COPY docker/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 # Copy all source code into the container
 COPY . /var/www/html/
 
+RUN rm /var/www/html/app/Config/Database.php
+RUN cp /var/www/html/app/Config/Database-cloudrun.php /var/www/html/app/Config/Database.php
+
 RUN sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm.max_children = 5/pm.max_children = 150/g" \

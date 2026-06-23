@@ -41,8 +41,10 @@ class Penerimaan extends PpdbController {
 			return $this->notauthorized();
 		}
 
-        $data['profilsekolah'] = $this->session->get("profilsekolah");
-        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        $sessiondata = $this->session->get();
+
+        $data['profilsekolah'] = $sessiondata['profilsekolah'];
+        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah'];
         if ($data['impersonasi_sekolah'] == 1) {
             $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
@@ -59,8 +61,8 @@ class Penerimaan extends PpdbController {
         }
 
         //enforce
-        $this->session->set("jenjang_aktif", $jenjang_id);
-        $this->session->get("nama_jenjang_aktif", $nama_jenjang);
+        $sessiondata['jenjang_aktif'] = $jenjang_id;
+        $sessiondata['nama_jenjang_aktif'] = $nama_jenjang;
 
         $data['nama_jenjang'] = $nama_jenjang;
         $data['inklusi'] = $data['profilsekolah']['inklusi'];
@@ -125,11 +127,13 @@ class Penerimaan extends PpdbController {
         }
 
 		$data['daftarpenerapan'] = $this->Msekolah->tcg_daftarpenerapan($sekolah_id);
-        $this->session->set("daftarpenerapan", $data['daftarpenerapan']);
+        $sessiondata['daftarpenerapan'] = $data['daftarpenerapan'];
 
         //content template
         $data['content_template'] = 'penerimaan.tpl';
         $data['js_template'] = '_penerimaan.tpl';
+
+        $this->session->set($sessiondata);
 
         $data['page'] = 'penerimaan';
 		$data['page_title'] = "Penerimaan Siswa Baru";

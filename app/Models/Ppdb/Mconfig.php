@@ -387,7 +387,7 @@ Class Mconfig
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_putaran() {
+	function tcg_putaran($jenjang_id=0) {
         //Tidak per putaran!!!
 		$builder = $this->ro->table('cfg_putaran a');
 		$builder->select('a.*');

@@ -31,6 +31,8 @@ class Siswa extends PpdbController {
     }
 
     function index() {
+        $sessiondata = $this->session->get();
+
         $peserta_didik_id = $this->peserta_didik_id;
         if ($this->is_dinas) {
             $peserta_didik_id = $_GET["peserta_didik_id"] ?? null;
@@ -92,7 +94,7 @@ class Siswa extends PpdbController {
         else {
             $jenjang_id = JENJANGID_TK;
         }
-        $this->session->set("jenjang_aktif", $jenjang_id);
+        $sessiondata['jenjang_aktif'] = $jenjang_id;
 
         //daftar pendaftaran
         $pendaftaran = $this->Msiswa->tcg_daftarpendaftaran($peserta_didik_id);
@@ -375,6 +377,8 @@ class Siswa extends PpdbController {
             //$data['aktif'] = 'pendaftaran';
         }
         //end debugging
+
+        $this->session->set($sessiondata);
 
         $data['page_title'] = 'Profil Siswa';
         $this->smarty->render('ppdb/siswa/ppdbsiswa.tpl', $data);

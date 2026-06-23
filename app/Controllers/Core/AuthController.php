@@ -191,9 +191,11 @@ abstract class AuthController extends BaseController
         }
 
         //force reset session
-        $this->session->set($result);
+        $sessiondata = $this->session->get();
+        $sessiondata = array_merge($sessiondata, $result);
                     
-        $this->set_additional_sessions();
+        $this->set_additional_sessions($sessiondata);
+        $this->session->set($sessiondata);
         
         $redirect_url = $this->get_home();
         if ($json == 1) {
@@ -214,7 +216,7 @@ abstract class AuthController extends BaseController
     /**
      * Additional session to set
      */
-    abstract protected function set_additional_sessions();
+    abstract protected function set_additional_sessions(&$sessiondata);
 
     /**
      * Determine where to go after successful login

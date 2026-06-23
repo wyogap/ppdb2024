@@ -440,13 +440,15 @@ class Home extends PpdbController
             $data = array();
         }
 
+        $sessiondata = $this->session->get();
+
         //daftar putaran
         if ($this->session->has('daftarputaran')) {
             $data['daftarputaran'] = $this->session->get('daftarputaran');
         }
         else {
             $data['daftarputaran'] = $this->Mconfig->tcg_putaran();
-            $this->session->set('daftarputaran', $data['daftarputaran']);
+            $sessiondata['daftarputaran'] = $data['daftarputaran'];
         }
 
         //daftar jenjang
@@ -456,7 +458,7 @@ class Home extends PpdbController
         
         if (empty($data['daftarjenjang'])){
             $data['daftarjenjang'] = $this->Mconfig->tcg_jenjang();
-            $this->session->set('daftarjenjang', $data['daftarjenjang']);
+            $sessiondata['daftarjenjang'] = $data['daftarjenjang'];
         }
 
         //putaran aktif
@@ -464,9 +466,9 @@ class Home extends PpdbController
         if ($data['putaran_aktif']) {
             foreach($data['daftarputaran'] as $row) {
                 if ($row['putaran_id']==$data['putaran_aktif']) {
-                    $this->session->set('putaran_aktif', $data['putaran_aktif']);
                     $data['nama_putaran_aktif'] = $row['nama'];
-                    $this->session->set('nama_putaran_aktif', $row['nama']);
+                    $sessiondata['putaran_aktif'] = $data['putaran_aktif'];
+                    $sessiondata['nama_putaran_aktif'] = $row['nama'];
                     break;
                 }
             }
@@ -477,7 +479,7 @@ class Home extends PpdbController
             }
             else {
                 $data['putaran_aktif'] = $this->setting->get('putaran');
-                $this->session->set('putaran_aktif', $data['putaran_aktif']);
+                $sessiondata['putaran_aktif'] = $data['putaran_aktif'];
             }
         }
 
@@ -486,9 +488,9 @@ class Home extends PpdbController
         if ($data['jenjang_aktif']) {
             foreach($data['daftarjenjang'] as $row) {
                 if ($row['jenjang_id']==$data['jenjang_aktif']) {
-                    $this->session->set('jenjang_aktif', $data['jenjang_aktif']);
                     $data['nama_jenjang_aktif'] = $row['nama'];
-                    $this->session->set('nama_jenjang_aktif', $row['nama']);
+                    $sessiondata['jenjang_aktif'] = $data['jenjang_aktif'];
+                    $sessiondata['nama_jenjang_aktif'] = $data['nama_jenjang_aktif'];
                     break;
                 }
             }
@@ -503,7 +505,7 @@ class Home extends PpdbController
             }
             else {
                 $data['jenjang_aktif'] = $this->setting->get('jenjang');
-                $this->session->set('jenjang_aktif', $data['jenjang_aktif']);
+                $sessiondata['jenjang_aktif'] = $data['jenjang_aktif'];
             }
 
             if ($this->session->has('nama_jenjang_aktif')) {
@@ -511,7 +513,7 @@ class Home extends PpdbController
             }
             else {
                 $data['nama_jenjang_aktif'] = $mconfig->tcg_nama_jenjang($data['jenjang_aktif']);
-                $this->session->set('nama_jenjang_aktif', $data['nama_jenjang_aktif']);
+                $sessiondata['nama_jenjang_aktif'] = $data['nama_jenjang_aktif'];
             }
         }
 
@@ -521,7 +523,7 @@ class Home extends PpdbController
         }
         else {
             $data['show_putaran'] = $this->setting->get('show_putaran');
-            $this->session->set('show_putaran', $data['show_putaran']);
+            $sessiondata['show_putaran'] = $data['show_putaran'];
         }
 
         //show jenjang
@@ -530,8 +532,10 @@ class Home extends PpdbController
         }
         else {
             $data['show_jenjang'] = $this->setting->get('show_jenjang');
-            $this->session->set('show_jenjang', $data['show_jenjang']);
+            $sessiondata['show_jenjang'] = $data['show_jenjang'];
         }
+
+        $this->session->set($sessiondata);
 
         return $data;
     }

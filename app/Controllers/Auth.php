@@ -60,6 +60,13 @@ class Auth extends AuthController
         $daftarputaran = $mconfig->tcg_putaran();
         $daftarjenjang = $mconfig->tcg_jenjang();
 
+        $user_id = $this->session->get('user_id');
+        if (!empty($user_id)) {
+            $data['nama_pengguna'] = $this->session->get('nama');
+            $data['user_name'] = $this->session->get('user_name');
+        }
+        $data['user_id'] = $user_id;
+
 		$sessiondata = array(
 			'tahun_ajaran_aktif'=>TAHUN_AJARAN_ID,
             'nama_tahun_ajaran_aktif'=>$nama_tahun_ajaran,
@@ -75,7 +82,14 @@ class Auth extends AuthController
             'daftarputaran'=>$daftarputaran,
             'daftarjenjang'=>$daftarjenjang
 		);	
-		$this->session->set($sessiondata);
+
+        if (!empty($user_id)) {
+            $sessiondata['user_id'] = $data['user_id'];
+            $sessiondata['nama_pengguna'] = $data['nama_pengguna'];
+            $sessiondata['user_name'] = $data['nama_pengguna'];
+        }
+
+        $this->session->set($sessiondata);
 
         $data['kode_wilayah']=$kode_wilayah_aktif;
         $data['nama_wilayah']=$nama_wilayah;
@@ -123,13 +137,6 @@ class Auth extends AuthController
         //     }
         //     $data['captcha_sitekey'] = $sitekey;
         // }
-
-        $user_id = $this->session->get('user_id');
-        if (!empty($user_id)) {
-            $data['nama_pengguna'] = $this->session->get('nama');
-            $data['user_name'] = $this->session->get('user_name');
-        }
-        $data['user_id'] = $user_id;
 
         $data['login_page'] = site_url() .static::$LOGIN_PAGE;
 
@@ -304,16 +311,17 @@ class Auth extends AuthController
         return true;
     }
 
-    protected function set_additional_sessions() {
+    protected function set_additional_sessions(&$sessiondata) {
         $settings = $this->setting->list("ppdb");
         if ($settings == null)  return;
 
+        //$sessiondata = $this->session->get();
         foreach($settings as $s) {
             if ($s['autoload'] != '1')   continue;
             if ($s['name'] == 'batasan_peta_polygon')   continue;
-            if ($s['name'] == 'tahun_ajaran')   $this->session->set('tahun_ajaran_aktif', $s['value']);
-            if ($s['name'] == 'kode_wilayah')   $this->session->set('kode_wilayah_aktif', $s['value']);
-            $this->session->set($s['name'], $s['value']);
+            if ($s['name'] == 'tahun_ajaran')   $sessiondata['tahun_ajaran_aktif'] = $s['value'];
+            else if ($s['name'] == 'kode_wilayah')   $sessiondata['kode_wilayah_aktif'] = $s['value'];
+            else $sessiondata[$s['name']] = $s['value'];
         }
 
         $data = array();
@@ -333,8 +341,6 @@ class Auth extends AuthController
                 $data['diterima'] = $this->siswa['diterima'];
                 $data['tutup_akses'] = $this->siswa['tutup_akses'];
             }
-
-            $this->session->set($data);
         }
         else if ($role_id == ROLEID_SEKOLAH) {
             $sekolah_id = $this->session->get('sekolah_id');
@@ -358,8 +364,6 @@ class Auth extends AuthController
             }
             $data["jenjang_aktif"] = $jenjang_id;
             $data["nama_jenjang_aktif"] = $nama_jenjang;
-
-            $this->session->set($data);                
         }
         else if ($role_id == ROLEID_DAPODIK) {
             $sekolah_id = $this->session->get('sekolah_id');
@@ -383,9 +387,11 @@ class Auth extends AuthController
             }
             $data["jenjang_aktif"] = $jenjang_id;
             $data["nama_jenjang_aktif"] = $nama_jenjang;
-
-            $this->session->set($data);                
         }
+
+        array_merge($sessiondata, $data);
+        //$this->session->set($sessiondata);
+
     }
  
     function changepassword() {

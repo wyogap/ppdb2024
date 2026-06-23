@@ -31,11 +31,13 @@ class Ubahprofil extends PpdbController {
 			return $this->notauthorized();
 		}
 
-        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        $sessiondata = $this->session->get();
+
+        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah'];
  
         //untuk ubah data -> always get latest value from db
         $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
-        $this->session->set("profilsekolah", $data['profil']);
+        $sessiondata["profilsekolah"] = $data['profil'];
 
         $data['daftarputaran'] = $this->Mconfig->tcg_putaran(JENJANGID_SMP);
 
@@ -50,9 +52,10 @@ class Ubahprofil extends PpdbController {
 
         $data['use_leaflet'] = 1;
 
+		$this->session->set($sessiondata);
+		
         //content template
         $data['content_template'] = 'ubahprofil.tpl';
-
         $data['page_title'] = 'Daftar Ulang';
         $this->smarty->render('ppdb/sekolah/ppdbsekolah.tpl', $data);
 	}

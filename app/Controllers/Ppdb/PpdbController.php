@@ -127,10 +127,12 @@ class PpdbController extends BaseController {
         //get from GET or POST
 		$putaran = $this->request->getPostGet("putaran"); 
  
+        $sessiondata = $this->session->get();
+
         //get from session if necessary
         if (empty($putaran)) {
-            $putaran = $this->session->get('putaran_aktif');
-			$nama_putaran = $this->session->get('nama_putaran_aktif');
+            $putaran = $sessiondata['putaran_aktif'];
+			$nama_putaran = $sessiondata['nama_putaran_aktif'];
         }
 
 		//get from database
@@ -142,9 +144,10 @@ class PpdbController extends BaseController {
             $nama_putaran = $this->Mconfig->tcg_nama_putaran($putaran);
         }
 
-		if ($this->session->get('putaran_aktif') != $putaran) {
-            $this->session->set('putaran_aktif', $putaran);
-            $this->session->set('nama_putaran_aktif', $nama_putaran);
+		if ($sessiondata['putaran_aktif'] != $putaran) {
+            $sessiondata['putaran_aktif'] = $putaran;
+            $sessiondata['nama_putaran_aktif'] = $nama_putaran; 
+            $this->session->set($sessiondata);
 		}
 
 		//replace global var if necessary
