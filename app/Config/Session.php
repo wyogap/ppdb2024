@@ -23,7 +23,8 @@ class Session extends BaseConfig
      *
      * @var class-string<BaseHandler>
      */
-    public string $driver = DatabaseHandler::class;
+    //public string $driver = DatabaseHandler::class;
+    public string $driver = FileHandler::class;
 
     /**
      * --------------------------------------------------------------------------
@@ -59,8 +60,8 @@ class Session extends BaseConfig
      *
      * IMPORTANT: You are REQUIRED to set a valid save path!
      */
-    //public string $savePath = WRITEPATH . 'session';
-    public string $savePath = 'dbo_ci_sessions';
+    public string $savePath = WRITEPATH . 'session';
+    //public string $savePath = 'dbo_ci_sessions';
 
     /**
      * --------------------------------------------------------------------------
