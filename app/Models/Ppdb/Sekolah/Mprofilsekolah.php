@@ -182,7 +182,7 @@ Class Mprofilsekolah
 		return $builder->get()->getResultArray();
 	}
 
-	function tcg_daftarpendaftaran($sekolah_id, $filters = null, $orderby = null){
+	function tcg_daftarpendaftaran($sekolah_id, $filters = null, $orderby = null, $showparentonly = 0){
 		$putaran = $this->session->get('putaran_aktif');
 
 		$builder = $this->ro->table('tcg_pendaftaran a');
@@ -227,11 +227,16 @@ Class Mprofilsekolah
         $builder->join('tcg_pendaftaran k','k.ref_pendaftaran_id=a.pendaftaran_id','LEFT OUTER');		
         $builder->join('cfg_penerapan l','l.penerapan_id=k.penerapan_id AND l.aktif = 1 and l.tahun_ajaran_id=a.tahun_ajaran_id and l.putaran=a.putaran AND l.is_deleted=0','LEFT OUTER');		
         $builder->join('ref_jalur m','m.jalur_id = l.jalur_id AND m.is_deleted=0','LEFT OUTER');		
-        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0, 'a.pendaftaran'=>1));
+        $builder->where(array('a.cabut_berkas'=>0,'a.jenis_pilihan !='=>0,'a.is_deleted'=>0));
         $builder->where('a.tahun_ajaran_id', TAHUN_AJARAN_ID);
 
         if (!empty($sekolah_id)) {
             $builder->where('a.sekolah_id', $sekolah_id);
+        }
+
+        //hanya tunjukkan pendaftaran parent
+        if ($showparentonly == 1) {
+            $builder->where('a.pendaftaran', 1);
         }
 
         //additional filters
@@ -340,26 +345,26 @@ Class Mprofilsekolah
 
 	function tcg_pendaftarbelumdiverifikasi($sekolah_id){
         
-        $filters = array('a.kelengkapan_berkas'=>0,'a.pendaftaran'=>1);
-        return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        $filters = array('a.kelengkapan_berkas'=>0);
+        return $this->tcg_daftarpendaftaran($sekolah_id, $filters, null, 1);
     }
 
 	function tcg_pendaftarbelumlengkap($sekolah_id){
         
-        $filters = array('a.kelengkapan_berkas'=>2,'a.pendaftaran'=>1);
-        return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        $filters = array('a.kelengkapan_berkas'=>2);
+        return $this->tcg_daftarpendaftaran($sekolah_id, $filters, null, 1);
     }
 
 	function tcg_pendaftarsudahlengkap($sekolah_id){
         
-        $filters = array('a.kelengkapan_berkas'=>1,'a.pendaftaran'=>1);
-        return $this->tcg_daftarpendaftaran($sekolah_id, $filters);
+        $filters = array('a.kelengkapan_berkas'=>1);
+        return $this->tcg_daftarpendaftaran($sekolah_id, $filters, null, 1);
     }
 
 	function tcg_berkasdisekolah($sekolah_id){
         
-        $filters = array('b.lokasi_berkas'=>$sekolah_id,'a.pendaftaran'=>1);
-        $result = $this->tcg_daftarpendaftaran(null, $filters);
+        $filters = array('b.lokasi_berkas'=>$sekolah_id);
+        $result = $this->tcg_daftarpendaftaran(null, $filters, null, 1);
 
         //filter unique peserta_didik
         $lookup = array();
