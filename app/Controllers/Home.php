@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\Ppdb\PpdbController;
 use App\Models\Ppdb\Mhome;
 use App\Models\Ppdb\Sekolah\Mprofilsekolah;
+use App\Models\Dapodik\Mdapodik;
 use App\Models\Ppdb\Siswa\Mprofilsiswa;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -226,7 +227,7 @@ class Home extends PpdbController
         //     print_json_error("Data akun siswa dengan nisn tersebut sudah ada.", -90);
         // }
 
-        $mdapodik = new \App\Models\Dapodik\Mdapodik();
+        $mdapodik = new Mdapodik();
         $profil = $mdapodik->getSiswaByNisnDanNpsn($nisn, $npsn);
         if ($profil == null) {
             print_json_error("Tidak berhasil mendapatkan data siswa dari DAPODIK.", -91);
