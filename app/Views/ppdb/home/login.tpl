@@ -182,7 +182,7 @@
 						</div>
 
                         <div id='login-div'>
-                           <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert" style="margin-top: -32px">
+                           <div class="alert alert-danger alert-dismissible" id="alert-danger" role="alert" style="margin-top: -32px; margin-bottom: 16px;">
                                 <center>Rekapitulasi hasil pendaftaran <a href='https://spmb.disdikpora.kebumenkab.go.id/home/rekapitulasi'>DI SINI</a>.</center>
                             </div>
 
