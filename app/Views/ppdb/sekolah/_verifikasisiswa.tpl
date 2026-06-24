@@ -1176,7 +1176,6 @@
         tosubmit = true;
 
         tags.forEach(function(key) {
-            if (key != 'nilai') return;
             elements = $("[tcg-tag='" +key+ "']");
             elements.each(function(idx) {
                 el = $(this);
