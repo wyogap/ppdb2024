@@ -916,6 +916,7 @@
                                                 <option value="X1 - Hambatan Mental (Emosi dan Perilaku)" {if ($profilsiswa.kebutuhan_khusus == 'X1 - Hambatan Mental (Emosi dan Perilaku)')}selected{/if}>X1 - Hambatan Mental (Emosi dan Perilaku)</option>
                                                 <option value="X2 - Cerdas Istimewa Bakat Istimewa" {if ($profilsiswa.kebutuhan_khusus == 'X2 - Cerdas Istimewa Bakat Istimewa')}selected{/if}>X2 - Cerdas Istimewa Bakat Istimewa</option>
                                                 <option value="X3 - Afirmasi ATS" {if ($profilsiswa.kebutuhan_khusus == 'X3 - Afirmasi ATS')}selected{/if}>X3 - Afirmasi ATS</option>
+                                                <option value="X4 - Afirmasi Usia Di Bawah Batasan" {if ($profilsiswa.kebutuhan_khusus == 'X4 - Afirmasi Usia Di Bawah Batasan')}selected{/if}>X4 - Afirmasi Usia Di Bawah Batasan</option>
                                             </select>
                                         </div>
                                     </div>

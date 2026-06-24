@@ -67,6 +67,7 @@
                                             <option value="X1 - Hambatan Mental (Emosi dan Perilaku)">X1 - Hambatan Mental (Emosi dan Perilaku)</option>
                                             <option value="X2 - Cerdas Istimewa Bakat Istimewa">X2 - Cerdas Istimewa Bakat Istimewa</option>
                                             <option value="X3 - Afirmasi ATS">X3 - Afirmasi ATS</option>
+                                            <option value="X4 - Afirmasi Usia Di Bawah Batasan">X4 - Afirmasi Usia Di Bawah Batasan</option>
                                         </select>
                                     </div>
                                 </div>
