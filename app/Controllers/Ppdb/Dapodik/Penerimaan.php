@@ -696,11 +696,13 @@ class Penerimaan extends PpdbController {
             // var_dump($jenjang_id); 
             // var_dump($batasan_usia); exit;
 
-            if ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir']) {
+            if (empty($siswa['jalur_khusus']) 
+                    && ($siswa['tanggal_lahir'] > $batasan_usia['minimal_tanggal_lahir'])) {
                 print_json_error('Minimal tanggal lahir: ' .$batasan_usia['minimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
             }
 
-            if ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir']) {
+            if (empty($siswa['jalur_khusus'])
+                    && ($siswa['tanggal_lahir'] < $batasan_usia['maksimal_tanggal_lahir'])) {
                 print_json_error('Maksimal tanggal lahir: ' .$batasan_usia['maksimal_tanggal_lahir']. '. Tanggal lahir siswa: ' .$siswa['tanggal_lahir']);
             }            
 
