@@ -298,15 +298,15 @@ Class Mprofilsiswa
 		}
 
         if (JALURID_INKLUSI == JALURID_AFIRMASI) {
-            if ($afirmasi) {
-                //afirmasi -> include semua
-            }
-            else if ($kebutuhan_khusus) {
+            if ($kebutuhan_khusus) {
                 //tidak afirmasi tapi kebutuhan khusus -> include jalur kategori inklusi
                 $builder->groupStart();
                 $builder->where('a.kategori_inklusi',1);
                 $builder->orWhere('c.jalur_id',JALURID_INKLUSI);			//jalur inklusi
                 $builder->groupEnd();
+            }
+            else if ($afirmasi) {
+                //afirmasi -> include semua
             }
             else {
                 //tidak afirmasi dan tidak kebutuhan khusus -> exclude jalur afirmasi
