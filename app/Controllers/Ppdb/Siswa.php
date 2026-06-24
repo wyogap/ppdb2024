@@ -377,7 +377,9 @@ class Siswa extends PpdbController {
             //$data['aktif'] = 'pendaftaran';
         }
         //end debugging
-
+        $data['cek_waktupendaftaran'] = 1;
+        $data['cek_waktudaftarulang'] = 0;
+ 
         $this->session->set($sessiondata);
 
         $data['page_title'] = 'Profil Siswa';
