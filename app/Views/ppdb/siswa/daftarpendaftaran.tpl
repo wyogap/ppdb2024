@@ -228,7 +228,7 @@
                                 <table class="table table-kelengkapan">
                                     {{#item.skoring}}
                                     <tr>
-                                        <td>{{{keterangan}}}</td>
+                                        <td>{{{keterangan}}}{{#nilai_dasar}} <i>(Nilai Dasar: {{nilai_dasar}})</i>{{/nilai_dasar}}</td>
                                         <td class="text-end">{{nilai}}</td>
                                     </tr>
                                     {{/item.skoring}}
