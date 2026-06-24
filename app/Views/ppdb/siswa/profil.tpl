@@ -913,6 +913,9 @@
                                                 <option value="K - Kesulitan Belajar" {if ($profilsiswa.kebutuhan_khusus == 'K - Kesulitan Belajar')}selected{/if}>K - Kesulitan Belajar</option>
                                                 <option value="P - Down Syndrome" {if ($profilsiswa.kebutuhan_khusus == 'P - Down Syndrome')}selected{/if}>P - Down Syndrome</option>
                                                 <option value="Q - Autis" {if ($profilsiswa.kebutuhan_khusus == 'Q - Autis')}selected{/if}>Q - Autis</option>
+                                                <option value="X1 - Hambatan Mental (Emosi dan Perilaku)" {if ($profilsiswa.kebutuhan_khusus == 'X1 - Hambatan Mental (Emosi dan Perilaku)')}selected{/if}>X1 - Hambatan Mental (Emosi dan Perilaku)</option>
+                                                <option value="X2 - Cerdas Istimewa Bakat Istimewa" {if ($profilsiswa.kebutuhan_khusus == 'X2 - Cerdas Istimewa Bakat Istimewa')}selected{/if}>X2 - Cerdas Istimewa Bakat Istimewa</option>
+                                                <option value="X3 - Afirmasi ATS" {if ($profilsiswa.kebutuhan_khusus == 'X3 - Afirmasi ATS')}selected{/if}>X3 - Afirmasi ATS</option>
                                             </select>
                                         </div>
                                     </div>

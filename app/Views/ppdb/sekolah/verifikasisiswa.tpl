@@ -758,6 +758,9 @@
                                         <option value="K - Kesulitan Belajar">K - Kesulitan Belajar</option>
                                         <option value="P - Down Syndrome">P - Down Syndrome</option>
                                         <option value="Q - Autis">Q - Autis</option>
+                                        <option value="X1 - Hambatan Mental (Emosi dan Perilaku)">X1 - Hambatan Mental (Emosi dan Perilaku)</option>
+                                        <option value="X2 - Cerdas Istimewa Bakat Istimewa">X2 - Cerdas Istimewa Bakat Istimewa</option>
+                                        <option value="X3 - Afirmasi ATS">X3 - Afirmasi ATS</option>
                                     </select>
                                     <span id="kebutuhan-khusus" tcg-tag='inklusi' tcg-field='kebutuhan_khusus' tcg-field-type='label'></span>
                                 </td>
