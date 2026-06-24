@@ -272,6 +272,9 @@ Class Mhome
         $query = $this->db->query($sql, array($sekolah_id,$nik,$nisn,$nomor_ujian,$nama,$jenis_kelamin,$tempat_lahir,$tanggal_lahir,
                                                 $nama_ibu_kandung,$kebutuhan_khusus,$alamat,$kode_wilayah,$lintang,$bujur,$nomor_kontak,
                                                 $npsn_sekolah, $nama_sekolah)); 
+
+        //echo (string)$this->db->getLastQuery(); exit;
+
         if ($query == null)     return null;
 
         $user = $this->tcg_detailuser($username);

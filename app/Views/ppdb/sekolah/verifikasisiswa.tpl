@@ -390,13 +390,13 @@
                     {/if}
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <table class="table table-striped" style="margin-bottom: 0px !important; width: 100%">
-                            <tr tcg-tag='nilai' tcg-field-type='input'>
+                            <tr>
                                 <td colspan="3">
                                     <div class="row">
                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 x-label" style="align-self: center;"><b>Prestasi akademik di sekolah :</b></div>
                                         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                                             <select class="form-control select2" tcg-tag='nilai' tcg-field='akademik_skoring_id'
-                                            tcg-field-type='input' tcg-field-submit=1>
+                                            tcg-field-type='toggle' tcg-field-submit=1 id="akademik-skoring-input">
                                                 <option value="0">Tidak ada</option>
                                                 {foreach $daftarskoring_akademik as $skor}
                                                 <option value="{$skor.value}">{$skor.label}</option>
@@ -404,13 +404,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr tcg-tag='nilai' tcg-field-type='label'>
-                                <td style="width: 45%;"><b>Prestasi akademik di sekolah</b></td>
-                                <td>:</td>
-                                <td style="width: 50%;">
-                                    <span tcg-tag='nilai' tcg-field='akademik_skoring_id' tcg-field-type='label' tcg-init-field='akademik_skoring_label'></span>
                                 </td>
                             </tr>
                          </table>

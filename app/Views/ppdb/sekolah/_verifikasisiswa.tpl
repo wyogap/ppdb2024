@@ -755,7 +755,7 @@
                     el.attr('href', value);
                 }
                 else if (type == 'toggle') {
-                    el.val(value);
+                    el.val(value).trigger('change');
                 }
                 else if (type == 'note') {
                     el.val(value);
@@ -1148,7 +1148,7 @@
 
     function simpan_verifikasi() {
         //check active perbaikan
-        perbaikan = 0;
+        flag = 0;
         elements = $(".status-verifikasi");
         elements.each(function(idx) {
             el = $(this);
@@ -1165,17 +1165,18 @@
                 card.find(".accordion-header-text .status").html('*' +msg+ '*');
                 elements.filter(".catatan").addClass("border-red");
 
-                perbaikan = 1;
+                flag = 1;
             }
         });
 
         //kalau ada perbaikan, cancel
-        if (perbaikan)  return;
+        if (flag)  return;
 
         updated = {};
         tosubmit = true;
 
         tags.forEach(function(key) {
+            if (key != 'nilai') return;
             elements = $("[tcg-tag='" +key+ "']");
             elements.each(function(idx) {
                 el = $(this);
@@ -1187,6 +1188,12 @@
                 let submit = el.attr("tcg-field-submit");
                 if (!submit || submit == 0) return;
 
+                //ignore select2
+                //if (el.hasClass('select2')) return;
+                let id = el.attr('id');
+                if (el.hasClass('select2') && (id == null || id == '')) return;
+
+                //compare oldval and newval
                 val = el.val();
                 oldval = profil[field];
                 if (oldval === undefined)   oldval = '';

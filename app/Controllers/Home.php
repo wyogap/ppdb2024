@@ -367,6 +367,10 @@ class Home extends PpdbController
 
             $data['sekolah_id'] = $sekolah['sekolah_id'];
 
+            if (empty($data['kode_kabupaten_sekolah'])) {
+                $data['kode_kabupaten_sekolah'] = $data['kode_kabupaten'];
+            }
+
             $user = $this->Mhome->tcg_registrasiuser($data['sekolah_id'], $data['nik'], $data['nisn'], $data['nomor_ujian'], $data['nama'], $data['jenis_kelamin'], 
                                                                     $data['tempat_lahir'], $data['tanggal_lahir'], $data['nama_ibu_kandung'], $data['kebutuhan_khusus'], 
                                                                     $data['alamat'], $data['kode_wilayah'], $data['lintang'], $data['bujur'], $data['nomor_kontak'],

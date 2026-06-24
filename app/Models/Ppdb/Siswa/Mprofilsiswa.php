@@ -1021,7 +1021,7 @@ Class Mprofilsiswa
     function tcg_nilaiskoring($pendaftaran_id){
 
 		$builder = $this->ro->table('tcg_skoring_pendaftaran a');
-		$builder->select('a.skoring_pendaftaran_id,c.nama AS keterangan,round(a.nilai,2) as nilai');
+		$builder->select('a.skoring_pendaftaran_id,c.nama AS keterangan, a.nilai_dasar, round(a.nilai,2) as nilai');
 		$builder->join('tcg_pendaftaran b','a.pendaftaran_id = b.pendaftaran_id AND b.cabut_berkas = 0 AND b.is_deleted = 0');
 		$builder->join('cfg_daftar_skoring c','a.skoring_id = c.skoring_id AND c.is_deleted=0');
 		//$builder->join('cfg_daftar_nilai_skoring d','a.skoring_id = d.skoring_id and b.tahun_ajaran_id=d.tahun_ajaran_id AND c.is_deleted=0');
