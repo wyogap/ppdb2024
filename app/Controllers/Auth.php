@@ -335,8 +335,8 @@ class Auth extends AuthController
                 $this->siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
             }
 
-            $data['diterima'] = 1;
-            $data['tutup_akses'] = 1;
+            $data['diterima'] = 0;
+            $data['tutup_akses'] = 0;
             if (!empty($this->siswa)) {
                 $data['diterima'] = $this->siswa['diterima'];
                 $data['tutup_akses'] = $this->siswa['tutup_akses'];
