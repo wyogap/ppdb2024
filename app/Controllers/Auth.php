@@ -328,15 +328,15 @@ class Auth extends AuthController
 
         $role_id = $sessiondata['role_id'] ?? null;
         if ($role_id == ROLEID_SISWA) {
-            $peserta_didik_id = $this->session->get('peserta_didik_id');
+            $peserta_didik_id = $sessiondata['peserta_didik_id'] ?? null;
 
             if (empty($this->siswa) || $this->siswa['peserta_didik_id'] != $peserta_didik_id) {
                 $msiswa = new \App\Models\Ppdb\Siswa\Mprofilsiswa();
                 $this->siswa = $msiswa->tcg_profilsiswa($peserta_didik_id);
             }
 
-            $data['diterima'] = 0;
-            $data['tutup_akses'] = 0;
+            $data['diterima'] = $sessiondata['diterima'] ?? 0;
+            $data['tutup_akses'] = $sessiondata['tutup_akses'] ?? 0;
             if (!empty($this->siswa)) {
                 $data['diterima'] = $this->siswa['diterima'];
                 $data['tutup_akses'] = $this->siswa['tutup_akses'];
@@ -369,7 +369,10 @@ class Auth extends AuthController
             $data["nama_jenjang_aktif"] = $nama_jenjang;
         }
         else if ($role_id == ROLEID_DAPODIK) {
-            $sekolah_id = $this->session->get('sekolah_id');
+            $sekolah_id = $sessiondata['sekolah_id']??null;
+            if (empty($sekolah_id)) {
+                return $this->notauthorized();
+            }
 
             $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
             $profil = $msekolah->tcg_profilsekolah($sekolah_id);
