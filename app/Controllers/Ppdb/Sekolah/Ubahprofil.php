@@ -33,7 +33,7 @@ class Ubahprofil extends PpdbController {
 
         $sessiondata = $this->session->get();
 
-        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah'];
+        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah']??null;
  
         //untuk ubah data -> always get latest value from db
         $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
@@ -53,7 +53,7 @@ class Ubahprofil extends PpdbController {
         $data['use_leaflet'] = 1;
 
 		$this->session->set($sessiondata);
-		
+
         //content template
         $data['content_template'] = 'ubahprofil.tpl';
         $data['page_title'] = 'Daftar Ulang';

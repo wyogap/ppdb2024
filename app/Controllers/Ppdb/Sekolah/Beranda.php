@@ -28,18 +28,26 @@ class Beranda extends PpdbController {
 
 	function index()
 	{
-		$sekolah_id = $this->session->get("sekolah_id");
+        $sessiondata = $this->session->get();
+
+        $sekolah_id = $sessiondata["sekolah_id"]??null;
         if (empty($sekolah_id)) {
 			return $this->notauthorized();
 		}
 
-        $data['impersonasi_sekolah'] = $this->session->get("impersonasi_sekolah");
+        // var_dump($sessiondata); exit;
+
+        $data['impersonasi_sekolah'] = $sessiondata["impersonasi_sekolah"]??null;
         if ($data['impersonasi_sekolah']) {
             $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         } else {
-            $data['profil'] = $this->session->get("profilsekolah");
+            $data['profil'] = $sessiondata["profilsekolah"]??null;
         }
         
+        if (empty($data['profil'])) {
+            $data['profil'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
+        }
+
         //notifikasi tahapan
         $data['tahapan_aktif'] = $this->Mconfig->tcg_tahapan_pelaksanaan_aktif();
         $data['pengumuman'] = $this->Mconfig->tcg_pengumuman();

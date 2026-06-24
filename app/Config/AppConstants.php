@@ -7,8 +7,11 @@ defined('APP_ICON')             || define('APP_ICON', "images/checklist.png");
 defined('APP_VERSION')          || define('APP_VERSION', "1.0"); 
 
 defined('APP_LOCALE')                       OR define('APP_LOCALE', 'IND');
-defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
-defined('APP_GMTOFFSET')                    OR define('APP_GMTOFFSET', '07:00');
+defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'UTC');
+defined('APP_GMTOFFSET')                    OR define('APP_GMTOFFSET', '00:00');
+
+// defined('APP_TIMEZONE')                     OR define('APP_TIMEZONE', 'Asia/Jakarta');
+// defined('APP_GMTOFFSET')                    OR define('APP_GMTOFFSET', '07:00');
 
 defined('UPLOAD_MAX_SIZE_MB')               OR define('UPLOAD_MAX_SIZE_MB', '20');
 defined('UPLOAD_FILE_TYPES')                OR define('UPLOAD_FILE_TYPES', 'xlsx, xls');

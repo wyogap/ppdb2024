@@ -58,7 +58,7 @@ class Dinas extends CrudController {
         $impersonasi_sekolah_id = $this->request->getPostGet("sekolah_id");
 
         $sessiondata = $this->session->get();
-        $roleid = $sessiondata["role_id"];
+        $roleid = $sessiondata["role_id"]??null;
         if (!empty($impersonasi_sekolah_id) && ($roleid == ROLEID_DINAS || $roleid == ROLEID_ADMIN || $roleid == ROLEID_SYSADMIN)) {
             $sessiondata['sekolah_id'] = $impersonasi_sekolah_id;
             $sessiondata['impersonasi_sekolah'] = 1;

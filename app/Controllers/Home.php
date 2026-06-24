@@ -625,4 +625,8 @@ class Home extends PpdbController
 		return view('ppdb/home/_dropdownpadukuhan',$data);
 	}
 
-}
+    function session() {
+        $sessiondata = $this->session->get();
+        var_dump($sessiondata);
+    }
+}   

@@ -313,20 +313,20 @@ class Auth extends AuthController
 
     protected function set_additional_sessions(&$sessiondata) {
         $settings = $this->setting->list("ppdb");
-        if ($settings == null)  return;
-
-        //$sessiondata = $this->session->get();
-        foreach($settings as $s) {
-            if ($s['autoload'] != '1')   continue;
-            if ($s['name'] == 'batasan_peta_polygon')   continue;
-            if ($s['name'] == 'tahun_ajaran')   $sessiondata['tahun_ajaran_aktif'] = $s['value'];
-            else if ($s['name'] == 'kode_wilayah')   $sessiondata['kode_wilayah_aktif'] = $s['value'];
-            else $sessiondata[$s['name']] = $s['value'];
+        if (!empty($settings)) {
+            //$sessiondata = $this->session->get();
+            foreach($settings as $s) {
+                if ($s['autoload'] != '1')   continue;
+                if ($s['name'] == 'batasan_peta_polygon')   continue;
+                if ($s['name'] == 'tahun_ajaran')   $sessiondata['tahun_ajaran_aktif'] = $s['value'];
+                else if ($s['name'] == 'kode_wilayah')   $sessiondata['kode_wilayah_aktif'] = $s['value'];
+                else $sessiondata[$s['name']] = $s['value'];
+            }
         }
 
         $data = array();
 
-        $role_id = $this->session->get('role_id');
+        $role_id = $sessiondata['role_id'] ?? null;
         if ($role_id == ROLEID_SISWA) {
             $peserta_didik_id = $this->session->get('peserta_didik_id');
 
@@ -343,7 +343,10 @@ class Auth extends AuthController
             }
         }
         else if ($role_id == ROLEID_SEKOLAH) {
-            $sekolah_id = $this->session->get('sekolah_id');
+            $sekolah_id = $sessiondata['sekolah_id']??null;
+            if (empty($sekolah_id)) {
+                return $this->notauthorized();
+            }
 
             $msekolah = new \App\Models\Ppdb\Sekolah\Mprofilsekolah();
             $profil = $msekolah->tcg_profilsekolah($sekolah_id);
@@ -389,8 +392,11 @@ class Auth extends AuthController
             $data["nama_jenjang_aktif"] = $nama_jenjang;
         }
 
-        array_merge($sessiondata, $data);
-        //$this->session->set($sessiondata);
+        foreach($data as $k => $v) {
+            $sessiondata[$k] = $v;
+        }
+
+        return $sessiondata;
 
     }
  

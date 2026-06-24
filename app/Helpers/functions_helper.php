@@ -582,7 +582,9 @@
 				$dt = new DateTime($utc, new DateTimeZone('UTC')); //server time is in UTC
 
 			//convert to local time
-			$tz = $session->get('time_zone');
+			$session->set('time_zone', APP_TIMEZONE);
+			$dt->setTimezone(new DateTimeZone(APP_TIMEZONE));
+			
 			// if (!empty($session->get('time_zone'))) {
 			// 	$tz = $session->get('time_zone');
 			// }
@@ -590,7 +592,7 @@
 			// 	$session->set('time_zone', APP_TIMEZONE);
 			// }
 
-			$dt->setTimezone(new DateTimeZone($tz));
+			//$dt->setTimezone(new DateTimeZone($tz));
 
 			//store as number
 			return $dt;

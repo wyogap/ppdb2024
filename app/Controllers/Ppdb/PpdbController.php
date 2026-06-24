@@ -131,8 +131,8 @@ class PpdbController extends BaseController {
 
         //get from session if necessary
         if (empty($putaran)) {
-            $putaran = $sessiondata['putaran_aktif'];
-			$nama_putaran = $sessiondata['nama_putaran_aktif'];
+            $putaran = $sessiondata['putaran_aktif']??null;
+			$nama_putaran = $sessiondata['nama_putaran_aktif']??null;
         }
 
 		//get from database
@@ -144,7 +144,7 @@ class PpdbController extends BaseController {
             $nama_putaran = $this->Mconfig->tcg_nama_putaran($putaran);
         }
 
-		if ($sessiondata['putaran_aktif'] != $putaran) {
+		if (($sessiondata['putaran_aktif']??null) != $putaran) {
             $sessiondata['putaran_aktif'] = $putaran;
             $sessiondata['nama_putaran_aktif'] = $nama_putaran; 
             $this->session->set($sessiondata);

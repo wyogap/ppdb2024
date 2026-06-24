@@ -191,10 +191,14 @@ abstract class AuthController extends BaseController
         }
 
         //force reset session
-        $sessiondata = $this->session->get();
-        $sessiondata = array_merge($sessiondata, $result);
-                    
-        $this->set_additional_sessions($sessiondata);
+        // $sessiondata = $this->session->get();
+        // foreach($result as $k => $v) {
+        //     $sessiondata[$k] = $v;
+        // }
+        
+        $sessiondata = $result;
+
+        $sessiondata = $this->set_additional_sessions($sessiondata);
         $this->session->set($sessiondata);
         
         $redirect_url = $this->get_home();

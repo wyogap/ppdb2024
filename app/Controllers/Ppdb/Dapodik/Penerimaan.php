@@ -43,8 +43,8 @@ class Penerimaan extends PpdbController {
 
         $sessiondata = $this->session->get();
 
-        $data['profilsekolah'] = $sessiondata['profilsekolah'];
-        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah'];
+        $data['profilsekolah'] = $sessiondata['profilsekolah']??null;
+        $data['impersonasi_sekolah'] = $sessiondata['impersonasi_sekolah']??null;
         if ($data['impersonasi_sekolah'] == 1) {
             $data['profilsekolah'] = $this->Msekolah->tcg_profilsekolah($sekolah_id);
         }
