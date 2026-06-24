@@ -11,7 +11,8 @@
     //cek-waktu-pendaftaran
 -->
 
-{if $diterima} 
+
+{if !$cek_waktupendaftaran && $diterima} 
 <div class="alert alert-secondary" role='alert'>
     Kamu sudah diterima dan tidak diijinkan melakukan pendaftaran lagi.
 </div>

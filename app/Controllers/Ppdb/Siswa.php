@@ -41,37 +41,35 @@ class Siswa extends PpdbController {
         $tahun_ajaran_id = $this->tahun_ajaran_id;
         $upload_dokumen = $this->setting->get('upload_dokumen');
 
-        $diterima = $this->session->get("diterima") ?? 0;
-        $tutup_akses = $this->session->get("tutup_akses") ?? 1;
+        $diterima = $sessiondata["diterima"] ?? 0;
+        $tutup_akses = $sessiondata["tutup_akses"] ?? 1;
         
         //waktu pelaksanaan
-        $waktudaftarulang = $this->Mconfig->tcg_waktudaftarulang();
-        $waktupendaftaran = $this->Mconfig->tcg_waktupendaftaran();
+        $waktudaftarulang = $this->Mconfig->tcg_waktudaftarulang(JENJANGID_SMP);
+        $waktupendaftaran = $this->Mconfig->tcg_waktupendaftaran(JENJANGID_SMP);
         $waktusosialisasi = $this->Mconfig->tcg_waktusosialisasi();
         
+        //var_dump($waktudaftarulang); var_dump($waktupendaftaran); exit;
+
         //flag: waktu daftar ulang
-        if (empty($waktudaftarulang)) {
-            $cek_waktudaftarulang = 0;
-        }
-        else {
+        $cek_waktudaftarulang = 0;
+        if (!empty($waktudaftarulang)) {
             $cek_waktudaftarulang = ($waktudaftarulang['aktif'] == 1) ? 1 : 0;
         }
 
         //flag: waktu pendaftaran
-        if (empty($waktupendaftaran)) {
-            $cek_waktupendaftaran = 0;
-        }
-        else {
-            $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1) ? 1 : 0;
+        $cek_waktupendaftaran = 0;
+        if (!empty($waktupendaftaran)) {
+           $cek_waktupendaftaran = ($waktupendaftaran['aktif'] == 1) ? 1 : 0;
         }
 
         //flag: waktu sosialisasi
-        if (empty($waktusosialisasi)) {
-            $cek_waktusosialisasi = 0;
+        $cek_waktusosialisasi = 0;
+        if (!empty($waktusosialisasi)) {
+           $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1) ? 1 : 0;
         }
-        else {
-            $cek_waktusosialisasi = ($waktusosialisasi['aktif'] == 1) ? 1 : 0;
-        }
+
+        //var_dump($cek_waktudaftarulang); var_dump($cek_waktupendaftaran); exit;
 
         //profil siswa
         $profil = $this->Msiswa->tcg_profilsiswa_detil($peserta_didik_id);

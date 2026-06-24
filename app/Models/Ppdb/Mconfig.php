@@ -197,7 +197,7 @@ Class Mconfig
 	}
 
 	function tcg_waktudaftarulang($jenjang_id=0){
-		$putaran = $this->session->get('putaran_aktif');
+				$putaran = $this->session->get('putaran_aktif');
 		if (empty($putaran)) {
 			$putaran = $this->setting->get('putaran');
 		}
@@ -214,7 +214,12 @@ Class Mconfig
                                 when a.tanggal_mulai > now() and a.tanggal_selesai > now() then 2 
                                 else 1 end as aktif');
 		$builder->where(array('a.tahun_ajaran_id'=>TAHUN_AJARAN_ID,'a.putaran'=>$putaran,'a.jenjang_id'=>$jenjang_id,'a.tahapan_id'=>TAHAPANID_DAFTARULANG,'a.is_deleted'=>0));
-		return $builder->get()->getRowArray();
+
+        //echo($builder->getCompiledSelect()); exit;
+
+		$result = $builder->get()->getRowArray();
+
+		return $result;
 	}
 
 	function tcg_cek_waktudaftarulang($jenjang_id=0){
