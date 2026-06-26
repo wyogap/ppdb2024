@@ -33,6 +33,9 @@ class Mauth
         $builder->orWhere('Users.user_name', $username);
 		$builder->groupEnd();
         $builder->where('Users.is_deleted', 0);
+
+        //echo $builder->getCompiledSelect(); exit;
+
         $query = $builder->get();
         
         $user = $query->getRowArray();

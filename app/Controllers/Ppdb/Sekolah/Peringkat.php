@@ -62,7 +62,7 @@ class Peringkat extends PpdbController {
 
         //semua pendaftar
         $data['show_all_pendaftar'] = 1;
-		$semuapendaftar = $this->Msekolah->tcg_daftarpendaftaran($sekolah_id);
+		$semuapendaftar = $this->Msekolah->tcg_daftarpendaftaran($sekolah_id, null, null, 1);
         for($i=0; $i<count($semuapendaftar); $i++) {
             $semuapendaftar[$i]['idx'] = $i+1;
             //mask nisn

@@ -62,7 +62,7 @@
 		    $.fn.dataTable.tables( { visible: true, api: true } ).columns.adjust().responsive.recalc();
 		} );
 
-        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1}
+        {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $cek_waktuverifikasi==1}
 		editor_siswa = new $.fn.dataTable.Editor( {
 			ajax: "{$site_url}ppdb/dapodik/penerimaan/ubahdata",
 			table: "#tdaftarpendaftar",
@@ -660,7 +660,7 @@
 						},
 					},
 				},
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1 || $cek_waktuverifikasi==1}
 				{ 
 					extend: "create", 
                     text: "Siswa Baru (Luar Daerah/Belum Sekolah)",
@@ -1398,7 +1398,7 @@
 				{ data: "sumber_bdt", className: 'dt-body-center' },
 				{ data: "diterima_sekolah", className: 'dt-body-left' },
 				//{ data: "penerapan_id", className: 'dt-body-left' },
-                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1}
+                {if $cek_waktupendaftaran==1 || $cek_waktusosialisasi==1 || $impersonasi_sekolah==1 || $cek_waktuverifikasi==1}
 				{
 					data: null,
 					className: 'text-end inline-flex text-nowrap inline-actions',
