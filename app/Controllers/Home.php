@@ -157,12 +157,14 @@ class Home extends PpdbController
 
 		$data['cek_waktupendaftaran'] = $this->Mconfig->tcg_cek_waktupendaftaran();
 		$data['cek_waktuverifikasi'] = $this->Mconfig->tcg_cek_waktuverifikasi();
-        if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1 && $data['cek_waktusosialisasi'] != 1) {
-            $data['final_ranking'] = 1;
-        }
-        else {
-            $data['final_ranking'] = 0;
-        }
+        // if ($data['cek_waktupendaftaran'] != 1 && $data['cek_waktuverifikasi'] != 1 && $data['cek_waktusosialisasi'] != 1) {
+        //     $data['final_ranking'] = 1;
+        // }
+        // else {
+        //     $data['final_ranking'] = 0;
+        // }
+
+        $data['final_ranking'] = $this->setting->get('final_ranking', 0, 'ppdb');
 
 		$data['inklusi']=0;
         if ($data['profilsekolah'] != null) {
