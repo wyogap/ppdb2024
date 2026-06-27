@@ -70,12 +70,15 @@ class Mcrud_tablemeta implements ICrudModel
     public static $XLSX_FILE_TYPE = "Xlsx";
     public static $XLS_FILE_TYPE = "Xls";
 
-    protected $db;
+    protected $db;    
+    protected $ro;
+
     protected $session;
     protected $audittrail;
 
     function __construct() {
         $this->db = \Config\Database::connect();
+        $this->ro = \Config\Database::connect("ro");
         $this->session = \Config\Services::session();
         $this->audittrail = new AuditTrail();
 
@@ -1512,7 +1515,7 @@ class Mcrud_tablemeta implements ICrudModel
         //use dynamic crud
         //use view if specified
         $table_name = $this->table_metas['table_name'];
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //clean up non existing filter columns
         $ci_name = null;
@@ -1560,7 +1563,7 @@ class Mcrud_tablemeta implements ICrudModel
         //use dynamic crud
         //use view if specified
         $table_name = $this->table_metas['table_name'];
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //clean up non existing filter columns
         $ci_name = null;
@@ -1617,7 +1620,7 @@ class Mcrud_tablemeta implements ICrudModel
         //use dynamic crud
         //use view if specified
         $table_name = $this->table_metas['table_name'];
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //group search filter
         if (!empty($query)) {
@@ -1763,7 +1766,7 @@ class Mcrud_tablemeta implements ICrudModel
         //use dynamic crud
         //use view if specified
         $table_name = $this->table_metas['table_name'];
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //clean up non existing filter columns
         $ci_name = null;
@@ -1890,7 +1893,7 @@ class Mcrud_tablemeta implements ICrudModel
         //use dynamic crud
         //use view if specified
         $table_name = $this->table_metas['table_name'];
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         $builder->where($table_name. '.' .$this->table_metas['key_column'], $id);
         if ($this->table_metas['soft_delete'])   $builder->where($table_name. '.is_deleted', 0);

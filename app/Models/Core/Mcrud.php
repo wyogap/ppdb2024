@@ -41,6 +41,7 @@ class Mcrud implements ICrudModel
     protected $level1_filter = array();
 
     protected $db;
+    protected $ro;
     protected $session;
     protected $audittrail;
 
@@ -51,6 +52,7 @@ class Mcrud implements ICrudModel
             }
         }
         $this->db = \Config\Database::connect();
+        $this->ro = \Config\Database::connect("ro");
         $this->session = \Config\Services::session();
         $this->audittrail = new AuditTrail();
     }
@@ -77,7 +79,7 @@ class Mcrud implements ICrudModel
         //use view if specified
         $table_name = static::$VIEW_TABLE_NAME != null ? static::$VIEW_TABLE_NAME : static::$TABLE_NAME;
 
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
         $builder->distinct();
         $builder->select($column_name .' as value ');
         $builder->where($filter);
@@ -113,7 +115,7 @@ class Mcrud implements ICrudModel
         //use view if specified
         $table_name = static::$VIEW_TABLE_NAME != null ? static::$VIEW_TABLE_NAME : static::$TABLE_NAME;
 
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
         $builder->select(static::$COL_LABEL .' as label, '. static::$COL_VALUE .' as value');
         $builder->where($filter);
         return $builder->get()->getResultArray();
@@ -124,7 +126,7 @@ class Mcrud implements ICrudModel
 
         //use view if specified
         $table_name = static::$VIEW_TABLE_NAME != null ? static::$VIEW_TABLE_NAME : static::$TABLE_NAME;
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //clean up non existing filter columns
         if ($query != "" && $query != null) {
@@ -183,7 +185,7 @@ class Mcrud implements ICrudModel
 
         //use view if specified
         $table_name = static::$VIEW_TABLE_NAME != null ? static::$VIEW_TABLE_NAME : static::$TABLE_NAME;
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         //clean up non existing filter columns
         foreach($filter as $key => $val) {
@@ -228,7 +230,7 @@ class Mcrud implements ICrudModel
 
         //use view if specified
         $table_name = static::$VIEW_TABLE_NAME != null ? static::$VIEW_TABLE_NAME : static::$TABLE_NAME;
-        $builder = $this->db->table($table_name);
+        $builder = $this->ro->table($table_name);
 
         $str = $table_name. '.*';
         if (count(static::$COLUMNS) > 0) {
