@@ -2,7 +2,7 @@
     Periode daftar ulang adalah dari tanggal <b><span class='tgl-indo'>{$waktudaftarulang.tanggal_mulai_aktif}</span></b> sampai dengan tanggal <b><span class='tgl-indo'>{$waktudaftarulang.tanggal_selesai_aktif}</span></b>.      
 </div>
 
-{if !$cek_waktupendaftaran && $pendaftaranditerima}
+{if $cek_waktudaftarulang && $pendaftaranditerima}
 <div class="row">
     <div class="col-12"> 
         <div class="card box-default box-solid">
