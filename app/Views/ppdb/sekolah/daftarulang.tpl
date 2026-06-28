@@ -34,8 +34,8 @@
                             <th class="text-center">Skor</th>
                             <th class="text-center">Tanggal Daftar Ulang</th>
                             <th class="none">Nilai Kelulusan</th>
-                            <th class="none">Nilai Rapor</th>
-                            <th class="none">Nilai USBN</th>
+                            <th class="none">Nilai TKA Matematika</th>
+                            <th class="none">Nilai TKA Bhs Indonesia</th>
                             <th class="none">Nomor Kontak</th>
                             <!-- <th class="none">Jenis Pilihan</th> -->
                             <th class="text-center" data-priority="1"></th>
@@ -55,8 +55,8 @@
                             <td class="text-center">{$row2.skor}</td>
                             <td class="text-center"><span class="tgl-daftar-ulang" dt-pendaftaran-id="{$row2.pendaftaran_id}">{$row2.tanggal_daftar_ulang}</span></td>
                             <td class="text-center">{$row2.nilai_kelulusan}</td>
-                            <td class="text-center">{$row2.nilai_semester}</td>
-                            <td class="text-center">{$row2.nilai_usbn}</td>
+                            <td class="text-center">{$row2.nilai_mat}</td>
+                            <td class="text-center">{$row2.nilai_bin}</td>
                             <td class="text-center">{$row2.nomor_kontak}</td>
                             <!-- <td class="text-center">{$row2.jenis_pilihan}</td> -->
                             <td class="text-left">
