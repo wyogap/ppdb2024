@@ -250,6 +250,7 @@
                             <li><a href="{$site_url}ppdb/sekolah/pencarian">Pencarian Siswa</a></li>
                             <li><a href="{$site_url}ppdb/sekolah/kandidatsiswa">Kandidat Siswa</a></li>
                             <li><a href="{$site_url}ppdb/sekolah/berkasdisekolah">Berkas Di Sekolah</a></li>
+                            <li><a href="{$site_url}ppdb/sekolah/rekappendaftar">Rekapitulasi Pendaftaran</a></li>
                         </ul>
                     </li>
                 </ul>
