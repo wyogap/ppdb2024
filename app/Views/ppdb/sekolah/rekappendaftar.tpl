@@ -47,7 +47,15 @@
                             <td class="text-center">{$row2.created_on}</td>
                             <td class="text-center">{$row2.penerapan}</td>
                             <td class="text-center">{$row2.skor}</td>
-                            <td class="text-center">{$row2.status_penerimaan_label}</td>
+                            <td class="text-center">
+                                {if $row2.status_penerimaan_final==1 || $row2.status_penerimaan_final==3}Diterima
+                                {elseif $row2.status_penerimaan_final==4}{$row2.label_masuk_pilihan}
+                                {elseif $row2.status_penerimaan_final==2 && $row2.status_penerimaan!=2 && $row2.masuk_jenis_pilihan!=0 && $row2.masuk_jenis_pilihan!=$row2.jenis_pilihan}{$row2.label_masuk_pilihan}
+                                {elseif $row2.status_penerimaan_final==2}Tidak Diterima
+                                {elseif $row2.kelengkapan_berkas==2}Berkas Tidak Lengkap
+                                {else}Berkas Tidak Lengkap
+                                {/if}
+                            </td>
                             <td class="text-center">{$row2.nilai_kelulusan}</td>
                             <td class="text-center">{$row2.nilai_mat}</td>
                             <td class="text-center">{$row2.nilai_bin}</td>
