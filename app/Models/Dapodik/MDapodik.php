@@ -574,8 +574,6 @@ class MDapodik
 
             //simpan data siswa ke database
             $mbalikan->update_syncstatus($id, 1, $return_id);
-
-            break;
         }
 
         return 1;
