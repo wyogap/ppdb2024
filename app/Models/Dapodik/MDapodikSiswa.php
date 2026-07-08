@@ -11,12 +11,12 @@ class MDapodikSiswa extends MCrud5
     protected $COLUMNS = array('alamat_jalan', 'bujur', 'desa_kelurahan', 'jenis_kelamin', 'kebutuhan_khusus', 'kode_wilayah', 'last_update', 
                                 'lintang', 'nama', 'nama_ayah', 'nama_dusun', 'nama_ibu_kandung', 'nama_wali', 'nik', 
                                 'nisn', 'no_KIP', 'no_kk', 'pekerjaan_ayah', 'pekerjaan_ibu', 'peserta_didik_id',
-                                'rt', 'rw', 'sekolah_id', 'tanggal_lahir', 'tempat_lahir');
+                                'rt', 'rw', 'sekolah_id', 'tanggal_lahir', 'tempat_lahir', 'agama_id');
     protected $INSERT_COLUMNS = array('alamat_jalan', 'bujur', 'desa_kelurahan', 'jenis_kelamin', 'kebutuhan_khusus', 'kode_wilayah', 'last_update', 
                                 'lintang', 'nama', 'nama_ayah', 'nama_dusun', 'nama_ibu_kandung', 'nama_wali', 'nik', 
                                 'nisn', 'no_KIP', 'no_kk', 'pekerjaan_ayah', 'pekerjaan_ibu', 'peserta_didik_id',
-                                'rt', 'rw', 'sekolah_id', 'tanggal_lahir', 'tempat_lahir');
-    protected $COMPULSORY_COLUMNS = array('nama', 'nisn', 'sekolah_id', 'peserta_didik_id', 'tanggal_lahir');
+                                'rt', 'rw', 'sekolah_id', 'tanggal_lahir', 'tempat_lahir', 'agama_id');
+    protected $COMPULSORY_COLUMNS = array('nama', 'nik', 'sekolah_id', 'peserta_didik_id', 'tanggal_lahir');
 
     function __construct() {
         parent::__construct();
@@ -26,7 +26,7 @@ class MDapodikSiswa extends MCrud5
         $builder = $this->db->table($this->TABLE_NAME);
         $builder->truncate();
     }
-
+   
     function siswa_tidakadatka() {
         $sql = "
             select a.peserta_didik_id, a.nisn, a.nik, a.nama, a.jenis_kelamin, a.tanggal_lahir

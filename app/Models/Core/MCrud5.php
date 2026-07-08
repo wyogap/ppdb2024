@@ -28,9 +28,14 @@ class MCrud5 implements ICrudModel5
     protected $error_code = 0;
     protected $error_message = null;
 
-    public function __construct()
+    public function __construct($dbgroup = null)
     {
-        $this->db = \Config\Database::connect();
+        if (!empty($dbgroup)) {
+            $this->db = \Config\Database::connect($dbgroup);
+        }
+        else {
+            $this->db = \Config\Database::connect();
+        }
         $this->session = \Config\Services::session();
 
         if (empty($this->EDIT_TABLE_NAME))      $this->EDIT_TABLE_NAME = $this->TABLE_NAME;

@@ -530,6 +530,57 @@ class MDapodik
 
     }
 
+    public function kirimdatabalikan() {
+        $this->reset_error();
+
+        $this->logger->log('info', "Get token akses API");
+        $this->token = $this->getToken();
+        if (empty($this->token)) {
+            $this->set_error("Gagal mendapatkan token akses.", 500, 1);
+        }
+        //$this->logger->log('info', "Akses token: " . $this->token);
+
+        $mbalikan = new MDataBalikan(); 
+        $siswa = $mbalikan->siswa_belumsync();
+
+        $cnt = count($siswa);
+        $i = 1;
+
+        $this->logger->log('info', "Jumlah data untuk dikirim: " .$cnt);
+
+        foreach ($siswa as $s) {
+            if (empty($s['nik']) || empty($s['kode_wilayah_siswa']) || empty($s['agama_id'])) {
+                $i++;
+                continue;
+            }
+
+            $id = $s['peserta_didik_id'];
+            if (empty($s['agama_id'])) {
+                $s['agama_id'] = 1; //default agama Islam
+            }
+
+            //this is internal id
+            unset($s['peserta_didik_id']);
+
+            //sync
+            $this->logger->log('info', "(" .$i++. " of " .$cnt. "): " . $s['nama']);
+            $return_id = $this->syncSiswa($s);
+            if (empty($return_id)) {
+                $this->logger->log('warning', "Status: FAILED!");
+                continue;
+            }
+           
+            $this->logger->log('warning', "Return ID: " .$return_id);
+
+            //simpan data siswa ke database
+            $mbalikan->update_syncstatus($id, 1, $return_id);
+
+            break;
+        }
+
+        return 1;
+    }
+
     public function getToken() {
         $this->reset_error();
         
@@ -1407,6 +1458,99 @@ class MDapodik
             $retval[] = $dummy;
             return $retval;
         }
+    }
+
+    public function syncSiswa($siswa, string $token = "") {
+        $this->reset_error();
+        
+        if (empty($token)) {
+            if (!empty($this->token)) {
+                $token = $this->token;
+            } else {
+                $this->logger->log('info', "Get token akses API");
+                $this->token = $this->getToken();
+                if (empty($this->token)) {
+                    $this->set_error("Gagal mendapatkan token akses.", 500, 1);
+                    return null;
+                }
+                //$this->logger->log('info', "Akses token: " . $this->token);
+                $token = $this->token;
+            }
+            $token = $this->token;
+        }
+
+        $url = "https://api.spl.kemendikdasmen.go.id/layanan/peserta-didik/spmb/peserta-didik-balikan";
+
+        $data = $siswa;
+
+        $this->logger->log('debug', "POST: \n" .$url);
+
+        $prettystr = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $this->logger->log('debug', "DATA: \n" .$prettystr);
+
+        $curl = curl_init($url);
+
+        $fp = fopen(WRITEPATH .'logs/curl-errorlog.txt', 'w');
+        curl_setopt($curl, CURLOPT_VERBOSE, 1);
+        curl_setopt($curl, CURLOPT_STDERR, $fp);
+
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+
+        // Return the transfer as a string instead of outputting it directly
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // *** Key option: Follow redirects ***
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        // Optional: Set a maximum number of redirects (default is 50, here limited to 5)
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 5);
+
+        // Set a User-Agent string to mimic a browser
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');
+
+        // Set the connection timeout
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, static::$TIMEOUT_SEC);
+
+        // Set the total operation timeout
+        curl_setopt($curl, CURLOPT_TIMEOUT, static::$TIMEOUT_SEC);
+
+        $headers = array(
+            "Authorization: Bearer " .$this->token,
+            "Content-Type: application/json",
+            "X-Client-Id: " .API_CLIENT_ID,
+            "api_key: " .API_KEY
+        );
+
+        //var_dump($headers); exit;
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+        $json = json_encode($data);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        
+        $json = json_decode($resp, true);
+        if (empty($json)) {
+            $this->logger->log('debug', "RESPONSE: \n" .$resp);
+            $this->set_error('API error: invalid response', -1, 0);
+            return null;
+        }
+
+        $prettystr = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $this->logger->log('debug', "RESPONSE: \n" .$prettystr);
+
+        if (isset($json['status']) && $json['status'] == 200 && $json['message'] == "success") {
+            return $json['data'][0]['id'];
+        } else {
+            return null;
+        }
+
     }
 
     protected function set_error($message, $code, $throwexception = 0) {
