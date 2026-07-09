@@ -579,6 +579,50 @@ class MDapodik
         return 1;
     }
 
+    public function tarik_agama() {
+        $this->reset_error();
+
+        $this->logger->log('info', "Get token akses API");
+        $this->token = $this->getToken();
+        if (empty($this->token)) {
+            $this->set_error("Gagal mendapatkan token akses.", 500, 1);
+        }
+        //$this->logger->log('info', "Akses token: " . $this->token);
+
+        $mbalikan = new MDataBalikan(); 
+        $siswa = $mbalikan->siswa_agamainvalid();
+
+        $cnt = count($siswa);
+        $i = 1;
+
+        $this->logger->log('info', "Jumlah data untuk ditarik: " .$cnt);
+
+        foreach ($siswa as $s) {
+            if (empty($s['nisn'])) {
+                $i++;
+                continue;
+            }
+
+            //get
+            $this->logger->log('info', "(" .$i++. " of " .$cnt. "): " . $s['nama']);
+            $val = $this->getSiswaByNisnDanTglLahir($s['nisn'], $s['tanggal_lahir']);
+            if (empty($val)) {
+                $this->logger->log('warning', "Status: FAILED!");
+                continue;
+            }
+            if (count($val) > 0) {
+                $val = $val[0];
+            }
+           
+            $this->logger->log('warning', "Agama ID: " .$val['agama_id']);
+
+            //simpan data siswa ke database
+            $mbalikan->update_agama($s['peserta_didik_id'], $val['agama_id']);
+        }
+
+        return 1;
+    }
+
     public function getToken() {
         $this->reset_error();
         
