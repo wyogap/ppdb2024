@@ -549,14 +549,23 @@ class MDapodik
         $this->logger->log('info', "Jumlah data untuk dikirim: " .$cnt);
 
         foreach ($siswa as $s) {
-            if (empty($s['nik']) || empty($s['kode_wilayah_siswa']) || empty($s['agama_id'])) {
+            if (empty($s['nik']) || empty($s['kode_wilayah_siswa'])) {
                 $i++;
                 continue;
             }
 
             $id = $s['peserta_didik_id'];
+
             if (empty($s['agama_id'])) {
                 $s['agama_id'] = 1; //default agama Islam
+            }
+
+            if (empty($s['rt'])) {
+                $s['rt'] = "1"; 
+            }
+
+            if (empty($s['rw'])) {
+                $s['rw'] = "1"; 
             }
 
             //this is internal id
@@ -1577,6 +1586,8 @@ class MDapodik
         $resp = curl_exec($curl);
         curl_close($curl);
         
+        //var_dump($resp); exit;
+
         $json = json_decode($resp, true);
         if (empty($json)) {
             $this->logger->log('debug', "RESPONSE: \n" .$resp);
