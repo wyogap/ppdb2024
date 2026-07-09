@@ -563,9 +563,19 @@ class MDapodik
             if (empty($s['rt'])) {
                 $s['rt'] = "1"; 
             }
+            $s['rt'] = str_replace("RT.", "", strtoupper($s['rt']));
+            $s['rt'] = str_replace("RT", "", strtoupper($s['rt']));
+            $s['rt'] = trim($s['rt']);
 
             if (empty($s['rw'])) {
                 $s['rw'] = "1"; 
+            }
+            $s['rw'] = str_replace("RW.", "", strtoupper($s['rw']));
+            $s['rw'] = str_replace("RW", "", strtoupper($s['rw']));
+            $s['rw'] = trim($s['rw']);
+
+            if (empty($s['alamat_jalan'])) {
+                $s['alamat_jalan'] = "NA"; 
             }
 
             //this is internal id
